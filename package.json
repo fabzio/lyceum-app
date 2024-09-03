@@ -1,0 +1,49 @@
+{
+  "name": "neocampus",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "bunx --bun vite",
+    "build:tsc": "tsc -b",
+    "build": "bunx --bun vite build",
+    "lint": "bunx --bun oxlint",
+    "preview": "bunx --bun vite preview",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@radix-ui/react-icons": "1.3.0",
+    "@tanstack/react-query": "5.52.3",
+    "@tanstack/react-router": "1.51.6",
+    "axios": "1.7.5",
+    "class-variance-authority": "0.7.0",
+    "clsx": "2.1.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "tailwind-merge": "2.5.2",
+    "tailwindcss-animate": "1.0.7",
+    "zod": "3.23.8",
+    "zustand": "4.5.5"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "19.4.1",
+    "@commitlint/config-conventional": "19.4.1",
+    "@eslint/js": "9.9.1",
+    "@tanstack/router-devtools": "1.51.6",
+    "@tanstack/router-plugin": "1.51.6",
+    "@types/react": "18.3.4",
+    "@types/react-dom": "18.3.0",
+    "@vitejs/plugin-react-swc": "3.7.0",
+    "autoprefixer": "10.4.20",
+    "eslint": "9.9.1",
+    "eslint-plugin-react-hooks": "4.6.2",
+    "eslint-plugin-react-refresh": "0.4.11",
+    "globals": "15.9.0",
+    "husky": "9.1.5",
+    "postcss": "8.4.41",
+    "tailwindcss": "3.4.10",
+    "typescript": "5.5.4",
+    "typescript-eslint": "8.3.0",
+    "vite": "5.4.2"
+  }
+}
