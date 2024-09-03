@@ -1,0 +1,41 @@
+services:
+  backend:
+    container_name: "universys-backend"
+    image: "universys-backend"
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    links:
+      - database
+    networks:
+      - my-network
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /home/bun/app/src
+
+  database:
+    image: postgres:latest
+    container_name: "universys-database"
+    ports:
+      - 5432:${DB_PORT}
+    environment:
+      TZ: America/Bogota
+      PGTZ: America/Bogota
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - my-network
+    volumes:
+      - universys-data:/var/lib/postgresql/data
+volumes:
+  universys-data:
+    name: universys-data
+
+networks:
+  my-network:
+    name: universys-network

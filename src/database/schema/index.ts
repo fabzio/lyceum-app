@@ -1,0 +1,1 @@
+export { student } from './student'

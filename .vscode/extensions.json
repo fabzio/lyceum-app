@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "vivaxy.vscode-conventional-commits",
+    "esbenp.prettier-vscode",
+    "yoavbls.pretty-ts-errors",
+    "eamodio.gitlens",
+    "usernamehw.errorlens",
+    "pkief.material-icon-theme"
+  ]
+}
