@@ -1,20 +1,39 @@
-import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
+import { AuthContext } from '@/hooks/useAuth'
+import {
+  createRootRouteWithContext,
+  Outlet,
+  useRouterState,
+} from '@tanstack/react-router'
+import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
+import { useEffect, useRef } from 'react'
+import Layout from '@/layouts'
 
-export const Route = createRootRoute({
-  component: () => (
-    <>
-      <div className="p-2 flex gap-2">
-        <Link to="/" className="[&.active]:font-bold">
-          Home
-        </Link>{' '}
-        <Link to="/about" className="[&.active]:font-bold">
-          About
-        </Link>
-      </div>
-      <hr />
-      <Outlet />
-      <TanStackRouterDevtools />
-    </>
-  ),
+type RouterContext = {
+  authenticated: AuthContext
+}
+
+export const Route = createRootRouteWithContext<RouterContext>()({
+  component: () => {
+    const routerState = useRouterState()
+    const ref = useRef<LoadingBarRef>(null)
+    useEffect(() => {
+      if (!ref.current) return
+      if (routerState.status === 'pending') {
+        ref.current.continuousStart()
+      } else {
+        ref.current.complete()
+      }
+    }, [routerState.status])
+
+    return (
+      <>
+        <LoadingBar ref={ref} color="#2998ff" />
+        <Layout>
+          <Outlet />
+        </Layout>
+        <TanStackRouterDevtools />
+      </>
+    )
+  },
 })

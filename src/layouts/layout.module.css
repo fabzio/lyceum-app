@@ -1,0 +1,11 @@
+.mainLayout {
+  position: relative;
+  height: 100vh;
+
+  display: grid;
+  grid-template-areas:
+    'aside nav nav'
+    'aside main main';
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+}
