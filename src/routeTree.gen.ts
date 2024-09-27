@@ -11,8 +11,12 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as SeguridadImport } from './routes/seguridad'
 import { Route as IndexImport } from './routes/index'
+import { Route as SeguridadIndexImport } from './routes/seguridad/index'
 import { Route as UnidadNameImport } from './routes/unidad/$name'
+import { Route as SeguridadRolesImport } from './routes/seguridad/roles'
+import { Route as SeguridadPermisosImport } from './routes/seguridad/permisos'
 import { Route as UnidadNameIndexImport } from './routes/unidad/$name/index'
 import { Route as UnidadNameUsuariosImport } from './routes/unidad/$name/usuarios'
 import { Route as UnidadNameSubunidadesImport } from './routes/unidad/$name/subunidades'
@@ -20,14 +24,34 @@ import { Route as UnidadNameRolesImport } from './routes/unidad/$name/roles'
 
 // Create/Update Routes
 
+const SeguridadRoute = SeguridadImport.update({
+  path: '/seguridad',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any)
 
+const SeguridadIndexRoute = SeguridadIndexImport.update({
+  path: '/',
+  getParentRoute: () => SeguridadRoute,
+} as any)
+
 const UnidadNameRoute = UnidadNameImport.update({
   path: '/unidad/$name',
   getParentRoute: () => rootRoute,
+} as any)
+
+const SeguridadRolesRoute = SeguridadRolesImport.update({
+  path: '/roles',
+  getParentRoute: () => SeguridadRoute,
+} as any)
+
+const SeguridadPermisosRoute = SeguridadPermisosImport.update({
+  path: '/permisos',
+  getParentRoute: () => SeguridadRoute,
 } as any)
 
 const UnidadNameIndexRoute = UnidadNameIndexImport.update({
@@ -61,12 +85,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/seguridad': {
+      id: '/seguridad'
+      path: '/seguridad'
+      fullPath: '/seguridad'
+      preLoaderRoute: typeof SeguridadImport
+      parentRoute: typeof rootRoute
+    }
+    '/seguridad/permisos': {
+      id: '/seguridad/permisos'
+      path: '/permisos'
+      fullPath: '/seguridad/permisos'
+      preLoaderRoute: typeof SeguridadPermisosImport
+      parentRoute: typeof SeguridadImport
+    }
+    '/seguridad/roles': {
+      id: '/seguridad/roles'
+      path: '/roles'
+      fullPath: '/seguridad/roles'
+      preLoaderRoute: typeof SeguridadRolesImport
+      parentRoute: typeof SeguridadImport
+    }
     '/unidad/$name': {
       id: '/unidad/$name'
       path: '/unidad/$name'
       fullPath: '/unidad/$name'
       preLoaderRoute: typeof UnidadNameImport
       parentRoute: typeof rootRoute
+    }
+    '/seguridad/': {
+      id: '/seguridad/'
+      path: '/'
+      fullPath: '/seguridad/'
+      preLoaderRoute: typeof SeguridadIndexImport
+      parentRoute: typeof SeguridadImport
     }
     '/unidad/$name/roles': {
       id: '/unidad/$name/roles'
@@ -103,6 +155,11 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   IndexRoute,
+  SeguridadRoute: SeguridadRoute.addChildren({
+    SeguridadPermisosRoute,
+    SeguridadRolesRoute,
+    SeguridadIndexRoute,
+  }),
   UnidadNameRoute: UnidadNameRoute.addChildren({
     UnidadNameRolesRoute,
     UnidadNameSubunidadesRoute,
@@ -120,11 +177,28 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/seguridad",
         "/unidad/$name"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/seguridad": {
+      "filePath": "seguridad.tsx",
+      "children": [
+        "/seguridad/permisos",
+        "/seguridad/roles",
+        "/seguridad/"
+      ]
+    },
+    "/seguridad/permisos": {
+      "filePath": "seguridad/permisos.tsx",
+      "parent": "/seguridad"
+    },
+    "/seguridad/roles": {
+      "filePath": "seguridad/roles.tsx",
+      "parent": "/seguridad"
     },
     "/unidad/$name": {
       "filePath": "unidad/$name.tsx",
@@ -134,6 +208,10 @@ export const routeTree = rootRoute.addChildren({
         "/unidad/$name/usuarios",
         "/unidad/$name/"
       ]
+    },
+    "/seguridad/": {
+      "filePath": "seguridad/index.tsx",
+      "parent": "/seguridad"
     },
     "/unidad/$name/roles": {
       "filePath": "unidad/$name/roles.tsx",

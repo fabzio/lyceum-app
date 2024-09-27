@@ -9,7 +9,6 @@ interface Unit {
 }
 
 export default function Unit() {
-  
   const { name } = useParams({
     from: '/unidad/$name',
   })
@@ -17,10 +16,10 @@ export default function Unit() {
     <div className="flex justify-center items-center">
       <div>
         <h2 className="text-2xl font-bold">{name}</h2>
-        <section>
-          <UnitManagement />
-        </section>
       </div>
+      <section>
+        <UnitManagement />
+      </section>
     </div>
   )
 }
