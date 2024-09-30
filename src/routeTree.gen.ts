@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as SeguridadImport } from './routes/seguridad'
 import { Route as IndexImport } from './routes/index'
 import { Route as SeguridadIndexImport } from './routes/seguridad/index'
+import { Route as PreguntasFrecuentesIndexImport } from './routes/preguntas-frecuentes/index'
 import { Route as UnidadNameImport } from './routes/unidad/$name'
 import { Route as SeguridadRolesImport } from './routes/seguridad/roles'
 import { Route as SeguridadPermisosImport } from './routes/seguridad/permisos'
@@ -37,6 +38,11 @@ const IndexRoute = IndexImport.update({
 const SeguridadIndexRoute = SeguridadIndexImport.update({
   path: '/',
   getParentRoute: () => SeguridadRoute,
+} as any)
+
+const PreguntasFrecuentesIndexRoute = PreguntasFrecuentesIndexImport.update({
+  path: '/preguntas-frecuentes/',
+  getParentRoute: () => rootRoute,
 } as any)
 
 const UnidadNameRoute = UnidadNameImport.update({
@@ -111,6 +117,13 @@ declare module '@tanstack/react-router' {
       path: '/unidad/$name'
       fullPath: '/unidad/$name'
       preLoaderRoute: typeof UnidadNameImport
+      parentRoute: typeof rootRoute
+    }
+    '/preguntas-frecuentes/': {
+      id: '/preguntas-frecuentes/'
+      path: '/preguntas-frecuentes'
+      fullPath: '/preguntas-frecuentes'
+      preLoaderRoute: typeof PreguntasFrecuentesIndexImport
       parentRoute: typeof rootRoute
     }
     '/seguridad/': {
@@ -193,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/seguridad/permisos': typeof SeguridadPermisosRoute
   '/seguridad/roles': typeof SeguridadRolesRoute
   '/unidad/$name': typeof UnidadNameRouteWithChildren
+  '/preguntas-frecuentes': typeof PreguntasFrecuentesIndexRoute
   '/seguridad/': typeof SeguridadIndexRoute
   '/unidad/$name/roles': typeof UnidadNameRolesRoute
   '/unidad/$name/subunidades': typeof UnidadNameSubunidadesRoute
@@ -204,6 +218,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/seguridad/permisos': typeof SeguridadPermisosRoute
   '/seguridad/roles': typeof SeguridadRolesRoute
+  '/preguntas-frecuentes': typeof PreguntasFrecuentesIndexRoute
   '/seguridad': typeof SeguridadIndexRoute
   '/unidad/$name/roles': typeof UnidadNameRolesRoute
   '/unidad/$name/subunidades': typeof UnidadNameSubunidadesRoute
@@ -218,6 +233,7 @@ export interface FileRoutesById {
   '/seguridad/permisos': typeof SeguridadPermisosRoute
   '/seguridad/roles': typeof SeguridadRolesRoute
   '/unidad/$name': typeof UnidadNameRouteWithChildren
+  '/preguntas-frecuentes/': typeof PreguntasFrecuentesIndexRoute
   '/seguridad/': typeof SeguridadIndexRoute
   '/unidad/$name/roles': typeof UnidadNameRolesRoute
   '/unidad/$name/subunidades': typeof UnidadNameSubunidadesRoute
@@ -233,6 +249,7 @@ export interface FileRouteTypes {
     | '/seguridad/permisos'
     | '/seguridad/roles'
     | '/unidad/$name'
+    | '/preguntas-frecuentes'
     | '/seguridad/'
     | '/unidad/$name/roles'
     | '/unidad/$name/subunidades'
@@ -243,6 +260,7 @@ export interface FileRouteTypes {
     | '/'
     | '/seguridad/permisos'
     | '/seguridad/roles'
+    | '/preguntas-frecuentes'
     | '/seguridad'
     | '/unidad/$name/roles'
     | '/unidad/$name/subunidades'
@@ -255,6 +273,7 @@ export interface FileRouteTypes {
     | '/seguridad/permisos'
     | '/seguridad/roles'
     | '/unidad/$name'
+    | '/preguntas-frecuentes/'
     | '/seguridad/'
     | '/unidad/$name/roles'
     | '/unidad/$name/subunidades'
@@ -267,12 +286,14 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SeguridadRoute: typeof SeguridadRouteWithChildren
   UnidadNameRoute: typeof UnidadNameRouteWithChildren
+  PreguntasFrecuentesIndexRoute: typeof PreguntasFrecuentesIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SeguridadRoute: SeguridadRouteWithChildren,
   UnidadNameRoute: UnidadNameRouteWithChildren,
+  PreguntasFrecuentesIndexRoute: PreguntasFrecuentesIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -289,7 +310,8 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/seguridad",
-        "/unidad/$name"
+        "/unidad/$name",
+        "/preguntas-frecuentes/"
       ]
     },
     "/": {
@@ -319,6 +341,9 @@ export const routeTree = rootRoute
         "/unidad/$name/usuarios",
         "/unidad/$name/"
       ]
+    },
+    "/preguntas-frecuentes/": {
+      "filePath": "preguntas-frecuentes/index.tsx"
     },
     "/seguridad/": {
       "filePath": "seguridad/index.tsx",

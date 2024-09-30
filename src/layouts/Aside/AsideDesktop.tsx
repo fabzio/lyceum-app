@@ -6,7 +6,7 @@ import {
 } from '@/components/ui/tooltip'
 import { ValidRoutes } from '@/constants/paths'
 import { Link } from '@tanstack/react-router'
-import { Book, Home, ShieldCheck } from 'lucide-react'
+import { Book, Home } from 'lucide-react'
 
 type AsideElement = {
   icon: JSX.Element
@@ -31,6 +31,11 @@ const asideElements: AsideElement[] = [
     path: '/unidad/$name',
     params: { name: 'PUCP' },
     label: 'Unidad',
+  },
+  {
+    icon: <MessageCircleQuestion />,
+    path: '/preguntas-frecuentes',
+    label: 'Preguntas frecuentes',
   },
 ]
 
