@@ -1,12 +1,9 @@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ValidRoutes } from '@/constants/paths'
+import { useTabs } from '@/hooks/useTabs'
 
-import {
-  Outlet,
-  useNavigate,
-  useParams,
-} from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { Outlet, useParams } from '@tanstack/react-router'
+import { useEffect } from 'react'
 
 type Tab = {
   path: ValidRoutes
@@ -36,24 +33,18 @@ export default function UnitManagement() {
   const { name } = useParams({
     from: '/unidad/$name',
   })
-  const navigate = useNavigate()
-
-  const [activeTab, setActiveTab] = useState(tabs[0].path)
-
-  const handleChange = (value: string) => {
-    const route = value as ValidRoutes
-    setActiveTab(route)
-    navigate({
-      to: route,
-    })
-  }
+  const { activeTab, handleChangeTab } = useTabs(tabs[0].path)
   useEffect(() => {
-    setActiveTab(tabs[0].path)
+    handleChangeTab(tabs[0].path)
   }, [name])
 
   return (
     <div>
-      <Tabs className="w-[700]" value={activeTab} onValueChange={handleChange}>
+      <Tabs
+        className="w-[700]"
+        value={activeTab}
+        onValueChange={handleChangeTab}
+      >
         <TabsList className="grid grid-cols-4 w-full">
           {tabs.map((tab) => (
             <TabsTrigger value={tab.path} key={tab.path}>
@@ -61,9 +52,9 @@ export default function UnitManagement() {
             </TabsTrigger>
           ))}
         </TabsList>
-        <main className="mt-2">
+        <section className="mt-2">
           <Outlet />
-        </main>
+        </section>
       </Tabs>
     </div>
   )
