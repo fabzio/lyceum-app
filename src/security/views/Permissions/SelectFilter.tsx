@@ -9,7 +9,7 @@ export default function SelectFilter() {
   return (
     <Select>
       <SelectTrigger>
-        <SelectValue placeholder="Elija un rol" />
+        <SelectValue placeholder="Elige un módulo" />
       </SelectTrigger>
       <SelectContent></SelectContent>
     </Select>

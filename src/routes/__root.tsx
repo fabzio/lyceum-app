@@ -10,6 +10,7 @@ import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { useEffect, useRef } from 'react'
 import Layout from '@/layouts'
 import { QueryClient } from '@tanstack/react-query'
+import { Toaster } from '@/components/ui/toaster'
 
 type RouterContext = {
   authenticated: AuthContext
@@ -35,6 +36,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         <Layout>
           <Outlet />
         </Layout>
+        <Toaster  />
         <TanStackRouterDevtools />
         <ReactQueryDevtools initialIsOpen={false} />
       </>

@@ -153,20 +153,131 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({
-  IndexRoute,
-  SeguridadRoute: SeguridadRoute.addChildren({
-    SeguridadPermisosRoute,
-    SeguridadRolesRoute,
-    SeguridadIndexRoute,
-  }),
-  UnidadNameRoute: UnidadNameRoute.addChildren({
-    UnidadNameRolesRoute,
-    UnidadNameSubunidadesRoute,
-    UnidadNameUsuariosRoute,
-    UnidadNameIndexRoute,
-  }),
-})
+interface SeguridadRouteChildren {
+  SeguridadPermisosRoute: typeof SeguridadPermisosRoute
+  SeguridadRolesRoute: typeof SeguridadRolesRoute
+  SeguridadIndexRoute: typeof SeguridadIndexRoute
+}
+
+const SeguridadRouteChildren: SeguridadRouteChildren = {
+  SeguridadPermisosRoute: SeguridadPermisosRoute,
+  SeguridadRolesRoute: SeguridadRolesRoute,
+  SeguridadIndexRoute: SeguridadIndexRoute,
+}
+
+const SeguridadRouteWithChildren = SeguridadRoute._addFileChildren(
+  SeguridadRouteChildren,
+)
+
+interface UnidadNameRouteChildren {
+  UnidadNameRolesRoute: typeof UnidadNameRolesRoute
+  UnidadNameSubunidadesRoute: typeof UnidadNameSubunidadesRoute
+  UnidadNameUsuariosRoute: typeof UnidadNameUsuariosRoute
+  UnidadNameIndexRoute: typeof UnidadNameIndexRoute
+}
+
+const UnidadNameRouteChildren: UnidadNameRouteChildren = {
+  UnidadNameRolesRoute: UnidadNameRolesRoute,
+  UnidadNameSubunidadesRoute: UnidadNameSubunidadesRoute,
+  UnidadNameUsuariosRoute: UnidadNameUsuariosRoute,
+  UnidadNameIndexRoute: UnidadNameIndexRoute,
+}
+
+const UnidadNameRouteWithChildren = UnidadNameRoute._addFileChildren(
+  UnidadNameRouteChildren,
+)
+
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/seguridad': typeof SeguridadRouteWithChildren
+  '/seguridad/permisos': typeof SeguridadPermisosRoute
+  '/seguridad/roles': typeof SeguridadRolesRoute
+  '/unidad/$name': typeof UnidadNameRouteWithChildren
+  '/seguridad/': typeof SeguridadIndexRoute
+  '/unidad/$name/roles': typeof UnidadNameRolesRoute
+  '/unidad/$name/subunidades': typeof UnidadNameSubunidadesRoute
+  '/unidad/$name/usuarios': typeof UnidadNameUsuariosRoute
+  '/unidad/$name/': typeof UnidadNameIndexRoute
+}
+
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/seguridad/permisos': typeof SeguridadPermisosRoute
+  '/seguridad/roles': typeof SeguridadRolesRoute
+  '/seguridad': typeof SeguridadIndexRoute
+  '/unidad/$name/roles': typeof UnidadNameRolesRoute
+  '/unidad/$name/subunidades': typeof UnidadNameSubunidadesRoute
+  '/unidad/$name/usuarios': typeof UnidadNameUsuariosRoute
+  '/unidad/$name': typeof UnidadNameIndexRoute
+}
+
+export interface FileRoutesById {
+  __root__: typeof rootRoute
+  '/': typeof IndexRoute
+  '/seguridad': typeof SeguridadRouteWithChildren
+  '/seguridad/permisos': typeof SeguridadPermisosRoute
+  '/seguridad/roles': typeof SeguridadRolesRoute
+  '/unidad/$name': typeof UnidadNameRouteWithChildren
+  '/seguridad/': typeof SeguridadIndexRoute
+  '/unidad/$name/roles': typeof UnidadNameRolesRoute
+  '/unidad/$name/subunidades': typeof UnidadNameSubunidadesRoute
+  '/unidad/$name/usuarios': typeof UnidadNameUsuariosRoute
+  '/unidad/$name/': typeof UnidadNameIndexRoute
+}
+
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/seguridad'
+    | '/seguridad/permisos'
+    | '/seguridad/roles'
+    | '/unidad/$name'
+    | '/seguridad/'
+    | '/unidad/$name/roles'
+    | '/unidad/$name/subunidades'
+    | '/unidad/$name/usuarios'
+    | '/unidad/$name/'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/seguridad/permisos'
+    | '/seguridad/roles'
+    | '/seguridad'
+    | '/unidad/$name/roles'
+    | '/unidad/$name/subunidades'
+    | '/unidad/$name/usuarios'
+    | '/unidad/$name'
+  id:
+    | '__root__'
+    | '/'
+    | '/seguridad'
+    | '/seguridad/permisos'
+    | '/seguridad/roles'
+    | '/unidad/$name'
+    | '/seguridad/'
+    | '/unidad/$name/roles'
+    | '/unidad/$name/subunidades'
+    | '/unidad/$name/usuarios'
+    | '/unidad/$name/'
+  fileRoutesById: FileRoutesById
+}
+
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  SeguridadRoute: typeof SeguridadRouteWithChildren
+  UnidadNameRoute: typeof UnidadNameRouteWithChildren
+}
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  SeguridadRoute: SeguridadRouteWithChildren,
+  UnidadNameRoute: UnidadNameRouteWithChildren,
+}
+
+export const routeTree = rootRoute
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
 /* prettier-ignore-end */
 
