@@ -22,7 +22,9 @@ export const migrationClient = postgres({
 // This will run migrations on the database, skipping the ones already applied
 if (!config.out) throw new Error('Migration output folder is not defined')
 try {
-  await migrate(drizzle(migrationClient), { migrationsFolder: config.out })
+  await migrate(drizzle(migrationClient), {
+    migrationsFolder: config.out,
+  })
 } catch (e) {
   console.error(e)
   process.exit(1)

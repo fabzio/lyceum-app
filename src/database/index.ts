@@ -3,6 +3,7 @@ import {
   DB_HOST,
   DB_PASSWORD,
   DB_PORT,
+  DB_SCHEMA,
   DB_USERNAME,
 } from '@config'
 import { drizzle } from 'drizzle-orm/postgres-js'
@@ -15,8 +16,14 @@ const queryClient = postgres({
   user: DB_USERNAME,
   password: DB_PASSWORD,
   max: 10,
-  idle_timeout: 2,
+  idle_timeout: 20,
   connect_timeout: 10,
+  ssl: 'allow',
 })
-const db = drizzle(queryClient)
+const db = drizzle(queryClient, {
+  logger: true,
+})
+import { pgSchema } from 'drizzle-orm/pg-core'
+
+export const schema = pgSchema(DB_SCHEMA)
 export default db
