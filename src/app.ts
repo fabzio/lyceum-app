@@ -5,6 +5,7 @@ import { cors } from 'hono/cors'
 import { errorHandler, notFound } from './middlewares'
 import { Route } from './interfaces/route'
 import { PORT } from './config'
+import { showRoutes } from 'hono/dev'
 
 class App {
   public app: Hono
@@ -42,6 +43,10 @@ class App {
     routes.forEach((route) => {
       console.log(`Route ${route.path} initialized`)
       this.app.route(route.path, route.router)
+    })
+    showRoutes(this.app,{
+      colorize: true,
+      verbose: true,
     })
   }
 

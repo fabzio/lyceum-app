@@ -1,7 +1,7 @@
 import App from './app'
-import { IndexRoute } from './routes'
+import Security from './security'
 
-const app = new App([new IndexRoute()])
+const app = new App([new Security()])
 
 app.listen()
 
