@@ -1,3 +1,4 @@
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { AuthContext } from '@/hooks/useAuth'
 import {
   createRootRouteWithContext,
@@ -8,9 +9,11 @@ import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { useEffect, useRef } from 'react'
 import Layout from '@/layouts'
+import { QueryClient } from '@tanstack/react-query'
 
 type RouterContext = {
   authenticated: AuthContext
+  queryClient: QueryClient
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
@@ -33,6 +36,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
           <Outlet />
         </Layout>
         <TanStackRouterDevtools />
+        <ReactQueryDevtools initialIsOpen={false} />
       </>
     )
   },
