@@ -21,7 +21,8 @@ export default defineConfig({
     user: DB_USERNAME,
     password: DB_PASSWORD,
     port: Number(DB_PORT),
+    ssl: 'allow',
   },
   verbose: true,
-  strict: true,
+  schemaFilter: ['dev'],
 })
