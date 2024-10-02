@@ -1,5 +1,15 @@
+import TransitionPage from '@/components/anim/TransitionPage'
+import FAQ from '@/faq'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/preguntas-frecuentes/')({
-  component: () => <div>Hello /preguntas-frecuentes/!</div>
+  component: () => <FAQPage />,
 })
+
+function FAQPage() {
+  return (
+    <TransitionPage>
+      <FAQ />
+    </TransitionPage>
+  )
+}
