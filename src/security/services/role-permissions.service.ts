@@ -1,12 +1,6 @@
 import db from '@/database'
 
-import {
-  moduleInDev,
-  permissionsInDev,
-  rolePermissionsInDev,
-  rolesInDev,
-  unitTypeInDev,
-} from '@/database/migrations/schema'
+import { modules, permissions, rolePermissions, roles } from '@/database/schema'
 
 import { RolePermissionDAO } from '../dao/RolePermissionsDAO'
 import { RolePermission } from '@/interfaces/models/RolePermission'
@@ -16,27 +10,24 @@ import { RolesSchema } from '@/database/schema/roles'
 
 class RolePermissionService implements RolePermissionDAO {
   async getAllRolePermissions(): Promise<RolePermission[]> {
-    const rolePermissions = await db
+    const rolePermissionsResponse = await db
       .select({
         role: {
-          id: rolesInDev.id,
-          name: rolesInDev.name,
-          unitType: rolesInDev.unitType,
+          id: modules.id,
+          name: permissions.description,
+          unitType: roles.unitType,
         },
         permission: {
-          description: permissionsInDev.description,
-          moduleName: moduleInDev.name,
+          description: permissions.description,
+          moduleName: modules.name,
         },
       })
-      .from(rolePermissionsInDev)
-      .innerJoin(rolesInDev, eq(rolePermissionsInDev.roleId, rolesInDev.id))
-      .innerJoin(
-        permissionsInDev,
-        eq(rolePermissionsInDev.permissionId, permissionsInDev.id)
-      )
-      .innerJoin(moduleInDev, eq(permissionsInDev.moduleId, moduleInDev.id))
+      .from(rolePermissions)
+      .innerJoin(roles, eq(rolePermissions.roleId, roles.id))
+      .innerJoin(permissions, eq(rolePermissions.permissionId, permissions.id))
+      .innerJoin(modules, eq(permissions.moduleId, modules.id))
 
-    return rolePermissions as RolePermission[]
+    return rolePermissionsResponse as RolePermission[]
   }
   async insertRolePermission(rolePermission: {
     role: RolesSchema
@@ -44,14 +35,14 @@ class RolePermissionService implements RolePermissionDAO {
   }): Promise<any> {
     await db.transaction(async (tx) => {
       const [{ newRoleId }] = await tx
-        .insert(rolesInDev)
+        .insert(roles)
         .values({
           name: rolePermission.role.name,
           unitType: rolePermission.role.unitType,
         })
-        .returning({ newRoleId: rolesInDev.id })
+        .returning({ newRoleId: roles.id })
 
-      await tx.insert(rolePermissionsInDev).values(
+      await tx.insert(rolePermissions).values(
         rolePermission.permissions.map((permissionId) => ({
           roleId: newRoleId,
           permissionId,
