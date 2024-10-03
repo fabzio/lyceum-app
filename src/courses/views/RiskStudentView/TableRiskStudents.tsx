@@ -1,5 +1,6 @@
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { IRiskStudent } from '@/interfaces';
+import { useNavigate } from '@tanstack/react-router';
 
 interface TableRiskStudentsProps {
   tableRiskStudents: IRiskStudent[]
@@ -7,12 +8,14 @@ interface TableRiskStudentsProps {
 
 const TableRiskStudents: React.FC<TableRiskStudentsProps> = ({ tableRiskStudents }) => {
 
+  const navigate = useNavigate();
+
   const OnRowClick = (riskStudent: IRiskStudent) => {
-    alert(`Hiciste clic en: ${riskStudent.nombres}`);
+    navigate({ to: `/cursos/alumnosRiesgo/${riskStudent.codigo}` });
   }
 
   return (
-    <Table>
+    <Table className='mt-4'>
       <TableHeader>
         <TableRow className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
           <TableHead className="py-3 px-6 text-left">Código</TableHead>

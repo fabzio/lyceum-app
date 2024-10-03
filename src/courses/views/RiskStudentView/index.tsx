@@ -4,6 +4,8 @@ import SelectFilter from './SelectFilter'
 import TableRiskStudents from './TableRiskStudents'
 
 export default function RiskStudents() {
+  //ANOTACION 1: FALTA FILTRAR POR NOTAS
+  //ANOTACION 2: REVISANDO TAMBIÉN SERÍA BUENO UN BOTÓN PARA SOLICITAR TODAS LAS ACTUALIZACIONES, EL FIGMA SOLO SOPORTA UNO POR UNO (LUEGO FLORES NOS FUNA)
     return (
       <div className="flex flex-col my-6 p-2">
         <div className="w-full flex flex-col md:flex-row justify-between gap-2">
