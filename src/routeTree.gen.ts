@@ -11,10 +11,12 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as TesisImport } from './routes/tesis'
 import { Route as SeguridadImport } from './routes/seguridad'
 import { Route as IndexImport } from './routes/index'
 import { Route as SeguridadIndexImport } from './routes/seguridad/index'
 import { Route as UnidadNameImport } from './routes/unidad/$name'
+import { Route as TesisPropJuradosImport } from './routes/tesis/prop-jurados'
 import { Route as SeguridadRolesImport } from './routes/seguridad/roles'
 import { Route as SeguridadPermisosImport } from './routes/seguridad/permisos'
 import { Route as UnidadNameIndexImport } from './routes/unidad/$name/index'
@@ -23,6 +25,11 @@ import { Route as UnidadNameSubunidadesImport } from './routes/unidad/$name/subu
 import { Route as UnidadNameRolesImport } from './routes/unidad/$name/roles'
 
 // Create/Update Routes
+
+const TesisRoute = TesisImport.update({
+  path: '/tesis',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const SeguridadRoute = SeguridadImport.update({
   path: '/seguridad',
@@ -42,6 +49,11 @@ const SeguridadIndexRoute = SeguridadIndexImport.update({
 const UnidadNameRoute = UnidadNameImport.update({
   path: '/unidad/$name',
   getParentRoute: () => rootRoute,
+} as any)
+
+const TesisPropJuradosRoute = TesisPropJuradosImport.update({
+  path: '/prop-jurados',
+  getParentRoute: () => TesisRoute,
 } as any)
 
 const SeguridadRolesRoute = SeguridadRolesImport.update({
@@ -92,6 +104,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SeguridadImport
       parentRoute: typeof rootRoute
     }
+    '/tesis': {
+      id: '/tesis'
+      path: '/tesis'
+      fullPath: '/tesis'
+      preLoaderRoute: typeof TesisImport
+      parentRoute: typeof rootRoute
+    }
     '/seguridad/permisos': {
       id: '/seguridad/permisos'
       path: '/permisos'
@@ -105,6 +124,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/seguridad/roles'
       preLoaderRoute: typeof SeguridadRolesImport
       parentRoute: typeof SeguridadImport
+    }
+    '/tesis/prop-jurados': {
+      id: '/tesis/prop-jurados'
+      path: '/prop-jurados'
+      fullPath: '/tesis/prop-jurados'
+      preLoaderRoute: typeof TesisPropJuradosImport
+      parentRoute: typeof TesisImport
     }
     '/unidad/$name': {
       id: '/unidad/$name'
@@ -169,6 +195,16 @@ const SeguridadRouteWithChildren = SeguridadRoute._addFileChildren(
   SeguridadRouteChildren,
 )
 
+interface TesisRouteChildren {
+  TesisPropJuradosRoute: typeof TesisPropJuradosRoute
+}
+
+const TesisRouteChildren: TesisRouteChildren = {
+  TesisPropJuradosRoute: TesisPropJuradosRoute,
+}
+
+const TesisRouteWithChildren = TesisRoute._addFileChildren(TesisRouteChildren)
+
 interface UnidadNameRouteChildren {
   UnidadNameRolesRoute: typeof UnidadNameRolesRoute
   UnidadNameSubunidadesRoute: typeof UnidadNameSubunidadesRoute
@@ -190,8 +226,10 @@ const UnidadNameRouteWithChildren = UnidadNameRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/seguridad': typeof SeguridadRouteWithChildren
+  '/tesis': typeof TesisRouteWithChildren
   '/seguridad/permisos': typeof SeguridadPermisosRoute
   '/seguridad/roles': typeof SeguridadRolesRoute
+  '/tesis/prop-jurados': typeof TesisPropJuradosRoute
   '/unidad/$name': typeof UnidadNameRouteWithChildren
   '/seguridad/': typeof SeguridadIndexRoute
   '/unidad/$name/roles': typeof UnidadNameRolesRoute
@@ -202,8 +240,10 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/tesis': typeof TesisRouteWithChildren
   '/seguridad/permisos': typeof SeguridadPermisosRoute
   '/seguridad/roles': typeof SeguridadRolesRoute
+  '/tesis/prop-jurados': typeof TesisPropJuradosRoute
   '/seguridad': typeof SeguridadIndexRoute
   '/unidad/$name/roles': typeof UnidadNameRolesRoute
   '/unidad/$name/subunidades': typeof UnidadNameSubunidadesRoute
@@ -215,8 +255,10 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/seguridad': typeof SeguridadRouteWithChildren
+  '/tesis': typeof TesisRouteWithChildren
   '/seguridad/permisos': typeof SeguridadPermisosRoute
   '/seguridad/roles': typeof SeguridadRolesRoute
+  '/tesis/prop-jurados': typeof TesisPropJuradosRoute
   '/unidad/$name': typeof UnidadNameRouteWithChildren
   '/seguridad/': typeof SeguridadIndexRoute
   '/unidad/$name/roles': typeof UnidadNameRolesRoute
@@ -230,8 +272,10 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/seguridad'
+    | '/tesis'
     | '/seguridad/permisos'
     | '/seguridad/roles'
+    | '/tesis/prop-jurados'
     | '/unidad/$name'
     | '/seguridad/'
     | '/unidad/$name/roles'
@@ -241,8 +285,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/tesis'
     | '/seguridad/permisos'
     | '/seguridad/roles'
+    | '/tesis/prop-jurados'
     | '/seguridad'
     | '/unidad/$name/roles'
     | '/unidad/$name/subunidades'
@@ -252,8 +298,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/seguridad'
+    | '/tesis'
     | '/seguridad/permisos'
     | '/seguridad/roles'
+    | '/tesis/prop-jurados'
     | '/unidad/$name'
     | '/seguridad/'
     | '/unidad/$name/roles'
@@ -266,12 +314,14 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SeguridadRoute: typeof SeguridadRouteWithChildren
+  TesisRoute: typeof TesisRouteWithChildren
   UnidadNameRoute: typeof UnidadNameRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SeguridadRoute: SeguridadRouteWithChildren,
+  TesisRoute: TesisRouteWithChildren,
   UnidadNameRoute: UnidadNameRouteWithChildren,
 }
 
@@ -289,6 +339,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/seguridad",
+        "/tesis",
         "/unidad/$name"
       ]
     },
@@ -303,6 +354,12 @@ export const routeTree = rootRoute
         "/seguridad/"
       ]
     },
+    "/tesis": {
+      "filePath": "tesis.tsx",
+      "children": [
+        "/tesis/prop-jurados"
+      ]
+    },
     "/seguridad/permisos": {
       "filePath": "seguridad/permisos.tsx",
       "parent": "/seguridad"
@@ -310,6 +367,10 @@ export const routeTree = rootRoute
     "/seguridad/roles": {
       "filePath": "seguridad/roles.tsx",
       "parent": "/seguridad"
+    },
+    "/tesis/prop-jurados": {
+      "filePath": "tesis/prop-jurados.tsx",
+      "parent": "/tesis"
     },
     "/unidad/$name": {
       "filePath": "unidad/$name.tsx",
