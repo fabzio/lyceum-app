@@ -20,11 +20,12 @@ import { Route as UnidadNameImport } from './routes/unidad/$name'
 import { Route as SeguridadRolesImport } from './routes/seguridad/roles'
 import { Route as SeguridadPermisosImport } from './routes/seguridad/permisos'
 import { Route as CursosRetiroAlumnosImport } from './routes/cursos/retiroAlumnos'
-import { Route as CursosAlumnosRiesgoImport } from './routes/cursos/alumnosRiesgo'
 import { Route as UnidadNameIndexImport } from './routes/unidad/$name/index'
+import { Route as CursosAlumnosRiesgoIndexImport } from './routes/cursos/alumnosRiesgo/index'
 import { Route as UnidadNameUsuariosImport } from './routes/unidad/$name/usuarios'
 import { Route as UnidadNameSubunidadesImport } from './routes/unidad/$name/subunidades'
 import { Route as UnidadNameRolesImport } from './routes/unidad/$name/roles'
+import { Route as CursosAlumnosRiesgoCodigoAlumnoRiesgoIndexImport } from './routes/cursos/alumnosRiesgo/$codigoAlumnoRiesgo/index'
 
 // Create/Update Routes
 
@@ -73,14 +74,14 @@ const CursosRetiroAlumnosRoute = CursosRetiroAlumnosImport.update({
   getParentRoute: () => CursosRoute,
 } as any)
 
-const CursosAlumnosRiesgoRoute = CursosAlumnosRiesgoImport.update({
-  path: '/alumnosRiesgo',
-  getParentRoute: () => CursosRoute,
-} as any)
-
 const UnidadNameIndexRoute = UnidadNameIndexImport.update({
   path: '/',
   getParentRoute: () => UnidadNameRoute,
+} as any)
+
+const CursosAlumnosRiesgoIndexRoute = CursosAlumnosRiesgoIndexImport.update({
+  path: '/alumnosRiesgo/',
+  getParentRoute: () => CursosRoute,
 } as any)
 
 const UnidadNameUsuariosRoute = UnidadNameUsuariosImport.update({
@@ -97,6 +98,12 @@ const UnidadNameRolesRoute = UnidadNameRolesImport.update({
   path: '/roles',
   getParentRoute: () => UnidadNameRoute,
 } as any)
+
+const CursosAlumnosRiesgoCodigoAlumnoRiesgoIndexRoute =
+  CursosAlumnosRiesgoCodigoAlumnoRiesgoIndexImport.update({
+    path: '/alumnosRiesgo/$codigoAlumnoRiesgo/',
+    getParentRoute: () => CursosRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -122,13 +129,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/seguridad'
       preLoaderRoute: typeof SeguridadImport
       parentRoute: typeof rootRoute
-    }
-    '/cursos/alumnosRiesgo': {
-      id: '/cursos/alumnosRiesgo'
-      path: '/alumnosRiesgo'
-      fullPath: '/cursos/alumnosRiesgo'
-      preLoaderRoute: typeof CursosAlumnosRiesgoImport
-      parentRoute: typeof CursosImport
     }
     '/cursos/retiroAlumnos': {
       id: '/cursos/retiroAlumnos'
@@ -193,6 +193,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnidadNameUsuariosImport
       parentRoute: typeof UnidadNameImport
     }
+    '/cursos/alumnosRiesgo/': {
+      id: '/cursos/alumnosRiesgo/'
+      path: '/alumnosRiesgo'
+      fullPath: '/cursos/alumnosRiesgo'
+      preLoaderRoute: typeof CursosAlumnosRiesgoIndexImport
+      parentRoute: typeof CursosImport
+    }
     '/unidad/$name/': {
       id: '/unidad/$name/'
       path: '/'
@@ -200,21 +207,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnidadNameIndexImport
       parentRoute: typeof UnidadNameImport
     }
+    '/cursos/alumnosRiesgo/$codigoAlumnoRiesgo/': {
+      id: '/cursos/alumnosRiesgo/$codigoAlumnoRiesgo/'
+      path: '/alumnosRiesgo/$codigoAlumnoRiesgo'
+      fullPath: '/cursos/alumnosRiesgo/$codigoAlumnoRiesgo'
+      preLoaderRoute: typeof CursosAlumnosRiesgoCodigoAlumnoRiesgoIndexImport
+      parentRoute: typeof CursosImport
+    }
   }
 }
 
 // Create and export the route tree
 
 interface CursosRouteChildren {
-  CursosAlumnosRiesgoRoute: typeof CursosAlumnosRiesgoRoute
   CursosRetiroAlumnosRoute: typeof CursosRetiroAlumnosRoute
   CursosIndexRoute: typeof CursosIndexRoute
+  CursosAlumnosRiesgoIndexRoute: typeof CursosAlumnosRiesgoIndexRoute
+  CursosAlumnosRiesgoCodigoAlumnoRiesgoIndexRoute: typeof CursosAlumnosRiesgoCodigoAlumnoRiesgoIndexRoute
 }
 
 const CursosRouteChildren: CursosRouteChildren = {
-  CursosAlumnosRiesgoRoute: CursosAlumnosRiesgoRoute,
   CursosRetiroAlumnosRoute: CursosRetiroAlumnosRoute,
   CursosIndexRoute: CursosIndexRoute,
+  CursosAlumnosRiesgoIndexRoute: CursosAlumnosRiesgoIndexRoute,
+  CursosAlumnosRiesgoCodigoAlumnoRiesgoIndexRoute:
+    CursosAlumnosRiesgoCodigoAlumnoRiesgoIndexRoute,
 }
 
 const CursosRouteWithChildren =
@@ -258,7 +275,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cursos': typeof CursosRouteWithChildren
   '/seguridad': typeof SeguridadRouteWithChildren
-  '/cursos/alumnosRiesgo': typeof CursosAlumnosRiesgoRoute
   '/cursos/retiroAlumnos': typeof CursosRetiroAlumnosRoute
   '/seguridad/permisos': typeof SeguridadPermisosRoute
   '/seguridad/roles': typeof SeguridadRolesRoute
@@ -268,12 +284,13 @@ export interface FileRoutesByFullPath {
   '/unidad/$name/roles': typeof UnidadNameRolesRoute
   '/unidad/$name/subunidades': typeof UnidadNameSubunidadesRoute
   '/unidad/$name/usuarios': typeof UnidadNameUsuariosRoute
+  '/cursos/alumnosRiesgo': typeof CursosAlumnosRiesgoIndexRoute
   '/unidad/$name/': typeof UnidadNameIndexRoute
+  '/cursos/alumnosRiesgo/$codigoAlumnoRiesgo': typeof CursosAlumnosRiesgoCodigoAlumnoRiesgoIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/cursos/alumnosRiesgo': typeof CursosAlumnosRiesgoRoute
   '/cursos/retiroAlumnos': typeof CursosRetiroAlumnosRoute
   '/seguridad/permisos': typeof SeguridadPermisosRoute
   '/seguridad/roles': typeof SeguridadRolesRoute
@@ -282,7 +299,9 @@ export interface FileRoutesByTo {
   '/unidad/$name/roles': typeof UnidadNameRolesRoute
   '/unidad/$name/subunidades': typeof UnidadNameSubunidadesRoute
   '/unidad/$name/usuarios': typeof UnidadNameUsuariosRoute
+  '/cursos/alumnosRiesgo': typeof CursosAlumnosRiesgoIndexRoute
   '/unidad/$name': typeof UnidadNameIndexRoute
+  '/cursos/alumnosRiesgo/$codigoAlumnoRiesgo': typeof CursosAlumnosRiesgoCodigoAlumnoRiesgoIndexRoute
 }
 
 export interface FileRoutesById {
@@ -290,7 +309,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/cursos': typeof CursosRouteWithChildren
   '/seguridad': typeof SeguridadRouteWithChildren
-  '/cursos/alumnosRiesgo': typeof CursosAlumnosRiesgoRoute
   '/cursos/retiroAlumnos': typeof CursosRetiroAlumnosRoute
   '/seguridad/permisos': typeof SeguridadPermisosRoute
   '/seguridad/roles': typeof SeguridadRolesRoute
@@ -300,7 +318,9 @@ export interface FileRoutesById {
   '/unidad/$name/roles': typeof UnidadNameRolesRoute
   '/unidad/$name/subunidades': typeof UnidadNameSubunidadesRoute
   '/unidad/$name/usuarios': typeof UnidadNameUsuariosRoute
+  '/cursos/alumnosRiesgo/': typeof CursosAlumnosRiesgoIndexRoute
   '/unidad/$name/': typeof UnidadNameIndexRoute
+  '/cursos/alumnosRiesgo/$codigoAlumnoRiesgo/': typeof CursosAlumnosRiesgoCodigoAlumnoRiesgoIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -309,7 +329,6 @@ export interface FileRouteTypes {
     | '/'
     | '/cursos'
     | '/seguridad'
-    | '/cursos/alumnosRiesgo'
     | '/cursos/retiroAlumnos'
     | '/seguridad/permisos'
     | '/seguridad/roles'
@@ -319,11 +338,12 @@ export interface FileRouteTypes {
     | '/unidad/$name/roles'
     | '/unidad/$name/subunidades'
     | '/unidad/$name/usuarios'
+    | '/cursos/alumnosRiesgo'
     | '/unidad/$name/'
+    | '/cursos/alumnosRiesgo/$codigoAlumnoRiesgo'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/cursos/alumnosRiesgo'
     | '/cursos/retiroAlumnos'
     | '/seguridad/permisos'
     | '/seguridad/roles'
@@ -332,13 +352,14 @@ export interface FileRouteTypes {
     | '/unidad/$name/roles'
     | '/unidad/$name/subunidades'
     | '/unidad/$name/usuarios'
+    | '/cursos/alumnosRiesgo'
     | '/unidad/$name'
+    | '/cursos/alumnosRiesgo/$codigoAlumnoRiesgo'
   id:
     | '__root__'
     | '/'
     | '/cursos'
     | '/seguridad'
-    | '/cursos/alumnosRiesgo'
     | '/cursos/retiroAlumnos'
     | '/seguridad/permisos'
     | '/seguridad/roles'
@@ -348,7 +369,9 @@ export interface FileRouteTypes {
     | '/unidad/$name/roles'
     | '/unidad/$name/subunidades'
     | '/unidad/$name/usuarios'
+    | '/cursos/alumnosRiesgo/'
     | '/unidad/$name/'
+    | '/cursos/alumnosRiesgo/$codigoAlumnoRiesgo/'
   fileRoutesById: FileRoutesById
 }
 
@@ -390,9 +413,10 @@ export const routeTree = rootRoute
     "/cursos": {
       "filePath": "cursos.tsx",
       "children": [
-        "/cursos/alumnosRiesgo",
         "/cursos/retiroAlumnos",
-        "/cursos/"
+        "/cursos/",
+        "/cursos/alumnosRiesgo/",
+        "/cursos/alumnosRiesgo/$codigoAlumnoRiesgo/"
       ]
     },
     "/seguridad": {
@@ -402,10 +426,6 @@ export const routeTree = rootRoute
         "/seguridad/roles",
         "/seguridad/"
       ]
-    },
-    "/cursos/alumnosRiesgo": {
-      "filePath": "cursos/alumnosRiesgo.tsx",
-      "parent": "/cursos"
     },
     "/cursos/retiroAlumnos": {
       "filePath": "cursos/retiroAlumnos.tsx",
@@ -448,9 +468,17 @@ export const routeTree = rootRoute
       "filePath": "unidad/$name/usuarios.tsx",
       "parent": "/unidad/$name"
     },
+    "/cursos/alumnosRiesgo/": {
+      "filePath": "cursos/alumnosRiesgo/index.tsx",
+      "parent": "/cursos"
+    },
     "/unidad/$name/": {
       "filePath": "unidad/$name/index.tsx",
       "parent": "/unidad/$name"
+    },
+    "/cursos/alumnosRiesgo/$codigoAlumnoRiesgo/": {
+      "filePath": "cursos/alumnosRiesgo/$codigoAlumnoRiesgo/index.tsx",
+      "parent": "/cursos"
     }
   }
 }
