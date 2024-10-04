@@ -38,5 +38,5 @@ const tabs: Tab[] = [
   {
     path: '/tesis/prop-jurados',
     label: 'Jurado de tesis',
-  }
+  },
 ]

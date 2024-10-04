@@ -1,6 +1,6 @@
 import TransitionPage from '@/components/anim/TransitionPage'
 import { createFileRoute } from '@tanstack/react-router'
-import Tesis from '@/tesis'
+import Thesis from '@/thesis'
 
 export const Route = createFileRoute('/tesis')({
   component: () => <TesisPage />,
@@ -9,7 +9,7 @@ export const Route = createFileRoute('/tesis')({
 function TesisPage() {
   return (
     <TransitionPage>
-      <Tesis />
+      <Thesis />
     </TransitionPage>
   )
 }
