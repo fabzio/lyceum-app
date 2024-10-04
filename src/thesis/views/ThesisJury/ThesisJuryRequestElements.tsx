@@ -21,7 +21,7 @@ export default function ThesisJuryRequestElement({ id, title, owner, date, statu
     })
   }
   return (
-    <Card className="w-full max-w-3xl my-6 p-2 cursor-pointer" onClick={handleChooseCard} >
+    <Card className="w-full my-6 p-2 cursor-pointer" onClick={handleChooseCard} >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           N°{id}
