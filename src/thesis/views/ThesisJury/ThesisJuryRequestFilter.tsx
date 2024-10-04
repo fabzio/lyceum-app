@@ -13,11 +13,14 @@ export default function ThesisJuryRequestSelectFilter() {
         <SelectValue placeholder="Filtrar por estado" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="proponer jurado">
-          Director de carrera debe proponer jurado
+        <SelectItem value="123">
+          Solicitud enviada por secretario académico
         </SelectItem>
-        <SelectItem value="aceptar ser jurado">
-          Profesores deben aceptar propuesta
+        <SelectItem value="456">
+          Director de carrera propuso jurados
+        </SelectItem>
+        <SelectItem value="789">
+          Terminado
         </SelectItem>
       </SelectContent>
     </Select>

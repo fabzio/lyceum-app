@@ -7,13 +7,15 @@ export default function ThesisJuryRequestList() {
     <div className="flex flex-col my-6 p-2">
       <div className="w-full flex flex-col md:flex-row justify-between gap-2">
         <div className="md:flex-grow">
-          <Input type="search" placeholder="🔎 Buscar asignación" />
+          <Input type="search" placeholder="🔎 Buscar" />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <ThesisJuryRequestSelectFilter />
         </div>
       </div>
-      <div></div>
+      <div>
+        Hola perros!!
+      </div>
     </div>
   )
 }
