@@ -12,13 +12,13 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as SeguridadImport } from './routes/seguridad'
+import { Route as PreguntasFrecuentesImport } from './routes/preguntas-frecuentes'
 import { Route as IndexImport } from './routes/index'
 import { Route as SeguridadIndexImport } from './routes/seguridad/index'
+import { Route as PreguntasFrecuentesIndexImport } from './routes/preguntas-frecuentes/index'
+import { Route as UnidadNameImport } from './routes/unidad/$name'
 import { Route as SeguridadRolesImport } from './routes/seguridad/roles'
 import { Route as SeguridadPermisosImport } from './routes/seguridad/permisos'
-import { Route as PreguntasFrecuentesIndexImport } from './routes/preguntas-frecuentes/index'
-import { Route as PreguntasFrecuentesSugerenciasImport } from './routes/preguntas-frecuentes/sugerencias'
-import { Route as UnidadNameImport } from './routes/unidad/$name'
 import { Route as UnidadNameIndexImport } from './routes/unidad/$name/index'
 import { Route as UnidadNameUsuariosImport } from './routes/unidad/$name/usuarios'
 import { Route as UnidadNameSubunidadesImport } from './routes/unidad/$name/subunidades'
@@ -28,6 +28,11 @@ import { Route as UnidadNameRolesImport } from './routes/unidad/$name/roles'
 
 const SeguridadRoute = SeguridadImport.update({
   path: '/seguridad',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PreguntasFrecuentesRoute = PreguntasFrecuentesImport.update({
+  path: '/preguntas-frecuentes',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -42,20 +47,14 @@ const SeguridadIndexRoute = SeguridadIndexImport.update({
 } as any)
 
 const PreguntasFrecuentesIndexRoute = PreguntasFrecuentesIndexImport.update({
-  path: '/preguntas-frecuentes/',
-  getParentRoute: () => rootRoute,
+  path: '/',
+  getParentRoute: () => PreguntasFrecuentesRoute,
 } as any)
 
 const UnidadNameRoute = UnidadNameImport.update({
   path: '/unidad/$name',
   getParentRoute: () => rootRoute,
 } as any)
-
-const PreguntasFrecuentesSugerenciasRoute =
-  PreguntasFrecuentesSugerenciasImport.update({
-    path: '/preguntas-frecuentes/sugerencias',
-    getParentRoute: () => rootRoute,
-  } as any)
 
 const SeguridadRolesRoute = SeguridadRolesImport.update({
   path: '/roles',
@@ -98,6 +97,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/preguntas-frecuentes': {
+      id: '/preguntas-frecuentes'
+      path: '/preguntas-frecuentes'
+      fullPath: '/preguntas-frecuentes'
+      preLoaderRoute: typeof PreguntasFrecuentesImport
+      parentRoute: typeof rootRoute
+    }
     '/seguridad': {
       id: '/seguridad'
       path: '/seguridad'
@@ -119,13 +125,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SeguridadRolesImport
       parentRoute: typeof SeguridadImport
     }
-    '/preguntas-frecuentes/sugerencias': {
-      id: '/preguntas-frecuentes/sugerencias'
-      path: '/preguntas-frecuentes/sugerencias'
-      fullPath: '/preguntas-frecuentes/sugerencias'
-      preLoaderRoute: typeof PreguntasFrecuentesSugerenciasImport
-      parentRoute: typeof rootRoute
-    }
     '/unidad/$name': {
       id: '/unidad/$name'
       path: '/unidad/$name'
@@ -135,10 +134,10 @@ declare module '@tanstack/react-router' {
     }
     '/preguntas-frecuentes/': {
       id: '/preguntas-frecuentes/'
-      path: '/preguntas-frecuentes'
-      fullPath: '/preguntas-frecuentes'
+      path: '/'
+      fullPath: '/preguntas-frecuentes/'
       preLoaderRoute: typeof PreguntasFrecuentesIndexImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof PreguntasFrecuentesImport
     }
     '/seguridad/': {
       id: '/seguridad/'
@@ -180,6 +179,17 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
+interface PreguntasFrecuentesRouteChildren {
+  PreguntasFrecuentesIndexRoute: typeof PreguntasFrecuentesIndexRoute
+}
+
+const PreguntasFrecuentesRouteChildren: PreguntasFrecuentesRouteChildren = {
+  PreguntasFrecuentesIndexRoute: PreguntasFrecuentesIndexRoute,
+}
+
+const PreguntasFrecuentesRouteWithChildren =
+  PreguntasFrecuentesRoute._addFileChildren(PreguntasFrecuentesRouteChildren)
+
 interface SeguridadRouteChildren {
   SeguridadPermisosRoute: typeof SeguridadPermisosRoute
   SeguridadRolesRoute: typeof SeguridadRolesRoute
@@ -205,7 +215,6 @@ interface UnidadNameRouteChildren {
 
 const UnidadNameRouteChildren: UnidadNameRouteChildren = {
   UnidadNameRolesRoute: UnidadNameRolesRoute,
-  PreguntasFrecuentesSugerenciasRoute,
   UnidadNameSubunidadesRoute: UnidadNameSubunidadesRoute,
   UnidadNameUsuariosRoute: UnidadNameUsuariosRoute,
   UnidadNameIndexRoute: UnidadNameIndexRoute,
@@ -217,11 +226,12 @@ const UnidadNameRouteWithChildren = UnidadNameRoute._addFileChildren(
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/preguntas-frecuentes': typeof PreguntasFrecuentesRouteWithChildren
   '/seguridad': typeof SeguridadRouteWithChildren
   '/seguridad/permisos': typeof SeguridadPermisosRoute
   '/seguridad/roles': typeof SeguridadRolesRoute
   '/unidad/$name': typeof UnidadNameRouteWithChildren
-  '/preguntas-frecuentes': typeof PreguntasFrecuentesIndexRoute
+  '/preguntas-frecuentes/': typeof PreguntasFrecuentesIndexRoute
   '/seguridad/': typeof SeguridadIndexRoute
   '/unidad/$name/roles': typeof UnidadNameRolesRoute
   '/unidad/$name/subunidades': typeof UnidadNameSubunidadesRoute
@@ -244,6 +254,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/preguntas-frecuentes': typeof PreguntasFrecuentesRouteWithChildren
   '/seguridad': typeof SeguridadRouteWithChildren
   '/seguridad/permisos': typeof SeguridadPermisosRoute
   '/seguridad/roles': typeof SeguridadRolesRoute
@@ -260,11 +271,12 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/preguntas-frecuentes'
     | '/seguridad'
     | '/seguridad/permisos'
     | '/seguridad/roles'
     | '/unidad/$name'
-    | '/preguntas-frecuentes'
+    | '/preguntas-frecuentes/'
     | '/seguridad/'
     | '/unidad/$name/roles'
     | '/unidad/$name/subunidades'
@@ -284,6 +296,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/preguntas-frecuentes'
     | '/seguridad'
     | '/seguridad/permisos'
     | '/seguridad/roles'
@@ -299,16 +312,16 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PreguntasFrecuentesRoute: typeof PreguntasFrecuentesRouteWithChildren
   SeguridadRoute: typeof SeguridadRouteWithChildren
   UnidadNameRoute: typeof UnidadNameRouteWithChildren
-  PreguntasFrecuentesIndexRoute: typeof PreguntasFrecuentesIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PreguntasFrecuentesRoute: PreguntasFrecuentesRouteWithChildren,
   SeguridadRoute: SeguridadRouteWithChildren,
   UnidadNameRoute: UnidadNameRouteWithChildren,
-  PreguntasFrecuentesIndexRoute: PreguntasFrecuentesIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -324,17 +337,19 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/preguntas-frecuentes/sugerencias",
+        "/preguntas-frecuentes",
         "/seguridad",
-        "/unidad/$name",
-        "/preguntas-frecuentes/"
+        "/unidad/$name"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/preguntas-frecuentes/sugerencias": {
-      "filePath": "preguntas-frecuentes/sugerencias.tsx"
+    "/preguntas-frecuentes": {
+      "filePath": "preguntas-frecuentes.tsx",
+      "children": [
+        "/preguntas-frecuentes/"
+      ]
     },
     "/seguridad": {
       "filePath": "seguridad.tsx",
@@ -362,7 +377,8 @@ export const routeTree = rootRoute
       ]
     },
     "/preguntas-frecuentes/": {
-      "filePath": "preguntas-frecuentes/index.tsx"
+      "filePath": "preguntas-frecuentes/index.tsx",
+      "parent": "/preguntas-frecuentes"
     },
     "/seguridad/": {
       "filePath": "seguridad/index.tsx",
