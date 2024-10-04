@@ -16,11 +16,11 @@ export default function ThesisJuryRequestList() {
       </div>  
       <div>
           <ThesisJuryRequestElement id="39457392" 
-          title="Desarrollo de un Sistema de Gestión de Proyectos Basado en Metodologías Ágiles para Mejorar la Productividad en Equipos de Trabajo Remotos" 
+          title="Solicitud de jurado de tesis para tema de tesis para el área de Sistemas de Información"
           owner="Sebastián Meléndez" date="22/09/2024" status= "Solicitud enviada por secretario académico"/>
           
           <ThesisJuryRequestElement id="45612387" 
-          title="Estudio de las soluciones actuales para la escalabilidad en redes blockchain, como la fragmentación (sharding) y las cadenas laterales (sidechains), y su efectividad en diferentes escenarios." 
+          title= "Solicitud de jurado de tesis para tema de tesis para el área de Ciberseguridad"
           owner="Piero Esparza" date="22/09/2024" status= "Solicitud enviada por secretario académico"/>
       </div>
     </div>
