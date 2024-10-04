@@ -60,7 +60,7 @@ export default function RiskStudents() {
   };
 
     return (
-      <div className="flex flex-col my-6 p-4 bg-white rounded-lg shadow-md">
+      <div className="flex flex-col my-6 p-4  rounded-lg shadow-md">
         <div className="w-full flex flex-col md:flex-row justify-between gap-4">
           {/* Input para búsqueda */}
           <Input 
@@ -80,7 +80,7 @@ export default function RiskStudents() {
 
         {/* Botón para solicitar actualizaciones */}
         <div className="my-4">
-          <Button onClick={handleRequestUpdates} className="w-full md:w-auto bg-blue-500 hover:bg-blue-600 text-white">
+          <Button onClick={handleRequestUpdates} className="w-full md:w-auto">
             Solicitar todas las actualizaciones
           </Button>
         </div>
