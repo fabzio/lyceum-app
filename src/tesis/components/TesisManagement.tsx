@@ -5,6 +5,7 @@ import { useTabs } from '@/hooks/useTabs'
 
 export default function TesisManagement() {
   const { pathname } = useLocation()
+  console.log("pathname:", pathname)
   const { activeTab, handleChangeTab } = useTabs(pathname as ValidRoutes)
 
   return (
