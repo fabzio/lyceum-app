@@ -7,7 +7,7 @@ export const Route = createFileRoute('/')({
 function Home() {
   return (
     <TransitionPage key={location.pathname}>
-      <h3>Welcome Home!</h3>
+      <h3>Bienvenido a Lyceum!</h3>
     </TransitionPage>
   )
 }
