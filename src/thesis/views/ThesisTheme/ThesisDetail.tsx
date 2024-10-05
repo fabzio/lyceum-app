@@ -24,7 +24,8 @@ interface Thesis {
   approvalHistory: {
     step: string
     status: 'completed' | 'current' | 'pending'
-    name?: string
+    name: string
+    canDownload?: boolean
   }[]
 }
 
@@ -48,9 +49,9 @@ const mockThesis: Thesis = {
   },
   approvalHistory: [
     { step: 'Enviado por alumno', status: 'completed', name: 'Piero Montoya' },
-    { step: 'Aprobado por Asesor', status: 'completed', name: 'Víctor Bello' },
-    { step: 'Esperando aprobación de Coordinador de Área', status: 'current', name: 'Jheyfer Ramírez' },
-    { step: 'Esperando aprobación de Director de Carrera', status: 'pending', name: 'Ricardo Bartra' }
+    { step: 'Aprobado por Asesor', status: 'completed', name: 'Rony Tupia', canDownload: true },
+    { step: 'Aprobado por Coordinador de Área', status: 'completed', name: 'Jheyfer Ramírez', canDownload: true },
+    { step: 'Aprobado por Director de Carrera', status: 'current', name: 'Ricardo Bartra' }
   ]
 }
 
@@ -122,7 +123,7 @@ export default function ThesisManagement() {
 
         {renderCard(1, "Información básica", (
           <ScrollArea className="h-[60vh] lg:h-[calc(100vh-200px)]">
-            <div className="space-y-4">
+            <div className="space-y-4 pr-4">
               <div>
                 <h3 className="font-semibold">Título</h3>
                 <p className="text-sm">{thesis.title}</p>
@@ -202,17 +203,26 @@ export default function ThesisManagement() {
             </div>
             <div>
               <h3 className="font-semibold mb-2">Historial</h3>
-              {thesis.approvalHistory.map((step, index) => (
-                <div key={index} className="mb-2">
-                  <div className="flex items-center gap-2">
-                    {step.status === 'completed' && <CheckCircle size={16} className="text-green-500" />}
-                    {step.status === 'current' && <Clock size={16} className="text-blue-500" />}
-                    {step.status === 'pending' && <Clock size={16} className="text-gray-500" />}
-                    <p className="text-sm">{step.step}</p>
+              <div className="space-y-4">
+                {thesis.approvalHistory.map((step, index) => (
+                  <div key={index} className="flex items-start">
+                    <div className="mr-4 mt-1">
+                      {step.status === 'completed' && <CheckCircle size={20} className="text-green-500" />}
+                      {step.status === 'current' && <Clock size={20} className="text-blue-500" />}
+                      {step.status === 'pending' && <Clock size={20} className="text-gray-500" />}
+                    </div>
+                    <div className="flex-grow">
+                      <p className="text-sm font-medium">{step.step}</p>
+                      <p className="text-sm text-gray-500">{step.name}</p>
+                    </div>
+                    {step.canDownload && (
+                      <Button variant="ghost" size="sm" className="ml-2">
+                        <Download size={16} />
+                      </Button>
+                    )}
                   </div>
-                  {step.name && <p className="text-sm text-gray-500 ml-6">{step.name}</p>}
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         ))}
