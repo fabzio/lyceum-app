@@ -21,7 +21,7 @@ interface MailProps {
   defaultLayout: number[] | undefined
 }
 
-export function Mail({ mails, defaultLayout = [20, 32, 48] }: MailProps) {
+export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
   const [mail] = useMail()
 
   return (
@@ -35,8 +35,7 @@ export function Mail({ mails, defaultLayout = [20, 32, 48] }: MailProps) {
         }}
         className="h-full max-h-[800px] items-stretch"
       >
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
+        <ResizablePanel defaultSize={defaultLayout[0]} minSize={0}>
           <Tabs defaultValue="all">
             <div className="flex items-center px-4 py-2">
               <h1 className="text-xl font-bold">Inbox</h1>
@@ -73,7 +72,7 @@ export function Mail({ mails, defaultLayout = [20, 32, 48] }: MailProps) {
           </Tabs>
         </ResizablePanel>
         <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={defaultLayout[2]} minSize={30}>
+        <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
           <MailDisplay
             mail={mails.find((item) => item.id === mail.selected) || null}
           />
