@@ -25,7 +25,7 @@ import { Route as UnidadNameIndexImport } from './routes/unidad/$name/index'
 import { Route as UnidadNameUsuariosImport } from './routes/unidad/$name/usuarios'
 import { Route as UnidadNameSubunidadesImport } from './routes/unidad/$name/subunidades'
 import { Route as UnidadNameRolesImport } from './routes/unidad/$name/roles'
-import { Route as TesisPropJuradosDetalleImport } from './routes/tesis.prop-jurados.detalle'
+import { Route as TesisPropJuradosDetalleImport } from './routes/tesis_/prop-jurados.detalle'
 
 // Create/Update Routes
 
@@ -100,8 +100,8 @@ const UnidadNameRolesRoute = UnidadNameRolesImport.update({
 } as any)
 
 const TesisPropJuradosDetalleRoute = TesisPropJuradosDetalleImport.update({
-  path: '/detalle',
-  getParentRoute: () => TesisPropJuradosRoute,
+  path: '/tesis/prop-jurados/detalle',
+  getParentRoute: () => rootRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -180,10 +180,10 @@ declare module '@tanstack/react-router' {
     }
     '/tesis/prop-jurados/detalle': {
       id: '/tesis/prop-jurados/detalle'
-      path: '/detalle'
+      path: '/tesis/prop-jurados/detalle'
       fullPath: '/tesis/prop-jurados/detalle'
       preLoaderRoute: typeof TesisPropJuradosDetalleImport
-      parentRoute: typeof TesisPropJuradosImport
+      parentRoute: typeof rootRoute
     }
     '/unidad/$name/roles': {
       id: '/unidad/$name/roles'
@@ -234,25 +234,14 @@ const SeguridadRouteWithChildren = SeguridadRoute._addFileChildren(
   SeguridadRouteChildren,
 )
 
-interface TesisPropJuradosRouteChildren {
-  TesisPropJuradosDetalleRoute: typeof TesisPropJuradosDetalleRoute
-}
-
-const TesisPropJuradosRouteChildren: TesisPropJuradosRouteChildren = {
-  TesisPropJuradosDetalleRoute: TesisPropJuradosDetalleRoute,
-}
-
-const TesisPropJuradosRouteWithChildren =
-  TesisPropJuradosRoute._addFileChildren(TesisPropJuradosRouteChildren)
-
 interface TesisRouteChildren {
-  TesisPropJuradosRoute: typeof TesisPropJuradosRouteWithChildren
+  TesisPropJuradosRoute: typeof TesisPropJuradosRoute
   TesisTemaTesisRoute: typeof TesisTemaTesisRoute
   TesisIndexRoute: typeof TesisIndexRoute
 }
 
 const TesisRouteChildren: TesisRouteChildren = {
-  TesisPropJuradosRoute: TesisPropJuradosRouteWithChildren,
+  TesisPropJuradosRoute: TesisPropJuradosRoute,
   TesisTemaTesisRoute: TesisTemaTesisRoute,
   TesisIndexRoute: TesisIndexRoute,
 }
@@ -283,7 +272,7 @@ export interface FileRoutesByFullPath {
   '/tesis': typeof TesisRouteWithChildren
   '/seguridad/permisos': typeof SeguridadPermisosRoute
   '/seguridad/roles': typeof SeguridadRolesRoute
-  '/tesis/prop-jurados': typeof TesisPropJuradosRouteWithChildren
+  '/tesis/prop-jurados': typeof TesisPropJuradosRoute
   '/tesis/tema-tesis': typeof TesisTemaTesisRoute
   '/unidad/$name': typeof UnidadNameRouteWithChildren
   '/seguridad/': typeof SeguridadIndexRoute
@@ -299,7 +288,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/seguridad/permisos': typeof SeguridadPermisosRoute
   '/seguridad/roles': typeof SeguridadRolesRoute
-  '/tesis/prop-jurados': typeof TesisPropJuradosRouteWithChildren
+  '/tesis/prop-jurados': typeof TesisPropJuradosRoute
   '/tesis/tema-tesis': typeof TesisTemaTesisRoute
   '/seguridad': typeof SeguridadIndexRoute
   '/tesis': typeof TesisIndexRoute
@@ -317,7 +306,7 @@ export interface FileRoutesById {
   '/tesis': typeof TesisRouteWithChildren
   '/seguridad/permisos': typeof SeguridadPermisosRoute
   '/seguridad/roles': typeof SeguridadRolesRoute
-  '/tesis/prop-jurados': typeof TesisPropJuradosRouteWithChildren
+  '/tesis/prop-jurados': typeof TesisPropJuradosRoute
   '/tesis/tema-tesis': typeof TesisTemaTesisRoute
   '/unidad/$name': typeof UnidadNameRouteWithChildren
   '/seguridad/': typeof SeguridadIndexRoute
@@ -386,6 +375,7 @@ export interface RootRouteChildren {
   SeguridadRoute: typeof SeguridadRouteWithChildren
   TesisRoute: typeof TesisRouteWithChildren
   UnidadNameRoute: typeof UnidadNameRouteWithChildren
+  TesisPropJuradosDetalleRoute: typeof TesisPropJuradosDetalleRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -393,6 +383,7 @@ const rootRouteChildren: RootRouteChildren = {
   SeguridadRoute: SeguridadRouteWithChildren,
   TesisRoute: TesisRouteWithChildren,
   UnidadNameRoute: UnidadNameRouteWithChildren,
+  TesisPropJuradosDetalleRoute: TesisPropJuradosDetalleRoute,
 }
 
 export const routeTree = rootRoute
@@ -410,7 +401,8 @@ export const routeTree = rootRoute
         "/",
         "/seguridad",
         "/tesis",
-        "/unidad/$name"
+        "/unidad/$name",
+        "/tesis/prop-jurados/detalle"
       ]
     },
     "/": {
@@ -442,10 +434,7 @@ export const routeTree = rootRoute
     },
     "/tesis/prop-jurados": {
       "filePath": "tesis/prop-jurados.tsx",
-      "parent": "/tesis",
-      "children": [
-        "/tesis/prop-jurados/detalle"
-      ]
+      "parent": "/tesis"
     },
     "/tesis/tema-tesis": {
       "filePath": "tesis/tema-tesis.tsx",
@@ -469,8 +458,7 @@ export const routeTree = rootRoute
       "parent": "/tesis"
     },
     "/tesis/prop-jurados/detalle": {
-      "filePath": "tesis.prop-jurados.detalle.tsx",
-      "parent": "/tesis/prop-jurados"
+      "filePath": "tesis_/prop-jurados.detalle.tsx"
     },
     "/unidad/$name/roles": {
       "filePath": "unidad/$name/roles.tsx",
