@@ -13,10 +13,12 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as TesisImport } from './routes/tesis'
 import { Route as SeguridadImport } from './routes/seguridad'
+import { Route as PreguntasFrecuentesImport } from './routes/preguntas-frecuentes'
 import { Route as CursosImport } from './routes/cursos'
 import { Route as IndexImport } from './routes/index'
 import { Route as TesisIndexImport } from './routes/tesis/index'
 import { Route as SeguridadIndexImport } from './routes/seguridad/index'
+import { Route as PreguntasFrecuentesIndexImport } from './routes/preguntas-frecuentes/index'
 import { Route as CursosIndexImport } from './routes/cursos/index'
 import { Route as UnidadNameImport } from './routes/unidad/$name'
 import { Route as TesisTemaTesisImport } from './routes/tesis/tema-tesis'
@@ -44,6 +46,11 @@ const SeguridadRoute = SeguridadImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const PreguntasFrecuentesRoute = PreguntasFrecuentesImport.update({
+  path: '/preguntas-frecuentes',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const CursosRoute = CursosImport.update({
   path: '/cursos',
   getParentRoute: () => rootRoute,
@@ -62,6 +69,11 @@ const TesisIndexRoute = TesisIndexImport.update({
 const SeguridadIndexRoute = SeguridadIndexImport.update({
   path: '/',
   getParentRoute: () => SeguridadRoute,
+} as any)
+
+const PreguntasFrecuentesIndexRoute = PreguntasFrecuentesIndexImport.update({
+  path: '/',
+  getParentRoute: () => PreguntasFrecuentesRoute,
 } as any)
 
 const CursosIndexRoute = CursosIndexImport.update({
@@ -153,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CursosImport
       parentRoute: typeof rootRoute
     }
+    '/preguntas-frecuentes': {
+      id: '/preguntas-frecuentes'
+      path: '/preguntas-frecuentes'
+      fullPath: '/preguntas-frecuentes'
+      preLoaderRoute: typeof PreguntasFrecuentesImport
+      parentRoute: typeof rootRoute
+    }
     '/seguridad': {
       id: '/seguridad'
       path: '/seguridad'
@@ -215,6 +234,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/cursos/'
       preLoaderRoute: typeof CursosIndexImport
       parentRoute: typeof CursosImport
+    }
+    '/preguntas-frecuentes/': {
+      id: '/preguntas-frecuentes/'
+      path: '/'
+      fullPath: '/preguntas-frecuentes/'
+      preLoaderRoute: typeof PreguntasFrecuentesIndexImport
+      parentRoute: typeof PreguntasFrecuentesImport
     }
     '/seguridad/': {
       id: '/seguridad/'
@@ -302,6 +328,17 @@ const CursosRouteChildren: CursosRouteChildren = {
 const CursosRouteWithChildren =
   CursosRoute._addFileChildren(CursosRouteChildren)
 
+interface PreguntasFrecuentesRouteChildren {
+  PreguntasFrecuentesIndexRoute: typeof PreguntasFrecuentesIndexRoute
+}
+
+const PreguntasFrecuentesRouteChildren: PreguntasFrecuentesRouteChildren = {
+  PreguntasFrecuentesIndexRoute: PreguntasFrecuentesIndexRoute,
+}
+
+const PreguntasFrecuentesRouteWithChildren =
+  PreguntasFrecuentesRoute._addFileChildren(PreguntasFrecuentesRouteChildren)
+
 interface SeguridadRouteChildren {
   SeguridadPermisosRoute: typeof SeguridadPermisosRoute
   SeguridadRolesRoute: typeof SeguridadRolesRoute
@@ -353,6 +390,7 @@ const UnidadNameRouteWithChildren = UnidadNameRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cursos': typeof CursosRouteWithChildren
+  '/preguntas-frecuentes': typeof PreguntasFrecuentesRouteWithChildren
   '/seguridad': typeof SeguridadRouteWithChildren
   '/tesis': typeof TesisRouteWithChildren
   '/cursos/retiroAlumnos': typeof CursosRetiroAlumnosRoute
@@ -362,6 +400,7 @@ export interface FileRoutesByFullPath {
   '/tesis/tema-tesis': typeof TesisTemaTesisRoute
   '/unidad/$name': typeof UnidadNameRouteWithChildren
   '/cursos/': typeof CursosIndexRoute
+  '/preguntas-frecuentes/': typeof PreguntasFrecuentesIndexRoute
   '/seguridad/': typeof SeguridadIndexRoute
   '/tesis/': typeof TesisIndexRoute
   '/tesis/prop-jurados/detalle': typeof TesisPropJuradosDetalleRoute
@@ -381,6 +420,7 @@ export interface FileRoutesByTo {
   '/tesis/prop-jurados': typeof TesisPropJuradosRoute
   '/tesis/tema-tesis': typeof TesisTemaTesisRoute
   '/cursos': typeof CursosIndexRoute
+  '/preguntas-frecuentes': typeof PreguntasFrecuentesIndexRoute
   '/seguridad': typeof SeguridadIndexRoute
   '/tesis': typeof TesisIndexRoute
   '/tesis/prop-jurados/detalle': typeof TesisPropJuradosDetalleRoute
@@ -396,6 +436,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/cursos': typeof CursosRouteWithChildren
+  '/preguntas-frecuentes': typeof PreguntasFrecuentesRouteWithChildren
   '/seguridad': typeof SeguridadRouteWithChildren
   '/tesis': typeof TesisRouteWithChildren
   '/cursos/retiroAlumnos': typeof CursosRetiroAlumnosRoute
@@ -405,6 +446,7 @@ export interface FileRoutesById {
   '/tesis/tema-tesis': typeof TesisTemaTesisRoute
   '/unidad/$name': typeof UnidadNameRouteWithChildren
   '/cursos/': typeof CursosIndexRoute
+  '/preguntas-frecuentes/': typeof PreguntasFrecuentesIndexRoute
   '/seguridad/': typeof SeguridadIndexRoute
   '/tesis/': typeof TesisIndexRoute
   '/tesis/prop-jurados/detalle': typeof TesisPropJuradosDetalleRoute
@@ -421,6 +463,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/cursos'
+    | '/preguntas-frecuentes'
     | '/seguridad'
     | '/tesis'
     | '/cursos/retiroAlumnos'
@@ -430,6 +473,7 @@ export interface FileRouteTypes {
     | '/tesis/tema-tesis'
     | '/unidad/$name'
     | '/cursos/'
+    | '/preguntas-frecuentes/'
     | '/seguridad/'
     | '/tesis/'
     | '/tesis/prop-jurados/detalle'
@@ -448,6 +492,7 @@ export interface FileRouteTypes {
     | '/tesis/prop-jurados'
     | '/tesis/tema-tesis'
     | '/cursos'
+    | '/preguntas-frecuentes'
     | '/seguridad'
     | '/tesis'
     | '/tesis/prop-jurados/detalle'
@@ -461,6 +506,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/cursos'
+    | '/preguntas-frecuentes'
     | '/seguridad'
     | '/tesis'
     | '/cursos/retiroAlumnos'
@@ -470,6 +516,7 @@ export interface FileRouteTypes {
     | '/tesis/tema-tesis'
     | '/unidad/$name'
     | '/cursos/'
+    | '/preguntas-frecuentes/'
     | '/seguridad/'
     | '/tesis/'
     | '/tesis/prop-jurados/detalle'
@@ -485,6 +532,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CursosRoute: typeof CursosRouteWithChildren
+  PreguntasFrecuentesRoute: typeof PreguntasFrecuentesRouteWithChildren
   SeguridadRoute: typeof SeguridadRouteWithChildren
   TesisRoute: typeof TesisRouteWithChildren
   UnidadNameRoute: typeof UnidadNameRouteWithChildren
@@ -494,6 +542,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CursosRoute: CursosRouteWithChildren,
+  PreguntasFrecuentesRoute: PreguntasFrecuentesRouteWithChildren,
   SeguridadRoute: SeguridadRouteWithChildren,
   TesisRoute: TesisRouteWithChildren,
   UnidadNameRoute: UnidadNameRouteWithChildren,
@@ -514,6 +563,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/cursos",
+        "/preguntas-frecuentes",
         "/seguridad",
         "/tesis",
         "/unidad/$name",
@@ -530,6 +580,12 @@ export const routeTree = rootRoute
         "/cursos/",
         "/cursos/alumnosRiesgo/",
         "/cursos/alumnosRiesgo/$codigoAlumnoRiesgo/"
+      ]
+    },
+    "/preguntas-frecuentes": {
+      "filePath": "preguntas-frecuentes.tsx",
+      "children": [
+        "/preguntas-frecuentes/"
       ]
     },
     "/seguridad": {
@@ -580,6 +636,10 @@ export const routeTree = rootRoute
     "/cursos/": {
       "filePath": "cursos/index.tsx",
       "parent": "/cursos"
+    },
+    "/preguntas-frecuentes/": {
+      "filePath": "preguntas-frecuentes/index.tsx",
+      "parent": "/preguntas-frecuentes"
     },
     "/seguridad/": {
       "filePath": "seguridad/index.tsx",

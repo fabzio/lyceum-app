@@ -4,4 +4,7 @@ export const QueryKeys = {
     MODULES: 'modules',
     ROLE_PERMISSIONS: 'role_permissions',
   },
+  faq: {
+    FAQS: 'faqs',
+  },
 }
