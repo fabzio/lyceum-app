@@ -1,16 +1,13 @@
 'use client'
 
-import * as React from 'react'
 import { Search } from 'lucide-react'
 
-import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/components/ui/resizable'
-import { AccountSwitcher } from './account-switcher'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { TooltipProvider } from '@/components/ui/tooltip'
@@ -20,25 +17,11 @@ import { type Mail } from '../data'
 import { useMail } from '../use-mail'
 
 interface MailProps {
-  accounts: {
-    label: string
-    email: string
-    icon: React.ReactNode
-  }[]
   mails: Mail[]
   defaultLayout: number[] | undefined
-  defaultCollapsed?: boolean
-  navCollapsedSize: number
 }
 
-export function Mail({
-  accounts,
-  mails,
-  defaultLayout = [20, 32, 48],
-  defaultCollapsed = false,
-  navCollapsedSize,
-}: MailProps) {
-  const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed)
+export function Mail({ mails, defaultLayout = [20, 32, 48] }: MailProps) {
   const [mail] = useMail()
 
   return (
@@ -52,39 +35,6 @@ export function Mail({
         }}
         className="h-full max-h-[800px] items-stretch"
       >
-        <ResizablePanel
-          defaultSize={defaultLayout[0]}
-          collapsedSize={navCollapsedSize}
-          collapsible={true}
-          minSize={15}
-          maxSize={20}
-          onCollapse={() => {
-            setIsCollapsed(true)
-            document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
-              true
-            )}`
-          }}
-          onResize={() => {
-            setIsCollapsed(false)
-            document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
-              false
-            )}`
-          }}
-          className={cn(
-            isCollapsed &&
-              'min-w-[50px] transition-all duration-300 ease-in-out'
-          )}
-        >
-          <div
-            className={cn(
-              'flex h-[52px] items-center justify-center',
-              isCollapsed ? 'h-[52px]' : 'px-2'
-            )}
-          >
-            <AccountSwitcher isCollapsed={isCollapsed} accounts={accounts} />
-          </div>
-          <Separator />
-        </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
           <Tabs defaultValue="all">
