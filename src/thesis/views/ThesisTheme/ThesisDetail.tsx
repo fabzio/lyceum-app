@@ -83,7 +83,7 @@ export default function ThesisManagement() {
   const renderCard = (index: number, title: string, content: React.ReactNode) => (
     <Card className="mb-4 lg:mb-0">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+        <CardTitle className="text-xl font-bold">{title}</CardTitle>
         <Button
           variant="ghost"
           size="sm"
@@ -123,7 +123,7 @@ export default function ThesisManagement() {
 
         {renderCard(1, "Información básica", (
           <ScrollArea className="h-[60vh] lg:h-[calc(100vh-200px)]">
-            <div className="space-y-4 pr-4">
+            <div className="space-y-4">
               <div>
                 <h3 className="font-semibold">Título</h3>
                 <p className="text-sm">{thesis.title}</p>
