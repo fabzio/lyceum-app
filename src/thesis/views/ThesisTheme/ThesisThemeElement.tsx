@@ -16,7 +16,7 @@ export default function ThesisThemeElement({ id, title, owner, date, status }: P
   })
   const handleChooseCard = () => {
     navigate({
-      to: "/tesis",
+      to: "/tesis/tema-tesis/detalle",
     })
   }
   return (
