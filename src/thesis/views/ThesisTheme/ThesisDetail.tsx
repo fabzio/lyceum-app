@@ -257,7 +257,7 @@ export default function ThesisManagement() {
             </div>
             <div>
               <h3 className="font-semibold mb-2">Historial</h3>
-              <div className="space-y-4 bg-red-50">
+              <div className="space-y-4 ">
                 <ThesisThemeStepper history={thesis.approvalHistory} />
               </div>
             </div>
