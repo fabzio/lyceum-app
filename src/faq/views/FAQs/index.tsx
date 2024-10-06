@@ -13,7 +13,7 @@ export default function FAQs() {
   })
   const groupedFAQs = groupBy(faqsList, (faq) => faq.category)
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 px-5">
       <section>
         <FAQCategoriesList />
       </section>
