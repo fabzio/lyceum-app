@@ -6,5 +6,6 @@ export const QueryKeys = {
   },
   faq: {
     FAQS: 'faqs',
+    FAQ_CATEGORIES: 'faq_categories',
   },
 }

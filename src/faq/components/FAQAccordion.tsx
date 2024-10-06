@@ -5,7 +5,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 
-import { FAQ } from '../interfaces/asks'
+import { FAQ } from '../interfaces/FAQ'
 
 interface Props {
   faqs: FAQ[]

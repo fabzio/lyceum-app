@@ -1,4 +1,4 @@
-import { FAQ } from '../interfaces/asks'
+import { FAQ } from '../interfaces/FAQ'
 
 class FAQService {
   public static getFAQs(): Promise<FAQ[]> {
