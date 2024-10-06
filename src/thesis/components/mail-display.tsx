@@ -10,8 +10,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Separator } from '@/components/ui/separator'
-import { Mail } from '../data'
-import ThesisJuryRequestForm from './ThesisJuryRequestForm'
+import { Mail } from '../views/ThesisJury/data'
+import ThesisJuryRequestForm from '../views/ThesisJury/components/ThesisJuryRequestForm'
 import { ScrollArea } from '@radix-ui/react-scroll-area'
 
 interface MailDisplayProps {

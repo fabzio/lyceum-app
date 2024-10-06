@@ -1,4 +1,4 @@
-import { Mail } from './components/mail'
+import { Mail } from '../../components/mail'
 import { mails } from './data'
 
 export default function ThesisJuryRequestDetail() {

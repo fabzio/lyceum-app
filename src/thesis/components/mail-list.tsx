@@ -2,8 +2,8 @@ import { ComponentProps } from 'react'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Mail } from '../data'
-import { useMail } from '../use-mail'
+import { Mail } from '../views/ThesisJury/data'
+import { useMail } from '../views/ThesisJury/use-mail'
 
 interface MailListProps {
   items: Mail[]
