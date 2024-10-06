@@ -1,14 +1,21 @@
 import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Download, ChevronDown, ChevronUp } from 'lucide-react'
-import ThesisThemeStepper from "@/thesis/components/ThesisThemeStepper"
+import ThesisThemeStepper from '@/thesis/components/ThesisThemeStepper'
 
 interface Thesis {
   id: string
@@ -32,28 +39,43 @@ interface Thesis {
 
 const mockThesis: Thesis = {
   id: '39457392',
-  title: 'Desarrollo de un Sistema de Gestión de Proyectos Basado en Metodologías Ágiles para Mejorar la Productividad en Equipos de Trabajo Remotos',
+  title:
+    'Desarrollo de un Sistema de Gestión de Proyectos Basado en Metodologías Ágiles para Mejorar la Productividad en Equipos de Trabajo Remotos',
   area: 'Sistemas de Información',
   students: [
     { code: '00089434', name: 'Rony Tupia' },
-    { code: '19872992', name: 'Víctor Bello' }
+    { code: '19872992', name: 'Víctor Bello' },
   ],
   advisors: [
     { code: '00089434', name: 'Rony Tupia', isPrincipal: true },
-    { code: '19872992', name: 'Víctor Bello', isPrincipal: false }
+    { code: '19872992', name: 'Víctor Bello', isPrincipal: false },
   ],
   status: 'approved',
   fileInfo: {
     requestNumber: '39457392',
     name: 'Piero Montoya',
-    concentration: 'Ingeniería de Software'
+    concentration: 'Ingeniería de Software',
   },
   approvalHistory: [
     { step: 'Enviado por alumno', status: 'completed', name: 'Piero Montoya' },
-    { step: 'Aprobado por Asesor', status: 'completed', name: 'Rony Tupia', canDownload: true },
-    { step: 'Aprobado por Coordinador de Área', status: 'completed', name: 'Jheyfer Ramírez', canDownload: true },
-    { step: 'Aprobado por Director de Carrera', status: 'current', name: 'Ricardo Bartra' }
-  ]
+    {
+      step: 'Aprobado por Asesor',
+      status: 'completed',
+      name: 'Rony Tupia',
+      canDownload: true,
+    },
+    {
+      step: 'Aprobado por Coordinador de Área',
+      status: 'completed',
+      name: 'Jheyfer Ramírez',
+      canDownload: true,
+    },
+    {
+      step: 'Aprobado por Director de Carrera',
+      status: 'current',
+      name: 'Ricardo Bartra',
+    },
+  ],
 }
 
 export default function ThesisManagement() {
@@ -62,12 +84,12 @@ export default function ThesisManagement() {
   const [expandedCard, setExpandedCard] = useState<number | null>(null)
 
   const handleAdvisorChange = (code: string) => {
-    setThesis(prevThesis => ({
+    setThesis((prevThesis) => ({
       ...prevThesis,
-      advisors: prevThesis.advisors.map(advisor => ({
+      advisors: prevThesis.advisors.map((advisor) => ({
         ...advisor,
-        isPrincipal: advisor.code === code
-      }))
+        isPrincipal: advisor.code === code,
+      })),
     }))
   }
 
@@ -81,7 +103,11 @@ export default function ThesisManagement() {
     setExpandedCard(expandedCard === index ? null : index)
   }
 
-  const renderCard = (index: number, title: string, content: React.ReactNode) => (
+  const renderCard = (
+    index: number,
+    title: string,
+    content: React.ReactNode
+  ) => (
     <Card className="mb-4 lg:mb-0">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-xl font-bold">{title}</CardTitle>
@@ -91,10 +117,16 @@ export default function ThesisManagement() {
           className="lg:hidden"
           onClick={() => toggleCard(index)}
         >
-          {expandedCard === index ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          {expandedCard === index ? (
+            <ChevronUp size={16} />
+          ) : (
+            <ChevronDown size={16} />
+          )}
         </Button>
       </CardHeader>
-      <CardContent className={`lg:block ${expandedCard === index ? 'block' : 'hidden'}`}>
+      <CardContent
+        className={`lg:block ${expandedCard === index ? 'block' : 'hidden'}`}
+      >
         {content}
       </CardContent>
     </Card>
@@ -104,7 +136,9 @@ export default function ThesisManagement() {
     <div className="p-4 lg:p-6">
       <h1 className="text-2xl lg:text-3xl font-bold mb-4 lg:mb-6">Tesis</h1>
       <div className="grid lg:grid-cols-3 gap-4 lg:gap-6">
-        {renderCard(0, "Estado de tesis", (
+        {renderCard(
+          0,
+          'Estado de tesis',
           <>
             <div className="flex items-center justify-between mb-2">
               <span>Estado de tesis</span>
@@ -114,15 +148,19 @@ export default function ThesisManagement() {
             </div>
             <h2 className="font-semibold mb-2">{thesis.title}</h2>
             <p className="text-sm text-gray-500 mb-4">
-              Análisis de vulnerabilidades comunes en contratos inteligentes y estrategias para mejorar la seguridad en su implementación y ejecución.
+              Análisis de vulnerabilidades comunes en contratos inteligentes y
+              estrategias para mejorar la seguridad en su implementación y
+              ejecución.
             </p>
             <Badge variant="outline" className="bg-blue-100 text-blue-800">
               Aprobado por coordinador de área
             </Badge>
           </>
-        ))}
+        )}
 
-        {renderCard(1, "Información básica", (
+        {renderCard(
+          1,
+          'Información básica',
           <ScrollArea className="h-[60vh] lg:h-[calc(100vh-200px)]">
             <div className="space-y-4">
               <div>
@@ -140,7 +178,9 @@ export default function ThesisManagement() {
               <div>
                 <h3 className="font-semibold">Alumnos</h3>
                 {thesis.students.map((student) => (
-                  <p key={student.code} className="text-sm">{student.code} - {student.name}</p>
+                  <p key={student.code} className="text-sm">
+                    {student.code} - {student.name}
+                  </p>
                 ))}
               </div>
               <div>
@@ -161,7 +201,9 @@ export default function ThesisManagement() {
                         <TableCell>
                           <Checkbox
                             checked={advisor.isPrincipal}
-                            onCheckedChange={() => handleAdvisorChange(advisor.code)}
+                            onCheckedChange={() =>
+                              handleAdvisorChange(advisor.code)
+                            }
                           />
                         </TableCell>
                       </TableRow>
@@ -193,23 +235,34 @@ export default function ThesisManagement() {
               </div>
             </div>
           </ScrollArea>
-        ))}
+        )}
 
-        {renderCard(2, "Información de Ficha", (
+        {renderCard(
+          2,
+          'Información de Ficha',
           <div className="space-y-4">
             <div>
-              <p className="text-sm"><span className="font-semibold">N° Solicitud:</span> {thesis.fileInfo.requestNumber}</p>
-              <p className="text-sm"><span className="font-semibold">Nombre:</span> {thesis.fileInfo.name}</p>
-              <p className="text-sm"><span className="font-semibold">Concentración:</span> {thesis.fileInfo.concentration}</p>
+              <p className="text-sm">
+                <span className="font-semibold">N° Solicitud:</span>{' '}
+                {thesis.fileInfo.requestNumber}
+              </p>
+              <p className="text-sm">
+                <span className="font-semibold">Nombre:</span>{' '}
+                {thesis.fileInfo.name}
+              </p>
+              <p className="text-sm">
+                <span className="font-semibold">Concentración:</span>{' '}
+                {thesis.fileInfo.concentration}
+              </p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">Historial</h3>
-              <div className="space-y-4">
-                <ThesisThemeStepper thesis={thesis} />
+              <div className="space-y-4 bg-red-50">
+                <ThesisThemeStepper history={thesis.approvalHistory} />
               </div>
             </div>
           </div>
-        ))}
+        )}
       </div>
     </div>
   )

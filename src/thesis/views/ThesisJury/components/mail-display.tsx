@@ -49,11 +49,9 @@ export function MailDisplay({ mail }: MailDisplayProps) {
       {mail ? (
         <div className="flex flex-1 flex-col">
           <div className="flex items-start p-4">
-            <div className="flex content-between items-start gap-4 text-sm">
+            <div className="flex flex-grow justify-between items-start gap-4 text-sm">
               <div className="grid gap-1">En proceso</div>
-              <div className="ml-auto text-xs">
-                Esperando a que el director proponga jurados
-              </div>
+              <div>Esperando a que el director proponga jurados</div>
             </div>
           </div>
           <Separator />

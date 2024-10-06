@@ -32,8 +32,8 @@ export function MailList({ items }: MailListProps) {
             <div className="flex w-full flex-col gap-1">
               <div className="flex items-center">
                 <div className="flex items-center gap-2">
-                  <div className="font-semibold">{item.name}</div>
-                  {!item.read && (
+                  <div className="font-semibold">{item.thesis.title}</div>
+                  {!item.status && (
                     <span className="flex h-2 w-2 rounded-full bg-blue-600" />
                   )}
                 </div>
@@ -46,17 +46,22 @@ export function MailList({ items }: MailListProps) {
                   )}
                 ></div>
               </div>
-              <div className="text-xs font-medium">{item.subject}</div>
+              <div className="text-xs font-medium">{item.id}</div>
             </div>
-            {item.labels.length ? (
-              <div className="flex items-center gap-2">
-                {item.labels.map((label) => (
-                  <Badge key={label} variant={getBadgeVariantFromLabel(label)}>
-                    {label}
-                  </Badge>
-                ))}
-              </div>
-            ) : null}
+            <div className="flex items-center gap-2">
+              {item.approvalHistory.map(
+                (step) =>
+                  step.status === 'current' && (
+                    <Badge
+                      key={step.step}
+                      variant={getBadgeVariantFromLabel(step.step)}
+                      className="bg-blue-100 text-blue-800"
+                    >
+                      {step.step}
+                    </Badge>
+                  )
+              )}
+            </div>
           </button>
         ))}
       </div>
@@ -75,5 +80,5 @@ function getBadgeVariantFromLabel(
     return 'outline'
   }
 
-  return 'secondary'
+  return 'default'
 }

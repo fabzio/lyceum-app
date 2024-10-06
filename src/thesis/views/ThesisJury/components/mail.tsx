@@ -1,6 +1,6 @@
 'use client'
 
-import { Search } from 'lucide-react'
+import { Search, ListFilter } from 'lucide-react'
 
 import { Input } from '@/components/ui/input'
 import {
@@ -15,6 +15,7 @@ import { MailList } from './mail-list'
 import { type Mail } from '../data'
 import { useMail } from '../use-mail'
 import { Button } from '@/components/ui/button'
+import ThesisThemeStepper from '@/thesis/components/ThesisThemeStepper'
 
 interface MailProps {
   mails: Mail[]
@@ -45,9 +46,14 @@ export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
           <Separator />
           <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <form>
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Buscar" className="pl-8" />
+              <div className="relative flex flex-row space-x-2">
+                <div className="flex-grow">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input placeholder="Buscar" className="pl-8" />
+                </div>
+                <Button variant="ghost">
+                  <ListFilter className="h-4 w-4" />
+                </Button>
               </div>
             </form>
           </div>
@@ -55,7 +61,7 @@ export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
             <MailList items={mails} />
           </TabsContent>
           <TabsContent value="unread" className="m-0">
-            <MailList items={mails.filter((item) => !item.read)} />
+            <MailList items={mails.filter((item) => !item.status)} />
           </TabsContent>
         </Tabs>
       </ResizablePanel>
@@ -74,6 +80,16 @@ export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
             </div>
           </div>
           <Separator />
+          <div className="flex flex-1 flex-col items-center justify-center ">
+            <div className="pb-80 space-y-4">
+              <ThesisThemeStepper
+                history={
+                  mails.find((item) => item.id === mail.selected)
+                    ?.approvalHistory
+                }
+              />
+            </div>
+          </div>
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>
