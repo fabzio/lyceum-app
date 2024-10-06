@@ -22,11 +22,7 @@ export function MailList({ items }: MailListProps) {
               'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
               mail.selected === item.id && 'bg-muted'
             )}
-            onClick={() =>
-              setMail({
-                ...mail,
-                selected: item.id,
-              })
+            onClick={() =>setMail({...mail, selected: item.id,})
             }
           >
             <div className="flex w-full flex-col gap-1">
@@ -46,11 +42,10 @@ export function MailList({ items }: MailListProps) {
                   )}
                 ></div>
               </div>
-              <div className="text-xs font-medium">{item.id}</div>
+              <div className="text-sm">{item.thesis.area}</div>
             </div>
             <div className="flex items-center gap-2">
-              {item.approvalHistory.map(
-                (step) =>
+              {item.approvalHistory.map((step) =>
                   step.status === 'current' && (
                     <Badge
                       key={step.step}
@@ -76,8 +71,8 @@ function getBadgeVariantFromLabel(
     return "bg-blue-100 text-blue-800"
   }
 
-  if (['personal'].includes(label.toLowerCase())) {
-    return 'outline'
+  if (['Aprobado por Coordinador de Área'].includes(label)) {
+    return "bg-blue-100 text-blue-800"
   }
 
   return 'default'

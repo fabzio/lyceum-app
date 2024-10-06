@@ -1,17 +1,14 @@
 import { useState } from 'react'
-import { Search, Download} from 'lucide-react'
+import { Download} from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import {
-  ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/components/ui/resizable'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
 import {
   Table,
   TableBody,
@@ -20,17 +17,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import ThesisThemeStepper from '@/thesis/components/ThesisThemeStepper'
 import {ThesisThemeRequest} from '@/interfaces/Thesis/ThesisThemeRequest'
 import {thesisThemeRequestList}  from '../data'
 
 export default function ThesisthemeRequestForm() {
     const [selectedThesis, setSelectedThesis] = useState<ThesisThemeRequest | null>(thesisThemeRequestList[0])
     const [file, setFile] = useState<File | null>(null)
-  
-    const handleThesisSelect = (thesis: ThesisThemeRequest) => {
-      setSelectedThesis(thesis)
-    }
   
     const handleAdvisorChange = (code: string) => {
       if (selectedThesis) {
@@ -54,45 +46,12 @@ export default function ThesisthemeRequestForm() {
   
     return (
       <ResizablePanelGroup direction="horizontal" className="h-full max-h-[800px] items-stretch">
-        <ResizablePanel defaultSize={25} minSize={20}>
-          <div className="flex flex-col h-full">
-            <div className="flex items-center justify-between p-4">
-              <h2 className="text-xl font-bold">Temas de tesis</h2>
-            </div>
-            <Separator />
-            <div className="p-4">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Buscar" className="pl-8" />
-              </div>
-            </div>
-            <ScrollArea className="flex-1">
-              {thesisThemeRequestList.map((thesisThemeRequest) => (
-                <div
-                  key={thesisThemeRequest.id}
-                  className="p-4 cursor-pointer hover:bg-muted"
-                  onClick={() => handleThesisSelect(thesisThemeRequest)}
-                >
-                  <h3 className="font-semibold">{thesisThemeRequest.thesis.title}</h3>
-                  <p className="text-sm text-muted-foreground">{thesisThemeRequest.thesis.area}</p>
-                  <Badge variant="outline" className="bg-blue-100 text-blue-800">
-                    {thesisThemeRequest.status}
-                  </Badge>
-                </div>
-              ))}
-            </ScrollArea>
-          </div>
-        </ResizablePanel>
-        <ResizableHandle />
         <ResizablePanel defaultSize={50} minSize={30}>
           {selectedThesis && (
             <ScrollArea className="h-full">
               <div className="p-6 space-y-6">
                 <div>
                   <h2 className="text-2xl font-bold mb-2">{selectedThesis.thesis.title}</h2>
-                  <Badge variant="outline" className="bg-blue-100 text-blue-800">
-                    {selectedThesis.status}
-                  </Badge>
                 </div>
                 <div>
                   <h3 className="font-semibold mb-2">Área</h3>
@@ -160,22 +119,6 @@ export default function ThesisthemeRequestForm() {
                 </div>
               </div>
             </ScrollArea>
-          )}
-        </ResizablePanel>
-        <ResizableHandle />
-        <ResizablePanel defaultSize={25} minSize={20}>
-          {selectedThesis && (
-            <div className="p-6 space-y-6">
-              <div>
-                <h3 className="font-semibold mb-2">Información de Ficha</h3>
-                <p>Solcitante: {selectedThesis.requester}</p>
-                <p>Concentración: {selectedThesis.thesis.concentration}</p>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-2">Historial</h3>
-                <ThesisThemeStepper history={selectedThesis.approvalHistory} />
-              </div>
-            </div>
           )}
         </ResizablePanel>
       </ResizablePanelGroup>

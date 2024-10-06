@@ -38,7 +38,7 @@ export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
       <ResizablePanel defaultSize={defaultLayout[0]} minSize={0}>
         <Tabs defaultValue="all">
           <div className="flex items-center px-4 py-2">
-            <h1 className="text-xl font-bold">Jurado de tesis</h1>
+            <h1 className="text-xl font-bold">Tema de tesis</h1>
             <Button className="ml-auto" variant="outline">
               Nueva solicitud
             </Button>
@@ -76,17 +76,20 @@ export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
         <div className="flex h-full flex-col">
           <div className="flex items-center p-2">
             <div className="flex items-center gap-2 h-10 py-2">
-              <h1 className="text-xl font-bold">Historial</h1>
+              <h1 className="text-xl font-bold">Información Complementaria</h1>
             </div>
           </div>
           <Separator />
-          <div className="flex flex-1 flex-col items-center justify-center ">
-            <div className="pb-80 space-y-4">
+          <div className="p-6 space-y-6">
+            <div>
+                <h3 className="font-semibold mb-2">Información de Ficha</h3>
+                <p>Solicitante: {mails.find((item) => item.id === mail.selected)?.requester}</p>
+                <p>Concentración: {mails.find((item) => item.id === mail.selected)?.thesis.concentration}</p>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-2">Historial</h3>
               <ThesisThemeStepper
-                history={
-                  mails.find((item) => item.id === mail.selected)
-                    ?.approvalHistory
-                }
+                history={mails.find((item) => item.id === mail.selected)?.approvalHistory}
               />
             </div>
           </div>

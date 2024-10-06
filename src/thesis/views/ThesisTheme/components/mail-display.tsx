@@ -47,20 +47,11 @@ export function MailDisplay({ mail }: MailDisplayProps) {
       </div>
       <Separator />
       {mail ? (
-        <div className="flex flex-1 flex-col">
-          <div className="flex items-start p-4">
-            <div className="flex flex-grow justify-between items-start gap-4 text-sm">
-              <div className="grid gap-1">En proceso</div>
-              <div>Esperando a que el director proponga jurados</div>
-            </div>
-          </div>
-          <Separator />
           <ScrollArea>
             <div className="flex-1 whitespace-pre-wrap p-4 text-sm max-w-xl">
               <ThesisThemeRequestForm />
             </div>
           </ScrollArea>
-        </div>
       ) : (
         <div className="p-8 text-center text-muted-foreground">
           No message selected

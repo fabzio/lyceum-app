@@ -21,8 +21,8 @@ import { ThesisThemeRequest } from "@/interfaces/Thesis/ThesisThemeRequest"
         approvalHistory: [
           { step: 'Enviado por alumno', status: 'completed', name: 'Piero Montoya' },
           { step: 'Aprobado por Asesor', status: 'completed', name: 'Rony Tupia', canDownload: true },
-          { step: 'Aprobado por Coordinador de Área', status: 'completed', name: 'Jheyfer Ramírez', canDownload: true },
-          { step: 'Aprobado por Director de Carrera', status: 'current', name: 'Ricardo Bartra' },
+          { step: 'Aprobado por Director de Carrera', status: 'completed', name: 'Ricardo Bartra', canDownload: true },
+          { step: 'Aprobado por Coordinador de Área', status: 'current', name: 'Jheyfer Ramírez'},
         ],
     },
     {   id: '39457393',
@@ -40,13 +40,14 @@ import { ThesisThemeRequest } from "@/interfaces/Thesis/ThesisThemeRequest"
             { code: '00089434', name: 'Rony Tupia', isPrincipal: true },
             { code: '19872992', name: 'Víctor Bello', isPrincipal: false },
             ],
-            concentration: 'Ingeniería de Software',
+            concentration: 'Sistemas de Información',
         },
         approvalHistory: [
           { step: 'Enviado por alumno', status: 'completed', name: 'Piero Montoya' },
           { step: 'Aprobado por Asesor', status: 'completed', name: 'Rony Tupia', canDownload: true },
-          { step: 'Aprobado por Coordinador de Área', status: 'completed', name: 'Jheyfer Ramírez', canDownload: true },
-          { step: 'Aprobado por Director de Carrera', status: 'completed', name: 'Ricardo Bartra' },
+          { step: 'Aprobado por Director de Carrera', status: 'completed', name: 'Ricardo Bartra', canDownload: true },
+          { step: 'Aprobado por Coordinador de Área', status: 'completed', name: 'Jheyfer Ramírez'},
+          
         ],
     }
 
