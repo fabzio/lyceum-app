@@ -27,7 +27,7 @@ const schema = z.object({
   advisorName: z.string().optional(),
 })
 
-export default function ThesisForm() {
+export default function ThesisJuryRequestForm() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {},
@@ -40,9 +40,6 @@ export default function ThesisForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <h2 className="text-4xl font-bold">
-          Nueva solicitud de jurado de tesis
-        </h2>
         <br></br>
         <Card>
           <CardHeader>

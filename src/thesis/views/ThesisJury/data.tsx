@@ -27,17 +27,17 @@ export const mails = [
     text: "Any plans for the weekend? I was thinking of going hiking in the nearby mountains. It's been a while since we had some outdoor fun.\n\nIf you're interested, let me know, and we can plan the details. It'll be a great way to unwind and enjoy nature.\n\nLooking forward to your response!\n\nBest, Bob",
     date: '2023-04-10T11:45:00',
     read: true,
-    labels: ['Aprobado'],
+    labels: ['Esperando confirmacion de jurados'],
   },
   {
     id: '61c35085-72d7-42bd-8d62-738f700d4b92',
-    name: 'Emily Davis',
+    name: 'Creacion de un sistema de recomendacion de peliculas para cineastas aficionados',
     email: 'emilydavis@example.com',
     subject: 'N° 97345298',
     text: "I have a question about the budget for the upcoming project. It seems like there's a discrepancy in the allocation of resources.\n\nI've reviewed the budget report and identified a few areas where we might be able to optimize our spending without compromising the project's quality.\n\nI've attached a detailed analysis for your reference. Let's discuss this further in our next meeting.\n\nThanks, Emily",
     date: '2023-03-25T13:15:00',
     read: false,
-    labels: ['En revisión'],
+    labels: ['Aprobado'],
   },
 ]
 

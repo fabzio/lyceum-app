@@ -2,7 +2,7 @@ import { Mail } from './components/mail'
 import { mails } from './data'
 
 export default function MailPage() {
-  const defaultLayout = undefined
+  const defaultLayout = [0, 85]
 
   return (
     <>
