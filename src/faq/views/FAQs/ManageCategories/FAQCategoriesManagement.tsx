@@ -31,9 +31,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import FAQCategoryService from '@/faq/services/faqCategory.service'
 import { FAQCategory } from '@/faq/interfaces/FAQCategory'
 import { QueryKeys } from '@/constants/queryKeys'
+import useQueryStore from '@/hooks/useQueryStore'
 
 export default function FAQCategoriesManagement() {
   const queryClient = useQueryClient()
+  const { setQueryStore } = useQueryStore<FAQCategory[]>(
+    QueryKeys.faq.FAQ_CATEGORIES
+  )
 
   const [newCategoryField, setNewCategoryField] = useState('')
 
@@ -72,16 +76,24 @@ export default function FAQCategoriesManagement() {
       }),
   })
 
-  // Función para agregar una nueva categoría
   const handleAdd = () => {
     if (newCategoryField.trim()) {
+      setQueryStore((prev) => [
+        ...(prev || []),
+        { id: 0, name: newCategoryField },
+      ])
       createMutation.mutate(newCategoryField)
-      setNewCategoryField('') // Limpiar el campo después de agregar
+      setNewCategoryField('')
     }
   }
 
   const handleSave = (id: number, updatedName: string) => {
     if (updatedName.trim()) {
+      setQueryStore((prev) =>
+        prev?.map((category) =>
+          category.id === id ? { ...category, name: updatedName } : category
+        )
+      )
       const updatedCategory = categories?.find((category) => category.id === id)
       if (updatedCategory) {
         updateMutation.mutate({
@@ -93,6 +105,7 @@ export default function FAQCategoriesManagement() {
   }
 
   const handleDelete = (id: number) => {
+    setQueryStore((prev) => prev?.filter((category) => category.id !== id))
     deleteMutation.mutate(id)
   }
 
@@ -109,14 +122,22 @@ export default function FAQCategoriesManagement() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {categories?.map((category) => (
-            <EditableCategoryRow
-              key={category.id}
-              category={category}
-              onSave={handleSave}
-              onDelete={handleDelete}
-            />
-          ))}
+          {categories?.length ? (
+            categories?.map((category) => (
+              <EditableCategoryRow
+                key={category.id}
+                category={category}
+                onSave={handleSave}
+                onDelete={handleDelete}
+              />
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={2} className="text-center">
+                No se encontraron categorias
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
 

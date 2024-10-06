@@ -4,7 +4,7 @@ import { FAQCategory } from '../interfaces/FAQCategory'
 class FAQCategoryService {
   public static async getFAQCategories(): Promise<FAQCategory[]> {
     try {
-      const res = await http.get(`/faq-categories`)
+      const res = await http.get(`/faq/faq-categories`)
       const response = res.data as ResponseAPI
       if (!response.success) {
         throw new Error('Error')
@@ -18,7 +18,7 @@ class FAQCategoryService {
 
   public static async updateFAQCategory(category: FAQCategory): Promise<void> {
     try {
-      const res = await http.put(`/faq-categories/${category.id}`, category)
+      const res = await http.put('/faq/faq-categories', category)
       const response = res.data as ResponseAPI
       if (!response.success) {
         throw new Error('Error')
@@ -32,7 +32,7 @@ class FAQCategoryService {
     FAQCategoryId: FAQCategory['id']
   ): Promise<void> {
     try {
-      const res = await http.delete(`/faq-categories/${FAQCategoryId}`)
+      const res = await http.delete(`/faq/faq-categories/${FAQCategoryId}`)
       const response = res.data as ResponseAPI
       if (!response.success) {
         throw new Error('Error')
@@ -46,7 +46,9 @@ class FAQCategoryService {
     FAQCategoryName: FAQCategory['name']
   ): Promise<void> {
     try {
-      const res = await http.post(`/faq-categories`, { name: FAQCategoryName })
+      const res = await http.post(`/faq/faq-categories`, {
+        name: FAQCategoryName,
+      })
       const response = res.data as ResponseAPI
       if (!response.success) {
         throw new Error('Error')
