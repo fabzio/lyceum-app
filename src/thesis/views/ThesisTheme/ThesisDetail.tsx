@@ -7,7 +7,8 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { CheckCircle, Clock, Download, ChevronDown, ChevronUp } from 'lucide-react'
+import { Download, ChevronDown, ChevronUp } from 'lucide-react'
+import ThesisThemeStepper from "@/thesis/components/ThesisThemeStepper"
 
 interface Thesis {
   id: string
@@ -204,24 +205,7 @@ export default function ThesisManagement() {
             <div>
               <h3 className="font-semibold mb-2">Historial</h3>
               <div className="space-y-4">
-                {thesis.approvalHistory.map((step, index) => (
-                  <div key={index} className="flex items-start">
-                    <div className="mr-4 mt-1">
-                      {step.status === 'completed' && <CheckCircle size={20} className="text-green-500" />}
-                      {step.status === 'current' && <Clock size={20} className="text-blue-500" />}
-                      {step.status === 'pending' && <Clock size={20} className="text-gray-500" />}
-                    </div>
-                    <div className="flex-grow">
-                      <p className="text-sm font-medium">{step.step}</p>
-                      <p className="text-sm text-gray-500">{step.name}</p>
-                    </div>
-                    {step.canDownload && (
-                      <Button variant="ghost" size="sm" className="ml-2">
-                        <Download size={16} />
-                      </Button>
-                    )}
-                  </div>
-                ))}
+                <ThesisThemeStepper thesis={thesis} />
               </div>
             </div>
           </div>
