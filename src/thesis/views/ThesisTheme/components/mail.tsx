@@ -12,13 +12,13 @@ import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { MailDisplay } from './mail-display'
 import { MailList } from './mail-list'
-import { type Mail } from '../views/ThesisJury/data'
-import { useMail } from '../views/ThesisJury/use-mail'
+import { ThesisThemeRequest } from '@/interfaces/Thesis/ThesisThemeRequest'
+import { useMail } from '../use-mail'
 import { Button } from '@/components/ui/button'
 import ThesisThemeStepper from '@/thesis/components/ThesisThemeStepper'
 
 interface MailProps {
-  mails: Mail[]
+  mails: ThesisThemeRequest[]
   defaultLayout: number[] | undefined
 }
 

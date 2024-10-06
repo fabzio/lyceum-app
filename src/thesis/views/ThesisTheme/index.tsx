@@ -1,6 +1,6 @@
 import { Input } from '@/components/ui/input'
-import ThesisThemeSelectFilter from './ThesisThemeSelectFilter'
-import ThesisThemeElement from './ThesisThemeElement'
+import ThesisThemeSelectFilter from './ThesisThemeRequestFilter'
+import ThesisThemeElement from './ThesisThemeRequestElement'
 
 
 export default function ThesisTheme() {

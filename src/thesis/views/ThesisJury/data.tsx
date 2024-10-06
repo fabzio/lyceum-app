@@ -53,7 +53,7 @@ export interface Thesis {
     requestNumber: string
     name: string
     concentration: string
-  }
+  } | undefined
 }
 
 export interface ThesisJuryRequest {
