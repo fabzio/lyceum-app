@@ -1,55 +1,59 @@
+import http from '@/lib/http'
 import { FAQCategory } from '../interfaces/FAQCategory'
 
 class FAQCategoryService {
-  public static getFAQCategories(): Promise<FAQCategory[]> {
-    const mock: FAQCategory[] = [
-      {
-        id: 1,
-        name: 'General',
-      },
-      {
-        id: 2,
-        name: 'Pagos',
-      },
-      {
-        id: 3,
-        name: 'Cuenta',
-      },
-    ]
-
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(mock)
-      }, 1000)
-    })
+  public static async getFAQCategories(): Promise<FAQCategory[]> {
+    try {
+      const res = await http.get(`/faq-categories`)
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error('Error')
+      }
+      return response.data as FAQCategory[]
+    } catch (err) {
+      console.error(err)
+      return []
+    }
   }
 
-  public static updateFAQCategory(category: FAQCategory): Promise<void> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve()
-      }, 1000)
-    })
+  public static async updateFAQCategory(category: FAQCategory): Promise<void> {
+    try {
+      const res = await http.put(`/faq-categories/${category.id}`, category)
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error('Error')
+      }
+    } catch (err) {
+      console.error(err)
+    }
   }
 
-  public static deleteFAQCategory(
+  public static async deleteFAQCategory(
     FAQCategoryId: FAQCategory['id']
   ): Promise<void> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve()
-      }, 1000)
-    })
+    try {
+      const res = await http.delete(`/faq-categories/${FAQCategoryId}`)
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error('Error')
+      }
+    } catch (err) {
+      console.error(err)
+    }
   }
 
-  public static createFAQCategory(
+  public static async createFAQCategory(
     FAQCategoryName: FAQCategory['name']
   ): Promise<void> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve()
-      }, 1000)
-    })
+    try {
+      const res = await http.post(`/faq-categories`, { name: FAQCategoryName })
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error('Error')
+      }
+    } catch (err) {
+      console.error(err)
+    }
   }
 }
 
