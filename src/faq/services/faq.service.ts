@@ -1,36 +1,48 @@
+import http from '@/lib/http'
 import { FAQ } from '../interfaces/FAQ'
 
 class FAQService {
-  public static getFAQs(): Promise<FAQ[]> {
-    const mock: FAQ[] = [
-      {
-        id: 1,
-        question: '¿Qué es un FAQ?',
-        answer:
-          'FAQ es un acrónimo de Frequently Asked Questions, que en español significa Preguntas Frecuentes.',
-        category: 'General',
-      },
-      {
-        id: 2,
-        question: '¿Para qué sirve un FAQ?',
-        answer:
-          'Un FAQ sirve para responder preguntas comunes que los usuarios suelen hacer.',
-        category: 'General',
-      },
-      {
-        id: 3,
-        question: '¿Cómo se hace un FAQ?',
-        answer:
-          'Un FAQ se hace recopilando preguntas frecuentes y sus respuestas.',
-        category: 'Matricula',
-      },
-    ]
+  public static async getFAQs(): Promise<FAQ[]> {
+    try {
+      const res = await http.get('/faq/faqs')
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error('Error')
+      }
+      return response.data as FAQ[]
+    } catch (error) {
+      console.error(error)
+      return []
+    }
+  }
 
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(mock)
-      }, 1000)
-    })
+  public static async createFAQ(faq: Omit<FAQ, 'id'>): Promise<void> {
+    try {
+      const res = await http.post(`/faq/faqs`, faq)
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error('Error')
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  public static async updateFAQ(faq: FAQ): Promise<void> {
+    console.log(faq)
+    try {
+      const res = await http.put('/faq/faqs', {
+        id: faq.id,
+        question: faq.question,
+        answer: faq.answer,
+        category: faq.faqCategoryId,
+      })
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error('Error')
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 }
 

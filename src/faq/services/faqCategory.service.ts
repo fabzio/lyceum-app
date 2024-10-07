@@ -1,8 +1,10 @@
+
 import http from '@/lib/http'
 import { FAQCategory } from '../interfaces/FAQCategory'
 
 class FAQCategoryService {
   public static async getFAQCategories(): Promise<FAQCategory[]> {
+    
     try {
       const res = await http.get(`/faq/faq-categories`)
       const response = res.data as ResponseAPI
@@ -11,7 +13,7 @@ class FAQCategoryService {
       }
       return response.data as FAQCategory[]
     } catch (err) {
-      console.error(err)
+      console.error(err as Error)
       return []
     }
   }

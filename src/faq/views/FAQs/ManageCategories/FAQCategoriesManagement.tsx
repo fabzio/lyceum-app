@@ -62,10 +62,14 @@ export default function FAQCategoriesManagement() {
 
   const updateMutation = useMutation({
     mutationFn: FAQCategoryService.updateFAQCategory,
-    onSuccess: () =>
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.faq.FAQ_CATEGORIES],
-      }),
+      })
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.faq.FAQS],
+      })
+    },
   })
 
   const deleteMutation = useMutation({

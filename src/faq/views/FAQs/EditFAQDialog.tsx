@@ -9,24 +9,35 @@ import {
 } from '@/components/ui/dialog'
 
 import { useState } from 'react'
-import FAQForm from '../../components/FAQForm'
+import NewFAQForm from '../../components/FAQForm'
+import { Pen } from 'lucide-react'
+import { FAQ } from '@/faq/interfaces/FAQ'
 
-export default function NewFAQDialog() {
+interface Props {
+  faq: FAQ
+}
+export default function EditFAQDialog({ faq }: Props) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>Nueva pregunta </Button>
+        <Button size="icon" variant="ghost">
+          <Pen />
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Nueva pregunta frecuente</DialogTitle>
+          <DialogTitle>Editar pregunta frecuente</DialogTitle>
           <DialogDescription>
-            Crea una nueva pregunta para la sección de preguntas frecuentes
+            Edita una nueva pregunta para la sección de preguntas frecuentes
           </DialogDescription>
         </DialogHeader>
-        <FAQForm mode="create" handleClose={() => setIsOpen(false)} />
+        <NewFAQForm
+          mode="edit"
+          handleClose={() => setIsOpen(false)}
+          faq={faq}
+        />
       </DialogContent>
     </Dialog>
   )

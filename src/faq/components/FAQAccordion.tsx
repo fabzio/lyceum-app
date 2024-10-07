@@ -6,6 +6,9 @@ import {
 } from '@/components/ui/accordion'
 
 import { FAQ } from '../interfaces/FAQ'
+import { Trash } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import EditFAQDialog from '../views/FAQs/EditFAQDialog'
 
 interface Props {
   faqs: FAQ[]
@@ -28,13 +31,22 @@ export default function FAQAcordion({ faqs = [] }: Props) {
 
 function AskAccordionItem({ faq, value }: { faq: FAQ; value: string }) {
   return (
-    <AccordionItem value={value}>
-      <AccordionTrigger>
-        <h3 className="font-semibold">{faq.question}</h3>
-      </AccordionTrigger>
-      <AccordionContent>
-        <p>{faq.answer}</p>
-      </AccordionContent>
-    </AccordionItem>
+    <div className="flex ">
+      <AccordionItem className="flex-1" value={value}>
+        <AccordionTrigger>
+          <h3 className="font-semibold">{faq.question}</h3>
+        </AccordionTrigger>
+        <AccordionContent>
+          <p>{faq.answer}</p>
+        </AccordionContent>
+      </AccordionItem>
+
+      <div className="flex gap-2">
+        <EditFAQDialog faq={faq} />
+        <Button size="icon" variant="ghost">
+          <Trash />
+        </Button>
+      </div>
+    </div>
   )
 }

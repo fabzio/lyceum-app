@@ -16,26 +16,60 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { QueryKeys } from '@/constants/queryKeys'
+import FAQService from '@/faq/services/faq.service'
 import FAQCategoryService from '@/faq/services/faqCategory.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { SelectValue } from '@radix-ui/react-select'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { FAQ } from '../interfaces/FAQ'
 
-export default function NewFAQForm() {
+interface Props {
+  mode: 'create' | 'edit'
+  faq?: FAQ
+  handleClose: () => void
+}
+export default function FAQForm({ handleClose, mode, faq }: Props) {
+  const queryClient = useQueryClient()
   const { data: categories } = useQuery({
     queryKey: [QueryKeys.faq.FAQ_CATEGORIES],
     queryFn: () => FAQCategoryService.getFAQCategories(),
   })
+  const createMutation = useMutation({
+    mutationFn: FAQService.createFAQ,
+    onSettled: () => handleClose(),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.faq.FAQS],
+      }),
+  })
+  const updateMutation = useMutation({
+    mutationFn: FAQService.updateFAQ,
+    onSettled: () => handleClose(),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.faq.FAQS],
+      }),
+  })
+
   const form = useForm<z.infer<typeof schema>>({
     defaultValues: {
-      category: '0',
+      answer: faq?.answer || '',
+      category: faq?.faqCategoryId.toString() || '',
+      question: faq?.question || '',
     },
     resolver: zodResolver(schema),
   })
   const onSubmit = (data: z.infer<typeof schema>) => {
-    console.log(data)
+    if (mode === 'create')
+      createMutation.mutate({ ...data, faqCategoryId: parseInt(data.category) })
+    if (mode === 'edit')
+      updateMutation.mutate({
+        ...data,
+        faqCategoryId: parseInt(data.category),
+        id: faq?.id!,
+      })
   }
   return (
     <Form {...form}>
@@ -68,7 +102,6 @@ export default function NewFAQForm() {
                     <SelectValue placeholder="Selecciona una categoría" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="0">General</SelectItem>
                     {categories?.map((category) => (
                       <SelectItem
                         key={category.id}
@@ -99,7 +132,7 @@ export default function NewFAQForm() {
         />
         <DialogFooter>
           <div className="w-full py-2 flex justify-between">
-            <DialogClose>
+            <DialogClose asChild>
               <Button type="button" variant="secondary">
                 Cancelar
               </Button>
