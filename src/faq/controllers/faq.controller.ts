@@ -56,7 +56,10 @@ class FAQsController {
     async (c) => {
       const faq = c.req.valid('json')
       const response: ResponseAPI = {
-        data: await this.faqService.updateFAQ(faq.id, faq),
+        data: await this.faqService.updateFAQ(faq.id, {
+          ...faq,
+          faqCategoryId: faq.category,
+        }),
         message: 'FAQ Category updated',
         success: true,
       }
