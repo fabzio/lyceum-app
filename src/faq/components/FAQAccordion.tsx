@@ -6,9 +6,8 @@ import {
 } from '@/components/ui/accordion'
 
 import { FAQ } from '../interfaces/FAQ'
-import { Trash } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import EditFAQDialog from '../views/FAQs/EditFAQDialog'
+import DeleteFAQDialog from '../views/FAQs/DeleteFAQDialog'
 
 interface Props {
   faqs: FAQ[]
@@ -43,9 +42,7 @@ function AskAccordionItem({ faq, value }: { faq: FAQ; value: string }) {
 
       <div className="flex gap-2">
         <EditFAQDialog faq={faq} />
-        <Button size="icon" variant="ghost">
-          <Trash />
-        </Button>
+        <DeleteFAQDialog faqId={faq.id} />
       </div>
     </div>
   )

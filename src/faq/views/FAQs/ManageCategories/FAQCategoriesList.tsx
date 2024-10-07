@@ -12,11 +12,17 @@ export default function FAQCategoriesList() {
   return (
     <div className="px-4">
       <NewCategoryDialog />
-      {categories.map((category, idx) => (
-        <div key={idx} className="p-4">
-          <a href={`#${category.name}`}>{category.name}</a>
-        </div>
-      ))}
+      {categories.length ? (
+        categories.map((category, idx) => (
+          <div key={idx} className="p-4">
+            <a href={`#${category.name}`}>{category.name}</a>
+          </div>
+        ))
+      ) : (
+        <p className="max-w-40 text-center my-6">
+          No hay categorías de preguntas frecuentes
+        </p>
+      )}
     </div>
   )
 }

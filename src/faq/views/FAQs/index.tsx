@@ -24,7 +24,13 @@ export default function FAQs() {
           <NewFAQDialog />
         </div>
         <div>
-          <CategorizedFAQList categorizedFAQs={groupedFAQs} />
+          {faqsList.length ? (
+            <CategorizedFAQList categorizedFAQs={groupedFAQs} />
+          ) : (
+            <div className="w-full h-60 flex justify-center items-center">
+              No se encontraron preguntas frecuentes
+            </div>
+          )}
         </div>
       </section>
     </div>

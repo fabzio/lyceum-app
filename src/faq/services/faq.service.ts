@@ -18,7 +18,10 @@ class FAQService {
 
   public static async createFAQ(faq: Omit<FAQ, 'id'>): Promise<void> {
     try {
-      const res = await http.post(`/faq/faqs`, faq)
+      const res = await http.post(`/faq/faqs`, {
+        ...faq,
+        category: faq.faqCategoryId,
+      })
       const response = res.data as ResponseAPI
       if (!response.success) {
         throw new Error('Error')
@@ -36,6 +39,18 @@ class FAQService {
         answer: faq.answer,
         category: faq.faqCategoryId,
       })
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error('Error')
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  public static async deleteFAQ(faqId: FAQ['id']): Promise<void> {
+    try {
+      const res = await http.delete(`/faq/faqs/${faqId}`)
       const response = res.data as ResponseAPI
       if (!response.success) {
         throw new Error('Error')

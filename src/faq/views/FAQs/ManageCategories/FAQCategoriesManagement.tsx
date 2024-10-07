@@ -11,14 +11,6 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import {
   DropdownMenu,
@@ -26,12 +18,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { MoreHorizontal, Pencil, Save, Trash, X } from 'lucide-react'
+import { MoreHorizontal, Pencil, Save, X } from 'lucide-react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import FAQCategoryService from '@/faq/services/faqCategory.service'
 import { FAQCategory } from '@/faq/interfaces/FAQCategory'
 import { QueryKeys } from '@/constants/queryKeys'
 import useQueryStore from '@/hooks/useQueryStore'
+import DeleteFAQCategory from './DeleteFAQCategory'
 
 export default function FAQCategoriesManagement() {
   const queryClient = useQueryClient()
@@ -225,37 +218,7 @@ function EditableCategoryRow({
                   <Pencil className="mr-2 h-4 w-4" />
                   Editar
                 </DropdownMenuItem>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                      <Trash className="mr-2 h-4 w-4" />
-                      Eliminar
-                    </DropdownMenuItem>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle className="text-center">
-                        Eliminar categoría
-                      </DialogTitle>
-                      <DialogDescription className="text-center">
-                        Esta seguro de eliminar la categoría? Si lo hace, las
-                        preguntas asociadas a esta categoría pasarán a{' '}
-                        <span className="font-semibold">General</span>.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="flex justify-end space-x-2">
-                      <Button variant="outline" onClick={() => {}}>
-                        Cancelar
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        onClick={() => onDelete(category.id)}
-                      >
-                        Eliminar
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                <DeleteFAQCategory handleDelete={() => onDelete(category.id)} />
               </>
             )}
           </DropdownMenuContent>

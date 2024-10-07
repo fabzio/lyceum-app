@@ -56,7 +56,7 @@ export default function FAQForm({ handleClose, mode, faq }: Props) {
   const form = useForm<z.infer<typeof schema>>({
     defaultValues: {
       answer: faq?.answer || '',
-      category: faq?.faqCategoryId.toString() || '',
+      category: faq?.faqCategoryId.toString(),
       question: faq?.question || '',
     },
     resolver: zodResolver(schema),
