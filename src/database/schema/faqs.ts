@@ -9,8 +9,8 @@ export const faqs = schema.table(
   'faqs',
   {
     id: serial('id').primaryKey(),
-    question: varchar('question', { length: 255 }),
-    answer: varchar('answer', { length: 255 }),
+    question: varchar('question', { length: 255 }).notNull(),
+    answer: varchar('answer', { length: 255 }).notNull(),
     faqCategoryId: serial('faq_category_id').notNull(),
   },
   (table) => {

@@ -15,6 +15,10 @@ class FAQCategoriesRoute implements Route {
 
   private initializeRoutes() {
     this.router.route('/', this.FAQCategoriesController.getFAQCategories)
+    this.router.route('/', this.FAQCategoriesController.createFAQCategory)
+    this.router.route('/', this.FAQCategoriesController.updateFAQCategory)
+    this.router.route('/', this.FAQCategoriesController.deleteFAQCategory)
+    
   }
 }
 

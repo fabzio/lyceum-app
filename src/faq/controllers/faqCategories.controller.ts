@@ -3,7 +3,6 @@ import { FaqCategoriesService } from '../services'
 import { FaqCategoriesDAO } from '../dao/FaqCategoriesDAO'
 import { zValidator } from '@hono/zod-validator'
 import { faqCategoriesSchema } from '@/database/schema/faqCategories'
-import { z } from 'zod'
 
 class FAQCategoriesController {
   private router = new Hono()
