@@ -5,7 +5,9 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 
-import { FAQ } from '../interfaces/asks'
+import { FAQ } from '../interfaces/FAQ'
+import EditFAQDialog from '../views/FAQs/EditFAQDialog'
+import DeleteFAQDialog from '../views/FAQs/DeleteFAQDialog'
 
 interface Props {
   faqs: FAQ[]
@@ -28,13 +30,20 @@ export default function FAQAcordion({ faqs = [] }: Props) {
 
 function AskAccordionItem({ faq, value }: { faq: FAQ; value: string }) {
   return (
-    <AccordionItem value={value}>
-      <AccordionTrigger>
-        <h3 className="font-semibold">{faq.question}</h3>
-      </AccordionTrigger>
-      <AccordionContent>
-        <p>{faq.answer}</p>
-      </AccordionContent>
-    </AccordionItem>
+    <div className="flex ">
+      <AccordionItem className="flex-1" value={value}>
+        <AccordionTrigger>
+          <h3 className="font-semibold">{faq.question}</h3>
+        </AccordionTrigger>
+        <AccordionContent>
+          <p>{faq.answer}</p>
+        </AccordionContent>
+      </AccordionItem>
+
+      <div className="flex gap-2">
+        <EditFAQDialog faq={faq} />
+        <DeleteFAQDialog faqId={faq.id} />
+      </div>
+    </div>
   )
 }
