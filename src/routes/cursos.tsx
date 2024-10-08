@@ -1,16 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
 import TransitionPage from '@/components/anim/TransitionPage'
-import Security from '@/security'
+import Courses from '@/courses'
 
-export const Route = createFileRoute('/seguridad')({
-  component: () => <SecurityPage />,
+export const Route = createFileRoute('/cursos')({
+  component: () => <CursosPage />,
 })
-
-function SecurityPage() {
+function CursosPage() {
   return (
     <TransitionPage>
-      <Security />
+      <Courses />
     </TransitionPage>
   )
 }
-
