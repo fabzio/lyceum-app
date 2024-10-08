@@ -2,7 +2,7 @@ import { ComponentProps } from 'react'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { ThesisThemeRequest } from '@/interfaces/Thesis/ThesisThemeRequest'
+import { ThesisThemeRequest } from '@/thesis/Interfaces/ThesisThemeRequest'
 import { useMail } from '../use-mail'
 
 interface MailListProps {
@@ -22,8 +22,7 @@ export function MailList({ items }: MailListProps) {
               'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
               mail.selected === item.id && 'bg-muted'
             )}
-            onClick={() =>setMail({...mail, selected: item.id,})
-            }
+            onClick={() => setMail({ ...mail, selected: item.id })}
           >
             <div className="flex w-full flex-col gap-1">
               <div className="flex items-center">
@@ -45,7 +44,8 @@ export function MailList({ items }: MailListProps) {
               <div className="text-sm">{item.thesis.area}</div>
             </div>
             <div className="flex items-center gap-2">
-              {item.approvalHistory.map((step) =>
+              {item.approvalHistory.map(
+                (step) =>
                   step.status === 'current' && (
                     <Badge
                       key={step.step}
@@ -68,11 +68,11 @@ function getBadgeVariantFromLabel(
   label: string
 ): ComponentProps<typeof Badge>['className'] {
   if (['Aprobado por Director de Carrera'].includes(label)) {
-    return "bg-blue-100 text-blue-800"
+    return 'bg-blue-100 text-blue-800'
   }
 
   if (['Aprobado por Coordinador de Área'].includes(label)) {
-    return "bg-blue-100 text-blue-800"
+    return 'bg-blue-100 text-blue-800'
   }
 
   return 'default'

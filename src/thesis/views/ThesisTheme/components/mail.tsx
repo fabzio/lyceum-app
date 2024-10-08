@@ -12,7 +12,7 @@ import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { MailDisplay } from './mail-display'
 import { MailList } from './mail-list'
-import { ThesisThemeRequest } from '@/interfaces/Thesis/ThesisThemeRequest'
+import { ThesisThemeRequest } from '@/thesis/Interfaces/ThesisThemeRequest'
 import { useMail } from '../use-mail'
 import { Button } from '@/components/ui/button'
 import ThesisThemeStepper from '@/thesis/components/ThesisThemeStepper'
@@ -82,14 +82,26 @@ export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
           <Separator />
           <div className="p-6 space-y-6">
             <div>
-                <h3 className="font-semibold mb-2">Información de Ficha</h3>
-                <p>Solicitante: {mails.find((item) => item.id === mail.selected)?.requester}</p>
-                <p>Concentración: {mails.find((item) => item.id === mail.selected)?.thesis.concentration}</p>
+              <h3 className="font-semibold mb-2">Información de Ficha</h3>
+              <p>
+                Solicitante:{' '}
+                {mails.find((item) => item.id === mail.selected)?.requester}
+              </p>
+              <p>
+                Concentración:{' '}
+                {
+                  mails.find((item) => item.id === mail.selected)?.thesis
+                    .concentration
+                }
+              </p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">Historial</h3>
               <ThesisThemeStepper
-                history={mails.find((item) => item.id === mail.selected)?.approvalHistory}
+                history={
+                  mails.find((item) => item.id === mail.selected)
+                    ?.approvalHistory
+                }
               />
             </div>
           </div>
