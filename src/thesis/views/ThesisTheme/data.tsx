@@ -6,13 +6,11 @@ export const thesisThemeRequestList: ThesisThemeRequest[] = [
     status: 'pending',
     thesis: {
       id: '1',
-      title: 'Análisis de vulnerabilidades comunes en contratos inteligentes',
+      title:
+        'Desarrollo de un Sistema de Gestión de Proyectos Basado en Metodologías Ágiles para Mejorar la Productividad en Equipos de Trabajo Remotos',
       area: 'Sistemas de Información',
       status: 'pending',
-      students: [
-        { code: '00089434', name: 'Rony Tupia' },
-        { code: '19872992', name: 'Víctor Bello' },
-      ],
+      students: [{ code: '00089434', name: 'Sebastián Meléndez' }],
       advisors: [
         { code: '00089434', name: 'Rony Tupia', isPrincipal: true },
         { code: '19872992', name: 'Víctor Bello', isPrincipal: false },
@@ -50,18 +48,18 @@ export const thesisThemeRequestList: ThesisThemeRequest[] = [
     thesis: {
       id: '2',
       title:
-        'Desarrollo de un Sistema de Gestión de Proyectos Basado en Metodologías Ágiles para Mejorar la Productividad en Equipos de Trabajo Remotos',
+        'Estudio de las soluciones actuales para la escalabilidad en redes blockchain, como la fragmentación (sharding) y las cadenas laterales (sidechains), y su efectividad en diferentes escenarios.',
       area: 'Sistemas de Información',
       status: 'approved',
       students: [
-        { code: '00089434', name: 'Rony Tupia' },
-        { code: '19872992', name: 'Víctor Bello' },
+        { code: '12345648', name: 'Piero Esparza' },
+        { code: '78965535', name: 'Víctor Bello' },
       ],
       advisors: [
-        { code: '00089434', name: 'Rony Tupia', isPrincipal: true },
-        { code: '19872992', name: 'Víctor Bello', isPrincipal: false },
+        { code: '46465411', name: 'Rony Tupia', isPrincipal: true },
+        { code: '78945156', name: 'Víctor Bello', isPrincipal: false },
       ],
-      concentration: 'Sistemas de Información',
+      concentration: 'sistemas de información',
     },
     approvalHistory: [
       {

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Download } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -15,11 +15,26 @@ import {
 } from '@/components/ui/table'
 import { ThesisThemeRequest } from '@/thesis/Interfaces/ThesisThemeRequest'
 import { thesisThemeRequestList } from '../data'
-import { Form } from 'react-hook-form'
+import { useParams } from '@tanstack/react-router'
 
 export default function ThesisthemeRequestForm() {
-  const [selectedThesis, setSelectedThesis] =
-    useState<ThesisThemeRequest | null>(thesisThemeRequestList[0])
+  const { idSolicitudTema } = useParams({
+    from: '/tesis/tema-tesis/detalle/$idSolicitudTema',
+  })
+
+  console.log('solicitud0:' + idSolicitudTema)
+  const [selectedThesis, setSelectedThesis] = useState<ThesisThemeRequest>(
+    thesisThemeRequestList.find((item) => item.id === idSolicitudTema) ||
+      thesisThemeRequestList[0]
+  )
+
+  useEffect(() => {
+    setSelectedThesis(
+      thesisThemeRequestList.find((item) => item.id === idSolicitudTema) ||
+        thesisThemeRequestList[0]
+    )
+  }, [idSolicitudTema])
+
   const [file, setFile] = useState<File | null>(null)
 
   const handleAdvisorChange = (code: string) => {
@@ -44,7 +59,7 @@ export default function ThesisthemeRequestForm() {
   }
 
   return (
-    <Form>
+    <>
       {selectedThesis && (
         <ScrollArea className="h-full">
           <div className="p-6 space-y-6">
@@ -122,6 +137,6 @@ export default function ThesisthemeRequestForm() {
           </div>
         </ScrollArea>
       )}
-    </Form>
+    </>
   )
 }

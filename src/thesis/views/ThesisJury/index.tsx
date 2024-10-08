@@ -13,21 +13,27 @@ export default function ThesisJuryRequestList() {
         <div className="flex gap-3">
           <ThesisJuryRequestSelectFilter />
         </div>
-      </div>  
+      </div>
       <div>
-          <ThesisJuryRequestElement id="39457392" 
+        <ThesisJuryRequestElement
+          id="39457392"
           title="Solicitud de jurado para tema de tesis para el área de Sistemas de Información"
-          owner="Sebastián Meléndez" date="22/09/2024" status= "Solicitud enviada por secretario académico"/>
-          
-          <ThesisJuryRequestElement id="45612387" 
-          title= "Solicitud de jurado para tema de tesis para el área de Ciberseguridad"
-          owner="Piero Esparza" date="22/09/2024" status= "Solicitud enviada por secretario académico"/>
+          owner="Sebastián Meléndez"
+          date="22/09/2024"
+          status="Solicitud enviada por secretario académico"
+        />
+
+        <ThesisJuryRequestElement
+          id="39457393"
+          title="Solicitud de jurado para tema de tesis para el área de Ciberseguridad"
+          owner="Piero Esparza"
+          date="22/09/2024"
+          status="Solicitud enviada por secretario académico"
+        />
       </div>
     </div>
   )
 }
-
-
 
 // const thesisjuryrequests: ThesisJuryRequest[] = [
 //   {

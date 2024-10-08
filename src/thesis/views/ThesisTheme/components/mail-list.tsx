@@ -3,14 +3,18 @@ import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { ThesisThemeRequest } from '@/thesis/Interfaces/ThesisThemeRequest'
-import { useMail } from '../use-mail'
+import { useNavigate, useParams } from '@tanstack/react-router'
 
 interface MailListProps {
   items: ThesisThemeRequest[]
 }
 
 export function MailList({ items }: MailListProps) {
-  const [mail, setMail] = useMail()
+  const { idSolicitudTema } = useParams({
+    from: '/tesis/tema-tesis/detalle/$idSolicitudTema',
+  })
+
+  const navigate = useNavigate()
 
   return (
     <ScrollArea>
@@ -20,9 +24,14 @@ export function MailList({ items }: MailListProps) {
             key={item.id}
             className={cn(
               'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
-              mail.selected === item.id && 'bg-muted'
+              idSolicitudTema === item.id && 'bg-muted'
             )}
-            onClick={() => setMail({ ...mail, selected: item.id })}
+            onClick={() =>
+              navigate({
+                to: '/tesis/tema-tesis/detalle/$idSolicitudTema',
+                params: { idSolicitudTema: item.id },
+              })
+            }
           >
             <div className="flex w-full flex-col gap-1">
               <div className="flex items-center">
@@ -35,7 +44,7 @@ export function MailList({ items }: MailListProps) {
                 <div
                   className={cn(
                     'ml-auto text-xs',
-                    mail.selected === item.id
+                    idSolicitudTema === item.id
                       ? 'text-foreground'
                       : 'text-muted-foreground'
                   )}

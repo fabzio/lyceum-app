@@ -1,6 +1,12 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { useNavigate } from "@tanstack/react-router"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { useNavigate } from '@tanstack/react-router'
 
 interface ProjectCardProps {
   id: string
@@ -10,17 +16,24 @@ interface ProjectCardProps {
   status: string
 }
 
-export default function ThesisThemeElement({ id, title, owner, date, status }: ProjectCardProps) {
+export default function ThesisThemeElement({
+  id,
+  title,
+  owner,
+  date,
+  status,
+}: ProjectCardProps) {
   const navigate = useNavigate({
-    from: "/tesis"
+    from: '/tesis',
   })
   const handleChooseCard = () => {
     navigate({
-      to: "/tesis/tema-tesis/detalle",
+      to: '/tesis/tema-tesis/detalle/$idSolicitudTema',
+      params: { idSolicitudTema: id },
     })
   }
   return (
-    <Card className="w-full my-6 p-2 cursor-pointer" onClick={handleChooseCard} >
+    <Card className="w-full my-6 p-2 cursor-pointer" onClick={handleChooseCard}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           N°{id}
