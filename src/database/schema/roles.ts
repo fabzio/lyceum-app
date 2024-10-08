@@ -1,4 +1,4 @@
-import { serial, varchar } from 'drizzle-orm/pg-core'
+import { boolean, serial, varchar } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
@@ -11,6 +11,7 @@ export const roles = schema.table('roles', {
   id: serial('id').primaryKey(),
   name: varchar('name', { length: 80 }).notNull(),
   unitType: unitType('unit_type').notNull(),
+  editable: boolean('editable').default(true),
 })
 
 export const rolesRelations = relations(roles, ({ many }) => ({

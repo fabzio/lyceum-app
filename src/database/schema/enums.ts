@@ -1,4 +1,4 @@
-import { schema } from "..";
+import { schema } from '..'
 
 export const unitType = schema.enum('unit_type', [
   'university',
@@ -6,4 +6,17 @@ export const unitType = schema.enum('unit_type', [
   'department',
   'speciality',
   'section',
+])
+
+export const accountStatus = schema.enum('account_status', [
+  'active',
+  'inactive',
+  'deleted',
+])
+
+export const scheduleStatus = schema.enum('schedule_status', [
+  'visible',
+  'hidden',
+  'finished',
+  'approved',
 ])
