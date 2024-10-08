@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Separator } from '@/components/ui/separator'
-import { ThesisThemeRequest } from '@/interfaces/Thesis/ThesisThemeRequest'
+import { ThesisThemeRequest } from '@/thesis/Interfaces/ThesisThemeRequest'
 import ThesisThemeRequestForm from './ThesisThemeRequestForm'
 import { ScrollArea } from '@radix-ui/react-scroll-area'
 
@@ -47,11 +47,11 @@ export function MailDisplay({ mail }: MailDisplayProps) {
       </div>
       <Separator />
       {mail ? (
-          <ScrollArea>
-            <div className="flex-1 whitespace-pre-wrap p-4 text-sm max-w-xl">
-              <ThesisThemeRequestForm />
-            </div>
-          </ScrollArea>
+        <ScrollArea>
+          <div className="flex-1 whitespace-pre-wrap p-4 text-sm max-w-xl">
+            <ThesisThemeRequestForm />
+          </div>
+        </ScrollArea>
       ) : (
         <div className="p-8 text-center text-muted-foreground">
           No message selected

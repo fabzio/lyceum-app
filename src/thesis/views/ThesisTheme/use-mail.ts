@@ -1,9 +1,9 @@
-import { atom, useAtom } from "jotai"
+import { atom, useAtom } from 'jotai'
 
-import { ThesisThemeRequest } from "@/interfaces/Thesis/ThesisThemeRequest"
+import { ThesisThemeRequest } from '@/thesis/Interfaces/ThesisThemeRequest'
 
 type Config = {
-  selected: ThesisThemeRequest["id"] | null
+  selected: ThesisThemeRequest['id'] | null
 }
 
 const configAtom = atom<Config>({
