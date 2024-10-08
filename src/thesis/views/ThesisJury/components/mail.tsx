@@ -13,9 +13,9 @@ import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { MailDisplay } from './mail-display'
 import { MailList } from './mail-list'
 import { type Mail } from '../data'
-import { useMail } from '../use-mail'
 import { Button } from '@/components/ui/button'
 import ThesisThemeStepper from '@/thesis/components/ThesisThemeStepper'
+import { useParams } from '@tanstack/react-router'
 
 interface MailProps {
   mails: Mail[]
@@ -23,7 +23,7 @@ interface MailProps {
 }
 
 export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
-  const [mail] = useMail()
+  const { idSolicitud } = useParams({ strict: false })
 
   return (
     <ResizablePanelGroup
@@ -68,7 +68,7 @@ export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
       <ResizableHandle />
       <ResizablePanel defaultSize={defaultLayout[1]} minSize={0}>
         <MailDisplay
-          mail={mails.find((item) => item.id === mail.selected) || null}
+          mail={mails.find((item) => item.id === idSolicitud) || null}
         />
       </ResizablePanel>
       <ResizableHandle />
@@ -84,8 +84,7 @@ export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
             <div className="pb-80 space-y-4">
               <ThesisThemeStepper
                 history={
-                  mails.find((item) => item.id === mail.selected)
-                    ?.approvalHistory
+                  mails.find((item) => item.id === idSolicitud)?.approvalHistory
                 }
               />
             </div>

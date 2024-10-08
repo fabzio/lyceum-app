@@ -3,14 +3,15 @@ import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Mail } from '../data'
-import { useMail } from '../use-mail'
+import { useNavigate, useParams } from '@tanstack/react-router'
 
 interface MailListProps {
   items: Mail[]
 }
 
 export function MailList({ items }: MailListProps) {
-  const [mail, setMail] = useMail()
+  const { idSolicitud } = useParams({ strict: false })
+  const navigate = useNavigate()
 
   return (
     <ScrollArea>
@@ -20,13 +21,10 @@ export function MailList({ items }: MailListProps) {
             key={item.id}
             className={cn(
               'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
-              mail.selected === item.id && 'bg-muted'
+              idSolicitud === item.id && 'bg-muted'
             )}
             onClick={() =>
-              setMail({
-                ...mail,
-                selected: item.id,
-              })
+              navigate({ to: '/tesis/prop-jurados/detalle/' + item.id })
             }
           >
             <div className="flex w-full flex-col gap-1">
@@ -40,7 +38,7 @@ export function MailList({ items }: MailListProps) {
                 <div
                   className={cn(
                     'ml-auto text-xs',
-                    mail.selected === item.id
+                    idSolicitud === item.id
                       ? 'text-foreground'
                       : 'text-muted-foreground'
                   )}
