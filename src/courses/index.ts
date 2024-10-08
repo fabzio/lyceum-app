@@ -1,6 +1,6 @@
 import { Route } from '@/interfaces/route'
 import { Hono } from 'hono'
-import { RiskStudentRoute } from './routes'
+import { RiskStudentReportRoute, RiskStudentRoute } from './routes'
 
 class Course implements Route {
   public path = '/courses'
@@ -9,7 +9,7 @@ class Course implements Route {
   private routes: Route[]
 
   constructor() {
-    this.routes = [new RiskStudentRoute()]
+    this.routes = [new RiskStudentRoute(), new RiskStudentReportRoute()]
     this.initializeRoutes()
   }
 

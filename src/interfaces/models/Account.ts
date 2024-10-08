@@ -1,6 +1,10 @@
 export interface Account {
   id: number
-  codigo: string
-  nombres: string
-  apellidos: string
+  code: string
+  name: string
+  firstSurname: string
+  secondSurname: string
+  email: string
+  googleId: string
+  state: string
 }

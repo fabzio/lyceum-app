@@ -1,4 +1,4 @@
-import { char, serial } from 'drizzle-orm/pg-core'
+import { boolean, char, serial } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
@@ -8,6 +8,7 @@ import { studyPlans } from '@/database/schema'
 export const terms = schema.table('terms', {
   id: serial('id').primaryKey(),
   name: char('name', { length: 6 }).notNull(),
+  current: boolean('current').notNull().default(true),
 })
 
 export const termsRelations = relations(terms, ({ many }) => ({

@@ -3,7 +3,7 @@ import { Hono } from 'hono'
 import { RiskStudentController } from '../controllers'
 
 class RiskStudentRoute implements Route {
-  public path = '/riskStudents'
+  public path = '/risk-students'
   public router = new Hono()
 
   private riskStudentController = new RiskStudentController()
@@ -14,6 +14,7 @@ class RiskStudentRoute implements Route {
 
   private initializeRoutes() {
     this.router.route('/', this.riskStudentController.getRiskStudents)
+    this.router.route('/', this.riskStudentController.getRiskStudentReports)
   }
 }
 export default RiskStudentRoute
