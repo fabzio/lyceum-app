@@ -6,7 +6,6 @@ import {
   TableHead,
   TableCell,
 } from '@/components/ui/table'
-import { IRiskStudent } from '@/interfaces'
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import {
@@ -17,18 +16,30 @@ import {
   PaginationPrevious,
   PaginationContent,
 } from '@/components/ui/pagination'
+import { RiskStudentGeneral } from '@/courses/interfaces/RIskStudentGeneral'
+import useCourseStore from '@/courses/store'
 
 interface TableRiskStudentsProps {
-  tableRiskStudents: IRiskStudent[]
+  tableRiskStudents: RiskStudentGeneral[]
 }
 
 export default function TableRiskStudents({
   tableRiskStudents,
 }: TableRiskStudentsProps) {
   const navigate = useNavigate()
+  const { setSelectedRiskStudent } = useCourseStore()
 
-  const OnRowClick = (riskStudent: IRiskStudent) => {
-    navigate({ to: `/cursos/alumnosRiesgo/${riskStudent.codigo}` })
+  const OnRowClick = (riskStudent: RiskStudentGeneral) => {
+    setSelectedRiskStudent(riskStudent)
+    navigate({
+      to: '/cursos/alumnos-riesgo/$code',
+      params: {
+        code: riskStudent.student.code,
+      },
+      search: {
+        scheduleId: riskStudent.schedule.id
+      }
+    })
   }
 
   // Estado para controlar la página actual
@@ -83,25 +94,27 @@ export default function TableRiskStudents({
           ) : (
             currentStudents.map((riskStudent) => (
               <TableRow
-                key={riskStudent.codigo}
+                key={riskStudent.student.code}
                 className="transition duration-200 cursor-pointer"
                 onClick={() => OnRowClick(riskStudent)}
               >
                 <TableCell className="py-3 px-6 text-center">
-                  {riskStudent.codigo}
+                  {riskStudent.student.code}
                 </TableCell>
                 <TableCell className="py-3 px-6">
-                  {riskStudent.nombres}
+                  {riskStudent.student.name}
                 </TableCell>
                 <TableCell className="py-3 px-6">
-                  {riskStudent.apellidos}
+                  {riskStudent.student.surname}
                 </TableCell>
-                <TableCell className="py-3 px-6">{riskStudent.curso}</TableCell>
                 <TableCell className="py-3 px-6">
-                  {riskStudent.motivo}
+                  {riskStudent.course.name}
+                </TableCell>
+                <TableCell className="py-3 px-6">
+                  {riskStudent.reason}
                 </TableCell>
                 <TableCell className="py-3 px-6 text-center">
-                  {riskStudent.ultimaPuntuacion}
+                  {riskStudent.score}
                 </TableCell>
               </TableRow>
             ))

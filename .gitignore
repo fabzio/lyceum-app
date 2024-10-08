@@ -24,4 +24,8 @@ dist-ssr
 *.sw?
 
 #tsc
-*.tsbuildinfo
+*.node.tsbuildinfo
+*.app.tsbuildinfo
+
+#router
+src/routeTree.gen.ts

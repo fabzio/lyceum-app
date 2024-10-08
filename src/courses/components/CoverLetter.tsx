@@ -3,7 +3,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ValidRoutes } from '@/constants/paths'
 import { useTabs } from '@/hooks/useTabs'
 
-export default function CoverLetterComponent() {
+export default function CoverLetter() {
   const { pathname } = useLocation()
   const { activeTab, handleChangeTab } = useTabs(pathname as ValidRoutes)
 

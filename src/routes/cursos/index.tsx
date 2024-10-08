@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import CoverLetters from '@/courses/views/CoverLetterView'
+import CoverLetters from '@/courses/views/CoverLetter'
 
 export const Route = createFileRoute('/cursos/')({
   component: () => <CoverLetters/>,
