@@ -13,12 +13,17 @@ import { Separator } from '@/components/ui/separator'
 import { ThesisThemeRequest } from '@/thesis/Interfaces/ThesisThemeRequest'
 import ThesisThemeRequestForm from './ThesisThemeRequestForm'
 import { ScrollArea } from '@radix-ui/react-scroll-area'
+import { useParams } from '@tanstack/react-router'
 
 interface MailDisplayProps {
-  mail: ThesisThemeRequest | null
+  mails: ThesisThemeRequest[] | null
 }
 
-export function MailDisplay({ mail }: MailDisplayProps) {
+export function MailDisplay({ mails }: MailDisplayProps) {
+  const { idSolicitudTema } = useParams({
+    from: '/tesis/tema-tesis/detalle/$idSolicitudTema',
+  })
+  const mail = mails?.find((item) => item.id === idSolicitudTema)
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center p-2">

@@ -13,9 +13,9 @@ import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { MailDisplay } from './mail-display'
 import { MailList } from './mail-list'
 import { ThesisThemeRequest } from '@/thesis/Interfaces/ThesisThemeRequest'
-import { useMail } from '../use-mail'
 import { Button } from '@/components/ui/button'
 import ThesisThemeStepper from '@/thesis/components/ThesisThemeStepper'
+import { useParams } from '@tanstack/react-router'
 
 interface MailProps {
   mails: ThesisThemeRequest[]
@@ -23,7 +23,9 @@ interface MailProps {
 }
 
 export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
-  const [mail] = useMail()
+  const { idSolicitudTema } = useParams({
+    from: '/tesis/tema-tesis/detalle/$idSolicitudTema',
+  })
 
   return (
     <ResizablePanelGroup
@@ -67,9 +69,7 @@ export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={defaultLayout[1]} minSize={0}>
-        <MailDisplay
-          mail={mails.find((item) => item.id === mail.selected) || null}
-        />
+        <MailDisplay mails={mails} />
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={defaultLayout[2]} minSize={0}>
@@ -85,12 +85,12 @@ export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
               <h3 className="font-semibold mb-2">Información de Ficha</h3>
               <p>
                 Solicitante:{' '}
-                {mails.find((item) => item.id === mail.selected)?.requester}
+                {mails.find((item) => item.id === idSolicitudTema)?.requester}
               </p>
               <p>
                 Concentración:{' '}
                 {
-                  mails.find((item) => item.id === mail.selected)?.thesis
+                  mails.find((item) => item.id === idSolicitudTema)?.thesis
                     .concentration
                 }
               </p>
@@ -99,7 +99,7 @@ export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
               <h3 className="font-semibold mb-2">Historial</h3>
               <ThesisThemeStepper
                 history={
-                  mails.find((item) => item.id === mail.selected)
+                  mails.find((item) => item.id === idSolicitudTema)
                     ?.approvalHistory
                 }
               />
