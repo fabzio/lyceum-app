@@ -25,11 +25,12 @@ export default function ReportsCard({
     >
       <CardHeader>
         <CardTitle className="text-lg tracking-wider">
-          {capitalize(date, "all")}
+          {capitalize(date, 'all')}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center">
+          <p>Puntaje</p>
           <div className="text-3xl font-bold">{score}</div>
           <div className="text-sm">de {maxScore}</div>
         </div>

@@ -5,6 +5,7 @@ import Security from '@/security'
 export const Route = createFileRoute('/seguridad')({
   component: () => <SecurityPage />,
 })
+
 function SecurityPage() {
   return (
     <TransitionPage>

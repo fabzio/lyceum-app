@@ -1,11 +1,12 @@
 import { useParams } from '@tanstack/react-router'
 import UnitManagement from './components/UnitManagement'
+import { ReactNode } from 'react'
 
 interface Unit {
   name: string
   type: string
   description: string
-  children: any[]
+  children: ReactNode
 }
 
 export default function Unit() {
