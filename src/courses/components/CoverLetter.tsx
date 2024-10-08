@@ -3,7 +3,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ValidRoutes } from '@/constants/paths'
 import { useTabs } from '@/hooks/useTabs'
 
-export default function CoverLetterComponent() {
+export default function CoverLetter() {
   const { pathname } = useLocation()
   const { activeTab, handleChangeTab } = useTabs(pathname as ValidRoutes)
 
@@ -36,11 +36,11 @@ const tabs: Tab[] = [
     label: 'Cartas de Presentación',
   },
   {
-    path: '/cursos/alumnosRiesgo',
+    path: '/cursos/alumnos-riesgo',
     label: 'Alumnos en Riesgo',
   },
   {
-    path: '/cursos/retiroAlumnos',
+    path: '/cursos/retiro-alumnos',
     label: 'Retiro de Alumnos',
   },
 ]

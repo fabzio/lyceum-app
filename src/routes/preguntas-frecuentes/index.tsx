@@ -6,7 +6,7 @@ import { createFileRoute } from '@tanstack/react-router'
 export const Route = createFileRoute('/preguntas-frecuentes/')({
   loader: async ({ context: { queryClient } }) => {
     return queryClient.ensureQueryData({
-      queryKey: [QueryKeys.faq.FAQS],
+      queryKey: [QueryKeys.faq.FAQS,1],
       queryFn: () => FAQService.getFAQs(),
     })
   },
