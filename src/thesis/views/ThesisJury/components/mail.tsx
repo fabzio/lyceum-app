@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button'
 import ThesisThemeStepper from '@/thesis/components/ThesisThemeStepper'
 import { useParams } from '@tanstack/react-router'
 
+
 interface MailProps {
   mails: Mail[]
   defaultLayout: number[] | undefined
@@ -33,10 +34,10 @@ export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
           sizes
         )}`
       }}
-      className="h-full items-stretch"
+      className="max-h-[calc(100vh-3.5rem)] overflow-y-hidden items-stretch"
     >
       <ResizablePanel defaultSize={defaultLayout[0]} minSize={0}>
-        <Tabs defaultValue="all">
+        <Tabs defaultValue="all" className='h-full  flex flex-col'>
           <div className="flex items-center px-4 py-2">
             <h1 className="text-xl font-bold">Jurado de tesis</h1>
             <Button className="ml-auto" variant="outline">
@@ -57,7 +58,7 @@ export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
               </div>
             </form>
           </div>
-          <TabsContent value="all" className="m-0">
+          <TabsContent value="all" className="m-0 overflow-hidden">
             <MailList items={mails} />
           </TabsContent>
           <TabsContent value="unread" className="m-0">
@@ -80,7 +81,7 @@ export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
             </div>
           </div>
           <Separator />
-          <div className="flex flex-1 flex-col items-center justify-center ">
+          <div className="grow flex flex-1 flex-col items-center justify-center ">
             <div className="pb-80 space-y-4">
               <ThesisThemeStepper
                 history={

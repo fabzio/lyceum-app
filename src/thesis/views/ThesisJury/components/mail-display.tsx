@@ -12,7 +12,7 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { Mail } from '../data'
 import ThesisJuryRequestForm from '../ThesisJuryRequestForm'
-import { ScrollArea } from '@radix-ui/react-scroll-area'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 interface MailDisplayProps {
   mail: Mail | null
@@ -20,7 +20,7 @@ interface MailDisplayProps {
 
 export function MailDisplay({ mail }: MailDisplayProps) {
   return (
-    <div className="flex h-full flex-col">
+    <div  className=" flex flex-col h-full">
       <div className="flex items-center p-2">
         <div className="flex items-center gap-2">
           <h1 className="text-xl font-bold">
@@ -47,7 +47,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
       </div>
       <Separator />
       {mail ? (
-        <div className="flex flex-1 flex-col">
+        <div className="flex flex-1 flex-col overflow-hidden">
           <div className="flex items-start p-4">
             <div className="flex flex-grow justify-between items-start gap-4 text-sm">
               <div className="grid gap-1">En proceso</div>
@@ -55,11 +55,14 @@ export function MailDisplay({ mail }: MailDisplayProps) {
             </div>
           </div>
           <Separator />
-          <ScrollArea>
-            <div className="flex-1 whitespace-pre-wrap p-4 text-sm max-w-xl">
-              <ThesisJuryRequestForm mail={mail} />
+          <div className='overflow-hidden'>
+          <ScrollArea className="h-full">
+            <div className='whitespace-pre-wrap p-4 text-sm'>
+            <ThesisJuryRequestForm mail={mail} />
             </div>
           </ScrollArea>
+          </div>
+
         </div>
       ) : (
         <div className="p-8 text-center text-muted-foreground">

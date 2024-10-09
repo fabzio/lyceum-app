@@ -14,8 +14,8 @@ export function MailList({ items }: MailListProps) {
   const navigate = useNavigate()
 
   return (
-    <ScrollArea>
-      <div className="flex flex-col gap-2 p-4 pt-0">
+    <ScrollArea className='h-full'>
+      <div className="flex flex-col gap-2 p-4 pt-0 h-full">
         {items.map((item) => (
           <button
             key={item.id}
