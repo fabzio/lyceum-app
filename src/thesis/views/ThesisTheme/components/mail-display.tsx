@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Separator } from '@/components/ui/separator'
-import { ThesisThemeRequest } from '@/thesis/Interfaces/ThesisThemeRequest'
+import { ThesisThemeRequest } from '@/thesis/interfaces/ThesisThemeRequest'
 import ThesisThemeRequestForm from './ThesisThemeRequestForm'
 import { ScrollArea } from '@radix-ui/react-scroll-area'
 import { useParams } from '@tanstack/react-router'

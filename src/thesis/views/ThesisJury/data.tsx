@@ -191,7 +191,7 @@ export const mails: ThesisJuryRequest[] = [
     status: "pending",
     approvalHistory: [
       { step: "submission", status: "completed", name: "Dr. Laura King", canDownload: true },
-      { step: "initialReview", status: "pending", name: "Prof. Michael Harris" }
+      { step: "initialReview", status: "current", name: "Prof. Michael Harris" }
     ]
   },
   {
@@ -251,7 +251,7 @@ export const mails: ThesisJuryRequest[] = [
     status: "pending",
     approvalHistory: [
       { step: "submission", status: "completed", name: "Dr. Tony Stark" },
-      { step: "initialReview", status: "pending", name: "Prof. Natasha Romanoff" }
+      { step: "initialReview", status: "current", name: "Prof. Natasha Romanoff" }
     ]
   },
   {
@@ -310,7 +310,7 @@ export const mails: ThesisJuryRequest[] = [
     status: "pending",
     approvalHistory: [
       { step: "submission", status: "completed", name: "Dr. Oliver Queen" },
-      { step: "initialReview", status: "pending", name: "Prof. Felicity Smoak" }
+      { step: "initialReview", status: "current", name: "Prof. Felicity Smoak" }
     ]
   },
   {
@@ -368,7 +368,7 @@ export const mails: ThesisJuryRequest[] = [
     status: "pending",
     approvalHistory: [
       { step: "submission", status: "completed", name: "Dr. Ororo Munroe" },
-      { step: "initialReview", status: "pending", name: "Prof. Jean Grey" }
+      { step: "initialReview", status: "current", name: "Prof. Jean Grey" }
     ]
   }
 ]

@@ -6,6 +6,7 @@ export interface Thesis {
     aprovalDate?: string 
     students: { code: string; name: string }[]
     advisors: { code: string; name: string; isPrincipal: boolean }[]
+    career?: string
     status: 'approved' | 'pending'
     concentration: string
   }

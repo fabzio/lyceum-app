@@ -1,4 +1,4 @@
-import { ThesisThemeRequest } from '@/thesis/Interfaces/ThesisThemeRequest'
+import { ThesisThemeRequest } from '@/thesis/interfaces/ThesisThemeRequest'
 
 export const thesisThemeRequestList: ThesisThemeRequest[] = [
   {

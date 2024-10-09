@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { ThesisThemeRequest } from '@/thesis/Interfaces/ThesisThemeRequest'
+import { ThesisThemeRequest } from '@/thesis/interfaces/ThesisThemeRequest'
 import { thesisThemeRequestList } from '../data'
 import { useParams } from '@tanstack/react-router'
 

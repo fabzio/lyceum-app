@@ -2,7 +2,7 @@ import { ComponentProps } from 'react'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { ThesisThemeRequest } from '@/thesis/Interfaces/ThesisThemeRequest'
+import { ThesisThemeRequest } from '@/thesis/interfaces/ThesisThemeRequest'
 import { useNavigate, useParams } from '@tanstack/react-router'
 
 interface MailListProps {

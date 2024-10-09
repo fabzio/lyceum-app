@@ -17,6 +17,10 @@ import { SquareMinus, Plus, SearchIcon } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Mail } from './data'
 import { useEffect } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+// import ThesisJuryRequestService from '@/thesis/services/thesisJuryRequest.service'
+import { QueryKeys } from '@/constants/queryKeys'
+import ThesisService from '@/thesis/services/thesis.service'
 
 const schema = z.object({
   alumnos: z.array(z.object({
@@ -37,8 +41,8 @@ const schema = z.object({
   })),
 })
 
-export default function ThesisJuryRequestForm({mail}:{mail: Mail}) {
-  const thesis = mail.thesis
+export default function ThesisJuryRequestForm({mail}:{mail: Mail | null}) {
+  const thesis = mail?.thesis || null
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -66,21 +70,30 @@ export default function ThesisJuryRequestForm({mail}:{mail: Mail}) {
     name: "jurado",
   });
 
+  const {
+    data,
+  } = useQuery({
+    queryKey: [QueryKeys.thesis.THESIS],
+    queryFn: ThesisService.getTheses,
+  })
+  console.log(data)
+  const queryClient = useQueryClient()
+
   function onSubmit(values: z.infer<typeof schema>) {
     console.log(values)
   }
 
   const traerTesis = () => {
-    console.log('hola')
+    queryClient.invalidateQueries({queryKey:[QueryKeys.thesis.THESIS]})
   }
   useEffect(() => {
-  replaceStudents(mail.thesis.students)
-  replaceAdvisors(thesis.advisors)
-  replaceJury(mail.jury)
-  form.setValue('alumnos', mail.thesis.students)
-  form.setValue('carrera', "INFORMATICA")
-  form.setValue('title', mail.thesis.title)
-  form.setValue('area', mail.thesis.area)
+  replaceStudents(mail?.thesis.students || [{ code: '', name: ''}])
+  replaceAdvisors(thesis?.advisors || [{ code: '', name: ''}])
+  replaceJury(mail?.jury || [{ code: '', name: ''}])
+  form.setValue('alumnos', mail?.thesis.students || [{ code: '', name: ''}])
+  form.setValue('carrera', '')
+  form.setValue('title', thesis?.title || '')
+  form.setValue('area', thesis?.area || '')
   }, [mail])
   return (
     <Form {...form}>

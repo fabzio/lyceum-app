@@ -15,7 +15,7 @@ import { MailList } from './mail-list'
 import { type Mail } from '../data'
 import { Button } from '@/components/ui/button'
 import ThesisThemeStepper from '@/thesis/components/ThesisThemeStepper'
-import { useParams } from '@tanstack/react-router'
+import { useNavigate, useParams } from '@tanstack/react-router'
 
 
 interface MailProps {
@@ -25,7 +25,7 @@ interface MailProps {
 
 export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
   const { idSolicitudJurado } = useParams({ from: '/tesis/prop-jurados/detalle/$idSolicitudJurado' })
-
+  const navigate = useNavigate()
   return (
     <ResizablePanelGroup
       direction="horizontal"
@@ -40,7 +40,10 @@ export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
         <Tabs defaultValue="all" className='h-full  flex flex-col'>
           <div className="flex items-center px-4 py-2">
             <h1 className="text-xl font-bold">Jurado de tesis</h1>
-            <Button className="ml-auto" variant="outline">
+            <Button 
+            className="ml-auto" 
+            variant="outline"
+            onClick={()=>navigate({to:'/tesis/prop-jurados/detalle/$idSolicitudJurado',params:{idSolicitudJurado:'nueva_solicitud'}})}>
               Nueva solicitud
             </Button>
           </div>
