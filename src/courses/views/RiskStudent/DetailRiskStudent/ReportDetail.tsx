@@ -25,13 +25,21 @@ export default function ReportDetail({ reportId }: Props) {
         scheduleId: selectedRiskStudent!.schedule.id,
       }),
   })
-  let reportDetail: RiskStudentReport
+  let reportDetail: RiskStudentReport | null = null
   if (!isLoading) {
     if (!reportsDetail) return null
     reportDetail = reportsDetail[0]
   }
   const getColorForFace = (faceScore: number) =>
-    reportDetail.score === faceScore ? mapColor[faceScore - 1] : 'gray'
+    reportDetail?.score === faceScore ? mapColor[faceScore - 1] : 'gray'
+
+  if (!reportDetail)
+    return (
+      <p className="text-center">
+        No hay reportes para este estudiante todavíam, solicita al docente que
+        genere una.
+      </p>
+    )
   return (
     <>
       <h3 className="text-2xl font-semibold mt-4">Calificación</h3>
