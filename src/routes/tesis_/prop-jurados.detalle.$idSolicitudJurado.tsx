@@ -2,7 +2,9 @@ import ThesisJuryRequestDetail from '@/thesis/views/ThesisJury/ThesisJuryRequest
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
-  '/tesis/prop-jurados/detalle/$idSolicitud'
+  '/tesis/prop-jurados/detalle/$idSolicitudJurado',
 )({
-  component: () => <ThesisJuryRequestDetail />,
+  component: () => (
+    <ThesisJuryRequestDetail/>
+  ),
 })

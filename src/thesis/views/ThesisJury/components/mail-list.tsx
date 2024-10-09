@@ -10,7 +10,7 @@ interface MailListProps {
 }
 
 export function MailList({ items }: MailListProps) {
-  const { idSolicitud } = useParams({ strict: false })
+  const { idSolicitudJurado } = useParams({ from: '/tesis/prop-jurados/detalle/$idSolicitudJurado' })
   const navigate = useNavigate()
 
   return (
@@ -21,7 +21,7 @@ export function MailList({ items }: MailListProps) {
             key={item.id}
             className={cn(
               'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
-              idSolicitud === item.id && 'bg-muted'
+              idSolicitudJurado === item.id && 'bg-muted'
             )}
             onClick={() =>
               navigate({ to: '/tesis/prop-jurados/detalle/' + item.id })
@@ -38,7 +38,7 @@ export function MailList({ items }: MailListProps) {
                 <div
                   className={cn(
                     'ml-auto text-xs',
-                    idSolicitud === item.id
+                    idSolicitudJurado === item.id
                       ? 'text-foreground'
                       : 'text-muted-foreground'
                   )}

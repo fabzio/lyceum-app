@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Separator } from '@/components/ui/separator'
 import { Mail } from '../data'
-import ThesisJuryRequestForm from './ThesisJuryRequestForm'
+import ThesisJuryRequestForm from '../ThesisJuryRequestForm'
 import { ScrollArea } from '@radix-ui/react-scroll-area'
 
 interface MailDisplayProps {
@@ -57,7 +57,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
           <Separator />
           <ScrollArea>
             <div className="flex-1 whitespace-pre-wrap p-4 text-sm max-w-xl">
-              <ThesisJuryRequestForm />
+              <ThesisJuryRequestForm mail={mail} />
             </div>
           </ScrollArea>
         </div>

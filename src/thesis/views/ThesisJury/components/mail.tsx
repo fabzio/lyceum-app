@@ -23,7 +23,7 @@ interface MailProps {
 }
 
 export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
-  const { idSolicitud } = useParams({ strict: false })
+  const { idSolicitudJurado } = useParams({ from: '/tesis/prop-jurados/detalle/$idSolicitudJurado' })
 
   return (
     <ResizablePanelGroup
@@ -68,7 +68,7 @@ export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
       <ResizableHandle />
       <ResizablePanel defaultSize={defaultLayout[1]} minSize={0}>
         <MailDisplay
-          mail={mails.find((item) => item.id === idSolicitud) || null}
+          mail={mails.find((item) => item.id === idSolicitudJurado) || null}
         />
       </ResizablePanel>
       <ResizableHandle />
@@ -84,7 +84,7 @@ export function Mail({ mails, defaultLayout = [32, 48] }: MailProps) {
             <div className="pb-80 space-y-4">
               <ThesisThemeStepper
                 history={
-                  mails.find((item) => item.id === idSolicitud)?.approvalHistory
+                  mails.find((item) => item.id === idSolicitudJurado)?.approvalHistory
                 }
               />
             </div>
