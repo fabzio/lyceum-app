@@ -13,6 +13,7 @@ import {
   LayoutDashboard,
   ShieldCheck,
   Building2,
+  CalendarRange,
 } from 'lucide-react'
 
 type AsideElement = {
@@ -54,6 +55,11 @@ const asideElements: AsideElement[] = [
     path: '/tesis',
     label: 'Tesis',
   },
+  {
+    icon: <CalendarRange />,
+    path: '/matricula',
+    label: 'Matricula',
+  }
 ]
 
 export default function AsideDesktop() {
