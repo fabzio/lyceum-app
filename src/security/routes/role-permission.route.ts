@@ -15,7 +15,6 @@ class RolePermissionsRoute implements Route {
 
   private initializeRoutes() {
     this.router.route('/', this.rolepermissionController.getRolePermissions)
-    this.router.route('/', this.rolepermissionController.insertRolePermission)
   }
 }
 export default RolePermissionsRoute

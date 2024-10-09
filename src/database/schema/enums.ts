@@ -6,6 +6,7 @@ export const unitType = schema.enum('unit_type', [
   'department',
   'speciality',
   'section',
+  'area',
 ])
 
 export const accountStatus = schema.enum('account_status', [
@@ -18,5 +19,11 @@ export const scheduleStatus = schema.enum('schedule_status', [
   'visible',
   'hidden',
   'finished',
+  'approved',
+])
+
+export const thesisRequestStatus = schema.enum('thesis_request_step', [
+  'sended',
+  'denied',
   'approved',
 ])

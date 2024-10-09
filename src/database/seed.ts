@@ -21,57 +21,94 @@ const queryClient = postgres({
 })
 const db = drizzle(queryClient)
 import { pgSchema } from 'drizzle-orm/pg-core'
-import { accounts, roles, terms } from './schema'
+import { accounts, roles, terms, units } from './schema'
 
 export const schema = pgSchema(DB_SCHEMA)
-const main = async () => {
-  const accountsData: (typeof accounts.$inferInsert)[] = []
 
-  for (let i = 0; i < 10; i++) {
-    accountsData.push({
-      name: faker.person.firstName(),
-      code: faker.string.numeric(8),
-      email: faker.internet.email(),
-      firstSurname: faker.person.lastName(),
-      secondSurname: faker.person.lastName(),
-      googleId: faker.internet.password(),
-    })
-  }
-  console.log('Seed start')
-  //Accounts
-  await db.insert(accounts).values(accountsData)
+const accountsData: (typeof accounts.$inferInsert)[] = []
 
-  //Terms
-  await db.insert(terms).values([
-    {
-      name: '2024-2',
-    },
-  ])
-
-  //Base roles
-  await db.insert(roles).values([
-    {
-      name: 'Estudiante',
-      unitType: 'university',
-      editable: false,
-    },
-    {
-      name: 'Profesor',
-      unitType: 'university',
-      editable: false,
-    },
-    {
-      name: 'Administrador',
-      unitType: 'university',
-      editable: false,
-    },
-    {
-      name: 'Externo',
-      unitType: 'university',
-      editable: false,
-    },
-  ])
-  console.log('Seed end')
+for (let i = 0; i < 10; i++) {
+  accountsData.push({
+    name: faker.person.firstName(),
+    code: faker.string.numeric(8),
+    email: faker.internet.email(),
+    firstSurname: faker.person.lastName(),
+    secondSurname: faker.person.lastName(),
+    googleId: faker.internet.password(),
+  })
 }
+console.log('Seed start')
+//Accounts
+await db.insert(accounts).values(accountsData)
 
-main()
+//Terms
+await db.insert(terms).values([
+  {
+    name: '2024-2',
+  },
+])
+
+//Base roles
+await db.insert(roles).values([
+  {
+    name: 'Estudiante',
+    unitType: 'university',
+    editable: false,
+  },
+  {
+    name: 'Profesor',
+    unitType: 'university',
+    editable: false,
+  },
+  {
+    name: 'Administrador',
+    unitType: 'university',
+    editable: false,
+  },
+  {
+    name: 'Externo',
+    unitType: 'university',
+    editable: false,
+  },
+])
+
+//Units
+const [{ universityId }] = await db
+  .insert(units)
+  .values({
+    name: 'PUCP',
+    type: 'university',
+  })
+  .returning({
+    universityId: units.id,
+  })
+
+const [{ facultyId }] = await db
+  .insert(units)
+  .values({
+    name: 'Ciencias e Ingeniería',
+    type: 'faculty',
+    parentId: universityId,
+  })
+  .returning({
+    facultyId: units.id,
+  })
+
+const [{ specialityId }] = await db
+  .insert(units)
+  .values({
+    name: 'Ingeniería Informática',
+    type: 'speciality',
+    parentId: facultyId,
+  })
+  .returning({
+    specialityId: units.id,
+  })
+
+await db.insert(units).values({
+  name: 'Ingeniería de Software',
+  type: 'area',
+  parentId: specialityId,
+})
+console.log('Seed end')
+queryClient.end()

@@ -2,6 +2,7 @@ export {
   unitType,
   accountStatus,
   scheduleStatus,
+  thesisRequestStatus,
 } from '@/database/schema/enums'
 export { accountRoles } from '@/database/schema/accountRoles'
 export { accounts } from '@/database/schema/accounts'
@@ -21,4 +22,7 @@ export { specialityStudyPlans } from '@/database/schema/specialityStudyPlans'
 export { studyPlanCourses } from '@/database/schema/studyPlanCourses'
 export { studyPlans } from '@/database/schema/studyPlans'
 export { terms } from '@/database/schema/terms'
+export { thesisThemeAccounts } from '@/database/schema/thesisThemeAccounts'
+export { thesisThemeRequests } from '@/database/schema/thesisThemeRequests'
+export { thesisThemeRequestActions } from '@/database/schema/thesisThemeRequestActions'
 export { units } from '@/database/schema/units'
