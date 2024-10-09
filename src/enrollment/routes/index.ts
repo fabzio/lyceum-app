@@ -1,0 +1,1 @@
+export { default as EnrollmentRoute } from './enrollment.route'
