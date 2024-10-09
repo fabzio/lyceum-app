@@ -13,4 +13,10 @@ export const QueryKeys = {
     RISK_STUDENT_REPORTS: 'risk_student_reports',
     RISK_STUDENT_REPORT: 'risk_student_report',
   },
+  thesis: {
+    THESIS_REQUESTS: 'thesis_requests',
+    THESIS_REQUEST_DETAIL: 'thesis_request_detail',
+    THESIS_REQUESTS_HISTORY: 'thesis_requests_history',
+    THESIS_JURY: 'thesis_jury',
+  },
 }

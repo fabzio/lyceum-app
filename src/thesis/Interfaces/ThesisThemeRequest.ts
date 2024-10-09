@@ -1,17 +1,15 @@
-import { Thesis } from './Thesis'
-
 export interface ThesisThemeRequest {
-  id: string
-  thesis: Thesis
-  requester?: string
-  status: 'approved' | 'pending'
-  submissionDate?: string
-  aprovalDate?: string
-  approvalHistory: {
-    step: string
-    updateDate?: string
-    status: 'completed' | 'current' | 'pending'
+  code: string
+  title: string
+  date: string
+  lastAction: {
+    id: number
+    accountId: string
+    action: string
+    role: string
+  }
+  applicant: {
     name: string
-    canDownload?: boolean
-  }[]
+    code: string
+  }
 }

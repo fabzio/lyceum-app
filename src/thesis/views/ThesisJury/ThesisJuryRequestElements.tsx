@@ -28,7 +28,10 @@ export default function ThesisJuryRequestElement({
   })
   const handleChooseCard = () => {
     navigate({
-      to: '/tesis/prop-jurados/detalle/' + id,
+      to: '/tesis/prop-jurados/detalle/$idSolicitudJurado',
+      params: {
+        idSolicitudJurado: id,
+      },
     })
   }
   return (

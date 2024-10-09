@@ -1,3 +1,5 @@
+import { ThesisThemeRequestAction } from '@/thesis/Interfaces/ThesisThemeRequestAction'
+
 export type Mail = (typeof mails)[number]
 export interface Thesis {
   id: string
@@ -6,11 +8,13 @@ export interface Thesis {
   students: { code: string; name: string }[]
   advisors: { code: string; name: string; isPrincipal: boolean }[]
   status: 'approved' | 'pending'
-  fileInfo: {
-    requestNumber: string
-    name: string
-    concentration: string
-  } | undefined
+  fileInfo:
+    | {
+        requestNumber: string
+        name: string
+        concentration: string
+      }
+    | undefined
 }
 
 export interface ThesisJuryRequest {
@@ -18,12 +22,7 @@ export interface ThesisJuryRequest {
   thesis: Thesis
   jury: { code: string; name: string }[]
   status: 'approved' | 'pending'
-  approvalHistory: {
-    step: string
-    status: 'completed' | 'current' | 'pending'
-    name: string
-    canDownload?: boolean
-  }[]
+  approvalHistory: ThesisThemeRequestAction[]
 }
 
 export const mails1: ThesisJuryRequest[] = [
@@ -56,26 +55,40 @@ export const mails1: ThesisJuryRequest[] = [
     ],
     approvalHistory: [
       {
-        step: 'Enviado por alumno',
-        status: 'completed',
-        name: 'Piero Montoya',
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
       },
       {
-        step: 'Aprobado por Asesor',
-        status: 'completed',
-        name: 'Rony Tupia',
-        canDownload: true,
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
       },
       {
-        step: 'Aprobado por Coordinador de Área',
-        status: 'completed',
-        name: 'Jheyfer Ramírez',
-        canDownload: true,
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
       },
       {
-        step: 'Aprobado por Director de Carrera',
-        status: 'current',
-        name: 'Ricardo Bartra',
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
       },
     ],
   },
@@ -108,26 +121,40 @@ export const mails1: ThesisJuryRequest[] = [
     ],
     approvalHistory: [
       {
-        step: 'Enviado por alumno',
-        status: 'completed',
-        name: 'Piero Montoya',
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
       },
       {
-        step: 'Aprobado por Asesor',
-        status: 'completed',
-        name: 'Rony Tupia',
-        canDownload: true,
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
       },
       {
-        step: 'Aprobado por Coordinador de Área',
-        status: 'completed',
-        name: 'Jheyfer Ramírez',
-        canDownload: true,
+        id: 12,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
       },
       {
-        step: 'Aprobado por Director de Carrera',
-        status: 'current',
-        name: 'Ricardo Bartra',
+        id: 21,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
       },
     ],
   },
@@ -135,240 +162,346 @@ export const mails1: ThesisJuryRequest[] = [
 
 export const mails: ThesisJuryRequest[] = [
   {
-    id: "TJ001",
+    id: 'TJ001',
     thesis: {
-      id: "T001",
-      title: "Artificial Intelligence in Healthcare",
-      area: "Computer Science",
+      id: 'T001',
+      title: 'Artificial Intelligence in Healthcare',
+      area: 'Computer Science',
       students: [
-        { code: "S001", name: "Alice Johnson" },
-        { code: "S002", name: "Bob Smith" }
+        { code: 'S001', name: 'Alice Johnson' },
+        { code: 'S002', name: 'Bob Smith' },
       ],
       advisors: [
-        { code: "A001", name: "Dr. John Doe", isPrincipal: true },
-        { code: "A002", name: "Dr. Jane Foster", isPrincipal: false }
+        { code: 'A001', name: 'Dr. John Doe', isPrincipal: true },
+        { code: 'A002', name: 'Dr. Jane Foster', isPrincipal: false },
       ],
-      status: "approved",
+      status: 'approved',
       fileInfo: {
-        requestNumber: "REQ001",
-        name: "AI in Healthcare",
-        concentration: "Data Science"
-      }
+        requestNumber: 'REQ001',
+        name: 'AI in Healthcare',
+        concentration: 'Data Science',
+      },
     },
     jury: [
-      { code: "J001", name: "Prof. Anna Wright" },
-      { code: "J002", name: "Prof. Samuel Brown" }
+      { code: 'J001', name: 'Prof. Anna Wright' },
+      { code: 'J002', name: 'Prof. Samuel Brown' },
     ],
-    status: "pending",
+    status: 'pending',
     approvalHistory: [
-      { step: "submission", status: "completed", name: "Dr. John Doe", canDownload: true },
-      { step: "initialReview", status: "current", name: "Prof. Anna Wright" }
-    ]
+      {
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
+      },
+      {
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
+      },
+    ],
   },
   {
-    id: "TJ002",
+    id: 'TJ002',
     thesis: {
-      id: "T002",
-      title: "Blockchain in Financial Services",
-      area: "Finance",
-      students: [
-        { code: "S003", name: "Charles Davis" }
-      ],
-      advisors: [
-        { code: "A003", name: "Dr. Laura King", isPrincipal: true }
-      ],
-      status: "pending",
+      id: 'T002',
+      title: 'Blockchain in Financial Services',
+      area: 'Finance',
+      students: [{ code: 'S003', name: 'Charles Davis' }],
+      advisors: [{ code: 'A003', name: 'Dr. Laura King', isPrincipal: true }],
+      status: 'pending',
       fileInfo: {
-        requestNumber: "REQ002",
-        name: "Blockchain Financial",
-        concentration: "Financial Technology"
-      }
+        requestNumber: 'REQ002',
+        name: 'Blockchain Financial',
+        concentration: 'Financial Technology',
+      },
     },
     jury: [
-      { code: "J003", name: "Prof. Michael Harris" },
-      { code: "J004", name: "Prof. Linda Green" }
+      { code: 'J003', name: 'Prof. Michael Harris' },
+      { code: 'J004', name: 'Prof. Linda Green' },
     ],
-    status: "pending",
+    status: 'pending',
     approvalHistory: [
-      { step: "submission", status: "completed", name: "Dr. Laura King", canDownload: true },
-      { step: "initialReview", status: "pending", name: "Prof. Michael Harris" }
-    ]
+      {
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
+      },
+      {
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
+      },
+    ],
   },
   {
-    id: "TJ003",
+    id: 'TJ003',
     thesis: {
-      id: "T003",
-      title: "Renewable Energy Solutions",
-      area: "Environmental Engineering",
+      id: 'T003',
+      title: 'Renewable Energy Solutions',
+      area: 'Environmental Engineering',
       students: [
-        { code: "S004", name: "Diana Prince" },
-        { code: "S005", name: "Bruce Wayne" }
+        { code: 'S004', name: 'Diana Prince' },
+        { code: 'S005', name: 'Bruce Wayne' },
       ],
       advisors: [
-        { code: "A004", name: "Dr. Clark Kent", isPrincipal: true },
-        { code: "A005", name: "Dr. Lois Lane", isPrincipal: false }
+        { code: 'A004', name: 'Dr. Clark Kent', isPrincipal: true },
+        { code: 'A005', name: 'Dr. Lois Lane', isPrincipal: false },
       ],
-      status: "approved",
+      status: 'approved',
       fileInfo: {
-        requestNumber: "REQ003",
-        name: "Renewable Energy",
-        concentration: "Sustainable Engineering"
-      }
+        requestNumber: 'REQ003',
+        name: 'Renewable Energy',
+        concentration: 'Sustainable Engineering',
+      },
     },
     jury: [
-      { code: "J005", name: "Prof. Barry Allen" },
-      { code: "J006", name: "Prof. Victor Stone" }
+      { code: 'J005', name: 'Prof. Barry Allen' },
+      { code: 'J006', name: 'Prof. Victor Stone' },
     ],
-    status: "approved",
+    status: 'approved',
     approvalHistory: [
-      { step: "submission", status: "completed", name: "Dr. Clark Kent", canDownload: true },
-      { step: "finalReview", status: "completed", name: "Prof. Barry Allen" }
-    ]
+      {
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
+      },
+      {
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
+      },
+    ],
   },
   {
-    id: "TJ004",
+    id: 'TJ004',
     thesis: {
-      id: "T004",
-      title: "Cybersecurity Threats in IoT",
-      area: "Cybersecurity",
-      students: [
-        { code: "S006", name: "Peter Parker" }
-      ],
-      advisors: [
-        { code: "A006", name: "Dr. Tony Stark", isPrincipal: true }
-      ],
-      status: "pending",
+      id: 'T004',
+      title: 'Cybersecurity Threats in IoT',
+      area: 'Cybersecurity',
+      students: [{ code: 'S006', name: 'Peter Parker' }],
+      advisors: [{ code: 'A006', name: 'Dr. Tony Stark', isPrincipal: true }],
+      status: 'pending',
       fileInfo: {
-        requestNumber: "REQ004",
-        name: "IoT Security",
-        concentration: "Information Security"
-      }
+        requestNumber: 'REQ004',
+        name: 'IoT Security',
+        concentration: 'Information Security',
+      },
     },
     jury: [
-      { code: "J007", name: "Prof. Natasha Romanoff" },
-      { code: "J008", name: "Prof. Steve Rogers" }
+      { code: 'J007', name: 'Prof. Natasha Romanoff' },
+      { code: 'J008', name: 'Prof. Steve Rogers' },
     ],
-    status: "pending",
+    status: 'pending',
     approvalHistory: [
-      { step: "submission", status: "completed", name: "Dr. Tony Stark" },
-      { step: "initialReview", status: "pending", name: "Prof. Natasha Romanoff" }
-    ]
+      {
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
+      },
+      {
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
+      },
+    ],
   },
   {
-    id: "TJ005",
+    id: 'TJ005',
     thesis: {
-      id: "T005",
-      title: "Quantum Computing Applications",
-      area: "Physics",
-      students: [
-        { code: "S007", name: "Stephen Strange" }
-      ],
-      advisors: [
-        { code: "A007", name: "Dr. Bruce Banner", isPrincipal: true }
-      ],
-      status: "approved",
+      id: 'T005',
+      title: 'Quantum Computing Applications',
+      area: 'Physics',
+      students: [{ code: 'S007', name: 'Stephen Strange' }],
+      advisors: [{ code: 'A007', name: 'Dr. Bruce Banner', isPrincipal: true }],
+      status: 'approved',
       fileInfo: {
-        requestNumber: "REQ005",
-        name: "Quantum Computing",
-        concentration: "Quantum Physics"
-      }
+        requestNumber: 'REQ005',
+        name: 'Quantum Computing',
+        concentration: 'Quantum Physics',
+      },
     },
     jury: [
-      { code: "J009", name: "Prof. Wanda Maximoff" },
-      { code: "J010", name: "Prof. Clint Barton" }
+      { code: 'J009', name: 'Prof. Wanda Maximoff' },
+      { code: 'J010', name: 'Prof. Clint Barton' },
     ],
-    status: "approved",
+    status: 'approved',
     approvalHistory: [
-      { step: "submission", status: "completed", name: "Dr. Bruce Banner", canDownload: true },
-      { step: "finalReview", status: "completed", name: "Prof. Wanda Maximoff" }
-    ]
+      {
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
+      },
+      {
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
+      },
+    ],
   },
   {
-    id: "TJ006",
+    id: 'TJ006',
     thesis: {
-      id: "T006",
-      title: "Augmented Reality in Education",
-      area: "Educational Technology",
+      id: 'T006',
+      title: 'Augmented Reality in Education',
+      area: 'Educational Technology',
       students: [
-        { code: "S008", name: "Tony Montana" },
-        { code: "S009", name: "Scarlett Johansson" }
+        { code: 'S008', name: 'Tony Montana' },
+        { code: 'S009', name: 'Scarlett Johansson' },
       ],
-      advisors: [
-        { code: "A008", name: "Dr. Oliver Queen", isPrincipal: true }
-      ],
-      status: "approved",
+      advisors: [{ code: 'A008', name: 'Dr. Oliver Queen', isPrincipal: true }],
+      status: 'approved',
       fileInfo: {
-        requestNumber: "REQ006",
-        name: "AR in Education",
-        concentration: "Learning Technologies"
-      }
+        requestNumber: 'REQ006',
+        name: 'AR in Education',
+        concentration: 'Learning Technologies',
+      },
     },
     jury: [
-      { code: "J011", name: "Prof. Felicity Smoak" },
-      { code: "J012", name: "Prof. Roy Harper" }
+      { code: 'J011', name: 'Prof. Felicity Smoak' },
+      { code: 'J012', name: 'Prof. Roy Harper' },
     ],
-    status: "pending",
+    status: 'pending',
     approvalHistory: [
-      { step: "submission", status: "completed", name: "Dr. Oliver Queen" },
-      { step: "initialReview", status: "pending", name: "Prof. Felicity Smoak" }
-    ]
+      {
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
+      },
+      {
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
+      },
+    ],
   },
   {
-    id: "TJ007",
+    id: 'TJ007',
     thesis: {
-      id: "T007",
-      title: "Autonomous Vehicles and Safety",
-      area: "Mechanical Engineering",
-      students: [
-        { code: "S010", name: "T'Challa Udaku" }
-      ],
-      advisors: [
-        { code: "A009", name: "Dr. Shuri Udaku", isPrincipal: true }
-      ],
-      status: "approved",
+      id: 'T007',
+      title: 'Autonomous Vehicles and Safety',
+      area: 'Mechanical Engineering',
+      students: [{ code: 'S010', name: "T'Challa Udaku" }],
+      advisors: [{ code: 'A009', name: 'Dr. Shuri Udaku', isPrincipal: true }],
+      status: 'approved',
       fileInfo: {
-        requestNumber: "REQ007",
-        name: "Autonomous Vehicles",
-        concentration: "Robotics"
-      }
+        requestNumber: 'REQ007',
+        name: 'Autonomous Vehicles',
+        concentration: 'Robotics',
+      },
     },
     jury: [
-      { code: "J013", name: "Prof. Erik Killmonger" },
-      { code: "J014", name: "Prof. Nakia" }
+      { code: 'J013', name: 'Prof. Erik Killmonger' },
+      { code: 'J014', name: 'Prof. Nakia' },
     ],
-    status: "approved",
+    status: 'approved',
     approvalHistory: [
-      { step: "submission", status: "completed", name: "Dr. Shuri Udaku", canDownload: true },
-      { step: "finalReview", status: "completed", name: "Prof. Erik Killmonger" }
-    ]
+      {
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
+      },
+      {
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
+      },
+    ],
   },
   {
-    id: "TJ008",
+    id: 'TJ008',
     thesis: {
-      id: "T008",
-      title: "Climate Change and Ocean Currents",
-      area: "Environmental Science",
-      students: [
-        { code: "S011", name: "Namor McKenzie" }
-      ],
-      advisors: [
-        { code: "A010", name: "Dr. Ororo Munroe", isPrincipal: true }
-      ],
-      status: "pending",
+      id: 'T008',
+      title: 'Climate Change and Ocean Currents',
+      area: 'Environmental Science',
+      students: [{ code: 'S011', name: 'Namor McKenzie' }],
+      advisors: [{ code: 'A010', name: 'Dr. Ororo Munroe', isPrincipal: true }],
+      status: 'pending',
       fileInfo: {
-        requestNumber: "REQ008",
-        name: "Ocean Currents",
-        concentration: "Marine Sciences"
-      }
+        requestNumber: 'REQ008',
+        name: 'Ocean Currents',
+        concentration: 'Marine Sciences',
+      },
     },
     jury: [
-      { code: "J015", name: "Prof. Jean Grey" },
-      { code: "J016", name: "Prof. Scott Summers" }
+      { code: 'J015', name: 'Prof. Jean Grey' },
+      { code: 'J016', name: 'Prof. Scott Summers' },
     ],
-    status: "pending",
+    status: 'pending',
     approvalHistory: [
-      { step: "submission", status: "completed", name: "Dr. Ororo Munroe" },
-      { step: "initialReview", status: "pending", name: "Prof. Jean Grey" }
-    ]
-  }
+      {
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
+      },
+      {
+        id: 3,
+        action: 'sended',
+        role: 'Alumno',
+        actor: 'Piero Montoya',
+        isFile: false,
+        content: '0',
+        date: new Date().toDateString(),
+      },
+    ],
+  },
 ]
