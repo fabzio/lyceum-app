@@ -11,8 +11,8 @@ export const Route = createFileRoute('/tesis/tema-tesis/$requestCode')({
   validateSearch: (search: Record<string, unknown>): ThesisReviewSearch => ({
     historyId: parseInt(search?.historyId as string),
   }),
-  loader: ({ params: { requestCode }, context: { queryClient } }) => {
-    queryClient.ensureQueryData({
+  loader: async ({ params: { requestCode }, context: { queryClient } }) => {
+    return queryClient.ensureQueryData({
       queryKey: [QueryKeys.thesis.THESIS_REQUEST_DETAIL, requestCode],
       queryFn: () =>
         ThesisThemeRequestService.getThemeRequestDetail(requestCode),

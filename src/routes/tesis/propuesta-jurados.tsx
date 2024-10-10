@@ -4,8 +4,8 @@ import ThesisJuryRequestList from '@/thesis/views/ThesisJury'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/tesis/propuesta-jurados')({
-  loader: ({ context: { queryClient } }) => {
-    queryClient.ensureQueryData({
+  loader: async ({ context: { queryClient } }) => {
+    return queryClient.ensureQueryData({
       queryKey: [QueryKeys.thesis.THESIS_JURY_REQUESTS],
       queryFn: () => ThesisJuryRequestService.getThesisJuryRequests(),
     })

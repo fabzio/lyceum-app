@@ -4,8 +4,8 @@ import { QueryKeys } from '@/constants/queryKeys'
 import ThesisThemeRequestService from '@/thesis/services/ThesisThemeRequest.service'
 
 export const Route = createFileRoute('/tesis/')({
-  loader: ({ context: { queryClient } }) => {
-    queryClient.ensureQueryData({
+  loader: async ({ context: { queryClient } }) => {
+    return queryClient.ensureQueryData({
       queryKey: [QueryKeys.thesis.THESIS_REQUESTS],
       queryFn: () => ThesisThemeRequestService.getThesisThemeRequest(),
     })
