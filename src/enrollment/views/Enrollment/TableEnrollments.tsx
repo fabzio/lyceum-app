@@ -6,7 +6,7 @@ import {
     TableHead,
     TableCell,
   } from '@/components/ui/table'
-  //import { useNavigate } from '@tanstack/react-router'
+  import { useNavigate } from '@tanstack/react-router'
   import { useState } from 'react'
   import {
     Pagination,
@@ -25,22 +25,24 @@ import {
   export default function TableEnrollments({
     tableEnrollments,
   }: TableEnrollmentsProps) {
-    //const navigate = useNavigate()
-    /*
+    const navigate = useNavigate()
     const OnRowClick = (enrollment: EnrollmentGeneral) => {
         
       navigate({
-        to: `/matricula/$code`,
+        to: `/matricula/${enrollment.request_number}`,
+        /*
         params: {
-          code: enrollment.student.code,
+          request_number: enrollment.request_number.toString(),
         },
+        */
+        /*
         search: {
           scheduleId: enrollment.schedule.id,
         },
+        */
       })
         
     }
-  */
     // Estado para controlar la página actual
     const [currentPage, setCurrentPage] = useState(1)
   
@@ -77,6 +79,7 @@ import {
               <TableHead className="py-3 px-6 text-left">Tipo de Solicitud</TableHead>
               <TableHead className="py-3 px-6 text-left">Nombre Alumno</TableHead>
               <TableHead className="py-3 px-6 text-left">Curso</TableHead>
+              <TableHead className="py-3 px-6 text-left">Horario</TableHead>
             </TableRow>
           </TableHeader>
   
@@ -92,9 +95,9 @@ import {
                 <TableRow
                   key={enrollment.request_number}
                   className="transition duration-200 cursor-pointer"
-                  //onClick={() => OnRowClick(enrollment)}
+                  onClick={() => OnRowClick(enrollment)}
                 >
-                  <TableCell className="py-3 px-6 text-center">
+                  <TableCell className="py-3 px-6">
                     {enrollment.state}
                   </TableCell>
                   <TableCell className="py-3 px-6">
@@ -104,10 +107,13 @@ import {
                     {enrollment.request_type}
                   </TableCell>
                   <TableCell className="py-3 px-6">
-                    {enrollment.student.name}
+                    {`${enrollment.student.name} ${enrollment.student.surname}`}
                   </TableCell>
-                  <TableCell className="py-3 px-6 text-center">
-                    {enrollment.schedule.course.name}
+                  <TableCell className="py-3 px-6">
+                    {enrollment.schedule.course_name}
+                  </TableCell>
+                  <TableCell className="py-3 px-6">
+                    {enrollment.schedule.code}
                   </TableCell>
                 </TableRow>
               ))

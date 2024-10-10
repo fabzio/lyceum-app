@@ -7,9 +7,7 @@ export interface EnrollmentGeneral {
     }
     schedule: {
       code: string
-      course: {
-        name: string
-      }
+      course_name: string
     }
     request_type: string
     request_number: number

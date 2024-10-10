@@ -7,7 +7,7 @@ import { EnrollmentGeneral } from '../interfaces/EnrollmentGeneral'
 class EnrollmentService {
   public static async getAllEnrollments(): Promise<EnrollmentGeneral[]> {
     try {
-      const res = await http.get('/enrollments')
+      const res = await http.get('/enrollments/enrollments')
       const response = res.data as ResponseAPI
       if (!response.success) {
         throw new Error('Error')
