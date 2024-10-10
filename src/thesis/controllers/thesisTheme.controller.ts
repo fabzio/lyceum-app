@@ -1,9 +1,12 @@
 import { Hono } from 'hono'
 import { ThesisThemeService } from '../services'
+import { zValidator } from '@hono/zod-validator'
+import { thesisActionsScheme } from '@/database/schema/thesisActions'
+import { ThesisThemeDAO } from '../dao/thesisThemeDAO'
 
 class ThesisThemeController {
   private router = new Hono()
-  private thesisThemeService = new ThesisThemeService()
+  private thesisThemeService: ThesisThemeDAO = new ThesisThemeService()
 
   public getThesisThemes = this.router.get('/', async (c) => {
     const response: ResponseAPI = {
@@ -26,11 +29,11 @@ class ThesisThemeController {
     return c.json(response)
   })
 
-  public getThesisThemeActions = this.router.get(':code/history', async (c) => {
+  public getThesisThemeActions = this.router.get('/:code/history', async (c) => {
     const { code } = c.req.param()
 
     const response: ResponseAPI = {
-      data: await this.thesisThemeService.getThesisThemeRequestActions({
+      data: await this.thesisThemeService.getthesisActions({
         requestCode: code,
       }),
       message: 'Thesis actions retrieved',
@@ -39,6 +42,30 @@ class ThesisThemeController {
 
     return c.json(response)
   })
+
+  public insertThesisThemeAction = this.router.post(
+    '/:code/history',
+    zValidator('json', thesisActionsScheme),
+    async (c) => {
+      const { code } = c.req.param()
+      const { content, isFile, action, accountId, roleId } = c.req.valid('json')
+
+      const response: ResponseAPI = {
+        data: await this.thesisThemeService.insertThemeRequestAction({
+          content,
+          isFile,
+          action,
+          accountId,
+          roleId,
+          requestCode: code,
+        }),
+        message: 'Thesis action inserted',
+        success: true,
+      }
+
+      return c.json(response)
+    }
+  )
 }
 
 export default ThesisThemeController

@@ -1,3 +1,6 @@
+import { thesisActionsSchema } from '@/database/schema/thesisActions'
+import { ThesisDetail } from '../interfaces/ThesisDetail'
+
 export interface ThesisThemeDAO {
   getThesisThemeRequest(): Promise<
     {
@@ -16,34 +19,11 @@ export interface ThesisThemeDAO {
     }[]
   >
 
-  getThesisThemeRequestDetail(params: { requestCode: string }): Promise<
-    {
-      code: string
-      title: string
-      date: Date
-      area: string
-      applicant: {
-        name: string
-        code: string
-      }
-      students: {
-        code: string
-        name: string
-        firstSurname: string
-        secondSurname: string
-        principal: boolean
-      }[]
-      advisors: {
-        code: string
-        name: string
-        firstSurname: string
-        secondSurname: string
-        principal: boolean
-      }[]
-    }[]
-  >
+  getThesisThemeRequestDetail(params: {
+    requestCode: string
+  }): Promise<ThesisDetail>
 
-  getThesisThemeRequestActions(params: { requestCode: string }): Promise<
+  getthesisActions(params: { requestCode: string }): Promise<
     {
       id: number
       action: string
@@ -54,4 +34,9 @@ export interface ThesisThemeDAO {
       role: string
     }[]
   >
+  insertThemeRequestAction(
+    params: thesisActionsSchema & {
+      requestCode: string
+    }
+  ): Promise<void>
 }

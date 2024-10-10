@@ -27,3 +27,9 @@ export const thesisRequestStatus = schema.enum('thesis_request_step', [
   'denied',
   'approved',
 ])
+
+export const thesisJuryStatus = schema.enum('thesis_jury_status', [
+  'unassigned',
+  'requested',
+  'assigned',
+])

@@ -21,7 +21,7 @@ const queryClient = postgres({
 })
 const db = drizzle(queryClient)
 import { pgSchema } from 'drizzle-orm/pg-core'
-import { accounts, roles, terms, units } from './schema'
+import { accounts, courses, roles, terms, units } from './schema'
 
 export const schema = pgSchema(DB_SCHEMA)
 

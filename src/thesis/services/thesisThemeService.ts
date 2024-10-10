@@ -2,25 +2,27 @@ import db from '@/database'
 import {
   accounts,
   roles,
-  thesisThemeRequestActions,
-  thesisThemeRequests,
+  thesisActions,
+  thesis,
   units,
 } from '@/database/schema'
-import { thesisThemeAccounts } from '@/database/schema/thesisThemeAccounts'
+import { thesisAccounts } from '@/database/schema/thesisAccounts'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { and, eq, sql } from 'drizzle-orm'
 import { ThesisThemeDAO } from '../dao/thesisThemeDAO'
+import { thesisActionsSchema } from '@/database/schema/thesisActions'
 
 class ThesisThemeService implements ThesisThemeDAO {
   async getThesisThemeRequest() {
     const themeRequestResponse = await db
       .select({
-        code: thesisThemeRequests.requestCode,
-        title: thesisThemeRequests.title,
-        date: thesisThemeRequests.date,
+        code: thesis.requestCode,
+        title: thesis.title,
+        date: thesis.date,
         lastAction: {
-          id: thesisThemeRequestActions.id,
-          action: thesisThemeRequestActions.action,
+          id: thesisActions.id,
+          account: thesisActions.accountId,
+          action: thesisActions.action,
           role: roles.name,
         },
         applicant: {
@@ -28,32 +30,38 @@ class ThesisThemeService implements ThesisThemeDAO {
           code: accounts.code,
         },
       })
-      .from(thesisThemeRequests)
-      .innerJoin(accounts, eq(thesisThemeRequests.applicantId, accounts.id))
-      .innerJoin(
-        thesisThemeRequestActions,
-        eq(thesisThemeRequestActions.id, thesisThemeRequests.lastActionId)
-      )
-      .innerJoin(roles, eq(thesisThemeRequestActions.roleId, roles.id))
+      .from(thesis)
+      .innerJoin(accounts, eq(thesis.applicantId, accounts.id))
+      .innerJoin(thesisActions, eq(thesisActions.id, thesis.lastActionId))
+      .innerJoin(roles, eq(thesisActions.roleId, roles.id))
     return themeRequestResponse
   }
 
   async getThesisThemeRequestDetail({ requestCode }: { requestCode: string }) {
     const generalRequestData = await db
       .select({
-        code: thesisThemeRequests.requestCode,
-        title: thesisThemeRequests.title,
-        date: thesisThemeRequests.date,
+        code: thesis.requestCode,
+        title: thesis.title,
+        date: thesis.date,
         area: units.name,
+        juryState: thesis.juryState,
         applicant: {
           name: sql<string>`concat(${accounts.name}, ' ', ${accounts.firstSurname}, ' ', ${accounts.secondSurname})`,
           code: accounts.code,
         },
+        lastAction: {
+          id: thesisActions.id,
+          account: thesisActions.accountId,
+          action: thesisActions.action,
+          role: roles.name,
+        },
       })
-      .from(thesisThemeRequests)
-      .innerJoin(accounts, eq(thesisThemeRequests.applicantId, accounts.id))
-      .innerJoin(units, eq(thesisThemeRequests.areaId, units.id))
-      .where(eq(thesisThemeRequests.requestCode, requestCode))
+      .from(thesis)
+      .innerJoin(accounts, eq(thesis.applicantId, accounts.id))
+      .innerJoin(units, eq(thesis.areaId, units.id))
+      .innerJoin(thesisActions, eq(thesisActions.id, thesis.lastActionId))
+      .innerJoin(roles, eq(thesisActions.roleId, roles.id))
+      .where(eq(thesis.requestCode, requestCode))
 
     const students = await db
       .select({
@@ -61,65 +69,74 @@ class ThesisThemeService implements ThesisThemeDAO {
         name: accounts.name,
         firstSurname: accounts.firstSurname,
         secondSurname: accounts.secondSurname,
-        principal: thesisThemeAccounts.lead,
+        principal: thesisAccounts.lead,
       })
-      .from(thesisThemeRequests)
+      .from(thesis)
       .innerJoin(
-        thesisThemeAccounts,
+        thesisAccounts,
         and(
-          eq(thesisThemeRequests.id, thesisThemeAccounts.thesisThemeRequestId),
-          eq(thesisThemeAccounts.roleId, BaseRoles.STUDENT)
+          eq(thesis.id, thesisAccounts.thesisThemeRequestId),
+          eq(thesisAccounts.roleId, BaseRoles.STUDENT)
         )
       )
-      .innerJoin(accounts, eq(thesisThemeAccounts.accountId, accounts.id))
-      .where(eq(thesisThemeRequests.requestCode, requestCode))
+      .innerJoin(accounts, eq(thesisAccounts.accountId, accounts.id))
+      .where(eq(thesis.requestCode, requestCode))
     const advisors = await db
       .select({
         code: accounts.code,
         name: accounts.name,
         firstSurname: accounts.firstSurname,
         secondSurname: accounts.secondSurname,
-        principal: thesisThemeAccounts.lead,
+        principal: thesisAccounts.lead,
       })
-      .from(thesisThemeAccounts)
+      .from(thesisAccounts)
       .innerJoin(
         accounts,
         and(
-          eq(thesisThemeAccounts.accountId, accounts.id),
-          eq(thesisThemeAccounts.roleId, BaseRoles.PROFESSOR)
+          eq(thesisAccounts.accountId, accounts.id),
+          eq(thesisAccounts.roleId, BaseRoles.PROFESSOR)
         )
       )
-      .innerJoin(
-        thesisThemeRequests,
-        eq(thesisThemeRequests.id, thesisThemeAccounts.thesisThemeRequestId)
-      )
-      .where(eq(thesisThemeRequests.requestCode, requestCode))
-    return generalRequestData.map((request) => ({
+      .innerJoin(thesis, eq(thesis.id, thesisAccounts.thesisThemeRequestId))
+      .where(eq(thesis.requestCode, requestCode))
+    const [parsedData] = generalRequestData.map((request) => ({
       ...request,
       students,
       advisors,
     }))
+    return parsedData
   }
 
-  async getThesisThemeRequestActions({ requestCode }: { requestCode: string }) {
+  async getthesisActions({ requestCode }: { requestCode: string }) {
     return db
       .select({
-        id: thesisThemeRequestActions.id,
-        action: thesisThemeRequestActions.action,
-        date: thesisThemeRequestActions.date,
-        content: thesisThemeRequestActions.content,
-        isFile: thesisThemeRequestActions.isFile,
+        id: thesisActions.id,
+        action: thesisActions.action,
+        date: thesisActions.date,
+        content: thesisActions.content,
+        isFile: thesisActions.isFile,
         actor: sql<string>`concat(${accounts.name}, ' ', ${accounts.firstSurname}, ' ', ${accounts.secondSurname})`,
         role: roles.name,
       })
-      .from(thesisThemeRequestActions)
-      .innerJoin(accounts, eq(thesisThemeRequestActions.accountId, accounts.id))
-      .innerJoin(
-        thesisThemeRequests,
-        eq(thesisThemeRequests.id, thesisThemeRequestActions.requestId)
-      )
-      .innerJoin(roles, eq(thesisThemeRequestActions.roleId, roles.id))
-      .where(eq(thesisThemeRequests.requestCode, requestCode))
+      .from(thesisActions)
+      .innerJoin(accounts, eq(thesisActions.accountId, accounts.id))
+      .innerJoin(thesis, eq(thesis.id, thesisActions.requestId))
+      .innerJoin(roles, eq(thesisActions.roleId, roles.id))
+      .where(eq(thesis.requestCode, requestCode))
+  }
+
+  async insertThemeRequestAction(
+    params: thesisActionsSchema & {
+      requestCode: string
+    }
+  ) {
+    const [{ requestId }] = await db
+      .select({
+        requestId: thesis.id,
+      })
+      .from(thesis)
+      .where(eq(thesis.requestCode, params.requestCode))
+    await db.insert(thesisActions).values({ ...params, requestId })
   }
 }
 

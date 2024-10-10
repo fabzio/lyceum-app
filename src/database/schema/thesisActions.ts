@@ -1,11 +1,13 @@
 import { thesisRequestStatus } from './enums'
 import { boolean, serial, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
 import { schema } from '..'
-import { thesisThemeRequests } from './thesisThemeRequests'
+import { thesis } from './thesis'
 import { foreignKey } from 'drizzle-orm/pg-core'
+import { createInsertSchema } from 'drizzle-zod'
+import { z } from 'zod'
 
-export const thesisThemeRequestActions = schema.table(
-  'thesis_theme_request_actions',
+export const thesisActions = schema.table(
+  'thesis_actions',
   {
     id: serial('id').primaryKey(),
     requestId: serial('request_id').notNull(),
@@ -19,8 +21,11 @@ export const thesisThemeRequestActions = schema.table(
   (table) => ({
     requestFk: foreignKey({
       columns: [table.requestId],
-      foreignColumns: [thesisThemeRequests.id],
+      foreignColumns: [thesis.id],
       name: 'request_fk',
     }),
   })
 )
+
+export const thesisActionsScheme = createInsertSchema(thesisActions)
+export type thesisActionsSchema = z.infer<typeof thesisActionsScheme>

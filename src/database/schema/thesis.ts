@@ -1,6 +1,9 @@
 import {
+  AnyPgColumn,
+  boolean,
   char,
   foreignKey,
+  index,
   serial,
   timestamp,
   uniqueIndex,
@@ -8,10 +11,12 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core'
 import { schema } from '..'
-import { accounts, roles, units } from '.'
+import { accounts } from './accounts'
+import { units } from './units'
+import { thesisJuryStatus } from './enums'
 
-export const thesisThemeRequests = schema.table(
-  'thesis_theme_request',
+export const thesis = schema.table(
+  'thesis',
   {
     id: serial('id').primaryKey(),
     requestCode: char('request_code', { length: 10 }).notNull(),
@@ -20,9 +25,12 @@ export const thesisThemeRequests = schema.table(
     applicantId: uuid('applicant_id').notNull(),
     date: timestamp('date').defaultNow().notNull(),
     lastActionId: serial('last_action_id').notNull(),
+    aproved: boolean('aproved').default(false).notNull(),
+    juryState: thesisJuryStatus('jury_state').default('unassigned').notNull(),
   },
   (table) => ({
     requestCodeUnique: uniqueIndex('request_code_unique').on(table.requestCode),
+    studentCodeIndex: index('student_code_index').on(table.applicantId),
     requestApplicantFk: foreignKey({
       columns: [table.applicantId],
       foreignColumns: [accounts.id],
@@ -32,11 +40,6 @@ export const thesisThemeRequests = schema.table(
       columns: [table.areaId],
       foreignColumns: [units.id],
       name: 'request_area_fk',
-    }),
-    requestLastRoleFk: foreignKey({
-      columns: [table.lastActionId],
-      foreignColumns: [roles.id],
-      name: 'request_last_role_fk',
     }),
   })
 )
