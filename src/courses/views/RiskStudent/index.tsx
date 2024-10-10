@@ -4,12 +4,13 @@ import TableRiskStudents from './TableRiskStudents'
 import { Button } from '@/components/ui/button'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import RiskStudentService from '@/courses/services/riskStudent.service'
+import { QueryKeys } from '@/constants/queryKeys'
 
 export default function RiskStudents() {
   //ANOTACION 1: FALTA FILTRAR POR NOTAS : "Listo Filtrar por Puntacion"
   //ANOTACION 2: REVISANDO TAMBIÉN SERÍA BUENO UN BOTÓN PARA SOLICITAR TODAS LAS ACTUALIZACIONES, EL FIGMA SOLO SOPORTA UNO POR UNO (LUEGO FLORES NOS FUNA)
   const { data: riskStudents } = useSuspenseQuery({
-    queryKey: ['riskStudents'],
+    queryKey: [QueryKeys.courses.RISK_STUDENTS],
     queryFn: RiskStudentService.getRiskStudents,
   })
 

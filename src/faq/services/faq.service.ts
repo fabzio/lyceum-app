@@ -31,7 +31,6 @@ class FAQService {
     }
   }
   public static async updateFAQ(faq: FAQ): Promise<void> {
-    console.log(faq)
     try {
       const res = await http.put('/faq/faqs', {
         id: faq.id,
