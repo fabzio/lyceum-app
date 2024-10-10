@@ -23,6 +23,7 @@ class EnrollmentService implements EnrollmentDAO {
         },
         schedule: {
           code: schedules.code,
+          course_name: courses.name,
         },
         reason: sql<string>`coalesce(${enrollments.reason}, '')`,
       })

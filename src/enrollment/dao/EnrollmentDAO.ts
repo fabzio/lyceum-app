@@ -10,11 +10,7 @@ export interface EnrollmentDAO {
       }
       schedule: {
         code: string
-        /*
-        course: {
-          name: Course['name']
-        }
-          */
+        course_name: string
       }
       state: string
       request_type: string
