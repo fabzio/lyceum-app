@@ -1,8 +1,8 @@
 import {
-  date,
   foreignKey,
   serial,
   smallint,
+  timestamp,
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core'
@@ -15,7 +15,7 @@ export const riskStudentReports = schema.table(
   {
     id: serial('id').primaryKey(),
     score: smallint('score').notNull(),
-    date: date('date').notNull().default('now()'),
+    date: timestamp('date').notNull().defaultNow(),
     observation: varchar('observation', { length: 512 }),
     studentId: uuid('student_id').notNull(),
     scheduleId: serial('schedule_id').notNull(),
@@ -37,4 +37,3 @@ export const riskStudentReportsRelations = relations(
     }),
   })
 )
-

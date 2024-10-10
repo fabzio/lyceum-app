@@ -14,9 +14,6 @@ class FAQsRoute implements Route {
 
   private initializeRoutes() {
     this.router.route('/', this.FAQsController.getFAQs)
-    this.router.route('/', this.FAQsController.createFAQ)
-    this.router.route('/', this.FAQsController.updateFAQ)
-    this.router.route('/', this.FAQsController.deleteFAQ)
   }
 }
 

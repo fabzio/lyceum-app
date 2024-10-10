@@ -31,7 +31,7 @@ export interface RiskStudentDAO {
   }) => Promise<
     {
       id: number
-      date: string
+      date: Date
       score: number
     }[]
   >
