@@ -1,4 +1,4 @@
-import { ThesisThemeRequest } from '@/thesis/Interfaces/ThesisThemeRequest'
+import { ThesisThemeRequest } from '@/thesis/interfaces/ThesisThemeRequest'
 import ThesisThemeElement from './ThesisThemeRequestElement'
 
 interface Props {

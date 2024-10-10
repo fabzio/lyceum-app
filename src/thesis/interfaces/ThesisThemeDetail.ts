@@ -3,6 +3,7 @@ export interface ThesisThemeDetail {
   title: string
   date: string
   area: string
+  juryState: 'unassigned' | 'requested' | 'assigned'
   applicant: {
     name: string
     code: string

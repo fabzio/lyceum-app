@@ -1,9 +1,16 @@
 import { Input } from '@/components/ui/input'
-import ThesisJuryRequestSelectFilter from './ThesisJuryRequestFilter'
-import ThesisJuryRequestElement from './ThesisJuryRequestElements'
-//import { ThesisJuryRequest } from '@/interfaces/ThesisJuryRequest'
+import ThesisJuryRequestSelectFilter from './components/ThesisJuryRequestFilter'
+import ThesisJuryRequestElement from './components/ThesisJuryRequestElements'
+import NuwJuryRequestDialog from './components/NewJuryRequestDialog'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import ThesisJuryRequestService from '@/thesis/services/thesisJuryRequest.service'
+import { QueryKeys } from '@/constants/queryKeys'
 
 export default function ThesisJuryRequestList() {
+  const { data: thesisJuryRequest } = useSuspenseQuery({
+    queryKey: [QueryKeys.thesis.THESIS_JURY_REQUESTS],
+    queryFn: () => ThesisJuryRequestService.getThesisJuryRequests(),
+  })
   return (
     <div className="flex flex-col my-6 p-2">
       <div className="w-full flex md:flex-row justify-between gap-2">
@@ -13,43 +20,15 @@ export default function ThesisJuryRequestList() {
         <div className="flex gap-3">
           <ThesisJuryRequestSelectFilter />
         </div>
+        <div>
+          <NuwJuryRequestDialog />
+        </div>
       </div>
       <div>
-        <ThesisJuryRequestElement
-          id="39457392"
-          title="Solicitud de jurado para tema de tesis para el área de Sistemas de Información"
-          owner="Sebastián Meléndez"
-          date="22/09/2024"
-          status="Solicitud enviada por secretario académico"
-        />
-
-        <ThesisJuryRequestElement
-          id="39457393"
-          title="Solicitud de jurado para tema de tesis para el área de Ciberseguridad"
-          owner="Piero Esparza"
-          date="22/09/2024"
-          status="Solicitud enviada por secretario académico"
-        />
+        {thesisJuryRequest?.map((juryRequest) => (
+          <ThesisJuryRequestElement key={juryRequest.code} {...juryRequest} />
+        ))}
       </div>
     </div>
   )
 }
-
-// const thesisjuryrequests: ThesisJuryRequest[] = [
-//   {
-//     student: 'Estudiante 1',
-//     thesis: {
-//       title: 'Estudio del agua en la ciudad de México',
-//     },
-//     jury: ['Jurado 1'],
-//     status: 'El director debe proponer jurados',
-//   },
-//   {
-//     student: 'Estudiante 2',
-//     thesis: {
-//       title: 'Estudio del agua en la ciudad de México',
-//     },
-//     jury: ['Jurado 1'],
-//     status: 'El director debe proponer jurados',
-//   },
-// ]

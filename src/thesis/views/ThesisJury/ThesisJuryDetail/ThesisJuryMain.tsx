@@ -11,27 +11,44 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { QueryKeys } from '@/constants/queryKeys'
+import ThesisJuryRequestService from '@/thesis/services/thesisJuryRequest.service'
 import ThesisThemeRequestService from '@/thesis/services/ThesisThemeRequest.service'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
-import { Download } from 'lucide-react'
-import ThesisThemeForm from '../components/ThesisThemeForm'
+import { Loader2 } from 'lucide-react'
 
-export default function ThesisThemeMain() {
+export default function ThesisJuryMain() {
   const { requestCode } = useParams({
-    from: '/tesis/tema-tesis/$requestCode',
+    from: '/tesis/propuesta-jurados/$requestCode',
   })
+  const queryClient = useQueryClient()
   const { data: thesisThemeRequestDetail } = useSuspenseQuery({
     queryKey: [QueryKeys.thesis.THESIS_REQUEST_DETAIL, requestCode],
     queryFn: () => ThesisThemeRequestService.getThemeRequestDetail(requestCode),
   })
+  const { mutate, isPending } = useMutation({
+    mutationFn: () =>
+      ThesisJuryRequestService.createThesisJuryRequest(requestCode),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.thesis.THESIS_REQUEST_DETAIL, requestCode],
+      })
+    },
+  })
+  const handleRequestJury = () => {
+    mutate()
+  }
   return (
     <div className="flex h-full flex-col overflow-y-hidden">
       <div className="flex items-center p-2">
         <div className="flex items-center gap-2 h-10 py-2">
           <h1 className="text-xl font-bold">
             {thesisThemeRequestDetail
-              ? 'Solicitud N°: ' + thesisThemeRequestDetail.code
+              ? 'Tesis N°: ' + thesisThemeRequestDetail.code
               : 'Nueva solicitud'}
           </h1>
         </div>
@@ -46,14 +63,24 @@ export default function ThesisThemeMain() {
                 {thesisThemeRequestDetail?.title}
               </h2>
             </div>
-            <div>
-              <h3 className="font-semibold mb-2">Área</h3>
-              <p>{thesisThemeRequestDetail?.area}</p>
+            <div className="flex justify-between">
+              <div>
+                <h3 className="font-semibold mb-2">Área</h3>
+                <p>{thesisThemeRequestDetail?.area}</p>
+              </div>
+              <Button
+                disabled={thesisThemeRequestDetail?.juryState !== 'unassigned'}
+                onClick={handleRequestJury}
+              >
+                {isPending ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  mapButtonMessage[
+                    thesisThemeRequestDetail?.juryState ?? 'unassigned'
+                  ]
+                )}
+              </Button>
             </div>
-            <Button variant="secondary">
-              <Download size={16} />
-              Descargar tema de tesis
-            </Button>
             <div>
               <h3 className="font-semibold mb-2">Alumnos</h3>
               <Table>
@@ -111,10 +138,15 @@ export default function ThesisThemeMain() {
                 </TableBody>
               </Table>
             </div>
-            <ThesisThemeForm requestCode={requestCode} />
           </div>
         </ScrollArea>
       </div>
     </div>
   )
+}
+
+const mapButtonMessage = {
+  ['unassigned']: 'Solicitar jurados de tesis',
+  ['requested']: 'Jurados solicitados',
+  ['assigned']: 'Jurados asignados',
 }

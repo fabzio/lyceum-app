@@ -1,15 +1,17 @@
 import { CheckCircle2, CircleX, Download } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { ThesisThemeRequestAction } from '../Interfaces/ThesisThemeRequestAction'
+import { ThesisThemeRequestAction } from '../interfaces/ThesisThemeRequestAction'
 import { mapStatus } from '../utils'
-import { Link, useSearch } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ValidRoutes } from '@/constants/paths'
 
 interface Props {
   history?: ThesisThemeRequestAction[]
+  from: ValidRoutes
 }
 
-export default function ThesisThemeStepper({ history = [] }: Props) {
+export default function ThesisThemeStepper({ history = [], from }: Props) {
   if (!history.length)
     return (
       <div>
@@ -26,7 +28,7 @@ export default function ThesisThemeStepper({ history = [] }: Props) {
       {history?.map((step, index) => (
         <li key={index}>
           <Link
-            from="/tesis/tema-tesis/$requestCode"
+            from={from}
             search={{
               historyId: step.id,
             }}

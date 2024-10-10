@@ -17,6 +17,7 @@ export const QueryKeys = {
     THESIS_REQUESTS: 'thesis_requests',
     THESIS_REQUEST_DETAIL: 'thesis_request_detail',
     THESIS_REQUESTS_HISTORY: 'thesis_requests_history',
-    THESIS_JURY: 'thesis_jury',
+    THESIS_JURY_REQUESTS: 'thesis_jury_requests',
+    THESIS_JURIES: 'thesis_juries',
   },
 }

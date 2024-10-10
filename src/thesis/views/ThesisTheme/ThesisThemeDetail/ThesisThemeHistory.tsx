@@ -12,7 +12,7 @@ export default function ThesisThemeHistory() {
   const { requestCode } = useParams({
     from: '/tesis/tema-tesis/$requestCode',
   })
-  const { data: thesisThemeRequestDetails } = useSuspenseQuery({
+  const { data: thesisThemeRequestDetail } = useSuspenseQuery({
     queryKey: [QueryKeys.thesis.THESIS_REQUEST_DETAIL, requestCode],
     queryFn: () => ThesisThemeRequestService.getThemeRequestDetail(requestCode),
   })
@@ -21,7 +21,6 @@ export default function ThesisThemeHistory() {
     queryFn: () =>
       ThesisThemeRequestService.getThemeRequestHistory(requestCode),
   })
-  const [thesisThemeRequestDetail] = thesisThemeRequestDetails ?? []
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center p-2">
@@ -34,14 +33,17 @@ export default function ThesisThemeHistory() {
         <div>
           <h3 className="font-semibold mb-2">Información de Ficha</h3>
           <Label>Solicitante</Label>
-          <p> {thesisThemeRequestDetail.applicant.name}</p>
+          <p> {thesisThemeRequestDetail?.applicant.name}</p>
           <Label>Concentración</Label>
-          <p>{thesisThemeRequestDetail.area}</p>
+          <p>{thesisThemeRequestDetail?.area}</p>
         </div>
         <div>
           <h3 className="font-semibold mb-2">Historial</h3>
           <ScrollArea className="h-64">
-            <ThesisThemeStepper history={thesisThemeHistory} />
+            <ThesisThemeStepper
+              history={thesisThemeHistory}
+              from="/tesis/tema-tesis/$requestCode"
+            />
           </ScrollArea>
         </div>
         <div>

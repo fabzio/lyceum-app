@@ -43,11 +43,10 @@ export default function ThesisThemeForm({ requestCode }: Props) {
       refetch()
     },
   })
-  const { data: thesisDetails, refetch } = useQuery({
+  const { data: thesisDetail, refetch } = useQuery({
     queryKey: [QueryKeys.thesis.THESIS_REQUEST_DETAIL, requestCode],
     queryFn: () => ThesisThemeRequestService.getThemeRequestDetail(requestCode),
   })
-  const [thesisDetail] = thesisDetails || []
   const alreayReviewed =
     thesisDetail?.lastAction?.account === 'd64a8b97-6373-48ab-a106-bff68293e968'
 

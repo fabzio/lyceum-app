@@ -1,7 +1,7 @@
 import http from '@/lib/http'
-import { ThesisThemeRequest } from '../Interfaces/ThesisThemeRequest'
-import { ThesisThemeDetail } from '../Interfaces/ThesisThemeDetail'
-import { ThesisThemeRequestAction } from '../Interfaces/ThesisThemeRequestAction'
+import { ThesisThemeRequest } from '../interfaces/ThesisThemeRequest'
+import { ThesisThemeDetail } from '../interfaces/ThesisThemeDetail'
+import { ThesisThemeRequestAction } from '../interfaces/ThesisThemeRequestAction'
 
 class ThesisThemeRequestService {
   public static async getThesisThemeRequest() {
@@ -28,7 +28,7 @@ class ThesisThemeRequestService {
         throw new Error('Error')
       }
 
-      return response.data as ThesisThemeDetail[]
+      return response.data as ThesisThemeDetail
     } catch (error) {
       console.error(error)
     }

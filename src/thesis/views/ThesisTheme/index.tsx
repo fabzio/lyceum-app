@@ -1,9 +1,10 @@
 import { Input } from '@/components/ui/input'
-import ThesisThemeSelectFilter from './ThesisThemeRequestFilter'
+import ThesisThemeSelectFilter from './components/ThesisThemeRequestFilter'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { QueryKeys } from '@/constants/queryKeys'
+
+import ThesisThemeList from './components/ThesisThemeList'
 import ThesisThemeRequestService from '@/thesis/services/ThesisThemeRequest.service'
-import ThesisThemeList from './ThesisThemeList'
 
 export default function ThesisTheme() {
   const { data: thesisThemeRequests } = useSuspenseQuery({
