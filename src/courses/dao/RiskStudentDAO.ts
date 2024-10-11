@@ -2,6 +2,9 @@ import { Account } from '@/interfaces/models/Account'
 import { Course } from '@/interfaces/models/Course'
 import { RiskStudent } from '@/interfaces/models/RiskStudent'
 import { Schedule } from '@/interfaces/models/Schedule'
+import {
+  InsertRiskStudentsDTO,
+} from '../dto/riskStudentDTO'
 
 export interface RiskStudentDAO {
   getAllRiskStudent: () => Promise<
@@ -21,7 +24,7 @@ export interface RiskStudentDAO {
         code: Schedule['code']
         professor: string
       }
-      score: number
+      score: number | null
       reason: string
     }[]
   >
@@ -31,8 +34,11 @@ export interface RiskStudentDAO {
   }) => Promise<
     {
       id: number
-      date: string
+      date: Date
       score: number
     }[]
   >
+
+  insertRiskStudents(list: InsertRiskStudentsDTO['studentList']): Promise<void>
+  updateRiskStudents(): Promise<void>
 }

@@ -18,4 +18,23 @@ export interface EnrollmentDAO {
       request_number: number
     }[]
   >
+
+  getEnrollmentRequest: (params: {
+    requestId: number
+  }) => Promise<
+    {
+      student: {
+        name: Account['name']
+        surname: string
+      }
+      schedule: {
+        code: string
+        course_name: string
+      }
+      state: string
+      request_type: string
+      reason: string
+      request_number: number
+    }[]
+  >
 }

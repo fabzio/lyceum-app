@@ -14,21 +14,19 @@ class EnrollmentController {
     }
     return c.json(response)
   })
-  /*
-  public getRiskStudentReports = this.router.get('/:code', async (c) => {
-    const { code } = c.req.param()
-    const scheduleId = c.req.query('scheduleId')
+  
+  public getEnrollment = this.router.get('/:requestId', async (c) => {
+    const { requestId } = c.req.param()
 
     const response: ResponseAPI = {
-      data: await this.permissionService.getRiskStudentReports({
-        studentCode: code,
-        scheduleId: parseInt(scheduleId!),
+      data: await this.enrollmentService.getEnrollmentRequest({
+        requestId: parseInt(requestId!),
       }),
-      message: 'RiskStudentReports retrieved',
+      message: 'Request retrieved',
       success: true,
     }
     return c.json(response)
   })
-  */
+
 }
 export default EnrollmentController
