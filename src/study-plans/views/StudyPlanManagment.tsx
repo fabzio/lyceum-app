@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import StudyPlanTable from '../components/StudyPlanTable';
-import useStudyPlanStore from '../store';
-import StudyPlanService from '../services/studyPlan.service';
+import StudyPlanTable from '@/study-plans/components/StudyPlanTable';
+import useStudyPlanStore from '@/study-plans/store';
+import StudyPlanService from '@/study-plans/services/studyPlan.service';
 
 export default function StudyPlanManagement() {
   const { studyPlans, addStudyPlan } = useStudyPlanStore();
