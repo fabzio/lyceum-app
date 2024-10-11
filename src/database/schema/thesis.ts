@@ -14,6 +14,8 @@ import { schema } from '..'
 import { accounts } from './accounts'
 import { units } from './units'
 import { thesisJuryStatus } from './enums'
+import { createInsertSchema } from 'drizzle-zod'
+import { z } from 'zod'
 
 export const thesis = schema.table(
   'thesis',
@@ -43,3 +45,6 @@ export const thesis = schema.table(
     }),
   })
 )
+
+const thesisSchema = createInsertSchema(thesis)
+export type ThesisSchema = z.infer<typeof thesisSchema>
