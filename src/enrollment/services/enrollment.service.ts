@@ -1,7 +1,5 @@
 import http from '@/lib/http'
 import { EnrollmentGeneral } from '../interfaces/EnrollmentGeneral'
-import { Account } from '@/interfaces/Account'
-import { Schedule } from '@/interfaces/Schedule'
 
 class EnrollmentService {
   public static async getAllEnrollments(): Promise<EnrollmentGeneral[]> {
@@ -21,7 +19,7 @@ class EnrollmentService {
   public static async getEnrollment({
     requestId,
   }: {
-    requestId: EnrollmentGeneral['request_number']
+    requestId: EnrollmentGeneral['requestNumber']
   }): Promise<EnrollmentGeneral> {
     try {
       const res = await http.get(`/matricula/${requestId}/`, {

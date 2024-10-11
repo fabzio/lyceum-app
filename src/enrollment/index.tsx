@@ -1,10 +1,10 @@
-import PageLayout from "@/layouts/PageLayout";
-import { Outlet } from '@tanstack/react-router'
+import PageLayout from '@/layouts/PageLayout'
+import EnrollmentManagement from './components/EnrollmentManagement'
 
-export default function Enrollments() {
+export default function Enrollment() {
   return (
-    <PageLayout name="Modificación de matrícula">
-      <Outlet />
+    <PageLayout name="Matrícula">
+      <EnrollmentManagement />
     </PageLayout>
   )
 }

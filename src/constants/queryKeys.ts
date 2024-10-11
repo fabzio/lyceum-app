@@ -20,4 +20,7 @@ export const QueryKeys = {
     THESIS_JURY_REQUESTS: 'thesis_jury_requests',
     THESIS_JURIES: 'thesis_juries',
   },
+  enrollment: {
+    ENROLLMENTS_MODIFY: 'enrollments_modify',
+  },
 }

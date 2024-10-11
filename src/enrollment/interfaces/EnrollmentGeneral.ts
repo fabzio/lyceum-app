@@ -9,8 +9,8 @@ export interface EnrollmentGeneral {
       code: string
       course_name: string
     }
-    request_type: string
-    request_number: number
+    requestType: string
+    requestNumber: number
     state: string
     reason: string
   }
