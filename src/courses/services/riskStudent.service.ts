@@ -3,6 +3,7 @@ import { RiskStudentGeneral } from '../interfaces/RIskStudentGeneral'
 import { Account } from '@/interfaces/Account'
 import { Schedule } from '@/interfaces/Schedule'
 import { RiskStudentReport } from '../interfaces/RiskStudentReport'
+import { Courses } from '@/interfaces/Courses'
 
 class RiskStudentService {
   public static async getRiskStudents(): Promise<RiskStudentGeneral[]> {
@@ -40,6 +41,40 @@ class RiskStudentService {
     } catch (error) {
       console.error(error)
       return []
+    }
+  }
+
+  public static async insertRiskStudentReport(
+    studentList: {
+      studentCode: Account['code']
+      scheduleCode: Schedule['code']
+      courseCode: Courses['code']
+      reasonId: number
+      score: number
+    }[]
+  ): Promise<void> {
+    try {
+      const res = await http.post('/courses/risk-students', {
+        studentList,
+      })
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error('Error')
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  public static async updateRiskStudentReport(): Promise<void> {
+    try {
+      const res = await http.put('/courses/risk-students')
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error('Error')
+      }
+    } catch (error) {
+      console.error(error)
     }
   }
 }

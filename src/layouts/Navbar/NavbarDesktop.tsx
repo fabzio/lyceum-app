@@ -5,7 +5,7 @@ import SearchBar from '../components/SearchBar'
 
 export default function NavbarDesktop() {
   return (
-    <nav className="[grid-area:nav] p-2 flex justify-between shadow-sm">
+    <nav className="sticky top-0 w-full [grid-area:nav] p-2 flex justify-between shadow-sm pe-16 backdrop-blur-md z-50">
       <section/>
       <section>
         <SearchBar />

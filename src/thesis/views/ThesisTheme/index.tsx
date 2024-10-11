@@ -1,9 +1,19 @@
 import { Input } from '@/components/ui/input'
-import ThesisThemeSelectFilter from './ThesisThemeRequestFilter'
-import ThesisThemeElement from './ThesisThemeRequestElement'
+import ThesisThemeSelectFilter from './components/ThesisThemeRequestFilter'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { QueryKeys } from '@/constants/queryKeys'
 
+import ThesisThemeList from './components/ThesisThemeList'
+import ThesisThemeRequestService from '@/thesis/services/ThesisThemeRequest.service'
+import { Link } from '@tanstack/react-router'
+import { Button } from '@/components/ui/button'
 
 export default function ThesisTheme() {
+  const { data: thesisThemeRequests } = useSuspenseQuery({
+    queryKey: [QueryKeys.thesis.THESIS_REQUESTS],
+    queryFn: () => ThesisThemeRequestService.getThesisThemeRequest(),
+  })
+  console.log(thesisThemeRequests)
   return (
     <div className="flex flex-col my-6 p-2">
       <div className="w-full flex flex-col md:flex-row justify-between gap-2">
@@ -13,43 +23,11 @@ export default function ThesisTheme() {
         <div className="flex gap-3">
           <ThesisThemeSelectFilter />
         </div>
+        <Link to="/tesis/nueva-solicitud">
+          <Button>Nueva solicitud</Button>
+        </Link>
       </div>
-      <div>
-        <ThesisThemeElement id="39457392" 
-        title="Desarrollo de un Sistema de Gestión de Proyectos Basado en Metodologías Ágiles para Mejorar la Productividad en Equipos de Trabajo Remotos"
-        owner="Sebastián Meléndez" date="22/09/2024" status= "Aprobado por coordinador de área"/>
-          
-        <ThesisThemeElement id="45612387" 
-        title="Estudio de las soluciones actuales para la escalabilidad en redes blockchain, como la fragmentación (sharding) y las cadenas laterales (sidechains), y su efectividad en diferentes escenarios."
-        owner="Piero Esparza" date="22/09/2024" status= "Aprobado por coordinador de área"/>
-      </div>
+      <ThesisThemeList thesisThemeRequests={thesisThemeRequests} />
     </div>
   )
 }
-
-
-
-/*const assigments: Assigment[] = [
-  {
-    user: 'Fabrizio',
-    roles: [
-      {
-        key: 'Admin',
-        value: 'PUCP',
-      },
-    ],
-  },
-  {
-    user: 'Ricardo',
-    roles: [
-      {
-        key: 'Director de carrera',
-        value: 'Ingeniería de Software',
-      },
-      {
-        key: 'Admin',
-        value: 'PUCP',
-      },
-    ],
-  },
-]*/

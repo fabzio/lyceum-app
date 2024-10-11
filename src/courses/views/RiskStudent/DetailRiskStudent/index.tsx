@@ -1,13 +1,12 @@
-import { Button } from '@/components/ui/button'
 import { QueryKeys } from '@/constants/queryKeys'
 import RiskStudentService from '@/courses/services/riskStudent.service'
 import useCourseStore from '@/courses/store'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
-import moment from 'moment'
 import ReportDetail from './ReportDetail'
 import { useState } from 'react'
-import ReportsCard from './ReportsCard'
+import NewReportDialog from './NewReportDialog'
+import ReportList from './ReportList'
 
 export default function DetailRiskStudent() {
   const { code } = useParams({
@@ -30,18 +29,11 @@ export default function DetailRiskStudent() {
 
   return (
     <div className="flex flex-row justify-between my-6 p-2">
-      <div className="flex flex-col gap-2 flex-grow">
-        {reports.map((report, idx) => (
-          <ReportsCard
-            key={report.id}
-            id={report.id}
-            date={moment(report.date).calendar()}
-            score={report.score}
-            selectReport={setSelectedReport}
-            selected={selectedReport? selectedReport === report.id : idx === 0}
-          />
-        ))}
-      </div>
+      <ReportList
+        reports={reports}
+        selectedReport={selectedReport}
+        setSelectedReport={setSelectedReport}
+      />
       <div className="w-2/3">
         <h2 className="text-3xl font-bold">Reporte de estado</h2>
         <div className="border p-4 rounded shadow mt-4">
@@ -61,7 +53,7 @@ export default function DetailRiskStudent() {
 
           <ReportDetail reportId={selectedReport} />
           <div className="flex justify-center mt-4">
-            <Button className="mt-4">Solicitar actualización</Button>
+            <NewReportDialog />
           </div>
         </div>
       </div>

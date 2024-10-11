@@ -10,8 +10,12 @@ export const Route = createFileRoute('/cursos/alumnos-riesgo/$code')({
       scheduleId,
     }
   },
-  loader: ({ deps: { scheduleId }, params, context: { queryClient } }) => {
-    queryClient.ensureQueryData({
+  loader: async ({
+    deps: { scheduleId },
+    params,
+    context: { queryClient },
+  }) => {
+    return queryClient.ensureQueryData({
       queryKey: [QueryKeys.courses.RISK_STUDENT_REPORTS, params.code],
       queryFn: () =>
         RiskStudentService.getRiskStudentReports({
