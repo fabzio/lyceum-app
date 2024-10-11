@@ -1,8 +1,7 @@
 import http from '@/lib/http'
 import { EnrollmentGeneral } from '../interfaces/EnrollmentGeneral'
-//import { Account } from '@/interfaces/Account'
-//import { Schedule } from '@/interfaces/Schedule'
-//import { RiskStudentReport } from '../interfaces/RiskStudentReport'
+import { Account } from '@/interfaces/Account'
+import { Schedule } from '@/interfaces/Schedule'
 
 class EnrollmentService {
   public static async getAllEnrollments(): Promise<EnrollmentGeneral[]> {
@@ -18,31 +17,29 @@ class EnrollmentService {
       return []
     }
   }
-  /*
-  public static async getRiskStudentReports({
-    studentCode,
-    scheduleId,
+  
+  public static async getEnrollment({
+    requestId,
   }: {
-    studentCode: Account['code']
-    scheduleId: Schedule['id']
-  }): Promise<RiskStudentReport[]> {
+    requestId: EnrollmentGeneral['request_number']
+  }): Promise<EnrollmentGeneral> {
     try {
-      const res = await http.get(`/courses/risk-students/${studentCode}`, {
+      const res = await http.get(`/matricula/${requestId}/`, {
         params: {
-          scheduleId,
+          requestId,
         },
       })
       const response = res.data as ResponseAPI
       if (!response.success) {
         throw new Error('Error')
       }
-      return response.data as RiskStudentReport[]
+      return response.data as EnrollmentGeneral
     } catch (error) {
       console.error(error)
-      return []
+      throw new Error('Failed to get enrollment request data')
     }
   }
-    */
+ 
 }
 
 export default EnrollmentService

@@ -29,7 +29,7 @@ import {
     const OnRowClick = (enrollment: EnrollmentGeneral) => {
         
       navigate({
-        to: `/matricula/${enrollment.request_number}`,
+        to: `/matricula/${enrollment.request_number}/`,
         /*
         params: {
           request_number: enrollment.request_number.toString(),
