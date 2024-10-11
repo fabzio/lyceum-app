@@ -49,6 +49,9 @@ export const enrollmentsRelations = relations(
   })
 )
 
-// Esquema de validación con Zod
-export const enrollmentsSchema = createInsertSchema(enrollmentModifications)
-export type EnrollmentsSchema = z.infer<typeof enrollmentsSchema>
+export const enrollmentModificationsSchema = createInsertSchema(
+  enrollmentModifications
+)
+export type EnrollmentModificationsSchema = z.infer<
+  typeof enrollmentModificationsSchema
+>

@@ -7,6 +7,7 @@ import {
 } from '@/database/schema'
 import { aliasedTable, eq, sql } from 'drizzle-orm'
 import { EnrollmentModificationDAO } from '../dao/EnrollmentModificationDAO'
+import { EnrollmentModificationsSchema } from '@/database/schema/enrollmentModifications'
 
 class EnrollmentModificationService implements EnrollmentModificationDAO {
   public async getAllEnrollments() {
@@ -69,6 +70,18 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
       .innerJoin(courses, eq(schedules.courseId, courses.id))
       .where(eq(enrollmentModifications.requestNumber, requestNumber))
     return enrollmentsResponse
+  }
+
+  public async updateEnrollmentRequestResponse({
+    requestNumber,
+    state,
+  }: Pick<EnrollmentModificationsSchema, 'requestNumber' | 'state'>) {
+    await db
+      .update(enrollmentModifications)
+      .set({
+        state,
+      })
+      .where(eq(enrollmentModifications.requestNumber, requestNumber))
   }
 }
 

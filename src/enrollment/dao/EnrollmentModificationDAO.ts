@@ -1,3 +1,4 @@
+import { EnrollmentModificationsSchema } from '@/database/schema/enrollmentModifications'
 import { Account } from '@/interfaces/models/Account'
 //import { Course } from '@/interfaces/models/Course'
 
@@ -35,4 +36,12 @@ export interface EnrollmentModificationDAO {
       requestNumber: number
     }[]
   >
+
+  updateEnrollmentRequestResponse({
+    requestNumber,
+    state,
+  }: Pick<
+    EnrollmentModificationsSchema,
+    'requestNumber' | 'state'
+  >): Promise<void>
 }
