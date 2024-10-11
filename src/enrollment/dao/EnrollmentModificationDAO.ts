@@ -1,7 +1,7 @@
 import { Account } from '@/interfaces/models/Account'
 //import { Course } from '@/interfaces/models/Course'
 
-export interface EnrollmentDAO {
+export interface EnrollmentModificationDAO {
   getAllEnrollments: () => Promise<
     {
       student: {
@@ -10,16 +10,16 @@ export interface EnrollmentDAO {
       }
       schedule: {
         code: string
-        course_name: string
+        courseName: string
       }
       state: string
       requestType: string
-      reason: string
+      reason: string | null
       requestNumber: number
     }[]
   >
 
-  getEnrollmentRequest: (params: { requestId: number }) => Promise<
+  getEnrollmentRequest: (params: { requestNumber: number }) => Promise<
     {
       student: {
         name: Account['name']
@@ -27,11 +27,11 @@ export interface EnrollmentDAO {
       }
       schedule: {
         code: string
-        course_name: string
+        courseName: string
       }
       state: string
       requestType: string
-      reason: string
+      reason: string | null
       requestNumber: number
     }[]
   >

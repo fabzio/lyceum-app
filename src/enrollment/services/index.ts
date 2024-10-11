@@ -1,1 +1,1 @@
-export { default as EnrollmentService } from './enrollment.service'
+export { default as EnrollmentModificationsService } from './enrollmentModifications.service'

@@ -1,1 +1,1 @@
-export { default as EnrollmentRoute } from './enrollment.route'
+export { default as EnrollmentModificationRoute } from './enrollmentModifications.route'

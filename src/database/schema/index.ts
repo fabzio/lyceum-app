@@ -4,6 +4,8 @@ export {
   scheduleStatus,
   thesisRequestStatus,
   thesisJuryStatus,
+  enrollmentModifcationStatus,
+  enrollmentRequestType
 } from '@/database/schema/enums'
 export { accountRoles } from '@/database/schema/accountRoles'
 export { accounts } from '@/database/schema/accounts'
@@ -28,4 +30,4 @@ export { thesisActions } from '@/database/schema/thesisActions'
 export { thesisJuries } from '@/database/schema/thesisJuries'
 export { thesis } from '@/database/schema/thesis'
 export { units } from '@/database/schema/units'
-export { enrollments } from '@/database/schema/enrollments'
+export { enrollmentModifications } from '@/database/schema/enrollmentModifications'

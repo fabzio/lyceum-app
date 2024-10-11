@@ -1,10 +1,11 @@
 import { Hono } from 'hono'
-import { EnrollmentDAO } from '../dao/EnrollmentDAO'
-import EnrollmentService from '../services/enrollment.service'
+import { EnrollmentModificationDAO } from '../dao/EnrollmentModificationDAO'
+import { EnrollmentModificationsService } from '../services'
 
-class EnrollmentController {
+class EnrollmentModificationController {
   private router = new Hono()
-  private enrollmentService: EnrollmentDAO = new EnrollmentService()
+  private enrollmentService: EnrollmentModificationDAO =
+    new EnrollmentModificationsService()
 
   public getEnrollments = this.router.get('/', async (c) => {
     const response: ResponseAPI = {
@@ -14,19 +15,18 @@ class EnrollmentController {
     }
     return c.json(response)
   })
-  
-  public getEnrollment = this.router.get('/:requestId', async (c) => {
-    const { requestId } = c.req.param()
+
+  public getEnrollment = this.router.get('/:requestNumber', async (c) => {
+    const { requestNumber } = c.req.param()
 
     const response: ResponseAPI = {
       data: await this.enrollmentService.getEnrollmentRequest({
-        requestId: parseInt(requestId!),
+        requestNumber: parseInt(requestNumber),
       }),
       message: 'Request retrieved',
       success: true,
     }
     return c.json(response)
   })
-
 }
-export default EnrollmentController
+export default EnrollmentModificationController

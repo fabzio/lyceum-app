@@ -5,7 +5,13 @@ import Security from './security'
 import Enrollment from './enrollment'
 import Thesis from './thesis'
 
-const app = new App([new Security(),new FAQ(), new Course(), new Enrollment(),new Thesis()])
+const app = new App([
+  new Security(),
+  new FAQ(),
+  new Course(),
+  new Enrollment(),
+  new Thesis(),
+])
 
 app.listen()
 

@@ -1,21 +1,21 @@
 import { Route } from '@/interfaces/route'
 import { Hono } from 'hono'
-import { EnrollmentRoute } from './routes'
+import { EnrollmentModificationRoute } from './routes'
 
 class Enrollment implements Route {
-  public path = '/enrollments'
+  public path = '/enrollment'
   public router: Hono = new Hono()
 
   private routes: Route[]
 
   constructor() {
-    this.routes = [new EnrollmentRoute()]
+    this.routes = [new EnrollmentModificationRoute()]
     this.initializeRoutes()
   }
 
   private initializeRoutes() {
     this.router.get('/', async (c) => {
-      return c.json({ message: 'enrollment module' })
+      return c.json({ message: 'enrollmentModifications module' })
     })
     this.routes.forEach((route) => {
       this.router.route(route.path, route.router)
