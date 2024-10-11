@@ -17,8 +17,8 @@ export const riskStudents = schema.table(
     studentId: uuid('student_id'),
     scheduleId: serial('schedule_id'),
     reasonId: serial('reason_id').notNull(),
-    score: smallint('score').notNull(),
-    state: boolean('state').notNull().default(true),
+    score: smallint('score'),
+    updated: boolean('updated').notNull().default(true),
   },
   (table) => ({
     riskStudentsPk: primaryKey({
