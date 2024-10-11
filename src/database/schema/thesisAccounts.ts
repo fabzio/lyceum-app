@@ -3,6 +3,8 @@ import { schema } from '..'
 import { roles } from './roles'
 import { accounts } from './accounts'
 import { thesis } from './thesis'
+import { createInsertSchema } from 'drizzle-zod'
+import { z } from 'zod'
 
 export const thesisAccounts = schema.table(
   'thesis_accounts',
@@ -32,3 +34,6 @@ export const thesisAccounts = schema.table(
     }),
   })
 )
+
+export const thesisAccountsSchema = createInsertSchema(thesisAccounts)
+export type ThesisAccountsSchema = z.infer<typeof thesisAccountsSchema>
