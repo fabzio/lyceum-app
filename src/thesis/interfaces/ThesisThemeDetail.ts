@@ -29,4 +29,5 @@ export interface ThesisThemeDetail {
     action: 'denied' | 'approved' | 'sended'
     role: string
   }
+  aproved: boolean
 }
