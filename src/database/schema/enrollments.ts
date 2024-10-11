@@ -11,9 +11,9 @@ export const enrollments = schema.table('enrollments', {
   id: serial('id').primaryKey(),
   studentId: uuid('student_id').references(() => accounts.id), // clave foránea a accounts
   scheduleId: serial('schedule_id').references(() => schedules.id),  // clave foránea a courses
-  request_number: integer('request_number').notNull(),
+  requestNumber: integer('request_number').notNull(),
   state: varchar('state', { length: 50 }),
-  request_type: varchar('request_type', { length: 50 }),
+  requestType: varchar('request_type', { length: 50 }),
   reason: varchar('reason', { length: 255 }),
 })
 

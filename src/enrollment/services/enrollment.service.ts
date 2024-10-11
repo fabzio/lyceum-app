@@ -1,10 +1,5 @@
 import db from '@/database'
-import {
-  accounts,
-  enrollments,
-  courses,
-  schedules,
-} from '@/database/schema'
+import { accounts, enrollments, courses, schedules } from '@/database/schema'
 import { aliasedTable, eq, sql } from 'drizzle-orm'
 import { EnrollmentDAO } from '../dao/EnrollmentDAO'
 
@@ -14,9 +9,9 @@ class EnrollmentService implements EnrollmentDAO {
 
     const enrollmentsResponse = await db
       .select({
-        request_number: enrollments.request_number,
+        requestNumber: enrollments.requestNumber,
         state: sql<string>`coalesce(${enrollments.state}, '')`,
-        request_type: sql<string>`coalesce(${enrollments.request_type}, '')`,
+        requestType: sql<string>`coalesce(${enrollments.requestType}, '')`,
         student: {
           name: student.name,
           surname: sql<string>`concat(${student.firstSurname}, ' ', ${student.secondSurname})`,
@@ -31,40 +26,34 @@ class EnrollmentService implements EnrollmentDAO {
       .innerJoin(student, eq(enrollments.studentId, student.id))
       .innerJoin(schedules, eq(enrollments.scheduleId, schedules.id))
       .innerJoin(courses, eq(schedules.courseId, courses.id))
-      //.where(eq(enrollments.active, true)) // Assuming there's an `active` field in `enrollments`
+    //.where(eq(enrollments.active, true)) // Assuming there's an `active` field in `enrollments`
 
-    return enrollmentsResponse;
+    return enrollmentsResponse
   }
 
-  public async getEnrollmentRequest({
-    requestId
-  }: {
-    requestId: number
-  }) {
+  public async getEnrollmentRequest({ requestId }: { requestId: number }) {
     const student = aliasedTable(accounts, 'student')
 
     const enrollmentsResponse = await db
-    .select({
-      request_number: enrollments.request_number,
-      state: sql<string>`coalesce(${enrollments.state}, '')`,
-      request_type: sql<string>`coalesce(${enrollments.request_type}, '')`,
-      student: {
-        name: student.name,
-        surname: sql<string>`concat(${student.firstSurname}, ' ', ${student.secondSurname})`,
-      },
-      schedule: {
-        code: schedules.code,
-        course_name: courses.name,
-      },
-      reason: sql<string>`coalesce(${enrollments.reason}, '')`,
-    })
+      .select({
+        requestNumber: enrollments.requestNumber,
+        state: sql<string>`coalesce(${enrollments.state}, '')`,
+        requestType: sql<string>`coalesce(${enrollments.requestType}, '')`,
+        student: {
+          name: student.name,
+          surname: sql<string>`concat(${student.firstSurname}, ' ', ${student.secondSurname})`,
+        },
+        schedule: {
+          code: schedules.code,
+          course_name: courses.name,
+        },
+        reason: sql<string>`coalesce(${enrollments.reason}, '')`,
+      })
       .from(enrollments)
       .innerJoin(student, eq(enrollments.studentId, student.id))
       .innerJoin(schedules, eq(enrollments.scheduleId, schedules.id))
       .innerJoin(courses, eq(schedules.courseId, courses.id))
-      .where(
-          eq(enrollments.request_number, requestId),
-      )
+      .where(eq(enrollments.requestNumber, requestId))
     return enrollmentsResponse
   }
 }

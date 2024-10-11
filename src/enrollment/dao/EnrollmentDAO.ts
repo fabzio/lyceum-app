@@ -13,15 +13,13 @@ export interface EnrollmentDAO {
         course_name: string
       }
       state: string
-      request_type: string
+      requestType: string
       reason: string
-      request_number: number
+      requestNumber: number
     }[]
   >
 
-  getEnrollmentRequest: (params: {
-    requestId: number
-  }) => Promise<
+  getEnrollmentRequest: (params: { requestId: number }) => Promise<
     {
       student: {
         name: Account['name']
@@ -32,9 +30,9 @@ export interface EnrollmentDAO {
         course_name: string
       }
       state: string
-      request_type: string
+      requestType: string
       reason: string
-      request_number: number
+      requestNumber: number
     }[]
   >
 }
