@@ -9,7 +9,7 @@ export const courses = schema.table(
   'courses',
   {
     id: serial('id').primaryKey(),
-    code: char('code', { length: 8 }).notNull(),
+    code: char('code', { length: 6 }).notNull(),
     name: varchar('name', { length: 100 }).notNull(),
     credits: numeric('credits', { precision: 3, scale: 2 }).notNull(),
   },

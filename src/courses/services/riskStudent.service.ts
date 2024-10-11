@@ -10,13 +10,16 @@ import {
   terms,
 } from '@/database/schema'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
-import { aliasedTable, and, desc, eq, sql } from 'drizzle-orm'
+import { aliasedTable, and, desc, eq, inArray, sql } from 'drizzle-orm'
 import { RiskStudentDAO } from '../dao/RiskStudentDAO'
-class RiskStudentService implements RiskStudentDAO{
-  public getAllRiskStudent() {
+import {
+  InsertRiskStudentsDTO,
+} from '../dto/riskStudentDTO'
+class RiskStudentService implements RiskStudentDAO {
+  public async getAllRiskStudent() {
     const professor = aliasedTable(accounts, 'professor')
     const student = aliasedTable(accounts, 'student')
-    const riskStudentsResponse = db
+    const riskStudentsResponse = await db
       .select({
         student: {
           code: student.code,
@@ -56,14 +59,14 @@ class RiskStudentService implements RiskStudentDAO{
     return riskStudentsResponse
   }
 
-  public getRiskStudentReports({
+  public async getRiskStudentReports({
     scheduleId,
     studentCode,
   }: {
     scheduleId: number
     studentCode: string
   }) {
-    const riskStudentReportsResponse = db
+    const riskStudentReportsResponse = await db
       .select({
         id: riskStudentReports.id,
         date: riskStudentReports.date,
@@ -79,6 +82,61 @@ class RiskStudentService implements RiskStudentDAO{
         )
       )
     return riskStudentReportsResponse
+  }
+
+  public async insertRiskStudents(list: InsertRiskStudentsDTO['studentList']) {
+    const schedulesCoursesData = await db
+      .select({
+        scheduleId: schedules.id,
+        scheduleCode: schedules.code,
+        courseCode: courses.code,
+      })
+      .from(schedules)
+      .innerJoin(courses, eq(schedules.courseId, courses.id))
+      .innerJoin(terms, eq(terms.id, schedules.termId))
+      .where(eq(terms.current, true))
+
+    const scheduleIds = list.map((item) => {
+      const schedule = schedulesCoursesData.find(
+        (data) =>
+          data.courseCode === item.courseCode &&
+          data.scheduleCode === item.scheduleCode
+      )
+      if (!schedule) {
+        throw new Error('Schedule not found')
+      }
+      return schedule.scheduleId
+    })
+
+    const studentsData = await db
+      .select({
+        studentId: accounts.id,
+        studentCode: accounts.code,
+      })
+      .from(accounts)
+      .where(
+        inArray(
+          accounts.code,
+          list.map((item) => item.studentCode)
+        )
+      )
+    const studentsMap = new Map(
+      studentsData.map((item) => [item.studentCode, item.studentId])
+    )
+
+    const riskStudentData = list.map((item, idx) => ({
+      studentId: studentsMap.get(item.studentCode),
+      scheduleId: scheduleIds[idx],
+      score: item.score,
+      reasonId: item.reasonId,
+    }))
+
+    await db.insert(riskStudents).values(riskStudentData)
+  }
+  public async updateRiskStudents(): Promise<void> {
+    await db.update(riskStudents).set({
+      updated: false,
+    })
   }
 }
 
