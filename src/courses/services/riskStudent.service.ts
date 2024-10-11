@@ -65,6 +65,18 @@ class RiskStudentService {
       console.error(error)
     }
   }
+
+  public static async updateRiskStudentReport(): Promise<void> {
+    try {
+      const res = await http.put('/courses/risk-students')
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error('Error')
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
 }
 
 export default RiskStudentService
