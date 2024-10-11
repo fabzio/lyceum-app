@@ -1,7 +1,7 @@
 import http from '@/lib/http'
 import { RiskStudentReport } from '../interfaces/RiskStudentReport'
 
-class getRiskStudentReportService {
+class RiskStudentReportService {
   public static async getRiskStudentReport({
     reportId,
     studentCode,
@@ -28,6 +28,32 @@ class getRiskStudentReportService {
       return []
     }
   }
+  public static async insertRiskStudentReport({
+    studentCode,
+    scheduleId,
+    score,
+    observation,
+  }: {
+    studentCode: string
+    scheduleId: number
+    score: number
+    observation: string
+  }): Promise<void> {
+    try {
+      const res = await http.post('/courses/reports', {
+        studentCode,
+        scheduleId,
+        score,
+        observation,
+      })
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error('Error')
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
 }
 
-export default getRiskStudentReportService
+export default RiskStudentReportService

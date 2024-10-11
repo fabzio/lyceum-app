@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
 import { QueryKeys } from '@/constants/queryKeys'
 import { RiskStudentReport } from '@/courses/interfaces/RiskStudentReport'
-import getRiskStudentReportService from '@/courses/services/riskStudentReport.service'
+import RiskStudentReportService from '@/courses/services/riskStudentReport.service'
 import useCourseStore from '@/courses/store'
 import { useQuery } from '@tanstack/react-query'
 import { Angry, Frown, Laugh, Meh, Smile } from 'lucide-react'
@@ -19,7 +19,7 @@ export default function ReportDetail({ reportId }: Props) {
   const { data: reportsDetail, isLoading } = useQuery({
     queryKey: [QueryKeys.courses.RISK_STUDENT_REPORT, reportId ?? 0],
     queryFn: () =>
-      getRiskStudentReportService.getRiskStudentReport({
+      RiskStudentReportService.getRiskStudentReport({
         reportId,
         studentCode: selectedRiskStudent!.student.code,
         scheduleId: selectedRiskStudent!.schedule.id,

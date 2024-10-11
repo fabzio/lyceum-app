@@ -37,8 +37,8 @@ export default function TableRiskStudents({
         code: riskStudent.student.code,
       },
       search: {
-        scheduleId: riskStudent.schedule.id
-      }
+        scheduleId: riskStudent.schedule.id,
+      },
     })
   }
 
@@ -114,7 +114,7 @@ export default function TableRiskStudents({
                   {riskStudent.reason}
                 </TableCell>
                 <TableCell className="py-3 px-6 text-center">
-                  {riskStudent.score}
+                  {riskStudent.score ?? 'N/A'}
                 </TableCell>
               </TableRow>
             ))

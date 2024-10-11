@@ -1,10 +1,11 @@
 import { Input } from '@/components/ui/input'
 import SelectFilter from './SelectFilter'
 import TableRiskStudents from './TableRiskStudents'
-import { Button } from '@/components/ui/button'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import RiskStudentService from '@/courses/services/riskStudent.service'
 import { QueryKeys } from '@/constants/queryKeys'
+import UploadCSVDialog from './components/UploadCSVDialog'
+import UpdateConfirmationDialog from './UpdateConfirmationDialog'
 
 export default function RiskStudents() {
   //ANOTACION 1: FALTA FILTRAR POR NOTAS : "Listo Filtrar por Puntacion"
@@ -26,9 +27,10 @@ export default function RiskStudents() {
           <SelectFilter filterType="ReasonFilter" />
           <SelectFilter filterType="ScoreFilter" />
         </div>
-        <Button className="w-full md:w-auto">
-          Solicitar todas las actualizaciones
-        </Button>
+        <div className="flex gap-2">
+          <UpdateConfirmationDialog />
+          <UploadCSVDialog />
+        </div>
       </div>
       <TableRiskStudents tableRiskStudents={riskStudents} />
     </div>
