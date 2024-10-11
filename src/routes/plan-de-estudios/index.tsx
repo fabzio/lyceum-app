@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import ThesisTheme from '@/thesis/views/ThesisTheme'
+import CourseManagment from '@/study-plans/views/CourseManagment'
 
 export const Route = createFileRoute('/plan-de-estudios/')({
-  component: () => <ThesisTheme/>
+  component: () => <CourseManagment/>
 })

@@ -36,7 +36,7 @@ const tabs: Tab[] = [
     label: 'Gestión de cursos',
   },
   {
-    path: '/plan-de-estudios',
+    path: '/plan-de-estudios/plan-de-estudios',
     label: 'Gestión de plan de estudios',
   },
 ]
