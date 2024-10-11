@@ -31,7 +31,7 @@ export default function ThesisThemeAside() {
           </Button>
         </div>
       </div>
-      <ul>
+      <ul className='space-y-2'>
         {thesisThemeRequests?.map((thesisThemeRequest) => (
           <li
             key={thesisThemeRequest.code}

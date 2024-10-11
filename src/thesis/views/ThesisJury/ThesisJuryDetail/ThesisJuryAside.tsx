@@ -27,7 +27,7 @@ export default function ThesisJuryAside() {
           <Button variant="ghost"></Button>
         </div>
       </div>
-      <ul>
+      <ul className="space-y-2">
         {thesisRequest.map((thesisThemeRequest) => (
           <li
             key={thesisThemeRequest.code}
@@ -39,7 +39,7 @@ export default function ThesisJuryAside() {
             <Link
               to="/tesis/propuesta-jurados/$requestCode"
               params={{
-                requestCode,
+                requestCode: thesisThemeRequest.code,
               }}
             >
               <div className="flex w-full flex-col gap-1">

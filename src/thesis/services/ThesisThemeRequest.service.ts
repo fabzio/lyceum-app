@@ -25,12 +25,12 @@ class ThesisThemeRequestService {
       const response = res.data as ResponseAPI
 
       if (!response.success) {
-        throw new Error('Error')
+        throw new Error(response.message)
       }
 
       return response.data as ThesisThemeDetail
     } catch (error) {
-      console.error(error)
+      throw error as Error
     }
   }
 
@@ -59,7 +59,7 @@ class ThesisThemeRequestService {
     code: string
     content: string | Blob
     isFile: boolean
-    action: string
+    action: 'sended' | 'approved' | 'denied'
     accountId: string
     roleId: number
   }) {

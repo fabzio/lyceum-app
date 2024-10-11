@@ -13,9 +13,11 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { QueryKeys } from '@/constants/queryKeys'
+import { useToast } from '@/hooks/use-toast'
 import ThesisThemeRequestService from '@/thesis/services/ThesisThemeRequest.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from '@tanstack/react-router'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -25,6 +27,10 @@ interface Props {
 }
 export default function ThesisThemeForm({ requestCode }: Props) {
   const queryClient = useQueryClient()
+  const { toast } = useToast()
+  const navigate = useNavigate({
+    from: '/tesis/propuesta-jurados/$requestCode',
+  })
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,20 +49,33 @@ export default function ThesisThemeForm({ requestCode }: Props) {
       refetch()
     },
   })
-  const { data: thesisDetail, refetch } = useQuery({
+  const {
+    data: thesisDetail,
+    refetch,
+    isError,
+  } = useQuery({
     queryKey: [QueryKeys.thesis.THESIS_REQUEST_DETAIL, requestCode],
     queryFn: () => ThesisThemeRequestService.getThemeRequestDetail(requestCode),
   })
+  if (isError) {
+    toast({
+      title: 'Error',
+      description: 'No se pudo obtener la información de la tesis',
+    })
+    navigate({
+      to: '/tesis/propuesta-jurados',
+    })
+  }
   const alreayReviewed =
     thesisDetail?.lastAction?.account === 'd64a8b97-6373-48ab-a106-bff68293e968'
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     mutate({
       accountId: 'd64a8b97-6373-48ab-a106-bff68293e968',
-      action: 'sended',
+      action: data.action,
       code: requestCode,
       isFile: data.isFile,
-      roleId: 2,
+      roleId: 3,
       content: data.isFile ? 'file-url' : data.content,
     })
     form.reset()

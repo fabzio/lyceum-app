@@ -16,6 +16,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
 import { Download } from 'lucide-react'
 import ThesisThemeForm from '../components/ThesisThemeForm'
+import { Badge } from '@/components/ui/badge'
 
 export default function ThesisThemeMain() {
   const { requestCode } = useParams({
@@ -28,12 +29,11 @@ export default function ThesisThemeMain() {
   return (
     <div className="flex h-full flex-col overflow-y-hidden">
       <div className="flex items-center p-2">
-        <div className="flex items-center gap-2 h-10 py-2">
+        <div className="flex items-center gap-2 h-10 w-full p-2 justify-between">
           <h1 className="text-xl font-bold">
-            {thesisThemeRequestDetail
-              ? 'Solicitud N°: ' + thesisThemeRequestDetail.code
-              : 'Nueva solicitud'}
+            Solicitud N°: {thesisThemeRequestDetail.code}
           </h1>
+          {thesisThemeRequestDetail.aproved && <Badge>Aprobado</Badge>}
         </div>
       </div>
       <Separator />
