@@ -36,7 +36,7 @@ class EnrollmentModificationController {
     zValidator(
       'json',
       z.object({
-        state: z.enum(['approved', 'denied']),
+        state: z.enum(['approved', 'denied', 'requested']),
       })
     ),
     async (c) => {

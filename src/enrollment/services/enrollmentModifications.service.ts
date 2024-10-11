@@ -46,7 +46,7 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
   }) {
     const student = aliasedTable(accounts, 'student')
 
-    const enrollmentsResponse = await db
+    const [enrollmentsResponse] = await db
       .select({
         requestNumber: enrollmentModifications.requestNumber,
         state: enrollmentModifications.state,
