@@ -17,6 +17,10 @@ import {
   PaginationContent,
 } from '@/components/ui/pagination'
 import { EnrollmentGeneral } from '@/enrollment/interfaces/EnrollmentGeneral'
+import {
+  mapEnrollmentModifyRequestType,
+  mapEnrollmentModifyState,
+} from '@/enrollment/utils'
 
 interface TableEnrollmentsProps {
   tableEnrollments: EnrollmentGeneral[]
@@ -95,18 +99,20 @@ export default function TableEnrollments({
                 className="transition duration-200 cursor-pointer"
                 onClick={() => OnRowClick(enrollment)}
               >
-                <TableCell className="py-3 px-6">{enrollment.state}</TableCell>
+                <TableCell className="py-3 px-6">
+                  {mapEnrollmentModifyState[enrollment.state]}
+                </TableCell>
                 <TableCell className="py-3 px-6">
                   {enrollment.requestNumber}
                 </TableCell>
                 <TableCell className="py-3 px-6">
-                  {enrollment.requestType}
+                  {mapEnrollmentModifyRequestType[enrollment.requestType]}
                 </TableCell>
                 <TableCell className="py-3 px-6">
-                  {`${enrollment.student.name} ${enrollment.student.surname}`}
+                  {enrollment.student.name}{' '}
                 </TableCell>
                 <TableCell className="py-3 px-6">
-                  {enrollment.schedule.course_name}
+                  {enrollment.schedule.courseName}
                 </TableCell>
                 <TableCell className="py-3 px-6">
                   {enrollment.schedule.code}
