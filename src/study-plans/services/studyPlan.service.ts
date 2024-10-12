@@ -18,11 +18,21 @@ class StudyPlanService {
   static async fetchStudyPlans(): Promise<StudyPlan[]> {
     // Mock data for study plans
     const mockData: StudyPlan[] = [
-      { id: '1', init_term: 2021, end_term: 2023 },
-      { id: '2', init_term: 2020, end_term: 2022 },
-      { id: '3', init_term: 2019, end_term: 2021 },
+      { id: '1', initTerm: 2021, endTerm: 2023 },
+      { id: '2', initTerm: 2020, endTerm: 2022 },
+      { id: '3', initTerm: 2019, endTerm: 2021 },
     ];
 
+    // Simulating a delay like an HTTP request
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(mockData), 500); // 500ms delay
+    });
+  }
+
+  static async getStudyPlanDetail(): Promise<StudyPlan> {
+    // Mock data for study plans
+    const mockData: StudyPlan = 
+      { id: '1', initTerm: 2021, endTerm: 2023 }
     // Simulating a delay like an HTTP request
     return new Promise((resolve) => {
       setTimeout(() => resolve(mockData), 500); // 500ms delay

@@ -1,12 +1,15 @@
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { StudyPlan } from '@/study-plans/interfaces/StudyPlan';
+import { useNavigate } from '@tanstack/react-router';
 
 interface StudyPlanTableProps {
   studyPlans: StudyPlan[];
-  onEdit: (studyPlan: StudyPlan) => void;
 }
 
-export default function StudyPlanTable({ studyPlans, onEdit }: StudyPlanTableProps) {
+export default function StudyPlanTable({ studyPlans}: StudyPlanTableProps) {
+  const navigate = useNavigate()
+
+  const onEdit = (planId: string) => {navigate({to: "/plan-de-estudios/gestion-plan/$planId", params: {planId}})}
   return (
     <Table>
       <TableHeader>
@@ -21,10 +24,10 @@ export default function StudyPlanTable({ studyPlans, onEdit }: StudyPlanTablePro
         {studyPlans.map((plan) => (
           <TableRow key={plan.id}>
             <TableCell>{plan.id}</TableCell>
-            <TableCell>{plan.init_term}</TableCell>
-            <TableCell>{plan.end_term}</TableCell>
+            <TableCell>{plan.initTerm}</TableCell>
+            <TableCell>{plan.endTerm}</TableCell>
             <TableCell>
-              <button onClick={() => onEdit(plan)}>Editar</button>
+              <button onClick={() => onEdit(plan.id)}>Editar</button>
             </TableCell>
           </TableRow>
         ))}
