@@ -3,16 +3,25 @@ import { accounts, thesis, thesisJuries } from '@/database/schema'
 import { Account } from '@/interfaces/models/Account'
 import { and, eq, not, sql } from 'drizzle-orm'
 import { ThesisJuryDAO } from '../dao/thesisJuryDAO'
-import ThesisThemeService from './thesisThemeService'
+import ThesisThemeService from './thesisTheme.service'
 import { ThesisThemeDAO } from '../dao/thesisThemeDAO'
+import { ThesisJuryRequestNotFound } from '../errors'
 
 class ThesisJuryService implements ThesisJuryDAO {
   private thesisThemeService: ThesisThemeDAO = new ThesisThemeService()
   public async startJuryRequest({ requestCode }: { requestCode: string }) {
-    await db
+    const updatedThesis = await db
       .update(thesis)
       .set({ juryState: 'requested' })
       .where(eq(thesis.requestCode, requestCode))
+      .returning({
+        thesisId: thesis.id,
+      })
+
+    if (!updatedThesis.length)
+      throw new ThesisJuryRequestNotFound(
+        'Tesis a solicitar jurados no encontrada'
+      )
   }
 
   public async getThesisJuryRequests() {
@@ -88,11 +97,15 @@ class ThesisJuryService implements ThesisJuryDAO {
   }
 
   async getThesisByStudentCode({ studentCode }: { studentCode: string }) {
-    const [{ studentId }] = await db
+    const studentResponse = await db
       .select({ studentId: accounts.id })
       .from(accounts)
       .where(eq(accounts.code, studentCode))
 
+    if (!studentResponse.length)
+      throw new ThesisJuryRequestNotFound('No se encontró al estudiante')
+
+    const [{ studentId }] = studentResponse
     const thesisResponse = await db
       .select({ thesisCode: thesis.requestCode })
       .from(thesis)
@@ -103,8 +116,13 @@ class ThesisJuryService implements ThesisJuryDAO {
           eq(thesis.aproved, true)
         )
       )
-
-    const thesisCode = thesisResponse[0]?.thesisCode
+      .orderBy(thesis.date)
+      .limit(1)
+    if (!thesisResponse.length)
+      throw new ThesisJuryRequestNotFound(
+        'No se encontró una tesis aprobada del estudiante'
+      )
+    const [{ thesisCode }] = thesisResponse
 
     const thesisData =
       await this.thesisThemeService.getThesisThemeRequestDetail({

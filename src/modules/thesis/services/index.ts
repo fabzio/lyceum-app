@@ -1,2 +1,2 @@
-export { default as ThesisThemeService } from './thesisThemeService'
-export { default as ThesisJuryService } from './thesisJuryService'
+export { default as ThesisThemeService } from './thesisTheme.service'
+export { default as ThesisJuryService } from './thesisJury.service'
