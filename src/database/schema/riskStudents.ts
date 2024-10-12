@@ -5,6 +5,7 @@ import {
   serial,
   uuid,
   boolean,
+  integer,
 } from 'drizzle-orm/pg-core'
 import { schema } from '..'
 import { schedules } from './schedules'
@@ -15,8 +16,8 @@ export const riskStudents = schema.table(
   'risk_students',
   {
     studentId: uuid('student_id'),
-    scheduleId: serial('schedule_id'),
-    reasonId: serial('reason_id').notNull(),
+    scheduleId: integer('schedule_id'),
+    reasonId: integer('reason_id').notNull(),
     score: smallint('score'),
     updated: boolean('updated').notNull().default(true),
   },
