@@ -1,11 +1,11 @@
 import { Input } from '@/components/ui/input'
-import SelectFilter from './SelectFilter'
-import TableRiskStudents from './TableRiskStudents'
+import SelectFilter from './components/SelectFilter'
+import TableRiskStudents from './components/TableRiskStudents'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import RiskStudentService from '@/modules/courses/services/riskStudent.service'
 import { QueryKeys } from '@/constants/queryKeys'
 import UploadCSVDialog from './components/UploadCSVDialog'
-import UpdateConfirmationDialog from './UpdateConfirmationDialog'
+import UpdateConfirmationDialog from './components/UpdateConfirmationDialog'
 
 export default function RiskStudents() {
   //ANOTACION 1: FALTA FILTRAR POR NOTAS : "Listo Filtrar por Puntacion"
