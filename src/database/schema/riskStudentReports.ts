@@ -1,5 +1,6 @@
 import {
   foreignKey,
+  integer,
   serial,
   smallint,
   timestamp,
@@ -18,7 +19,7 @@ export const riskStudentReports = schema.table(
     date: timestamp('date').notNull().defaultNow(),
     observation: varchar('observation', { length: 512 }),
     studentId: uuid('student_id').notNull(),
-    scheduleId: serial('schedule_id').notNull(),
+    scheduleId: integer('schedule_id').notNull(),
   },
   (table) => ({
     riskStudentReportsRiskStudentsFk: foreignKey({

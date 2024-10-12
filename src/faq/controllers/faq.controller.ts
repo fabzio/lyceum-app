@@ -33,6 +33,7 @@ class FAQsController {
       const response: ResponseAPI = {
         data: await this.faqService.createFAQ({
           ...faq,
+          specialityId: 3,
           faqCategoryId: faq.category,
         }),
         message: 'FAQ Category created',

@@ -4,6 +4,7 @@ import {
   enrollmentModifications,
   courses,
   schedules,
+  units,
 } from '@/database/schema'
 import { aliasedTable, eq, sql } from 'drizzle-orm'
 import { EnrollmentModificationDAO } from '../dao/EnrollmentModificationDAO'
@@ -45,24 +46,29 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
     requestNumber: number
   }) {
     const student = aliasedTable(accounts, 'student')
-
+    const faculty = aliasedTable(units, 'faculty')
     const [enrollmentsResponse] = await db
       .select({
         requestNumber: enrollmentModifications.requestNumber,
         state: enrollmentModifications.state,
         requestType: enrollmentModifications.requestType,
         student: {
-          name: student.name,
-          surname: sql<string>`concat(${student.firstSurname}, ' ', ${student.secondSurname})`,
+          name: sql<string>`concat(${student.name}, ' ', ${student.firstSurname}, ' ', ${student.secondSurname})`,
+          code: student.code,
+          speciality: units.name,
+          faculty: faculty.name,
         },
         schedule: {
           code: schedules.code,
+          courseCode: courses.code,
           courseName: courses.name,
         },
         reason: enrollmentModifications.reason,
       })
       .from(enrollmentModifications)
       .innerJoin(student, eq(enrollmentModifications.studentId, student.id))
+      .innerJoin(units, eq(student.unitId, units.id))
+      .innerJoin(faculty, eq(units.parentId, faculty.id))
       .innerJoin(
         schedules,
         eq(enrollmentModifications.scheduleId, schedules.id)

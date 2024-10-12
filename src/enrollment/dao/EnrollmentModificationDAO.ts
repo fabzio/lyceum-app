@@ -23,10 +23,11 @@ export interface EnrollmentModificationDAO {
   getEnrollmentRequest: (params: { requestNumber: number }) => Promise<{
     student: {
       name: Account['name']
-      surname: string
+      code: Account['code']
     }
     schedule: {
       code: string
+      courseCode: string
       courseName: string
     }
     state: string

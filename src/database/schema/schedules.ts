@@ -1,4 +1,4 @@
-import { foreignKey, serial, varchar } from 'drizzle-orm/pg-core'
+import { foreignKey, integer, serial, varchar } from 'drizzle-orm/pg-core'
 import { schema } from '..'
 import { courses } from './courses'
 import { terms } from './terms'
@@ -10,8 +10,8 @@ export const schedules = schema.table(
   {
     id: serial('id').primaryKey(),
     code: varchar('code', { length: 8 }).notNull(),
-    courseId: serial('course_id').notNull(),
-    termId: serial('term_id').notNull(),
+    courseId: integer('course_id').notNull(),
+    termId: integer('term_id').notNull(),
     state: scheduleStatus('state').notNull().default('approved'),
   },
   (table) => ({

@@ -3,7 +3,7 @@ import { ThesisThemeService } from '../services'
 import { zValidator } from '@hono/zod-validator'
 import { thesisActionsScheme } from '@/database/schema/thesisActions'
 import { ThesisThemeDAO } from '../dao/thesisThemeDAO'
-import { createThesisDTO } from '../dto/createThesisDTO'
+import { createThesisDTO, insertThesisActionDTO } from '../dto/createThesisDTO'
 
 class ThesisThemeController {
   private router = new Hono()
@@ -52,7 +52,7 @@ class ThesisThemeController {
 
   public insertThesisThemeAction = this.router.post(
     '/:code/history',
-    zValidator('json', thesisActionsScheme),
+    zValidator('json', insertThesisActionDTO),
     async (c) => {
       const { code } = c.req.param()
       const { content, isFile, action, accountId, roleId } = c.req.valid('json')

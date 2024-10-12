@@ -13,7 +13,7 @@ import {
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { and, eq, sql } from 'drizzle-orm'
 import { ThesisThemeDAO } from '../dao/thesisThemeDAO'
-import { thesisActionsSchema } from '@/database/schema/thesisActions'
+import { ThesisActionsSchema } from '@/database/schema/thesisActions'
 import { CreateThesisDTO } from '../dto/createThesisDTO'
 import { generateThesisCode } from '../utils'
 
@@ -133,7 +133,7 @@ class ThesisThemeService implements ThesisThemeDAO {
   }
 
   async insertThemeRequestAction(
-    params: thesisActionsSchema & {
+    params: Omit<ThesisActionsSchema, 'requestId'> & {
       requestCode: string
     }
   ) {
@@ -216,6 +216,9 @@ class ThesisThemeService implements ThesisThemeDAO {
         .returning({
           historyId: thesisActions.id,
         })
+    await tx.update(thesis)
+        .set({ lastActionId: historyId })
+        .where(eq(thesis.id, thesisId))
       return { thesisCode, historyId }
     })
   }

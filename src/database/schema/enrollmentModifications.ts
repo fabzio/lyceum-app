@@ -1,4 +1,11 @@
-import { serial, varchar, integer, uuid, foreignKey } from 'drizzle-orm/pg-core'
+import {
+  serial,
+  varchar,
+  integer,
+  uuid,
+  foreignKey,
+  timestamp,
+} from 'drizzle-orm/pg-core'
 import { schema } from '..'
 import { accounts } from './accounts' // Asumiendo que tienes una tabla accounts
 import { relations } from 'drizzle-orm'
@@ -12,12 +19,13 @@ export const enrollmentModifications = schema.table(
   'enrollment_modifications',
   {
     id: serial('id').primaryKey(),
-    studentId: uuid('student_id'),
-    scheduleId: serial('schedule_id'),
+    studentId: uuid('student_id').notNull(),
+    scheduleId: integer('schedule_id').notNull(),
     requestNumber: integer('request_number').notNull(),
     state: enrollmentModifcationStatus('state').default('requested').notNull(),
     requestType: enrollmentRequestType('request_type').notNull(),
     reason: varchar('reason', { length: 255 }),
+    date: timestamp('date').defaultNow().notNull(),
   },
   (table) => ({
     studentFk: foreignKey({

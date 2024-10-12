@@ -1,4 +1,4 @@
-import { thesisActionsSchema } from '@/database/schema/thesisActions'
+import { ThesisActionsSchema } from '@/database/schema/thesisActions'
 import { ThesisDetail } from '../interfaces/ThesisDetail'
 import { CreateThesisDTO } from '../dto/createThesisDTO'
 
@@ -36,7 +36,7 @@ export interface ThesisThemeDAO {
     }[]
   >
   insertThemeRequestAction(
-    params: thesisActionsSchema & {
+    params: Omit<ThesisActionsSchema, 'requestId'> & {
       requestCode: string
     }
   ): Promise<void>

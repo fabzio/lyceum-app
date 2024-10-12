@@ -27,52 +27,7 @@ export const schema = pgSchema(DB_SCHEMA)
 
 const accountsData: (typeof accounts.$inferInsert)[] = []
 
-for (let i = 0; i < 10; i++) {
-  accountsData.push({
-    name: faker.person.firstName(),
-    code: faker.string.numeric(8),
-    email: faker.internet.email(),
-    firstSurname: faker.person.lastName(),
-    secondSurname: faker.person.lastName(),
-    googleId: faker.internet.password(),
-  })
-}
 console.log('Seed start')
-//Accounts
-await db.insert(accounts).values(accountsData)
-
-//Terms
-await db.insert(terms).values([
-  {
-    name: '2024-2',
-  },
-])
-
-//Base roles
-await db.insert(roles).values([
-  {
-    name: 'Estudiante',
-    unitType: 'university',
-    editable: false,
-  },
-  {
-    name: 'Profesor',
-    unitType: 'university',
-    editable: false,
-  },
-  {
-    name: 'Administrador',
-    unitType: 'university',
-    editable: false,
-  },
-  {
-    name: 'Externo',
-    unitType: 'university',
-    editable: false,
-  },
-])
-
-//Units
 const [{ universityId }] = await db
   .insert(units)
   .values({
@@ -110,5 +65,54 @@ await db.insert(units).values({
   type: 'area',
   parentId: specialityId,
 })
+for (let i = 0; i < 10; i++) {
+  accountsData.push({
+    name: faker.person.firstName(),
+    code: faker.string.numeric(8),
+    email: faker.internet.email(),
+    firstSurname: faker.person.lastName(),
+    secondSurname: faker.person.lastName(),
+    googleId: faker.internet.password(),
+    unitId: faker.number.int({
+      min: 1,
+      max: 4,
+    }),
+  })
+}
+//Accounts
+await db.insert(accounts).values(accountsData)
+
+//Terms
+await db.insert(terms).values([
+  {
+    name: '2024-2',
+  },
+])
+
+//Base roles
+await db.insert(roles).values([
+  {
+    name: 'Estudiante',
+    unitType: 'university',
+    editable: false,
+  },
+  {
+    name: 'Profesor',
+    unitType: 'university',
+    editable: false,
+  },
+  {
+    name: 'Administrador',
+    unitType: 'university',
+    editable: false,
+  },
+  {
+    name: 'Externo',
+    unitType: 'university',
+    editable: false,
+  },
+])
+
+//Units
 console.log('Seed end')
 queryClient.end()
