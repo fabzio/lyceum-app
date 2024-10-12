@@ -20,7 +20,7 @@ class CourseController {
 
     const response: ResponseAPI = {
       data: await this.permissionService.getCoursesDetail({
-        courseId: parseInt(courseId!),
+        courseId: courseId,
       }),
       message: 'Courses retrieved',
       success: true,
