@@ -1,7 +1,7 @@
 import TransitionPage from '@/components/anim/TransitionPage'
 import { QueryKeys } from '@/constants/queryKeys'
-import ThesisThemeRequestService from '@/thesis/services/ThesisThemeRequest.service'
-import ThesisThemeDetail from '@/thesis/views/ThesisTheme/ThesisThemeDetail'
+import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
+import ThesisThemeDetail from '@/modules/thesis/views/ThesisTheme/ThesisThemeDetail'
 import { createFileRoute } from '@tanstack/react-router'
 
 type ThesisReviewSearch = {

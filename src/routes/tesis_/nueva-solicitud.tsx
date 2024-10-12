@@ -1,5 +1,5 @@
 import TransitionPage from '@/components/anim/TransitionPage'
-import NewThesisRequest from '@/thesis/views/ThesisTheme/NewThesisRequest'
+import NewThesisRequest from '@/modules/thesis/views/ThesisTheme/NewThesisRequest'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/tesis/nueva-solicitud')({

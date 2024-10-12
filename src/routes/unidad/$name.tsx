@@ -1,5 +1,5 @@
 import TransitionPage from '@/components/anim/TransitionPage'
-import Unit from '@/unit'
+import Unit from '@/modules/unit'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/unidad/$name')({

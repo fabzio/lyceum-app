@@ -1,5 +1,5 @@
 import TransitionPage from '@/components/anim/TransitionPage'
-import FAQ from '@/faq'
+import FAQ from '@/modules/faq'
 
 import { createFileRoute } from '@tanstack/react-router'
 

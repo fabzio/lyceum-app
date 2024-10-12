@@ -1,6 +1,6 @@
 import { QueryKeys } from '@/constants/queryKeys'
-import EnrollmentService from '@/enrollment/services/enrollment.service'
-import EnrollmentModify from '@/enrollment/views/EnrollmentModify'
+import EnrollmentService from '@/modules/enrollment/services/enrollment.service'
+import EnrollmentModify from '@/modules/enrollment/views/EnrollmentModify'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/matricula/')({

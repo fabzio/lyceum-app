@@ -1,6 +1,6 @@
 import { QueryKeys } from '@/constants/queryKeys'
-import ThesisJuryRequestService from '@/thesis/services/thesisJuryRequest.service'
-import ThesisJuryRequestList from '@/thesis/views/ThesisJury'
+import ThesisJuryRequestService from '@/modules/thesis/services/thesisJuryRequest.service'
+import ThesisJuryRequestList from '@/modules/thesis/views/ThesisJury'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/tesis/propuesta-jurados')({

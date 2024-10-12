@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import Permissions from '@/security/views/Permissions'
-import PermissionService from '@/security/services/permission.service'
+import Permissions from '@/modules/security/views/Permissions'
+import PermissionService from '@/modules/security/services/permission.service'
 import { QueryKeys } from '@/constants/queryKeys'
 
 export const Route = createFileRoute('/seguridad/permisos')({

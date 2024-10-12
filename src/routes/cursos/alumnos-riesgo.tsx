@@ -1,6 +1,6 @@
 import { QueryKeys } from '@/constants/queryKeys'
-import RiskStudentService from '@/courses/services/riskStudent.service'
-import RiskStudents from '@/courses/views/RiskStudent'
+import RiskStudentService from '@/modules/courses/services/riskStudent.service'
+import RiskStudents from '@/modules/courses/views/RiskStudent'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/cursos/alumnos-riesgo')({

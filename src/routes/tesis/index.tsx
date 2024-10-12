@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
-import ThesisTheme from '@/thesis/views/ThesisTheme'
+import ThesisTheme from '@/modules/thesis/views/ThesisTheme'
 import { QueryKeys } from '@/constants/queryKeys'
-import ThesisThemeRequestService from '@/thesis/services/ThesisThemeRequest.service'
+import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
 
 export const Route = createFileRoute('/tesis/')({
   loader: async ({ context: { queryClient } }) => {
