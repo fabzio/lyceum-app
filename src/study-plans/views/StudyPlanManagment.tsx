@@ -15,7 +15,7 @@ export default function StudyPlanManagement() {
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold">Gestión de plan de estudios</h2>
-      <StudyPlanTable studyPlans={studyPlans} onEdit={(plan) => console.log('Editar plan de estudios', plan)} />
+      <StudyPlanTable studyPlans={studyPlans}/>
     </div>
   );
 }
