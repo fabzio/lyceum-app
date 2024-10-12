@@ -45,6 +45,7 @@
     "jotai": "^2.10.0",
     "just-group-by": "2.2.0",
     "lucide-react": "0.446.0",
+    "lyceum": ".",
     "moment": "2.30.1",
     "papaparse": "5.4.1",
     "react": "18.3.1",
