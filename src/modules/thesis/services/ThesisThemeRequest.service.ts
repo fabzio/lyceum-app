@@ -2,6 +2,7 @@ import http from '@/lib/http'
 import { ThesisThemeRequest } from '../interfaces/ThesisThemeRequest'
 import { ThesisThemeDetail } from '../interfaces/ThesisThemeDetail'
 import { ThesisThemeRequestAction } from '../interfaces/ThesisThemeRequestAction'
+import { notFound } from '@tanstack/react-router'
 
 class ThesisThemeRequestService {
   public static async getThesisThemeRequest() {
@@ -30,7 +31,7 @@ class ThesisThemeRequestService {
 
       return response.data as ThesisThemeDetail
     } catch (error) {
-      throw error as Error
+      throw notFound()
     }
   }
 

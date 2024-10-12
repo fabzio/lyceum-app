@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 import ThesisJuryRequestService from '@/modules/thesis/services/thesisJuryRequest.service'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { Link, useParams } from '@tanstack/react-router'
-import { mapStatus } from '../components/ThesisJuryRequestElements'
+import { mapStatus } from '../../components/ThesisJuryRequestElements'
 
 export default function ThesisJuryAside() {
   const { requestCode } = useParams({

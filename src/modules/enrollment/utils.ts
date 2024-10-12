@@ -4,6 +4,6 @@ export const mapEnrollmentModifyState = {
   ['requested']: 'Solicitado',
 }
 export const mapEnrollmentModifyRequestType = {
-  ['aditional']: 'Matícula adicional',
+  ['aditional']: 'Matrícula adicional',
   ['withdrawal']: 'Retiro de matricula',
 }

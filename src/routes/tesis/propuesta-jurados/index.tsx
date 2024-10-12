@@ -3,7 +3,7 @@ import ThesisJuryRequestService from '@/modules/thesis/services/thesisJuryReques
 import ThesisJuryRequestList from '@/modules/thesis/views/ThesisJury'
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/tesis/propuesta-jurados')({
+export const Route = createFileRoute('/tesis/propuesta-jurados/')({
   loader: async ({ context: { queryClient } }) => {
     return queryClient.ensureQueryData({
       queryKey: [QueryKeys.thesis.THESIS_JURY_REQUESTS],

@@ -5,7 +5,7 @@ import ThesisThemeStepper from '@/modules/thesis/components/ThesisThemeStepper'
 import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
-import ThesisThemeReview from '../components/ThesisThemeReview'
+import ThesisThemeReview from '../../components/ThesisThemeReview'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 export default function ThesisThemeHistory() {

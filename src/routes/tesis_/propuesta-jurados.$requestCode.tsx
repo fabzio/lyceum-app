@@ -1,7 +1,7 @@
-import TransitionPage from '@/components/anim/TransitionPage'
 import { QueryKeys } from '@/constants/queryKeys'
+import ThesisNotFound from '@/modules/thesis/404'
 import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
-import ThesisJuryDetail from '@/modules/thesis/views/ThesisJury/ThesisJuryDetail'
+import ThesisJuryDetailSection from '@/modules/thesis/views/ThesisJury/ThesisJuryDetail/ThesisJuryDetailSection'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/tesis/propuesta-jurados/$requestCode')({
@@ -12,9 +12,6 @@ export const Route = createFileRoute('/tesis/propuesta-jurados/$requestCode')({
         ThesisThemeRequestService.getThemeRequestDetail(requestCode),
     })
   },
-  component: () => (
-    <TransitionPage>
-      <ThesisJuryDetail />
-    </TransitionPage>
-  ),
+  component: () => <ThesisJuryDetailSection />,
+  notFoundComponent: () => <ThesisNotFound />,
 })

@@ -15,7 +15,7 @@ import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequ
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
 import { Download } from 'lucide-react'
-import ThesisThemeForm from '../components/ThesisThemeForm'
+import ThesisThemeForm from '../../components/ThesisThemeForm'
 import { Badge } from '@/components/ui/badge'
 
 export default function ThesisThemeMain() {

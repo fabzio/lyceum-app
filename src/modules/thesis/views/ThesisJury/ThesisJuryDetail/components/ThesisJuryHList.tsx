@@ -13,7 +13,7 @@ import ThesisJuryRequestService from '@/modules/thesis/services/thesisJuryReques
 import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
-import SearchJuryDialog from '../components/SearchJuryDialog'
+import SearchJuryDialog from '../../components/SearchJuryDialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +23,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { MoreHorizontal, Save, X } from 'lucide-react'
 
-export default function ThesisJuryHistory() {
+export default function ThesisJuryList() {
   const { requestCode } = useParams({
     from: '/tesis/propuesta-jurados/$requestCode',
   })

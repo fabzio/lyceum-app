@@ -1,26 +1,16 @@
-import TransitionPage from '@/components/anim/TransitionPage'
 import { QueryKeys } from '@/constants/queryKeys'
+import ThesisNotFound from '@/modules/thesis/404'
 import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
-import ThesisThemeDetail from '@/modules/thesis/views/ThesisTheme/ThesisThemeDetail'
+import ThesisThemeDetailSection from '@/modules/thesis/views/ThesisTheme/ThesisThemeDetail/ThesisThemeDetailSection'
 import { createFileRoute } from '@tanstack/react-router'
 
-type ThesisReviewSearch = {
-  historyId: number
-}
 export const Route = createFileRoute('/tesis/tema-tesis/$requestCode')({
-  validateSearch: (search: Record<string, unknown>): ThesisReviewSearch => ({
-    historyId: parseInt(search?.historyId as string),
-  }),
-  loader: async ({ params: { requestCode }, context: { queryClient } }) => {
-    return queryClient.ensureQueryData({
+  loader: ({ params: { requestCode }, context: { queryClient } }) =>
+    queryClient.ensureQueryData({
       queryKey: [QueryKeys.thesis.THESIS_REQUEST_DETAIL, requestCode],
       queryFn: () =>
         ThesisThemeRequestService.getThemeRequestDetail(requestCode),
-    })
-  },
-  component: () => (
-    <TransitionPage>
-      <ThesisThemeDetail />
-    </TransitionPage>
-  ),
+    }),
+  notFoundComponent: () => <ThesisNotFound />,
+  component: () => <ThesisThemeDetailSection />,
 })

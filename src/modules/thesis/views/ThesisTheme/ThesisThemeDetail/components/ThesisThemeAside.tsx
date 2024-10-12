@@ -17,8 +17,8 @@ export default function ThesisThemeAside() {
   })
   const navigate = useNavigate()
   const { requestCode } = useParams({
-    from: '/tesis/tema-tesis/$requestCode',
-  })
+    from: '/tesis/tema-tesis',
+  }) as { requestCode?: string }
   return (
     <ExpandibleAsidebar>
       <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
