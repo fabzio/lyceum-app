@@ -2,5 +2,5 @@ export interface Course {
   id: number
   code: string
   name: string
-  credit: number
+  credits: number
 }

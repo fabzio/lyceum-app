@@ -12,7 +12,7 @@ class CourseService implements CourseDAO {
         id: courses.id,
         code: courses.code,
         name: courses.name,
-        credit: courses.credits,
+        credits: courses.credits,
       })
       .from(courses)
 
@@ -21,7 +21,7 @@ class CourseService implements CourseDAO {
       id: course.id,
       code: course.code,
       name: course.name,
-      credit: parseFloat(course.credit),
+      credits: parseFloat(course.credits),
     }))
   }
 
@@ -36,7 +36,7 @@ class CourseService implements CourseDAO {
         id: courses.id,
         code: courses.code,
         name: courses.name,
-        credit: courses.credits,
+        credits: courses.credits,
       })
       .from(courses)
       .where(eq(courses.id, parseInt(courseId)))
@@ -48,7 +48,7 @@ class CourseService implements CourseDAO {
       id: course.id,
       code: course.code,
       name: course.name,
-      credit: parseFloat(course.credit), // Parsear el campo decimal
+      credits: parseFloat(course.credits), // Parsear el campo decimal
     }
   }
 }

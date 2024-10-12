@@ -1,10 +1,10 @@
 import App from './app'
-import FAQ from './faq'
-import Course from './courses'
-import Security from './security'
-import Enrollment from './enrollment'
-import Thesis from './thesis'
-import StudyPlan from './study-plans'
+import Course from './modules/courses'
+import Enrollment from './modules/enrollment'
+import FAQ from './modules/faq'
+import Security from './modules/security'
+import StudyPlan from './modules/study-plans'
+import Thesis from './modules/thesis'
 
 const app = new App([
   new Security(),
