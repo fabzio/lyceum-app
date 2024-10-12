@@ -1,4 +1,13 @@
-import { char, unique, uniqueIndex, uuid, varchar } from 'drizzle-orm/pg-core'
+import {
+  char,
+  foreignKey,
+  integer,
+  serial,
+  unique,
+  uniqueIndex,
+  uuid,
+  varchar,
+} from 'drizzle-orm/pg-core'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
 import { schema } from '..'
@@ -6,6 +15,7 @@ import { accountStatus } from './enums'
 import { relations } from 'drizzle-orm'
 import { scheduleAccounts } from './scheduleAccounts'
 import { riskStudents } from './riskStudents'
+import { units } from '.'
 
 export const accounts = schema.table(
   'accounts',
@@ -18,9 +28,15 @@ export const accounts = schema.table(
     googleId: varchar('google_id', { length: 60 }).notNull(),
     email: varchar('email', { length: 60 }).notNull(),
     state: accountStatus('state').notNull().default('active'),
+    unitId: integer('unit_id').notNull(),
   },
   (table) => {
     return {
+      unitFk: foreignKey({
+        name: 'accounts_unit_id_fkey',
+        columns: [table.unitId],
+        foreignColumns: [units.id],
+      }),
       accountCodeUnique: uniqueIndex('account_code_unique').on(table.code),
       accountEmailUnique: unique('account_email_unique').on(table.email),
       accountGoogleIdUnique: unique('account_google_id_unique').on(

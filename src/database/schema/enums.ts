@@ -33,3 +33,13 @@ export const thesisJuryStatus = schema.enum('thesis_jury_status', [
   'requested',
   'assigned',
 ])
+
+export const enrollmentModifcationStatus = schema.enum(
+  'enrollment_modification_status',
+  ['requested', 'approved', 'denied']
+)
+
+export const enrollmentRequestType = schema.enum('enrollment_request_type', [
+  'aditional',
+  'withdrawal',
+])

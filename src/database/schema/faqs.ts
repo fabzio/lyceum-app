@@ -1,4 +1,4 @@
-import { foreignKey, serial, varchar } from 'drizzle-orm/pg-core'
+import { foreignKey, integer, serial, varchar } from 'drizzle-orm/pg-core'
 import { schema } from '..'
 import { faqCategories } from './faqCategories'
 import { relations } from 'drizzle-orm'
@@ -12,8 +12,8 @@ export const faqs = schema.table(
     id: serial('id').primaryKey(),
     question: varchar('question', { length: 255 }).notNull(),
     answer: varchar('answer', { length: 255 }).notNull(),
-    faqCategoryId: serial('faq_category_id').notNull(),
-    specialityId: serial('speciality_id').notNull(),
+    faqCategoryId: integer('faq_category_id').notNull(),
+    specialityId: integer('speciality_id'),
   },
   (table) => {
     return {
