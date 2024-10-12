@@ -20,6 +20,7 @@ const useCourseStore = create<CourseStore>((set) => ({
   
   fetchCourses: async () => {
     const courses = await CourseService.fetchCourses();
+    console.log('Fetched Courses in Store:', courses);
     set({ courses });
   },
   addCourse: (course: Course) => set((state) => ({

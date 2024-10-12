@@ -12,14 +12,14 @@ export default function CourseModal() {
     id: '',
     code: '',
     name: '',
-    credits: 0,
+    credit: 0,
   });
 
   useEffect(() => {
     if (editingCourse) {
       setCourseData(editingCourse);
     } else {
-      setCourseData({ id: '', code: '', name: '', credits: 0 });
+      setCourseData({ id: '', code: '', name: '', credit: 0 });
     }
   }, [editingCourse]);
 
@@ -50,7 +50,7 @@ export default function CourseModal() {
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="credits" className="text-right">Créditos</Label>
-            <Input id="credits" type="number" value={courseData.credits.toString()} onChange={(e) => setCourseData({ ...courseData, credits: parseInt(e.target.value) })} className="col-span-3" />
+            <Input id="credits" type="number" value={courseData.credit.toString()} onChange={(e) => setCourseData({ ...courseData, credit: parseFloat(e.target.value) })} className="col-span-3" />
           </div>
         </div>
         <DialogFooter>

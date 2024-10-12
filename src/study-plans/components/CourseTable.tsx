@@ -31,7 +31,7 @@ export default function CourseTable({ courses, onEdit }: CourseTableProps) {
             <TableRow key={course.id} className="hover:bg-muted">
               <TableCell>{course.code}</TableCell>
               <TableCell>{course.name}</TableCell>
-              <TableCell>{course.credits}</TableCell>
+              <TableCell>{course.credit}</TableCell>
               <TableCell className="text-right">
                 <Button 
                   variant="ghost" 
