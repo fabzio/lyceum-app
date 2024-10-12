@@ -20,9 +20,7 @@ const queryClient = postgres({
   connect_timeout: 10,
   ssl: 'allow',
 })
-const db = drizzle(queryClient, {
-  logger: true,
-})
+const db = drizzle(queryClient)
 import { pgSchema } from 'drizzle-orm/pg-core'
 
 export const schema = pgSchema(DB_SCHEMA)

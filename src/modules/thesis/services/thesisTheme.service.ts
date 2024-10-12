@@ -14,8 +14,9 @@ import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { and, eq, sql } from 'drizzle-orm'
 import { ThesisThemeDAO } from '../dao/thesisThemeDAO'
 import { ThesisActionsSchema } from '@/database/schema/thesisActions'
-import { CreateThesisDTO } from '../dto/createThesisDTO'
-import { generateThesisCode } from '../utils'
+import { CreateThesisDTO } from '../dto/ThesisThemeDTO'
+import { ThesisThemeRequestNotFound } from '../errors'
+import { generateThesisCode, getAccountsIds } from './utils'
 
 class ThesisThemeService implements ThesisThemeDAO {
   async getThesisThemeRequest() {
@@ -70,6 +71,9 @@ class ThesisThemeService implements ThesisThemeDAO {
       .innerJoin(roles, eq(thesisActions.roleId, roles.id))
       .where(eq(thesis.requestCode, requestCode))
 
+    if (!generalRequestData.length)
+      throw new ThesisThemeRequestNotFound('Tesis no encontrada')
+
     const students = await db
       .select({
         code: accounts.code,
@@ -106,6 +110,9 @@ class ThesisThemeService implements ThesisThemeDAO {
       )
       .innerJoin(thesis, eq(thesis.id, thesisAccounts.thesisThemeRequestId))
       .where(eq(thesis.requestCode, requestCode))
+    if (!advisors.length)
+      throw new ThesisThemeRequestNotFound('Asesores no encontrados')
+
     const [parsedData] = generalRequestData.map((request) => ({
       ...request,
       students,
@@ -114,7 +121,7 @@ class ThesisThemeService implements ThesisThemeDAO {
     return parsedData
   }
 
-  async getthesisActions({ requestCode }: { requestCode: string }) {
+  async getThesisActions({ requestCode }: { requestCode: string }) {
     return db
       .select({
         id: thesisActions.id,
@@ -137,37 +144,43 @@ class ThesisThemeService implements ThesisThemeDAO {
       requestCode: string
     }
   ) {
-    const [{ requestId }] = await db
+    const thesisToInsert = await db
       .select({
         requestId: thesis.id,
       })
       .from(thesis)
       .where(eq(thesis.requestCode, params.requestCode))
+
+    if (!thesisToInsert.length)
+      throw new ThesisThemeRequestNotFound(
+        'Tesis a insertar acción no encontrada'
+      )
+
+    const [{ requestId }] = thesisToInsert
     await db.insert(thesisActions).values({ ...params, requestId })
+
+    // FIXME : La aprovación de la tesis se tiene que evaluar por el rol del usuario
     if (params.roleId === BaseRoles.ADMIN && params.action === 'approved')
       await this.completeThesisRequest({ requestCode: params.requestCode })
   }
 
   async createThesisThemeRequest(newThesisTheme: CreateThesisDTO) {
-    const getAccountsIds = async (accountsCode: string): Promise<string> => {
-      const [{ id }] = await db
-        .select({
-          id: accounts.id,
-        })
-        .from(accounts)
-        .where(eq(accounts.code, accountsCode))
-      return id
-    }
     return await db.transaction(async (tx) => {
       const { students, advisors, ...newThesis } = newThesisTheme
 
       const applicantId = await getAccountsIds(newThesis.applicantCode)
+      if (!applicantId)
+        throw new ThesisThemeRequestNotFound('Solicitante no encontrado')
       const studentsIds = await Promise.all(
         students.map((student) => getAccountsIds(student))
       )
+      if (studentsIds.length !== students.length)
+        throw new ThesisThemeRequestNotFound('Coautores no encontrados')
       const advisorsIds = await Promise.all(
         advisors.map((advisor) => getAccountsIds(advisor))
       )
+      if (advisorsIds.length !== advisors.length)
+        throw new ThesisThemeRequestNotFound('Asesores no encontrados')
       let thesisCode
       while (true) {
         thesisCode = generateThesisCode()
@@ -216,7 +229,8 @@ class ThesisThemeService implements ThesisThemeDAO {
         .returning({
           historyId: thesisActions.id,
         })
-    await tx.update(thesis)
+      await tx
+        .update(thesis)
         .set({ lastActionId: historyId })
         .where(eq(thesis.id, thesisId))
       return { thesisCode, historyId }
@@ -230,7 +244,6 @@ class ThesisThemeService implements ThesisThemeDAO {
         aproved: true,
       })
       .where(eq(thesis.requestCode, requestCode))
-      .returning({ id: thesis.id })
   }
 }
 

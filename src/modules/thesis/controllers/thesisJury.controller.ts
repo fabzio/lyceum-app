@@ -3,6 +3,7 @@ import { ThesisJuryService } from '../services'
 import { ThesisJuryDAO } from '../dao/thesisJuryDAO'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
+import { LyceumError } from '@/middlewares/errorMiddlewares'
 
 class ThesisJuryController {
   private router = new Hono()
@@ -10,29 +11,50 @@ class ThesisJuryController {
 
   public startJuryRequest = this.router.post('/:code', async (c) => {
     const { code } = c.req.param()
-    await this.thesisJuryService.startJuryRequest({ requestCode: code })
-    return c.json({ message: 'Jury request started', success: true })
+    try {
+      await this.thesisJuryService.startJuryRequest({ requestCode: code })
+      return c.json({ message: 'Jury request started', success: true })
+    } catch (error) {
+      if (error instanceof LyceumError) {
+        c.status(error.code)
+      }
+      throw error
+    }
   })
 
   public getThesisJuryRequest = this.router.get('/', async (c) => {
-    const response = await this.thesisJuryService.getThesisJuryRequests()
-    return c.json({
-      data: response,
-      message: 'Jury request retrieved',
-      success: true,
-    })
+    try {
+      const response = await this.thesisJuryService.getThesisJuryRequests()
+      return c.json({
+        data: response,
+        message: 'Jury request retrieved',
+        success: true,
+      })
+    } catch (error) {
+      if (error instanceof LyceumError) {
+        c.status(error.code)
+      }
+      throw error
+    }
   })
 
   public getThesisJuries = this.router.get('/:code/juries', async (c) => {
     const { code } = c.req.param()
-    const response = await this.thesisJuryService.getThesisJuries({
-      requestCode: code,
-    })
-    return c.json({
-      data: response,
-      message: 'Juries retrieved',
-      success: true,
-    })
+    try {
+      const response = await this.thesisJuryService.getThesisJuries({
+        requestCode: code,
+      })
+      return c.json({
+        data: response,
+        message: 'Juries retrieved',
+        success: true,
+      })
+    } catch (error) {
+      if (error instanceof LyceumError) {
+        c.status(error.code)
+      }
+      throw error
+    }
   })
 
   public insertThesisJuries = this.router.post(
@@ -46,11 +68,19 @@ class ThesisJuryController {
     async (c) => {
       const { code } = c.req.param()
       const { codeList } = c.req.valid('json')
-      await this.thesisJuryService.insertThesisJuries({
-        thesisCode: code,
-        listAccountCode: codeList,
-      })
-      return c.json({ message: 'Juries inserted', success: true })
+
+      try {
+        await this.thesisJuryService.insertThesisJuries({
+          thesisCode: code,
+          listAccountCode: codeList,
+        })
+        return c.json({ message: 'Juries inserted', success: true })
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
     }
   )
 
@@ -67,12 +97,11 @@ class ThesisJuryController {
           message: 'Thesis retrieved',
           success: true,
         })
-      } catch (e) {
-        return c.json({
-          data: null,
-          message: 'No se encontró una tesis aprobada del estudiante',
-          success: false,
-        })
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
       }
     }
   )
