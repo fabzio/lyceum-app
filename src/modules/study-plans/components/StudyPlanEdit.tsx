@@ -267,7 +267,7 @@ export default function StudyPlanEdit() {
   const [status, setStatus] = useState('Vigente')
 
   const { planId } = useParams({
-    from: '/_auth/plan-de-estudios/gestion-plan/$planId',
+    from: '/_auth/plan-de-estudios/gestionar/$planId',
   })
 
   useEffect(() => {
