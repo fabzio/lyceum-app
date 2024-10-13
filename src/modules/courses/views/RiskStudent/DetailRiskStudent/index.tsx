@@ -3,10 +3,10 @@ import RiskStudentService from '@/modules/courses/services/riskStudent.service'
 import useCourseStore from '@/modules/courses/store'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
-import ReportDetail from './ReportDetail'
+import ReportDetail from './components/ReportDetail'
 import { useState } from 'react'
-import NewReportDialog from './NewReportDialog'
-import ReportList from './ReportList'
+import NewReportDialog from './components/NewReportDialog'
+import ReportList from './components/ReportList'
 
 export default function DetailRiskStudent() {
   const { code } = useParams({

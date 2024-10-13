@@ -1,8 +1,8 @@
 import { Input } from '@/components/ui/input'
-import AssigmentAccordion from './AssigmentAccordion'
-import SelectFilter from './SelectFilter'
+import AssigmentAccordion from './components/AssigmentAccordion'
+import SelectFilter from './components/SelectFilter'
 import { Assigment } from '@/interfaces'
-import NewAssigment from './NewAssigment'
+import NewAssigment from './components/NewAssigment'
 
 
 export default function AsignRoles() {
