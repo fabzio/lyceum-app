@@ -18,6 +18,171 @@ type CycleWithCourses = {
   courses: (Course & { type: 'Obligatorio' | 'Electivo' })[]
 }
 
+export default function StudyPlanDetail() {
+  const [courses] = useState<Course[]>(initialCourses)
+  const [studyPlanCourses, setStudyPlanCourses] = useState<StudyPlanCourse[]>(
+    []
+  )
+  const [startCycle, setStartCycle] = useState('')
+  const [endCycle, setEndCycle] = useState('')
+  const [status, setStatus] = useState('Vigente')
+
+  const { planId } = useParams({
+    from: '/_auth/plan-de-estudios/gestionar/$planId',
+  })
+
+  useEffect(() => {
+    // Filter study plan courses based on the provided studyPlanId
+    const filteredStudyPlanCourses = initialStudyPlanCourses.filter(
+      (spc) => spc.studyPlanId === planId
+    )
+    setStudyPlanCourses(filteredStudyPlanCourses)
+  }, [planId])
+
+  const cyclesWithCourses: CycleWithCourses[] = studyPlanCourses.reduce(
+    (acc, spc) => {
+      const course = courses.find((c) => c.id === +spc.courseId)
+      if (!course) return acc
+
+      const cycleIndex = acc.findIndex(
+        (cycle: { name: string }) => cycle.name === spc.level
+      )
+      if (cycleIndex === -1) {
+        acc.push({
+          name: spc.level,
+          courses: [{ ...course, type: spc.type }],
+        })
+      } else {
+        acc[cycleIndex].courses.push({ ...course, type: spc.type })
+      }
+      return acc
+    },
+    [] as CycleWithCourses[]
+  )
+
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-2">Plan de estudios</h1>
+      <h2 className="text-xl mb-6">Especialidad de Ingeniería Informática</h2>
+
+      <div className="flex items-end justify-between mb-6 gap-4">
+        <div className="flex items-end gap-4 flex-grow">
+          <div className="flex-grow">
+            <p className="font-semibold mb-2">Vigencia</p>
+            <div className="flex gap-2">
+              <Input
+                placeholder="Ciclo de Inicio"
+                value={startCycle}
+                onChange={(e) => setStartCycle(e.target.value)}
+                className="w-48"
+              />
+              <br></br>
+              <Input
+                placeholder="Ciclo de Fin / Ahora"
+                value={endCycle}
+                onChange={(e) => setEndCycle(e.target.value)}
+                className="w-48"
+              />
+            </div>
+          </div>
+          <Select value={status} onValueChange={setStatus}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Estado" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Vigente">Vigente</SelectItem>
+              <SelectItem value="No Vigente">No Vigente</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <Button variant="default" className="hover:bg-gray-800">
+          Nuevo Plan de Estudios
+        </Button>
+      </div>
+
+      <Tabs defaultValue="Obligatorios">
+        <TabsList className="mb-4">
+          <TabsTrigger value="Obligatorios">Obligatorios</TabsTrigger>
+          <TabsTrigger value="Electivos">Electivos</TabsTrigger>
+        </TabsList>
+        <TabsContent value="Obligatorios">
+          <div className="space-y-8">
+            {cyclesWithCourses.map((cycle, index) => (
+              <div key={index} className="border rounded-lg p-4">
+                <div className="flex items-center p-2 gap-2">
+                  <h3 className="text-lg font-semibold mb-4">{cycle.name}</h3>
+                  <br></br>
+                  <Button variant="default">Agregar Curso</Button>
+                </div>
+                <div className="overflow-x-auto pb-4">
+                  <div
+                    className="flex space-x-4"
+                    style={{ minWidth: 'max-content' }}
+                  >
+                    {cycle.courses
+                      .filter((course) => course.type === 'Obligatorio')
+                      .map((course, courseIndex) => (
+                        <div
+                          key={courseIndex}
+                          className=" p-4 rounded-lg w-48 h-48 flex flex-col justify-between flex-shrink-0"
+                        >
+                          <div>
+                            <h4 className=" font-semibold mb-2 text-sm">
+                              {course.name}
+                            </h4>
+                            <p className="text-xs">{course.code}</p>
+                          </div>
+                          <p className="text-xs mt-2">
+                            {course.credits.toFixed(2)} créditos
+                          </p>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </TabsContent>
+        <TabsContent value="Electivos">
+          <div className="border rounded-lg p-4">
+            <div className="flex items-center p-2 gap-2">
+              <h3 className="text-lg font-semibold mb-4">Cursos Electivos</h3>
+              <br></br>
+              <Button variant="default" className="mb-3">
+                Agregar Curso
+              </Button>
+            </div>
+            <div className="overflow-y-auto max-h-[600px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                {cyclesWithCourses.flatMap((cycle) =>
+                  cycle.courses
+                    .filter((course) => course.type === 'Electivo')
+                    .map((course, courseIndex) => (
+                      <div
+                        key={`${cycle.name}-${courseIndex}`}
+                        className="p-4  rounded-lg flex flex-col justify-between h-48"
+                      >
+                        <div>
+                          <h4 className="font-semibold mb-2 text-sm">
+                            {course.name}
+                          </h4>
+                          <p className="text-xs">{course.code}</p>
+                        </div>
+                        <p className="text-xs mt-2">
+                          {course.credits.toFixed(2)} créditos
+                        </p>
+                      </div>
+                    ))
+                )}
+              </div>
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+  )
+}
+
 const initialCourses: Course[] = [
   {
     id: 1,
@@ -256,172 +421,3 @@ const initialStudyPlanCourses: StudyPlanCourse[] = [
   { studyPlanId: '1', courseId: '27', level: '8vo Ciclo', type: 'Electivo' },
   { studyPlanId: '1', courseId: '28', level: '8vo Ciclo', type: 'Electivo' },
 ]
-
-export default function StudyPlanDetail() {
-  const [courses] = useState<Course[]>(initialCourses)
-  const [studyPlanCourses, setStudyPlanCourses] = useState<StudyPlanCourse[]>(
-    []
-  )
-  const [startCycle, setStartCycle] = useState('')
-  const [endCycle, setEndCycle] = useState('')
-  const [status, setStatus] = useState('Vigente')
-
-  const { planId } = useParams({
-    from: '/_auth/plan-de-estudios/gestionar/$planId',
-  })
-
-  useEffect(() => {
-    // Filter study plan courses based on the provided studyPlanId
-    const filteredStudyPlanCourses = initialStudyPlanCourses.filter(
-      (spc) => spc.studyPlanId === planId
-    )
-    setStudyPlanCourses(filteredStudyPlanCourses)
-  }, [planId])
-
-  const cyclesWithCourses: CycleWithCourses[] = studyPlanCourses.reduce(
-    (acc, spc) => {
-      const course = courses.find((c) => c.id === +spc.courseId)
-      if (!course) return acc
-
-      const cycleIndex = acc.findIndex(
-        (cycle: { name: string }) => cycle.name === spc.level
-      )
-      if (cycleIndex === -1) {
-        acc.push({
-          name: spc.level,
-          courses: [{ ...course, type: spc.type }],
-        })
-      } else {
-        acc[cycleIndex].courses.push({ ...course, type: spc.type })
-      }
-      return acc
-    },
-    [] as CycleWithCourses[]
-  )
-
-  return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-2">Plan de estudios</h1>
-      <h2 className="text-xl mb-6">Especialidad de Ingeniería Informática</h2>
-
-      <div className="flex items-end justify-between mb-6 gap-4">
-        <div className="flex items-end gap-4 flex-grow">
-          <div className="flex-grow">
-            <p className="font-semibold mb-2">Vigencia</p>
-            <div className="flex gap-2">
-              <Input
-                placeholder="Ciclo de Inicio"
-                value={startCycle}
-                onChange={(e) => setStartCycle(e.target.value)}
-                className="w-48"
-              />
-              <br></br>
-              <Input
-                placeholder="Ciclo de Fin / Ahora"
-                value={endCycle}
-                onChange={(e) => setEndCycle(e.target.value)}
-                className="w-48"
-              />
-            </div>
-          </div>
-          <Select value={status} onValueChange={setStatus}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Estado" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Vigente">Vigente</SelectItem>
-              <SelectItem value="No Vigente">No Vigente</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <Button variant="default" className="hover:bg-gray-800">
-          Nuevo Plan de Estudios
-        </Button>
-      </div>
-
-      <Tabs defaultValue="Obligatorios">
-        <TabsList className="mb-4">
-          <TabsTrigger value="Obligatorios">Obligatorios</TabsTrigger>
-          <TabsTrigger value="Electivos">Electivos</TabsTrigger>
-        </TabsList>
-        <TabsContent value="Obligatorios">
-          <div className="space-y-8">
-            {cyclesWithCourses.map((cycle, index) => (
-              <div key={index} className="border rounded-lg p-4">
-                <div className="flex items-center p-2 gap-2">
-                  <h3 className="text-lg font-semibold mb-4">{cycle.name}</h3>
-                  <br></br>
-                  <Button variant="default" className="hover:bg-gray-800 mb-3">
-                    Agregar Curso
-                  </Button>
-                </div>
-                <div className="overflow-x-auto pb-4">
-                  <div
-                    className="flex space-x-4"
-                    style={{ minWidth: 'max-content' }}
-                  >
-                    {cycle.courses
-                      .filter((course) => course.type === 'Obligatorio')
-                      .map((course, courseIndex) => (
-                        <div
-                          key={courseIndex}
-                          className="bg-gray-200 p-4 rounded-lg w-48 h-48 flex flex-col justify-between flex-shrink-0"
-                        >
-                          <div>
-                            <h4 className="text-black font-semibold mb-2 text-sm">
-                              {course.name}
-                            </h4>
-                            <p className="text-xs text-gray-600">
-                              {course.code}
-                            </p>
-                          </div>
-                          <p className="text-xs text-gray-600 mt-2">
-                            {course.credits.toFixed(2)} créditos
-                          </p>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </TabsContent>
-        <TabsContent value="Electivos">
-          <div className="border rounded-lg p-4">
-            <div className="flex items-center p-2 gap-2">
-              <h3 className="text-lg font-semibold mb-4">Cursos Electivos</h3>
-              <br></br>
-              <Button variant="default" className="hover:bg-gray-800 mb-3">
-                Agregar Curso
-              </Button>
-            </div>
-            <div className="overflow-y-auto max-h-[600px]">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                {cyclesWithCourses.flatMap((cycle) =>
-                  cycle.courses
-                    .filter((course) => course.type === 'Electivo')
-                    .map((course, courseIndex) => (
-                      <div
-                        key={`${cycle.name}-${courseIndex}`}
-                        className="bg-gray-200 p-4  rounded-lg flex flex-col justify-between h-48"
-                      >
-                        <div>
-                          <h4 className="text-black font-semibold mb-2 text-sm">
-                            {course.name}
-                          </h4>
-                          <p className="text-xs text-gray-600">{course.code}</p>
-                        </div>
-                        <p className="text-xs text-gray-600 mt-2">
-                          {course.credits.toFixed(2)} créditos
-                        </p>
-                      </div>
-                    ))
-                )}
-              </div>
-            </div>
-          </div>
-        </TabsContent>
-      </Tabs>
-    </div>
-  )
-}
