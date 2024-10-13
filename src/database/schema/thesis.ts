@@ -38,7 +38,7 @@ export const thesis = schema.table(
       columns: [table.applicantId],
       foreignColumns: [accounts.id],
       name: 'request_applicant_fk',
-    }),
+    }).onDelete('cascade'),
     requestAreaFk: foreignKey({
       columns: [table.areaId],
       foreignColumns: [units.id],

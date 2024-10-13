@@ -65,6 +65,7 @@ await db.insert(units).values({
   type: 'area',
   parentId: specialityId,
 })
+
 for (let i = 0; i < 10; i++) {
   accountsData.push({
     name: faker.person.firstName(),
@@ -81,13 +82,6 @@ for (let i = 0; i < 10; i++) {
 }
 //Accounts
 await db.insert(accounts).values(accountsData)
-
-//Terms
-await db.insert(terms).values([
-  {
-    name: '2024-2',
-  },
-])
 
 //Base roles
 await db.insert(roles).values([

@@ -19,19 +19,19 @@ export const thesisAccounts = schema.table(
       columns: [table.thesisThemeRequestId],
       foreignColumns: [thesis.id],
       name: 'thesis_accounts_fk',
-    }),
+    }).onDelete('cascade'),
 
     thesisAccountsAccountFk: foreignKey({
       columns: [table.accountId],
       foreignColumns: [accounts.id],
       name: 'thesis_accounts_account_fk',
-    }),
+    }).onDelete('cascade'),
 
     thesisAccountsRoleFk: foreignKey({
       columns: [table.roleId],
       foreignColumns: [roles.id],
       name: 'thesis_accounts_role_fk',
-    }),
+    }).onDelete('cascade'),
   })
 )
 

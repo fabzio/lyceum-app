@@ -1,4 +1,11 @@
-import { boolean, foreignKey, integer, serial, uuid } from 'drizzle-orm/pg-core'
+import {
+  boolean,
+  foreignKey,
+  integer,
+  primaryKey,
+  serial,
+  uuid,
+} from 'drizzle-orm/pg-core'
 import { schema } from '..'
 import { schedules } from './schedules'
 import { accounts } from './accounts'
@@ -31,6 +38,11 @@ export const scheduleAccounts = schema.table(
       foreignColumns: [roles.id],
       name: 'schedule_accounts_role_fk',
     }).onDelete('cascade'),
+
+    scheduleAccountsPk: primaryKey({
+      columns: [table.scheduleId, table.accountId],
+      name: 'schedule_accounts_pk',
+    }),
   })
 )
 

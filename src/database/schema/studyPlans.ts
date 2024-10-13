@@ -22,12 +22,12 @@ export const studyPlans = schema.table(
         columns: [table.initTerm],
         foreignColumns: [terms.id],
         name: 'study_plans_terms_fk',
-      }),
+      }).onDelete('cascade'),
       studyPlansTermsFk1: foreignKey({
         columns: [table.endTerm],
         foreignColumns: [terms.id],
         name: 'study_plans_terms_fk_1',
-      }),
+      }).onDelete('cascade'),
     }
   }
 )

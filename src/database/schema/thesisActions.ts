@@ -12,6 +12,8 @@ import { thesis } from './thesis'
 import { foreignKey } from 'drizzle-orm/pg-core'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
+import { accounts } from './accounts'
+import { roles } from './roles'
 
 export const thesisActions = schema.table(
   'thesis_actions',
@@ -30,6 +32,18 @@ export const thesisActions = schema.table(
       columns: [table.requestId],
       foreignColumns: [thesis.id],
       name: 'request_fk',
+    }),
+
+    accountFk: foreignKey({
+      columns: [table.accountId],
+      foreignColumns: [accounts.id],
+      name: 'account_fk',
+    }),
+
+    roleFk: foreignKey({
+      columns: [table.roleId],
+      foreignColumns: [roles.id],
+      name: 'role_fk',
     }),
   })
 )

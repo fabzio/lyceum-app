@@ -17,13 +17,13 @@ export const thesisJuries = schema.table(
       columns: [table.thesisId],
       foreignColumns: [thesis.id],
       name: 'thesis_juries_fk',
-    }),
+    }).onDelete('cascade'),
 
     thesisJuriesAccountFk: foreignKey({
       columns: [table.accountId],
       foreignColumns: [accounts.id],
       name: 'thesis_juries_account_fk',
-    }),
+    }).onDelete('cascade'),
   })
 )
 
