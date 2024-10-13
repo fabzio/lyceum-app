@@ -17,7 +17,7 @@ export default function ThesisThemeAside() {
   })
   const navigate = useNavigate()
   const { requestCode } = useParams({
-    from: '/tesis/tema-tesis',
+    from: '/_auth/tesis/tema-tesis/$requestCode',
   }) as { requestCode?: string }
   return (
     <ExpandibleAsidebar>

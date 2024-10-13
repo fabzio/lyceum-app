@@ -31,10 +31,10 @@ export default function NewReportDialog() {
   const queryClient = useQueryClient()
   const [isOpen, setIsOpen] = useState(false)
   const { code } = useParams({
-    from: '/cursos/alumnos-riesgo/$code',
+    from: '/_auth/cursos/alumnos-riesgo/$code',
   })
   const { scheduleId } = useSearch({
-    from: '/cursos/alumnos-riesgo/$code',
+    from: '/_auth/cursos/alumnos-riesgo/$code',
   }) as { scheduleId: string }
 
   const { mutate, isPending } = useMutation({

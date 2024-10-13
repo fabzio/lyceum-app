@@ -7,7 +7,7 @@ import { useParams, useSearch } from '@tanstack/react-router'
 
 export default function ThesisThemeReview() {
   const { requestCode } = useParams({
-    from: '/tesis/tema-tesis/$requestCode',
+    from: '/_auth/tesis/tema-tesis/$requestCode',
   })
   const { historyId } = useSearch({ strict: false }) as { historyId: string }
   const { data: historyList, isLoading } = useQuery({

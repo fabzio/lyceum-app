@@ -8,7 +8,6 @@ import {
 import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { useEffect, useRef } from 'react'
-import Layout from '@/layouts'
 import { QueryClient } from '@tanstack/react-query'
 import { Toaster } from '@/components/ui/toaster'
 
@@ -33,10 +32,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     return (
       <>
         <LoadingBar ref={ref} color="#2998ff" />
-        <Layout>
-          <Outlet />
-        </Layout>
-        <Toaster  />
+        <Outlet />
+        <Toaster />
         <TanStackRouterDevtools />
         <ReactQueryDevtools initialIsOpen={false} />
       </>

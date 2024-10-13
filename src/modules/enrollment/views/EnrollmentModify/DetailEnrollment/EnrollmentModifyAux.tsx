@@ -7,7 +7,7 @@ import { useParams } from '@tanstack/react-router'
 
 export default function EnrollmentModifyAux() {
   const { requestNumber } = useParams({
-    from: '/matricula/modificacion-matricula/$requestNumber',
+    from: '/_auth/matricula/modificacion-matricula/$requestNumber',
   })
   const { data: enrollmentModifyRequest } = useSuspenseQuery({
     queryKey: [QueryKeys.enrollment.ENROLLMENTS_MODIFY_DETAIL, requestNumber],

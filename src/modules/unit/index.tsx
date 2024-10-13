@@ -11,7 +11,7 @@ interface Unit {
 
 export default function Unit() {
   const { name } = useParams({
-    from: '/unidad/$name',
+    from: '/_auth/unidad/$name',
   })
   return (
     <div className="flex justify-center items-center">

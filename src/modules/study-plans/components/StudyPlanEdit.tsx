@@ -99,7 +99,7 @@ export default function StudyPlanEdit() {
   const [endCycle, setEndCycle] = useState("")
   const [status, setStatus] = useState("Vigente")
 
-  const {planId} = useParams({from: "/plan-de-estudios/gestion-plan/$planId"})
+  const {planId} = useParams({from: "/_auth/plan-de-estudios/gestion-plan/$planId"})
 
   useEffect(() => {
     // Filter study plan courses based on the provided studyPlanId

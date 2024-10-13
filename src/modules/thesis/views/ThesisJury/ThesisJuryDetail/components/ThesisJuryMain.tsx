@@ -23,7 +23,7 @@ import { Loader2 } from 'lucide-react'
 
 export default function ThesisJuryMain() {
   const { requestCode } = useParams({
-    from: '/tesis/propuesta-jurados/$requestCode',
+    from: '/_auth/tesis/propuesta-jurados/$requestCode',
   })
   const queryClient = useQueryClient()
   const { data: thesisThemeRequestDetail } = useSuspenseQuery({

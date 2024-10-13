@@ -28,7 +28,7 @@ import { z } from 'zod'
 export default function SearchJuryDialog() {
   const queryClient = useQueryClient()
   const { requestCode } = useParams({
-    from: '/tesis/propuesta-jurados/$requestCode',
+    from: '/_auth/tesis/propuesta-jurados/$requestCode',
   })
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

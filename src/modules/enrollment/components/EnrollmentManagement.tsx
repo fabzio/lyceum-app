@@ -36,11 +36,11 @@ const tabs: Tab[] = [
     label: 'Modificación de matrícula',
   },
   {
-    path: '/matricula/',
+    path: '/matricula/propuesta',
     label: 'Propuesta de matricula',
   },
   {
-    path: '/matricula/',
+    path: '/matricula/distribucion',
     label: 'Distribución de matricula',
   },
 ]

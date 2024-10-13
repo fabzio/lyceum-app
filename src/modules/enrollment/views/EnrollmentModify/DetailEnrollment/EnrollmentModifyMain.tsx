@@ -16,7 +16,7 @@ import ConfirmResponseDialog from './components/ConfirmResponseDialog'
 
 export default function EnrollmentModifyMain() {
   const { requestNumber } = useParams({
-    from: '/matricula/modificacion-matricula/$requestNumber',
+    from: '/_auth/matricula/modificacion-matricula/$requestNumber',
   })
   const { data: enrollmentModifyRequest } = useSuspenseQuery({
     queryKey: [QueryKeys.enrollment.ENROLLMENTS_MODIFY_DETAIL, requestNumber],

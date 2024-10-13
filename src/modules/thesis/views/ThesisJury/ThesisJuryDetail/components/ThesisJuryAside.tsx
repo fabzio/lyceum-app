@@ -11,7 +11,7 @@ import { mapStatus } from '../../components/ThesisJuryRequestElements'
 
 export default function ThesisJuryAside() {
   const { requestCode } = useParams({
-    from: '/tesis/propuesta-jurados/$requestCode',
+    from: '/_auth/tesis/propuesta-jurados/$requestCode',
   })
   const { data: thesisRequest } = useSuspenseQuery({
     queryKey: [QueryKeys.thesis.THESIS_JURY_REQUESTS],

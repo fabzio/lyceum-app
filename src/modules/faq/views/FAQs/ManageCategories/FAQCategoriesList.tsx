@@ -1,10 +1,10 @@
 import FAQCategoryService from '@/modules/faq/services/faqCategory.service'
 import NewCategoryDialog from './NewCategoryDialog'
-import { useSuspenseQuery } from '@tanstack/react-query'
 import { QueryKeys } from '@/constants/queryKeys'
+import { useQuery } from '@tanstack/react-query'
 
 export default function FAQCategoriesList() {
-  const { data: categories } = useSuspenseQuery({
+  const { data: categories } = useQuery({
     queryKey: [QueryKeys.faq.FAQ_CATEGORIES],
     queryFn: FAQCategoryService.getFAQCategories,
   })

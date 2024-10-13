@@ -10,7 +10,7 @@ import ReportList from './ReportList'
 
 export default function DetailRiskStudent() {
   const { code } = useParams({
-    from: '/cursos/alumnos-riesgo/$code',
+    from: '/_auth/cursos/alumnos-riesgo/$code',
   })
 
   const [selectedReport, setSelectedReport] = useState<number | null>(null)

@@ -24,7 +24,7 @@ export default function ConfirmResponseDialog({ response }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
   const { requestNumber } = useParams({
-    from: '/matricula/modificacion-matricula/$requestNumber',
+    from: '/_auth/matricula/modificacion-matricula/$requestNumber',
   })
   const { mutate, isPending } = useMutation({
     mutationFn: EnrollmentService.updateEnrollment,

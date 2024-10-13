@@ -68,7 +68,7 @@ export default function NewThesisForm() {
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     mutate({
       ...data,
-      applicantCode: '71547331',
+      applicantCode: '48824566',
       advisors: data.advisors.map((advisor) => advisor.code),
       students: data.students.map((student) => student.code),
       areaId: +data.areaId,

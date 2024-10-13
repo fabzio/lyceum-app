@@ -31,7 +31,7 @@ const tabs: Tab[] = [
 ]
 export default function UnitManagement() {
   const { name } = useParams({
-    from: '/unidad/$name',
+    from: '/_auth/unidad/$name',
   })
   const { activeTab, handleChangeTab } = useTabs(tabs[0].path)
   useEffect(() => {

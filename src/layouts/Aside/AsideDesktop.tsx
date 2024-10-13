@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   Building2,
   CalendarRange,
+  GraduationCap,
 } from 'lucide-react'
 
 type AsideElement = {
@@ -59,7 +60,12 @@ const asideElements: AsideElement[] = [
     icon: <CalendarRange />,
     path: '/matricula',
     label: 'Matricula',
-  }
+  },
+  {
+    icon: <GraduationCap />,
+    path: '/plan-de-estudios',
+    label: 'Plan de estudios',
+  },
 ]
 
 export default function AsideDesktop() {

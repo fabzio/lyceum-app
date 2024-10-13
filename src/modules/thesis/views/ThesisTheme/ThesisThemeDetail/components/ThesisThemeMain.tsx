@@ -20,7 +20,7 @@ import { Badge } from '@/components/ui/badge'
 
 export default function ThesisThemeMain() {
   const { requestCode } = useParams({
-    from: '/tesis/tema-tesis/$requestCode',
+    from: '/_auth/tesis/tema-tesis/$requestCode',
   })
   const { data: thesisThemeRequestDetail } = useSuspenseQuery({
     queryKey: [QueryKeys.thesis.THESIS_REQUEST_DETAIL, requestCode],

@@ -25,7 +25,7 @@ import { MoreHorizontal, Save, X } from 'lucide-react'
 
 export default function ThesisJuryList() {
   const { requestCode } = useParams({
-    from: '/tesis/propuesta-jurados/$requestCode',
+    from: '/_auth/tesis/propuesta-jurados/$requestCode',
   })
   const { data: thesisDetail } = useQuery({
     queryKey: [QueryKeys.thesis.THESIS_REQUEST_DETAIL, requestCode],

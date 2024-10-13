@@ -10,7 +10,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 
 export default function ThesisThemeHistory() {
   const { requestCode } = useParams({
-    from: '/tesis/tema-tesis/$requestCode',
+    from: '/_auth/tesis/tema-tesis/$requestCode',
   })
   const { data: thesisThemeRequestDetail } = useSuspenseQuery({
     queryKey: [QueryKeys.thesis.THESIS_REQUEST_DETAIL, requestCode],
