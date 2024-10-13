@@ -5,7 +5,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { Badge } from '@/components/ui/badge'
-import { Permission, RolePermission } from '@/interfaces'
+import { Permission, RolePermission } from '@/interfaces/models'
 import { mapUnitType } from '@/lib/mapUnitType'
 
 import groupBy from 'just-group-by'

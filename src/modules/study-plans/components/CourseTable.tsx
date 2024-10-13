@@ -1,11 +1,19 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Course } from '../interfaces/Course';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Course } from '@/interfaces/models/Course'
+
 //import { Edit3 } from 'lucide-react';
 
 interface CourseTableProps {
-  courses: Course[];
-  onEdit: (course: Course) => void;
+  courses: Course[]
+  onEdit: (course: Course) => void
 }
 
 export default function CourseTable({ courses, onEdit }: CourseTableProps) {
@@ -22,7 +30,10 @@ export default function CourseTable({ courses, onEdit }: CourseTableProps) {
       <TableBody>
         {courses.length === 0 ? (
           <TableRow>
-            <TableCell colSpan={4} className="text-center text-muted-foreground">
+            <TableCell
+              colSpan={4}
+              className="text-center text-muted-foreground"
+            >
               No hay cursos registrados.
             </TableCell>
           </TableRow>
@@ -33,9 +44,9 @@ export default function CourseTable({ courses, onEdit }: CourseTableProps) {
               <TableCell>{course.name}</TableCell>
               <TableCell>{course.credits}</TableCell>
               <TableCell className="text-right">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => onEdit(course)}
                 >
                   Editar
@@ -46,5 +57,5 @@ export default function CourseTable({ courses, onEdit }: CourseTableProps) {
         )}
       </TableBody>
     </Table>
-  );
+  )
 }

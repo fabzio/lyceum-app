@@ -1,4 +1,4 @@
-import { UnitType } from '@/interfaces'
+import { UnitType } from '@/interfaces/models'
 
 export const mapUnitType = {
   [UnitType.UNIVERSITY]: 'Universidad',

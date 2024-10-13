@@ -1,8 +1,8 @@
 import { create } from 'zustand'
-import { Course } from '@/modules/study-plans/interfaces/Course'
 import { StudyPlan } from '@/modules/study-plans/interfaces/StudyPlan'
 import { StudyPlanCourse } from '@/modules/study-plans/interfaces/StudyPlanCourse'
 import { SpecialityStudyPlan } from '@/modules/study-plans/interfaces/SpecialityStudyPlan'
+import { Course } from '@/interfaces/models/Course'
 
 interface StudyPlanStore {
   courses: Course[]

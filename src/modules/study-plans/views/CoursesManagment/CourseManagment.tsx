@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import CourseTable from '@/modules/study-plans/components/CourseTable'
-import useCourseStore from '@/modules/study-plans/store/courseManagement/course.store'
+import useCourseStore from '@/modules/study-plans/store/CourseManagement/course.store'
 import CourseModal from '@/modules/study-plans/components/courseModal'
 import { Button } from '@/components/ui/button'
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react'
 
-export default function CourseManagement() {
+export default function Management() {
   const { courses, fetchCourses, toggleModal, setEditingCourse } =
     useCourseStore()
   const [currentPage, setCurrentPage] = useState(1)

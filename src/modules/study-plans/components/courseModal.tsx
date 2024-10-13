@@ -9,8 +9,8 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
-import useCourseStore from '@/modules/study-plans/store/courseManagement/course.store'
-import { Course } from '../interfaces/Course'
+import useCourseStore from '@/modules/study-plans/store/CourseManagement/course.store'
+import { Course } from '@/interfaces/models/Course'
 
 export default function CourseModal() {
   const {
@@ -22,17 +22,18 @@ export default function CourseModal() {
     setEditingCourse,
   } = useCourseStore()
   const [courseData, setCourseData] = useState<Course>({
-    id: '',
+    id: 0,
     code: '',
     name: '',
     credits: 0,
+    speciality: '',
   })
 
   useEffect(() => {
     if (editingCourse) {
       setCourseData(editingCourse)
     } else {
-      setCourseData({ id: '', code: '', name: '', credits: 0 })
+      setCourseData({ id: 0, code: '', name: '', credits: 0, speciality: '' })
     }
   }, [editingCourse])
 
@@ -40,7 +41,7 @@ export default function CourseModal() {
     if (courseData.id) {
       updateCourse(courseData)
     } else {
-      addCourse({ ...courseData, id: Date.now().toString() })
+      addCourse({ ...courseData, id: +Date.now().toString() })
     }
     toggleModal()
     setEditingCourse(null)

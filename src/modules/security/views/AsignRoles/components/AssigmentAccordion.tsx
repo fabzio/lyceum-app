@@ -5,8 +5,8 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
-import { Assigment } from '@/interfaces'
-import { RoleAssigment } from '@/interfaces/RoleAssigment'
+import { Assigment } from '@/interfaces/models'
+import { RoleAssigment } from '@/interfaces/models/RoleAssigment'
 
 interface Props {
   assigments: Assigment[]
@@ -31,7 +31,6 @@ export default function AssigmentAccordion({ assigments }: Props) {
           </AccordionContent>
         </AccordionItem>
       ))}
-      
     </Accordion>
   )
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { RiskStudent } from '@/interfaces'
+import { RiskStudent } from '@/interfaces/models'
 
 export function useStudentFilter(initialStudents: RiskStudent[]) {
   const [searchTerm, setSearchTerm] = useState<string>('')

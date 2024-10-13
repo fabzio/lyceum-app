@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/select'
 import { QueryKeys } from '@/constants/queryKeys'
 import { useToast } from '@/hooks/use-toast'
-import { UnitType } from '@/interfaces'
+import { UnitType } from '@/interfaces/models'
 import { mapUnitType } from '@/lib/mapUnitType'
 import PermissionsCombobox from '@/modules/security/components/PermissionsCombobox'
 import RolePermissionService from '@/modules/security/services/role-permission.service'

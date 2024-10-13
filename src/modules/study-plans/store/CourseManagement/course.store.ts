@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import { Course } from '@/modules/study-plans/interfaces/Course'
 import CourseService from '@/modules/study-plans/services/course.service'
+import { Course } from '@/interfaces/models/Course'
 
 interface CourseStore {
   courses: Course[]

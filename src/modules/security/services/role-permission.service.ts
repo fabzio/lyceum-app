@@ -1,4 +1,4 @@
-import { RolePermission } from '@/interfaces'
+import { RolePermission } from '@/interfaces/models'
 import http from '@/lib/http'
 
 class RolePermissionService {

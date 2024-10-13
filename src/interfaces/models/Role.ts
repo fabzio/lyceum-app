@@ -1,4 +1,4 @@
-import { UnitType } from './enums/UnitType'
+import { UnitType } from '../enums/UnitType'
 
 export interface Role {
   id: number
