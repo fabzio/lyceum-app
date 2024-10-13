@@ -13,7 +13,6 @@ export default function ThesisTheme() {
     queryKey: [QueryKeys.thesis.THESIS_REQUESTS],
     queryFn: () => ThesisThemeRequestService.getThesisThemeRequest(),
   })
-  console.log(thesisThemeRequests)
   return (
     <div className="flex flex-col my-6 p-2">
       <div className="w-full flex flex-col md:flex-row justify-between gap-2">

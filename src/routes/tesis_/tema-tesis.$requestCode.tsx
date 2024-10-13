@@ -11,6 +11,6 @@ export const Route = createFileRoute('/tesis/tema-tesis/$requestCode')({
       queryFn: () =>
         ThesisThemeRequestService.getThemeRequestDetail(requestCode),
     }),
-  notFoundComponent: () => <ThesisNotFound />,
   component: () => <ThesisThemeDetailSection />,
+  notFoundComponent: () => <ThesisNotFound />,
 })

@@ -1,7 +1,7 @@
 import { Input } from '@/components/ui/input'
 import ThesisJuryRequestSelectFilter from './components/ThesisJuryRequestFilter'
 import ThesisJuryRequestElement from './components/ThesisJuryRequestElements'
-import NuwJuryRequestDialog from './components/NewJuryRequestDialog'
+import NewJuryRequestDialog from './components/NewJuryRequestDialog'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import ThesisJuryRequestService from '@/modules/thesis/services/thesisJuryRequest.service'
 import { QueryKeys } from '@/constants/queryKeys'
@@ -21,14 +21,20 @@ export default function ThesisJuryRequestList() {
           <ThesisJuryRequestSelectFilter />
         </div>
         <div>
-          <NuwJuryRequestDialog />
+          <NewJuryRequestDialog />
         </div>
       </div>
-      <div>
-        {thesisJuryRequest?.map((juryRequest) => (
-          <ThesisJuryRequestElement key={juryRequest.code} {...juryRequest} />
-        ))}
-      </div>
+      {!thesisJuryRequest.length ? (
+        <p className="flex justify-center py-3">
+          No se encontraron solicitudes de jurados
+        </p>
+      ) : (
+        <div>
+          {thesisJuryRequest?.map((juryRequest) => (
+            <ThesisJuryRequestElement key={juryRequest.code} {...juryRequest} />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

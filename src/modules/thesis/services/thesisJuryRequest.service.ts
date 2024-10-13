@@ -2,6 +2,7 @@ import http from '@/lib/http'
 import { ThesisThemeDetail } from '../interfaces/ThesisThemeDetail'
 import { Account } from '@/interfaces/Account'
 import ThesisJuryRequest from '../interfaces/ThesisJuryRequest'
+import axios from 'axios'
 
 class ThesisJuryRequestService {
   public static async getStudentThesis(
@@ -15,7 +16,13 @@ class ThesisJuryRequestService {
       }
       return response.data as ThesisThemeDetail
     } catch (error) {
-      throw new Error((error as Error).message)
+      if (axios.isAxiosError(error)) {
+        const errorResponse = error.response?.data as ResponseAPI
+        if (errorResponse) {
+          throw new Error(errorResponse.message)
+        }
+      }
+      throw error
     }
   }
   public static async getThesisJuries(thesisCode: string): Promise<Account[]> {
@@ -23,11 +30,17 @@ class ThesisJuryRequestService {
       const res = await http.get(`/thesis/jury/${thesisCode}/juries`)
       const response = res.data as ResponseAPI
       if (!response.success) {
-        throw new Error('Error')
+        throw new Error(response.message)
       }
       return response.data as Account[]
     } catch (error) {
-      throw new Error((error as Error).message)
+      if (axios.isAxiosError(error)) {
+        const errorResponse = error.response?.data as ResponseAPI
+        if (errorResponse) {
+          throw new Error(errorResponse.message)
+        }
+      }
+      throw error
     }
   }
 
@@ -36,11 +49,18 @@ class ThesisJuryRequestService {
   ): Promise<void> {
     try {
       const res = await http.post(`thesis/jury/${thesisCode}`)
-      if (!res.data.success) {
-        throw new Error('Error')
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
       }
     } catch (error) {
-      console.error(error)
+      if (axios.isAxiosError(error)) {
+        const errorResponse = error.response?.data as ResponseAPI
+        if (errorResponse) {
+          throw new Error(errorResponse.message)
+        }
+      }
+      throw error
     }
   }
 
@@ -49,11 +69,17 @@ class ThesisJuryRequestService {
       const res = await http.get('/thesis/jury')
       const response = res.data as ResponseAPI
       if (!response.success) {
-        throw new Error('Error')
+        throw new Error(response.message)
       }
       return response.data as ThesisJuryRequest[]
     } catch (error) {
-      throw new Error((error as Error).message)
+      if (axios.isAxiosError(error)) {
+        const errorResponse = error.response?.data as ResponseAPI
+        if (errorResponse) {
+          throw new Error(errorResponse.message)
+        }
+      }
+      throw error
     }
   }
 
@@ -70,10 +96,16 @@ class ThesisJuryRequestService {
       })
       const response = res.data as ResponseAPI
       if (!response.success) {
-        throw new Error('Error')
+        throw new Error(response.message)
       }
     } catch (error) {
-      throw new Error((error as Error).message)
+      if (axios.isAxiosError(error)) {
+        const errorResponse = error.response?.data as ResponseAPI
+        if (errorResponse) {
+          throw new Error(errorResponse.message)
+        }
+      }
+      throw error
     }
   }
 }

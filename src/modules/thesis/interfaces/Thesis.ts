@@ -1,7 +1,7 @@
 import { Account } from '@/interfaces/Account'
 
 export interface Thesis {
-  id: string
+  id?: string
   title: string
   areaId: number
   applicantCode: string

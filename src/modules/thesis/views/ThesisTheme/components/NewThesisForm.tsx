@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import ThesisService from '@/modules/thesis/services/thesis.service'
+import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
@@ -51,7 +51,7 @@ export default function NewThesisForm() {
   })
 
   const { mutate, isPending } = useMutation({
-    mutationFn: ThesisService.createThesis,
+    mutationFn: ThesisThemeRequestService.createThesis,
     onSuccess: ({ historyId, thesisCode }) => {
       navigate({
         to: '/tesis/tema-tesis/$requestCode',
