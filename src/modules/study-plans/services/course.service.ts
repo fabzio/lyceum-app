@@ -1,9 +1,10 @@
 import db from '@/database'
 import { courses } from '@/database/schema'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
-import { aliasedTable, and, desc, eq, sql } from 'drizzle-orm'
+import { aliasedTable, and, desc, eq, inArray, sql } from 'drizzle-orm'
 import { CourseDAO } from '../dao/CourseDAO'
 import { Course } from '@/interfaces/models/Course'
+import { DuplicatedCourseCode } from '../errors'
 
 class CourseService implements CourseDAO {
   public async getAllCourses() {
@@ -50,6 +51,33 @@ class CourseService implements CourseDAO {
       name: course.name,
       credits: parseFloat(course.credits), // Parsear el campo decimal
     }
+  }
+
+  public async createCourse(
+    courseList: {
+      name: string
+      code: string
+      credits: number
+    }[]
+  ) {
+    const existingCourses = await db
+      .select()
+      .from(courses)
+      .where(
+        inArray(
+          courses.code,
+          courseList.map((course) => course.code)
+        )
+      )
+    if (existingCourses.length > 0) {
+      throw new DuplicatedCourseCode('Los siguientes códigos de curso ya existen: ' + existingCourses.map((course) => course.code).join(', '))
+    }
+    await db.insert(courses).values(
+      courseList.map((course) => ({
+        ...course,
+        credits: course.credits.toFixed(2),
+      }))
+    )
   }
 }
 

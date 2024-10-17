@@ -3,7 +3,7 @@ import { Hono } from 'hono'
 import { CourseController } from '../controllers'
 
 class CourseRoute implements Route {
-  public path = '/courses'
+  public path = '/course-management'
   public router = new Hono()
 
   private courseController = new CourseController()
