@@ -4,7 +4,7 @@ import {
   RouteIds,
   useNavigate,
 } from '@tanstack/react-router'
-import { cleanEmptyParams } from '../views/CoursesManagment/utils/cleanEmptyParams'
+import { cleanEmptyParams } from '../modules/study-plans/views/CoursesManagment/utils/cleanEmptyParams'
 
 export function useFilters<T extends RouteIds<RegisteredRouter['routeTree']>>(
   routeId: T
@@ -17,11 +17,13 @@ export function useFilters<T extends RouteIds<RegisteredRouter['routeTree']>>(
     navigate({
       //@ts-ignore
       search: (prev) => cleanEmptyParams({ ...prev, ...partialFilters }),
+      replace: true,
     })
   const resetFilters = () =>
     navigate({
       //@ts-ignore
       search: {},
+      replace: true,
     })
 
   return { filters, setFilters, resetFilters }

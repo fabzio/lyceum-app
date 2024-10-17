@@ -3,6 +3,7 @@ export type PaginatedData<T> = {
   rowCount: number
 }
 
+export type SearchParams = { q: string }
 export type PaginationParams = { pageIndex: number; pageSize: number }
 export type SortParams = { sortBy: `${string}.${'asc' | 'desc'}` }
-export type Filters<T> = Partial<T & PaginationParams & SortParams>
+export type Filters = Partial<SearchParams & PaginationParams & SortParams>

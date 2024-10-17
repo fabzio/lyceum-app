@@ -33,7 +33,7 @@ export default function NewCourseDialog() {
   }
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button>Nuevo curso</Button>
       </DialogTrigger>
       <DialogContent>
@@ -82,7 +82,7 @@ export default function NewCourseDialog() {
               )}
             />
             <DialogFooter>
-              <DialogClose>
+              <DialogClose asChild>
                 <Button type="button" variant="outline">
                   Cancelar
                 </Button>

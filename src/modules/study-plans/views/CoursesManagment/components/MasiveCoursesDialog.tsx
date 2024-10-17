@@ -62,7 +62,7 @@ export default function MasiveCoursesDialog() {
   }
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button variant="secondary">
           <Upload className="mr-2 h-4 w-4" /> Carga masiva
         </Button>

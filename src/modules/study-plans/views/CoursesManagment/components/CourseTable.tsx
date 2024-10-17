@@ -1,7 +1,7 @@
 import { QueryKeys } from '@/constants/queryKeys'
-import { useFilters } from '@/modules/study-plans/hooks/useFilters'
+import { useFilters } from '@/hooks/useFilters'
 import CourseService from '@/modules/study-plans/services/course.service'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { courseTableColumns } from './columns'
 import DataTable from '@/components/DataTable'
 import { useMemo } from 'react'
@@ -12,9 +12,10 @@ export const DEFAULT_PAGE_SIZE = 10
 
 export default function CourseTable() {
   const { filters, setFilters } = useFilters('/_auth/plan-de-estudios/')
-  const { data: courses } = useSuspenseQuery({
-    queryKey: [QueryKeys.studyPlan.COURSES],
+  const { data: courses } = useQuery({
+    queryKey: [QueryKeys.studyPlan.COURSES, filters],
     queryFn: () => CourseService.fetchCourses(filters),
+    placeholderData: keepPreviousData,
   })
   const paginationState = {
     pageIndex: filters.pageIndex || DEFAULT_PAGE_INDEX,
@@ -29,8 +30,6 @@ export default function CourseTable() {
         data={courses?.result ?? []}
         columns={columns}
         pagination={paginationState}
-        filters={filters}
-        onFilterChange={(filters) => setFilters(filters)}
         sorting={sortingState}
         onSortingChange={(updateOrValue) => {
           const newSortingState =
@@ -48,6 +47,7 @@ export default function CourseTable() {
             )
           },
           rowCount: courses?.rowCount,
+          pageCount: courses?.totalPages,
         }}
       />
     </>

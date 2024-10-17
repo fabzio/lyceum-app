@@ -42,6 +42,7 @@
     "clsx": "2.1.1",
     "cmdk": "1.0.0",
     "date-fns": "^4.1.0",
+    "debounce": "2.2.0",
     "framer-motion": "11.11.8",
     "jotai": "2.10.0",
     "just-group-by": "2.2.0",
