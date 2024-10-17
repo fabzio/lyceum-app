@@ -31,9 +31,12 @@ class CourseService implements CourseDAO {
       })
       .from(courses)
       .where(
-        or(
-          ilike(courses.name, `%${params.q}%`),
-          ilike(courses.code, `%${params.q}%`)
+        and(
+          or(
+            ilike(courses.name, `%${params.q}%`),
+            ilike(courses.code, `%${params.q}%`)
+          ),
+          eq(courses.state, true)
         )
       )
     const mappedFields = {
@@ -54,9 +57,12 @@ class CourseService implements CourseDAO {
       })
       .from(courses)
       .where(
-        or(
-          ilike(courses.name, `%${params.q}%`),
-          ilike(courses.code, `%${params.q}%`)
+        and(
+          or(
+            ilike(courses.name, `%${params.q}%`),
+            ilike(courses.code, `%${params.q}%`)
+          ),
+          eq(courses.state, true)
         )
       )
       .offset(params.page * params.limit)
@@ -86,25 +92,24 @@ class CourseService implements CourseDAO {
   }: {
     courseId: string
   }): Promise<Course> {
-    // Puedes devolver null si no se encuentra el curso
     const courseDetail = await db
       .select({
         id: courses.id,
         code: courses.code,
         name: courses.name,
         credits: courses.credits,
+        state: courses.state,
       })
       .from(courses)
       .where(eq(courses.id, parseInt(courseId)))
-      .limit(1) // Para obtener solo un resultado
+      .limit(1)
 
-    // Verificar si se encontró algún resultado y devolver el primer curso
     const course = courseDetail[0]
     return {
       id: course.id,
       code: course.code,
       name: course.name,
-      credits: parseFloat(course.credits), // Parsear el campo decimal
+      credits: parseFloat(course.credits),
     }
   }
 
@@ -136,6 +141,59 @@ class CourseService implements CourseDAO {
         credits: course.credits.toFixed(2),
       }))
     )
+  }
+  public async updateCourse(
+    courseCode: string,
+    course: {
+      name: string
+      code: string
+      credits: number
+    }
+  ) {
+    const existingCourses = await db
+      .select()
+      .from(courses)
+      .where(and(eq(courses.code, course.code)))
+
+    if (
+      existingCourses.length > 0 &&
+      existingCourses[0].code !== courseCode &&
+      existingCourses[0].state
+    ) {
+      throw new DuplicatedCourseCode(
+        'El código de curso ya existe: ' +
+          course.code +
+          ' - ' +
+          existingCourses[0].name
+      )
+    }
+    await db.transaction(async (tx) => {
+      if (!existingCourses[0].state) {
+        await tx
+          .update(courses)
+          .set({
+            state: true,
+          })
+          .where(eq(courses.code, course.code))
+      }
+      await tx
+        .update(courses)
+        .set({
+          name: course.name,
+          code: course.code,
+          credits: course.credits.toFixed(2),
+        })
+        .where(eq(courses.code, courseCode))
+    })
+  }
+
+  public async disableCourse(courseCode: string) {
+    await db
+      .update(courses)
+      .set({
+        state: false,
+      })
+      .where(eq(courses.code, courseCode))
   }
 }
 

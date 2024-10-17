@@ -65,5 +65,56 @@ class CourseController {
       }
     }
   )
+
+  public updateCourse = this.router.put(
+    '/:courseCode',
+    zValidator('param', z.object({ courseCode: z.string().length(6) })),
+    zValidator(
+      'json',
+      z.object({
+        name: z.string(),
+        code: z.string(),
+        credits: z.number(),
+      })
+    ),
+    async (c) => {
+      const { courseCode } = c.req.valid('param')
+      const course = c.req.valid('json')
+      try {
+        const response: ResponseAPI = {
+          data: await this.courseService.updateCourse(courseCode, course),
+          message: 'Courses updated',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public disableCourse = this.router.delete(
+    '/:courseCode',
+    zValidator('param', z.object({ courseCode: z.string().length(6) })),
+    async (c) => {
+      const { courseCode } = c.req.valid('param')
+      try {
+        const response: ResponseAPI = {
+          data: await this.courseService.disableCourse(courseCode),
+          message: 'Courses disabled',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
 }
 export default CourseController

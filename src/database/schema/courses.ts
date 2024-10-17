@@ -1,4 +1,11 @@
-import { char, numeric, serial, unique, varchar } from 'drizzle-orm/pg-core'
+import {
+  boolean,
+  char,
+  numeric,
+  serial,
+  uniqueIndex,
+  varchar,
+} from 'drizzle-orm/pg-core'
 import { studyPlanCourses } from '@/database/schema'
 import { relations } from 'drizzle-orm'
 import { createInsertSchema } from 'drizzle-zod'
@@ -12,10 +19,11 @@ export const courses = schema.table(
     code: char('code', { length: 6 }).notNull(),
     name: varchar('name', { length: 100 }).notNull(),
     credits: numeric('credits', { precision: 3, scale: 2 }).notNull(),
+    state: boolean('state').default(true).notNull(),
   },
   (table) => {
     return {
-      courseUnique: unique('course_unique').on(table.code),
+      courseUnique: uniqueIndex('course_unique').on(table.code),
     }
   }
 )

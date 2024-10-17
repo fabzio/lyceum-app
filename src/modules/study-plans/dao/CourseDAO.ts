@@ -11,4 +11,13 @@ export interface CourseDAO {
   createCourse: (
     courseList: { name: string; code: string; credits: number }[]
   ) => Promise<void>
+  updateCourse: (
+    courseCode: string,
+    course: {
+      name: string
+      code: string
+      credits: number
+    }
+  ) => Promise<void>
+  disableCourse: (courseCode: string) => Promise<void>
 }
