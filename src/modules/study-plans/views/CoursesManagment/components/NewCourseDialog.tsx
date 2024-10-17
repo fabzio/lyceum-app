@@ -26,6 +26,8 @@ export default function NewCourseDialog() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
+  //TODO Agregar servicio para integración con la API (el specialit id se debe obtener de la sesión por ahora hardcodeado)
+
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log(data)
   }

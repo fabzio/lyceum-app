@@ -1,14 +1,10 @@
-import CoverLetter from './components/CoverLetter'
+import PageLayout from '@/layouts/PageLayout'
+import StudentProcessManagement from './components/StudentProcessManagement'
 
-export default function Courses() {
+export default function StudentProcess() {
   return (
-    <div>
-      <div className="p-6">
-        <h2 className="text-4xl font-bold">Cursos</h2>
-      </div>
-      <section className="px-4 mx-auto">
-        <CoverLetter />
-      </section>
-    </div>
+    <PageLayout name="Procesos de Estudiantes">
+      <StudentProcessManagement />
+    </PageLayout>
   )
 }

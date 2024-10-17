@@ -26,5 +26,6 @@ export const QueryKeys = {
   },
   studyPlan: {
     COURSES: 'courses',
+    STUDY_PLANS: 'study_plans',
   },
 }

@@ -17,7 +17,7 @@ type CycleWithCourses = {
   name: string
   courses: (Course & { type: 'Obligatorio' | 'Electivo' })[]
 }
-
+//TODO Descomponer el index para que solo muestre estructura (no importa quitar logica del front al final se usará un servicio)
 export default function StudyPlanDetail() {
   const [courses] = useState<Course[]>(initialCourses)
   const [studyPlanCourses, setStudyPlanCourses] = useState<StudyPlanCourse[]>(
