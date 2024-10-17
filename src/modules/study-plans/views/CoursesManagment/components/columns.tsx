@@ -25,7 +25,9 @@ export const courseTableColumns: ColumnDef<Course>[] = [
     accessorKey: 'credits',
     header: 'Créditos',
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue('credits')}</div>
+      <div className="capitalize">
+        {(row.getValue('credits') as number).toFixed(2)}
+      </div>
     ),
   },
   {

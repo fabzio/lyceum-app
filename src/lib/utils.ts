@@ -22,6 +22,7 @@ export const getCsvData = <T>(csv: File): Promise<T[]> => {
     Papa.parse<T>(csv, {
       header: true,
       skipEmptyLines: true,
+      dynamicTyping: true,
       complete: (result) => {
         if (result.errors.length) {
           reject(new Error('Error parsing CSV'))

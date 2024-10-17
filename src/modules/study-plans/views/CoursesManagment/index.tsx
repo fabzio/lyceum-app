@@ -1,6 +1,7 @@
 import { Input } from '@/components/ui/input'
 import CourseTable from './components/CourseTable'
 import NewCourseDialog from './components/NewCourseDialog'
+import MasiveCoursesDialog from './components/MasiveCoursesDialog'
 
 export default function CourseManagement() {
   return (
@@ -14,6 +15,7 @@ export default function CourseManagement() {
           />
         </div>
         <div className="flex gap-2">
+          <MasiveCoursesDialog />
           <NewCourseDialog />
         </div>
       </div>

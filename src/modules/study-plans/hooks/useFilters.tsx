@@ -15,12 +15,12 @@ export function useFilters<T extends RouteIds<RegisteredRouter['routeTree']>>(
 
   const setFilters = (partialFilters: Partial<typeof filters>) =>
     navigate({
-      to: '/plan-de-estudios',
+      //@ts-ignore
       search: (prev) => cleanEmptyParams({ ...prev, ...partialFilters }),
     })
   const resetFilters = () =>
     navigate({
-      to: '/plan-de-estudios',
+      //@ts-ignore
       search: {},
     })
 

@@ -9,7 +9,7 @@ export const Route = createFileRoute('/_auth/plan-de-estudios/')({
   loader: async ({ context: { queryClient } }) => {
     return queryClient.ensureQueryData({
       queryKey: [QueryKeys.studyPlan.COURSES],
-      queryFn: CourseService.fetchCourses,
+      queryFn: () => CourseService.fetchCourses({}),
     })
   },
   component: () => <CourseManagement />,
