@@ -1,13 +1,50 @@
 import db from '@/database'
 import { courses } from '@/database/schema'
-import { BaseRoles } from '@/interfaces/enums/BaseRoles'
-import { aliasedTable, and, desc, eq, inArray, sql } from 'drizzle-orm'
+import {
+  aliasedTable,
+  and,
+  asc,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  like,
+  or,
+  sql,
+} from 'drizzle-orm'
 import { CourseDAO } from '../dao/CourseDAO'
 import { Course } from '@/interfaces/models/Course'
 import { DuplicatedCourseCode } from '../errors'
 
 class CourseService implements CourseDAO {
-  public async getAllCourses() {
+  public async getAllCourses(params: {
+    q?: string
+    page: number
+    limit: number
+    sortBy?: string
+  }) {
+    const [field, order] = params.sortBy?.split('.') || ['name', 'asc']
+
+    const [{ total }] = await db
+      .select({
+        total: sql<string>`count(*)`,
+      })
+      .from(courses)
+      .where(
+        or(
+          ilike(courses.name, `%${params.q}%`),
+          ilike(courses.code, `%${params.q}%`)
+        )
+      )
+    const mappedFields = {
+      ['name']: courses.name,
+      ['code']: courses.code,
+      ['credits']: courses.credits,
+    }
+    const mappedSortBy = {
+      ['asc']: asc,
+      ['desc']: desc,
+    }
     const coursesResponse = await db
       .select({
         id: courses.id,
@@ -16,14 +53,32 @@ class CourseService implements CourseDAO {
         credits: courses.credits,
       })
       .from(courses)
+      .where(
+        or(
+          ilike(courses.name, `%${params.q}%`),
+          ilike(courses.code, `%${params.q}%`)
+        )
+      )
+      .offset(params.page * params.limit)
+      .limit(params.limit)
+      .orderBy(
+        mappedSortBy[order as keyof typeof mappedSortBy](
+          mappedFields[field as keyof typeof mappedFields]
+        )
+      )
 
-    // Mapear los resultados para devolver un array de Course[]
-    return coursesResponse.map((course) => ({
+    const result = coursesResponse.map((course) => ({
       id: course.id,
       code: course.code,
       name: course.name,
       credits: parseFloat(course.credits),
     }))
+    return {
+      result,
+      rowCount: +total,
+      currentPage: params.page,
+      totalPages: Math.ceil(+total / params.limit),
+    }
   }
 
   public async getCoursesDetail({
@@ -70,7 +125,10 @@ class CourseService implements CourseDAO {
         )
       )
     if (existingCourses.length > 0) {
-      throw new DuplicatedCourseCode('Los siguientes códigos de curso ya existen: ' + existingCourses.map((course) => course.code).join(', '))
+      throw new DuplicatedCourseCode(
+        'Los siguientes códigos de curso ya existen: ' +
+          existingCourses.map((course) => course.code).join(', ')
+      )
     }
     await db.insert(courses).values(
       courseList.map((course) => ({

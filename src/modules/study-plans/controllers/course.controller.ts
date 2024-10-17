@@ -4,19 +4,33 @@ import CourseService from '../services/course.service'
 import { zValidator } from '@hono/zod-validator'
 import { createCoursesDTO } from '../dto/CourseManagementDTO'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
+import { z } from 'zod'
 
 class CourseController {
   private router = new Hono()
   private courseService: CourseDAO = new CourseService()
 
-  public getCourses = this.router.get('/', async (c) => {
-    const response: ResponseAPI = {
-      data: await this.courseService.getAllCourses(),
-      message: 'Courses retrieved',
-      success: true,
+  public getCourses = this.router.get(
+    '/',
+    zValidator(
+      'query',
+      z.object({
+        q: z.string().optional(),
+        page: z.string().transform((v) => parseInt(v)),
+        limit: z.string().transform((v) => parseInt(v)),
+        sortBy: z.string().optional(),
+      })
+    ),
+    async (c) => {
+      const filters = c.req.valid('query')
+      const response: ResponseAPI = {
+        data: await this.courseService.getAllCourses(filters),
+        message: 'Courses retrieved',
+        success: true,
+      }
+      return c.json(response)
     }
-    return c.json(response)
-  })
+  )
 
   public getCoursesDetail = this.router.get('/:courseId', async (c) => {
     const { courseId } = c.req.param()
