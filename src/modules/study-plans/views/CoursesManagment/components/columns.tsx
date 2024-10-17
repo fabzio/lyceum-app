@@ -3,12 +3,15 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Course } from '@/interfaces/models/Course'
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
+import DisableConfirmationDialog from './DisableConfirmationDialog'
+import { useState } from 'react'
+import EditCourseDialog from './EditCourseDialog'
+import CourseForm from './CourseForm'
 
 export const courseTableColumns: ColumnDef<Course>[] = [
   {
@@ -65,7 +68,10 @@ export const courseTableColumns: ColumnDef<Course>[] = [
     accessorKey: 'actions',
     header: 'Acciones',
     cell: ({ row }) => {
-      const course = row.original
+      const { code } = row.original
+      const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+      const [isDisableDialogOpen, setIsDisableDialogOpen] = useState(false)
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -75,12 +81,28 @@ export const courseTableColumns: ColumnDef<Course>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuLabel onClick={() => console.log(course.code)}>
-              Acciones
-            </DropdownMenuLabel>
-            <DropdownMenuItem>Editar</DropdownMenuItem>
-            <DropdownMenuItem>Deshabilitar</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setIsEditDialogOpen(true)}>
+              Editar
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setIsDisableDialogOpen(true)}>
+              Deshabilitar
+            </DropdownMenuItem>
           </DropdownMenuContent>
+          <EditCourseDialog
+            isOpen={isEditDialogOpen}
+            setIsOpen={setIsEditDialogOpen}
+          >
+            <CourseForm
+              mode="edit"
+              course={row.original}
+              handleClose={() => setIsEditDialogOpen(false)}
+            />
+          </EditCourseDialog>
+          <DisableConfirmationDialog
+            isOpen={isDisableDialogOpen}
+            setIsOpen={setIsDisableDialogOpen}
+            code={code}
+          />
         </DropdownMenu>
       )
     },

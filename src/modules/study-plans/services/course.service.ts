@@ -49,8 +49,40 @@ class CourseService {
     }
   }
 
-  static async updateCourse(course: Course): Promise<Course> {
-    return new Promise((resolve) => setTimeout(() => resolve(course), 500))
+  static async updateCourse(args: {
+    code: string
+    course: Pick<Course, 'code' | 'credits' | 'name'>
+  }): Promise<void> {
+    try {
+      const res = await http.put(
+        `/study-plan/course-management/${args.code}`,
+        args.course
+      )
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+
+  static async deleteCourse(code: string): Promise<void> {
+    try {
+      const res = await http.delete(`/study-plan/course-management/${code}`)
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
   }
 }
 
