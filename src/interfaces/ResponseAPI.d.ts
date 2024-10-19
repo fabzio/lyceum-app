@@ -1,5 +1,5 @@
-interface ResponseAPI {
+interface ResponseAPI<T = unknown> {
   success: boolean
   message: string
-  data: unknown
+  data: T
 }

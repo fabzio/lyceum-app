@@ -1,6 +1,6 @@
-import { Account } from '@/interfaces/Account'
-import { Courses } from '@/interfaces/Courses'
-import { Schedule } from '@/interfaces/Schedule'
+import { Account } from '@/interfaces/models/Account'
+import { Course } from '@/interfaces/models/Course'
+import { Schedule } from '@/interfaces/models/Schedule'
 
 export interface RiskStudentGeneral {
   student: {
@@ -10,8 +10,8 @@ export interface RiskStudentGeneral {
     email: Account['email']
   }
   course: {
-    code: Courses['code']
-    name: Courses['name']
+    code: Course['code']
+    name: Course['name']
   }
   schedule: {
     id: Schedule['id']

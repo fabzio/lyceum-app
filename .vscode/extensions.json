@@ -7,6 +7,7 @@
     "eamodio.gitlens",
     "usernamehw.errorlens",
     "formulahendry.auto-close-tag",
-    "pkief.material-icon-theme"
+    "pkief.material-icon-theme",
+    "gruntfuggly.todo-tree"
   ]
 }

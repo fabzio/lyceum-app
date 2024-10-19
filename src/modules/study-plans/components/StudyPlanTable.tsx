@@ -18,7 +18,7 @@ export default function StudyPlanTable({ studyPlans }: StudyPlanTableProps) {
 
   const onEdit = (planId: string) => {
     navigate({
-      to: '/plan-de-estudios/gestion-plan/$planId',
+      to: '/plan-de-estudios/gestionar/$planId',
       params: { planId },
     })
   }

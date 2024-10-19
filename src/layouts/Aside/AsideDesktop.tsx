@@ -5,16 +5,16 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { ValidRoutes } from '@/constants/paths'
+import { StudyPlanModule } from '@/modules/study-plans/study-plan.module'
 import { Link } from '@tanstack/react-router'
 import {
   Book,
   Home,
   MessageCircleQuestion,
-  LayoutDashboard,
   ShieldCheck,
   Building2,
   CalendarRange,
-  GraduationCap,
+  FileUser,
 } from 'lucide-react'
 
 type AsideElement = {
@@ -47,9 +47,9 @@ const asideElements: AsideElement[] = [
     label: 'Preguntas frecuentes',
   },
   {
-    icon: <LayoutDashboard />,
+    icon: <FileUser />,
     path: '/cursos',
-    label: 'Cursos',
+    label: 'Procesos de estudiantes',
   },
   {
     icon: <Book />,
@@ -59,12 +59,12 @@ const asideElements: AsideElement[] = [
   {
     icon: <CalendarRange />,
     path: '/matricula',
-    label: 'Matricula',
+    label: 'Solicitudes de Matricula',
   },
   {
-    icon: <GraduationCap />,
-    path: '/plan-de-estudios',
-    label: 'Plan de estudios',
+    icon: StudyPlanModule.icon!,
+    path: StudyPlanModule.path,
+    label: StudyPlanModule.label,
   },
 ]
 

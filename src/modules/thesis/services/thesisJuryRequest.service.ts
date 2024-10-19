@@ -1,6 +1,6 @@
 import http from '@/lib/http'
 import { ThesisThemeDetail } from '../interfaces/ThesisThemeDetail'
-import { Account } from '@/interfaces/Account'
+import { Account } from '@/interfaces/models/Account'
 import ThesisJuryRequest from '../interfaces/ThesisJuryRequest'
 import axios from 'axios'
 
@@ -10,11 +10,11 @@ class ThesisJuryRequestService {
   ): Promise<ThesisThemeDetail> {
     try {
       const res = await http.get(`/thesis/jury/search/${studentCode}`)
-      const response = res.data as ResponseAPI
+      const response = res.data as ResponseAPI<ThesisThemeDetail>
       if (!response.success) {
         throw new Error(response.message)
       }
-      return response.data as ThesisThemeDetail
+      return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const errorResponse = error.response?.data as ResponseAPI
@@ -28,11 +28,11 @@ class ThesisJuryRequestService {
   public static async getThesisJuries(thesisCode: string): Promise<Account[]> {
     try {
       const res = await http.get(`/thesis/jury/${thesisCode}/juries`)
-      const response = res.data as ResponseAPI
+      const response = res.data as ResponseAPI<Account[]>
       if (!response.success) {
         throw new Error(response.message)
       }
-      return response.data as Account[]
+      return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const errorResponse = error.response?.data as ResponseAPI
@@ -49,7 +49,7 @@ class ThesisJuryRequestService {
   ): Promise<void> {
     try {
       const res = await http.post(`thesis/jury/${thesisCode}`)
-      const response = res.data as ResponseAPI
+      const response = res.data as ResponseAPI<null>
       if (!response.success) {
         throw new Error(response.message)
       }
@@ -67,11 +67,11 @@ class ThesisJuryRequestService {
   public static async getThesisJuryRequests() {
     try {
       const res = await http.get('/thesis/jury')
-      const response = res.data as ResponseAPI
+      const response = res.data as ResponseAPI<ThesisJuryRequest[]>
       if (!response.success) {
         throw new Error(response.message)
       }
-      return response.data as ThesisJuryRequest[]
+      return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const errorResponse = error.response?.data as ResponseAPI

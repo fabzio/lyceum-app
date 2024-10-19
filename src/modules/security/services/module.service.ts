@@ -1,4 +1,4 @@
-import { Module } from '@/interfaces'
+import { Module } from '@/interfaces/models'
 import http from '@/lib/http'
 
 class ModuleService {

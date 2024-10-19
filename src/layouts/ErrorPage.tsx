@@ -38,16 +38,16 @@ export default function ErrorPage({
       <p className="text-xl text-muted-foreground mb-8 text-center max-w-md">
         {displayDescription}
       </p>
-      <Button onClick={defaultOnRetry} size="lg">
+      <Button onClick={defaultOnRetry} size="lg" variant="secondary">
         Reintentar
       </Button>
       {displayErrorMessage && (
-        <HoverCard openDelay={100}>
+        <HoverCard openDelay={100} >
           <HoverCardTrigger className="mt-4 underline text-muted-foreground">
             Ver detalles
           </HoverCardTrigger>
-          <HoverCardContent className="text-destructive">
-            <section className="flex gap-2">
+          <HoverCardContent className="text-destructive border-destructive">
+            <section className="flex gap-2 font-bold">
               <AlertCircle />
               <span>{displayErrorMessage}</span>
             </section>

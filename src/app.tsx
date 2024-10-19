@@ -10,7 +10,9 @@ const queryClient = new QueryClient()
 const router = createRouter({
   routeTree,
   context: { authenticated: undefined!, queryClient },
-  defaultErrorComponent: () => <ErrorPage />,
+  defaultErrorComponent: ({ error }) => (
+    <ErrorPage displayErrorMessage={error.message} />
+  ),
   defaultNotFoundComponent: () => <NotFound />,
 })
 

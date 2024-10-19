@@ -1,11 +1,11 @@
-import { Account } from '@/interfaces/Account'
+import { Account } from '@/interfaces/models/Account'
 //a revisar
 export interface EnrollmentGeneral {
   student: {
     name: Account['name']
     code: Account['code']
-    speciality: string,
-    faculty: string,
+    speciality: string
+    faculty: string
   }
   schedule: {
     code: string

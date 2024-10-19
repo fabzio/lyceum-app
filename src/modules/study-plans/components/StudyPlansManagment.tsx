@@ -10,7 +10,7 @@ export default function StudyPlansManagment() {
   return (
     <div className="w-full">
       <Tabs value={activeTab} onValueChange={handleChangeTab}>
-        <TabsList className="grid grid-cols-1 md:grid-cols-3 h-full md:w-full">
+        <TabsList className="grid grid-cols-1 md:grid-cols-2 h-full md:w-full">
           {tabs.map((tab) => (
             <TabsTrigger value={tab.path} key={tab.path}>
               {tab.label}
@@ -36,7 +36,7 @@ const tabs: Tab[] = [
     label: 'Gestión de cursos',
   },
   {
-    path: '/plan-de-estudios/plan-de-estudios',
+    path: '/plan-de-estudios/gestionar',
     label: 'Gestión de plan de estudios',
   },
 ]

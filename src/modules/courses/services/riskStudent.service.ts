@@ -1,9 +1,9 @@
 import http from '@/lib/http'
 import { RiskStudentGeneral } from '../interfaces/RIskStudentGeneral'
-import { Account } from '@/interfaces/Account'
-import { Schedule } from '@/interfaces/Schedule'
+import { Account } from '@/interfaces/models/Account'
+import { Schedule } from '@/interfaces/models/Schedule'
 import { RiskStudentReport } from '../interfaces/RiskStudentReport'
-import { Courses } from '@/interfaces/Courses'
+import { Course } from '@/interfaces/models/Course'
 
 class RiskStudentService {
   public static async getRiskStudents(): Promise<RiskStudentGeneral[]> {
@@ -48,7 +48,7 @@ class RiskStudentService {
     studentList: {
       studentCode: Account['code']
       scheduleCode: Schedule['code']
-      courseCode: Courses['code']
+      courseCode: Course['code']
       reasonId: number
       score: number
     }[]

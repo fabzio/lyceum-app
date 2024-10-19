@@ -3,7 +3,7 @@ import EnrollmentManagement from './components/EnrollmentManagement'
 
 export default function Enrollment() {
   return (
-    <PageLayout name="Matrícula">
+    <PageLayout name="Solicitudes de Matrícula">
       <EnrollmentManagement />
     </PageLayout>
   )

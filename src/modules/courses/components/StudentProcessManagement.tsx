@@ -3,7 +3,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ValidRoutes } from '@/constants/paths'
 import { useTabs } from '@/hooks/useTabs'
 
-export default function CoverLetter() {
+export default function StudentProcessManagement() {
   const { pathname } = useLocation()
   const { activeTab, handleChangeTab } = useTabs(pathname as ValidRoutes)
 

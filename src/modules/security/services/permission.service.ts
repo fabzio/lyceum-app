@@ -1,4 +1,4 @@
-import { Permission } from '@/interfaces'
+import { Permission } from '@/interfaces/models'
 import http from '@/lib/http'
 
 class PermissionService {
@@ -16,7 +16,6 @@ class PermissionService {
       console.error(err)
       return []
     }
-
   }
 }
 

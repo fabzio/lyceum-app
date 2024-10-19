@@ -4,7 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { Permission } from '@/interfaces/Permission'
+import { Permission } from '@/interfaces/models/Permission'
 import groupBy from 'just-group-by'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useFormContext } from 'react-hook-form'
