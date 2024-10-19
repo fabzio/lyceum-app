@@ -29,13 +29,6 @@ class App {
 
   private initializeMiddlewares() {
     this.app.use('*', logger(), prettyJSON())
-    this.app.use(
-      '*',
-      cors({
-        origin: '*',
-        allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      })
-    )
   }
 
   private initializeRoutes(routes: Route[]) {
@@ -44,7 +37,7 @@ class App {
       console.log(`Route ${route.path} initialized`)
       this.app.route(route.path, route.router)
     })
-    showRoutes(this.app,{
+    showRoutes(this.app, {
       colorize: true,
       verbose: true,
     })
