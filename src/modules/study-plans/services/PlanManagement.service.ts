@@ -58,7 +58,7 @@ class PlanManagementService {
       })
       .from(studyPlanCourses)
       .innerJoin(courses, eq(studyPlanCourses.courseId, courses.id))
-      .where(eq(studyPlans.id, planId))
+      .where(eq(studyPlanCourses.studyPlanId, planId))
 
     return response
   }
