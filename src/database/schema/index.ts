@@ -5,7 +5,8 @@ export {
   thesisRequestStatus,
   thesisJuryStatus,
   enrollmentModifcationStatus,
-  enrollmentRequestType
+  enrollmentRequestType,
+  studyPlanStatus,
 } from '@/database/schema/enums'
 export { accountRoles } from '@/database/schema/accountRoles'
 export { accounts } from '@/database/schema/accounts'

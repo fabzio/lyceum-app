@@ -43,3 +43,8 @@ export const enrollmentRequestType = schema.enum('enrollment_request_type', [
   'aditional',
   'withdrawal',
 ])
+
+export const studyPlanStatus = schema.enum('study_plan_status', [
+  'editing',
+  'saved',
+])

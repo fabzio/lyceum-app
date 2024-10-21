@@ -13,7 +13,7 @@ export const studyPlans = schema.table(
   'study_plans',
   {
     id: serial('id').primaryKey(),
-    initTerm: integer('init_term').notNull(),
+    initTerm: integer('init_term'),
     endTerm: integer('end_term'),
   },
   (table) => {
