@@ -6,10 +6,10 @@ import { createFileRoute } from '@tanstack/react-router'
 export const Route = createFileRoute(
   '/_auth/plan-de-estudios/gestionar/$planId'
 )({
-  loader: async ({ context: { queryClient } }) =>
+  loader: async ({ params: { planId }, context: { queryClient } }) =>
     queryClient.ensureQueryData({
       queryKey: [QueryKeys.studyPlan.STUDY_PLANS],
-      queryFn: StudyPlanService.fetchStudyPlans,
+      queryFn: () => StudyPlanService.getStudyPlanDetail(+planId),
     }),
   component: () => <StudyPlanDetail />,
 })

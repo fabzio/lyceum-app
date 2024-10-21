@@ -24,7 +24,7 @@ import {
 } from './ui/pagination'
 import { Button } from './ui/button'
 
-type Props<T extends Record<string, string | number>> = {
+type Props<T extends Record<string, string | number | boolean>> = {
   data: T[]
   columns: ColumnDef<T>[]
   pagination: PaginationState
@@ -34,14 +34,18 @@ type Props<T extends Record<string, string | number>> = {
   >
   sorting: SortingState
   onSortingChange: OnChangeFn<SortingState>
+  onRowClick?: (row: T) => void
 }
 
-export default function DataTable<T extends Record<string, string | number>>({
+export default function DataTable<
+  T extends Record<string, string | number | boolean>,
+>({
   data,
   columns,
   pagination,
   paginationOptions,
   sorting,
+  onRowClick,
   onSortingChange,
 }: Props<T>) {
   const table = useReactTable({
@@ -57,7 +61,7 @@ export default function DataTable<T extends Record<string, string | number>>({
   })
   const currentPage = table.getState().pagination.pageIndex
   const totalPages = table.getPageCount()
-  
+
   const paginationNumbers = generatePaginationNumbers(
     currentPage + 1,
     totalPages
@@ -87,6 +91,7 @@ export default function DataTable<T extends Record<string, string | number>>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
+                onClick={onRowClick ? () => onRowClick(row.original) : () => {}}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
