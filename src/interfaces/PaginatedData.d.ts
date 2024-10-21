@@ -3,4 +3,5 @@ export interface PaginatedData<T> {
   rowCount: number
   currentPage: number
   totalPages: number
+  hasNext: boolean
 }

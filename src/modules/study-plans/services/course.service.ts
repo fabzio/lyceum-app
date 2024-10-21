@@ -84,6 +84,7 @@ class CourseService implements CourseDAO {
       rowCount: +total,
       currentPage: params.page,
       totalPages: Math.ceil(+total / params.limit),
+      hasNext: +total > (params.page + 1) * params.limit,
     }
   }
 
