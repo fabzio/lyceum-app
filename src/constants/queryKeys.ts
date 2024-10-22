@@ -26,6 +26,7 @@ export const QueryKeys = {
   },
   studyPlan: {
     COURSES: 'courses',
+    COURSES_INF: 'courses_inf',
     STUDY_PLANS: 'study_plans',
   },
   users: {
