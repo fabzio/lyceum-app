@@ -15,6 +15,7 @@ import {
   Building2,
   CalendarRange,
   FileUser,
+  Users,
 } from 'lucide-react'
 
 type AsideElement = {
@@ -34,6 +35,11 @@ const asideElements: AsideElement[] = [
     icon: <ShieldCheck />,
     path: '/seguridad',
     label: 'Seguridad',
+  },
+  {
+    icon: <Users />,
+    path: '/usuarios',
+    label: 'Gestión de Usuarios',
   },
   {
     icon: <Building2 />,
