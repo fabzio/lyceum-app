@@ -2,6 +2,7 @@ import db from '@/database'
 import { accounts, units } from '@/database/schema'
 import { eq, sql } from 'drizzle-orm'
 import { StudentDAO } from '../daos/StudentDAO'
+import { StudenNotFoundError } from '../errors'
 
 class StudentService implements StudentDAO {
   async getStudentDetail(params: { code: string }) {
@@ -19,7 +20,7 @@ class StudentService implements StudentDAO {
       .innerJoin(units, eq(units.id, accounts.unitId))
       .where(eq(accounts.code, params.code))
     if (student.length === 0) {
-      throw new Error('Student not found')
+      throw new StudenNotFoundError('El estudiante no fue encontrado')
     }
     const [studentDetail] = student
     return studentDetail
