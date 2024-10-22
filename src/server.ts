@@ -1,4 +1,5 @@
 import App from './app'
+import Accounts from './modules/accounts'
 import Course from './modules/courses'
 import Enrollment from './modules/enrollment'
 import FAQ from './modules/faq'
@@ -13,6 +14,7 @@ const app = new App([
   new Thesis(),
   new StudyPlan(),
   new Enrollment(),
+  new Accounts(),
 ])
 
 app.listen()
