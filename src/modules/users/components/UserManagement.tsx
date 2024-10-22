@@ -32,7 +32,7 @@ type Tab = {
 
 const tabs: Tab[] = [
   {
-    path: '/usuarios/',
+    path: '/usuarios',
     label: 'Estudiantes',
   },
   {
