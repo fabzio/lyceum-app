@@ -1,11 +1,39 @@
 import { Hono } from 'hono'
 import { StudentService } from '../services'
+import { zValidator } from '@hono/zod-validator'
+import { z } from 'zod'
+import { LyceumError } from '@/middlewares/errorMiddlewares'
+import { StudentDAO } from '../daos/StudentDAO'
 
 class StudentController {
   private router = new Hono()
-  private studentService = new StudentService()
+  private studentService: StudentDAO = new StudentService()
 
-  //TODO Add methods here
+  public getStudentDetail = this.router.get(
+    '/:code',
+    zValidator(
+      'param',
+      z.object({
+        code: z.string().length(8),
+      })
+    ),
+    async (c) => {
+      const { code } = c.req.valid('param')
+      try {
+        const response: ResponseAPI = {
+          data: await this.studentService.getStudentDetail({ code }), // llamada al servicio
+          success: true,
+          message: 'Student retrived',
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
 }
 
 export default StudentController
