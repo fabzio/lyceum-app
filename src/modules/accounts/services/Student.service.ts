@@ -1,8 +1,9 @@
 import db from '@/database'
-import { accounts, units } from '@/database/schema'
-import { eq, sql } from 'drizzle-orm'
+import { accountRoles, accounts, units } from '@/database/schema'
+import { eq, sql, and } from 'drizzle-orm'
 import { StudentDAO } from '../daos/StudentDAO'
 import { StudenNotFoundError } from '../errors'
+import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 
 class StudentService implements StudentDAO {
   async getStudentDetail(params: { code: string }) {
@@ -18,7 +19,13 @@ class StudentService implements StudentDAO {
       })
       .from(accounts)
       .innerJoin(units, eq(units.id, accounts.unitId))
-      .where(eq(accounts.code, params.code))
+      .innerJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
+      .where(
+        and(
+          eq(accounts.code, params.code),
+          eq(accountRoles.roleId, BaseRoles.STUDENT)
+        )
+      )
     if (student.length === 0) {
       throw new StudenNotFoundError('El estudiante no fue encontrado')
     }
