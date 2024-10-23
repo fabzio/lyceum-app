@@ -3,11 +3,11 @@ import { accounts, units, accountRoles } from '@/database/schema'
 import { eq } from 'drizzle-orm'
 import { ExternalDAO } from '../daos/ExternalDAO'
 import { ExternalNotFoundError } from '../errors'
+import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 
 class ExternalService implements ExternalDAO {
   //Listar solo Externos
   async getAllExternal() {
-    const externalID = 4 // External ID
     const externals = await db
       .select({
         code: accounts.code,
@@ -21,11 +21,7 @@ class ExternalService implements ExternalDAO {
       .from(accounts)
       .innerJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
       .innerJoin(units, eq(units.id, accounts.unitId))
-      .where(eq(accountRoles.roleId, externalID))
-
-    if (externals.length === 0) {
-      throw new ExternalNotFoundError('El externo no fue encontrado')
-    }
+      .where(eq(accountRoles.roleId, BaseRoles.EXTERNAL))
     return externals
   }
 }
