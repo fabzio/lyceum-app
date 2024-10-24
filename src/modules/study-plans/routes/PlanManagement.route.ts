@@ -13,7 +13,7 @@ class PlanManagementRoute implements Route {
   }
 
   private initializeRoutes() {
-    this.router.route('/', this.planController.getPLans)
+    this.router.route('/', this.planController.getPlans)
   }
 }
 export default PlanManagementRoute

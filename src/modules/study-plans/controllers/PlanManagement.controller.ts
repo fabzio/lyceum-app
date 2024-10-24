@@ -8,7 +8,7 @@ class PlanManagementController {
   private router = new Hono()
   private planService = new PlanManagementService()
 
-  public getPLans = this.router.get(
+  public getPlans = this.router.get(
     '/',
     zValidator(
       'query',
@@ -35,8 +35,30 @@ class PlanManagementController {
     }
   )
 
-  public getPlanById = this.router.get(
+  public getPlanDetail = this.router.get(
     '/:planId',
+    zValidator('param', z.object({ planId: z.string() })),
+    async (c) => {
+      const { planId } = c.req.valid('param')
+      try {
+        const response = {
+          data: await this.planService.getPlanDetail(+planId),
+          message: 'Plan retrieved',
+          success: true,
+        }
+
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public getPlanCourses = this.router.get(
+    '/:planId/courses',
     zValidator(
       'param',
       z.object({
@@ -47,7 +69,7 @@ class PlanManagementController {
       const { planId } = c.req.valid('param')
       try {
         const response = {
-          data: await this.planService.getPlanById(+planId),
+          data: await this.planService.getPlanCourses(+planId),
           message: 'Plan retrieved',
           success: true,
         }
@@ -68,13 +90,19 @@ class PlanManagementController {
       'json',
       z.object({
         specialityId: z.number(),
+        startLevel: z.number(),
+        levelsCount: z.number(),
       })
     ),
     async (c) => {
-      const { specialityId } = c.req.valid('json')
+      const { specialityId, levelsCount, startLevel } = c.req.valid('json')
       try {
         const response = {
-          data: await this.planService.createPlan(+specialityId),
+          data: await this.planService.createPlan({
+            specialityId,
+            startLevel,
+            levelsCount,
+          }),
           message: 'Plan created',
           success: true,
         }
@@ -89,7 +117,7 @@ class PlanManagementController {
   )
 
   public addCourseToPlan = this.router.post(
-    '/:planId',
+    '/:planId/courses',
     zValidator(
       'param',
       z.object({
@@ -99,7 +127,7 @@ class PlanManagementController {
     zValidator(
       'json',
       z.object({
-        courseId: z.string(),
+        courseId: z.number(),
         level: z.number(),
       })
     ),
@@ -126,23 +154,55 @@ class PlanManagementController {
     }
   )
 
-  public removeCourseFromPlan = this.router.delete(
-    '/:planId',
+  public updatePlan = this.router.put(
+    '/:planId/courses/:courseId',
     zValidator(
       'param',
       z.object({
         planId: z.string(),
+        courseId: z.string(),
       })
     ),
     zValidator(
       'json',
       z.object({
-        courseId: z.string(),
+        level: z.number(),
       })
     ),
     async (c) => {
-      const { planId } = c.req.valid('param')
-      const { courseId } = c.req.valid('json')
+      const { planId, courseId } = c.req.valid('param')
+      const { level } = c.req.valid('json')
+      try {
+        const response = {
+          data: await this.planService.updateCourseLevel({
+            studyPlanId: +planId,
+            courseId: +courseId,
+            level,
+          }),
+          message: 'Course level updated',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public removeCourseFromPlan = this.router.delete(
+    '/:planId/courses/:courseId',
+    zValidator(
+      'param',
+      z.object({
+        planId: z.number(),
+        courseId: z.number(),
+      })
+    ),
+    async (c) => {
+      const { planId, courseId } = c.req.valid('param')
       try {
         const response = {
           data: await this.planService.removeCourseFromPlan({

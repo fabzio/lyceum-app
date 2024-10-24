@@ -81,7 +81,7 @@ class ThesisJuryService implements ThesisJuryDAO {
     const accountIds = await Promise.all(
       listAccountCode.map((accountCode) => getAccountId(accountCode))
     )
-    console.log(accountIds)
+    
     const thesisJuriesData = accountIds.map((accountId) => ({
       thesisId,
       accountId,
