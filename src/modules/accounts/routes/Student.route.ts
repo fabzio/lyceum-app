@@ -5,14 +5,15 @@ import { StudentController } from '../controllers'
 class StudentRoute implements Route {
   public path = '/students'
   public router = new Hono()
-  private studenController = new StudentController()
+  private studentController = new StudentController()
 
   constructor() {
     this.initializeRoutes()
   }
 
   private initializeRoutes() {
-    this.router.route('/', this.studenController.getStudentDetail)
+    this.router.route('/', this.studentController.getStudentDetail)
+    this.router.route('/', this.studentController.getStudents)
   }
 }
 export default StudentRoute
