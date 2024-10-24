@@ -6,8 +6,9 @@ import { ExternalNotFoundError } from '../errors'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 
 class ExternalService implements ExternalDAO {
+
   //Listar solo Externos
-  async getAllExternal() {
+  async getAllExternals() {
     const externals = await db
       .select({
         code: accounts.code,
