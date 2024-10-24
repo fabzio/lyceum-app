@@ -2,7 +2,7 @@ import { Input } from '@/components/ui/input'
 import { useFilters } from '@/hooks/useFilters'
 import debounce from 'debounce'
 
-export default function SearchCourseInput() {
+export default function SearchStudentInput() {
   const { setFilters } = useFilters('/_auth/usuarios/')
 
   const onChangeFilter = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
