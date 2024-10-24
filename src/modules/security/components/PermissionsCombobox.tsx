@@ -20,7 +20,7 @@ export default function PermissionsCombobox({ index }: Props) {
   })
 
   const { data: permissions, isLoading: permissionsLoading } = useQuery({
-    queryKey: [QueryKeys.security.PERMISSIONS],
+    queryKey: [QueryKeys.security.PERMISSIONS,moduleSelected],
     queryFn: () =>
       PermissionService.getPermissions(moduleSelected ?? undefined),
     enabled: !!moduleSelected,

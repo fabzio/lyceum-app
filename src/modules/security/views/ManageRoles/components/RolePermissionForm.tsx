@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -27,6 +28,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { DialogClose } from '@radix-ui/react-dialog'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { PlusIcon, X } from 'lucide-react'
+import { useEffect } from 'react'
 import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -78,6 +80,9 @@ export default function RolePermissionForm({ handleClose }: Props) {
     }
     mutate(rolePermission)
   }
+  useEffect(() => {
+    console.log(fields)
+  }, [fields])
 
   return (
     <FormProvider {...form}>
@@ -131,34 +136,32 @@ export default function RolePermissionForm({ handleClose }: Props) {
 
           <div>
             <section className="flex flex-col gap-2">
+              <Label>Permisos</Label>
               <div>
-                <FormField
-                  name="permissions"
-                  control={control}
-                  render={({}) => (
-                    <FormItem>
-                      <FormLabel>Permisos</FormLabel>
-
-                      <section className="flex flex-col gap-1">
-                        {fields.map((field, index) => (
-                          <div key={field.id}>
-                            <div className="w-full flex items-center">
-                              <PermissionsCombobox index={index} />
-                              <Button
-                                variant="ghost"
-                                onClick={() => remove(index)}
-                                size="icon"
-                              >
-                                <X />
-                              </Button>
-                            </div>
+                {fields.map((fieldItem, index) => (
+                  <FormField
+                    key={fieldItem.id}
+                    name={`permissions.${index}.moduleId`}
+                    control={control}
+                    render={() => (
+                      <FormItem>
+                        <section className="flex flex-col gap-1">
+                          <div className="w-full flex items-center">
+                            <PermissionsCombobox index={index} />
+                            <Button
+                              variant="ghost"
+                              onClick={() => remove(index)}
+                              size="icon"
+                            >
+                              <X />
+                            </Button>
                           </div>
-                        ))}
-                      </section>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        </section>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ))}
               </div>
               <Button
                 type="button"
