@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Upload } from 'lucide-react'
 
 export default function StudyPlanActions() {
   return (
@@ -30,7 +31,9 @@ export default function StudyPlanActions() {
           </SelectContent>
         </Select>
       </div>
-      <Button variant="default">Nuevo Plan de Estudios</Button>
+      <Button>
+        <Upload className="mr-2 h-4 w-4" /> Carga masiva de cursos
+      </Button>
     </div>
   )
 }

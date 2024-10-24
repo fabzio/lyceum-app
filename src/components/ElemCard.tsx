@@ -13,10 +13,10 @@ interface Props {
 }
 export default function ElemCard({ title, description, badge }: Props) {
   return (
-    <Card>
+    <Card className="h-full max-w-56">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
-        <CardDescription className='text-lg'>{description}</CardDescription>
+        <CardDescription className="text-lg">{description}</CardDescription>
       </CardHeader>
       <CardContent>
         <Badge>{badge}</Badge>

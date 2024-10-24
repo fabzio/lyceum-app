@@ -1,17 +1,15 @@
-import { DndContext, DragEndEvent, DragOverlay } from '@dnd-kit/core'
-import StudyPlanActions from './components/StudyPlanActions'
-import StudyPlanCourses from './components/StudyPlanCourses'
-import StudyPlanAddCourse from './components/StudyPlanAddCourse'
+import { DndContext, DragOverlay } from '@dnd-kit/core'
+import StudyPlanActions from './StudyPlanActions'
+import StudyPlanCourses from './StudyPlanCourses'
+import StudyPlanAddCourse from './StudyPlanAddCourse'
 import CourseCard from './components/CourseCard'
-import { useState } from 'react'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { useStudyPlan } from '@/modules/study-plans/hooks/useStudyPlan'
 import { Course } from '@/interfaces/models/Course'
 
 export default function StudyPlanDetail() {
-  const [course, setCourse] = useState<Course | null>(null)
-  const handleDragEnd = (e: DragEndEvent) => {
-    const { active, over } = e
-    console.log(active.id, over?.id)
-  }
+  const { course, setCourse, handleDragEnd } = useStudyPlan()
+
   return (
     <DndContext
       onDragStart={({ active }) => setCourse(active.data.current as Course)}
@@ -19,10 +17,12 @@ export default function StudyPlanDetail() {
     >
       <div className="flex h-full">
         <StudyPlanAddCourse />
-        <section>
-          <StudyPlanActions />
-          <StudyPlanCourses />
-        </section>
+        <ScrollArea className="h-svh w-full">
+          <section className="flex-1 px-4">
+            <StudyPlanActions />
+            <StudyPlanCourses />
+          </section>
+        </ScrollArea>
       </div>
       <DragOverlay>{course && <CourseCard {...course} />}</DragOverlay>
     </DndContext>

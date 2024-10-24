@@ -5,10 +5,10 @@ import { useFilters } from '@/hooks/useFilters'
 import CourseService from '@/modules/study-plans/services/course.service'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { ListFilter } from 'lucide-react'
-import CourseQuickSearch from './CourseQuickSearch'
+import CourseQuickSearch from './components/CourseQuickSearch'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import DraggableCourseCard from './DraggableCourseCard'
-import CourseCard from './CourseCard'
+import DraggableCourseCard from './components/DraggableCourseCard'
+import CourseCard from './components/CourseCard'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default function StudyPlanAddCourse() {
@@ -40,7 +40,7 @@ export default function StudyPlanAddCourse() {
             data?.pages
               ?.flatMap((course) => course.result)
               .map((course, idx) => (
-                <DraggableCourseCard key={idx} {...course}>
+                <DraggableCourseCard key={idx} {...course} origin="courses">
                   <CourseCard {...course} />
                 </DraggableCourseCard>
               ))

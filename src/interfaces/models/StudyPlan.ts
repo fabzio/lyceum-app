@@ -4,4 +4,6 @@ export type StudyPlan = {
   endTerm?: number
   current: boolean
   state: string
+  levelsCount: number
+  startLevel: number
 }
