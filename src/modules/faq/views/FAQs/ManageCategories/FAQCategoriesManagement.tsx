@@ -25,9 +25,11 @@ import { FAQCategory } from '@/modules/faq/interfaces/FAQCategory'
 import { QueryKeys } from '@/constants/queryKeys'
 import useQueryStore from '@/hooks/useQueryStore'
 import DeleteFAQCategory from './DeleteFAQCategory'
+import { useToast } from '@/hooks/use-toast'
 
 export default function FAQCategoriesManagement() {
   const queryClient = useQueryClient()
+  const { toast } = useToast()
   const { setQueryStore } = useQueryStore<FAQCategory[]>(
     QueryKeys.faq.FAQ_CATEGORIES
   )
@@ -51,6 +53,13 @@ export default function FAQCategoriesManagement() {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.faq.FAQ_CATEGORIES],
       }),
+    onError: ({ message }) => {
+      toast({
+        title: 'Error',
+        description: message,
+        variant: 'destructive',
+      })
+    },
   })
 
   const updateMutation = useMutation({
@@ -61,6 +70,13 @@ export default function FAQCategoriesManagement() {
       })
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.faq.FAQS],
+      })
+    },
+    onError: ({ message }) => {
+      toast({
+        title: 'Error',
+        description: message,
+        variant: 'destructive',
       })
     },
   })

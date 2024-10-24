@@ -1,5 +1,6 @@
 import http from '@/lib/http'
 import { FAQ } from '../interfaces/FAQ'
+import axios from 'axios'
 
 class FAQService {
   public static async getFAQs(): Promise<FAQ[]> {
@@ -7,12 +8,14 @@ class FAQService {
       const res = await http.get('/faq/faqs')
       const response = res.data as ResponseAPI
       if (!response.success) {
-        throw new Error('Error')
+        throw new Error(response.message)
       }
       return response.data as FAQ[]
     } catch (error) {
-      console.error(error)
-      return []
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
     }
   }
 
@@ -24,10 +27,13 @@ class FAQService {
       })
       const response = res.data as ResponseAPI
       if (!response.success) {
-        throw new Error('Error')
+        throw new Error(response.message)
       }
     } catch (error) {
-      console.error(error)
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
     }
   }
   public static async updateFAQ(faq: FAQ): Promise<void> {
@@ -40,10 +46,13 @@ class FAQService {
       })
       const response = res.data as ResponseAPI
       if (!response.success) {
-        throw new Error('Error')
+        throw new Error(response.message)
       }
     } catch (error) {
-      console.error(error)
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
     }
   }
 
@@ -52,10 +61,13 @@ class FAQService {
       const res = await http.delete(`/faq/faqs/${faqId}`)
       const response = res.data as ResponseAPI
       if (!response.success) {
-        throw new Error('Error')
+        throw new Error(response.message)
       }
     } catch (error) {
-      console.error(error)
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
     }
   }
 }

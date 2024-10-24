@@ -1,20 +1,21 @@
-
 import http from '@/lib/http'
 import { FAQCategory } from '../interfaces/FAQCategory'
+import axios from 'axios'
 
 class FAQCategoryService {
   public static async getFAQCategories(): Promise<FAQCategory[]> {
-    
     try {
       const res = await http.get(`/faq/faq-categories`)
       const response = res.data as ResponseAPI
       if (!response.success) {
-        throw new Error('Error')
+        throw new Error(response.message)
       }
       return response.data as FAQCategory[]
     } catch (err) {
-      console.error(err as Error)
-      return []
+      if (axios.isAxiosError(err)) {
+        throw new Error(err.response?.data.message || err.message)
+      }
+      throw err
     }
   }
 
@@ -23,10 +24,13 @@ class FAQCategoryService {
       const res = await http.put('/faq/faq-categories', category)
       const response = res.data as ResponseAPI
       if (!response.success) {
-        throw new Error('Error')
+        throw new Error(response.message)
       }
     } catch (err) {
-      console.error(err)
+      if (axios.isAxiosError(err)) {
+        throw new Error(err.response?.data.message || err.message)
+      }
+      throw err
     }
   }
 
@@ -37,10 +41,13 @@ class FAQCategoryService {
       const res = await http.delete(`/faq/faq-categories/${FAQCategoryId}`)
       const response = res.data as ResponseAPI
       if (!response.success) {
-        throw new Error('Error')
+        throw new Error(response.message)
       }
     } catch (err) {
-      console.error(err)
+      if (axios.isAxiosError(err)) {
+        throw new Error(err.response?.data.message || err.message)
+      }
+      throw err
     }
   }
 
@@ -53,10 +60,13 @@ class FAQCategoryService {
       })
       const response = res.data as ResponseAPI
       if (!response.success) {
-        throw new Error('Error')
+        throw new Error(response.message)
       }
     } catch (err) {
-      console.error(err)
+      if (axios.isAxiosError(err)) {
+        throw new Error(err.response?.data.message || err.message)
+      }
+      throw err
     }
   }
 }
