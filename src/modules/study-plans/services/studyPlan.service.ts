@@ -2,6 +2,7 @@ import http from '@/lib/http'
 import { StudyPlan } from '../../../interfaces/models/StudyPlan'
 import { isAxiosError } from 'axios'
 import { Unit } from '@/interfaces/models/Unit'
+import { Course } from '@/interfaces/models/Course'
 
 /*
 import http from '@/lib/http';
@@ -70,6 +71,113 @@ class StudyPlanService {
       }
       const studyPlan = response.data as StudyPlan
       return studyPlan
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.data?.message) {
+        throw new Error(error.response?.data?.message)
+      }
+      throw error
+    }
+  }
+
+  static async getStudyPlanCourses(studyPlanId: StudyPlan['id']): Promise<
+    {
+      course: Course
+      level: number
+    }[]
+  > {
+    try {
+      const res = await http.get(
+        `/study-plan/plan-management/${studyPlanId}/courses`
+      )
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      const studyPlan = response.data as {
+        course: Course
+        level: number
+      }[]
+      return studyPlan
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.data?.message) {
+        throw new Error(error.response?.data?.message)
+      }
+      throw error
+    }
+  }
+
+  static async addCourseToStudyPlan({
+    courseId,
+    level,
+    studyPlanId,
+  }: {
+    level: number
+    studyPlanId: StudyPlan['id']
+    courseId: Course['id']
+  }): Promise<void> {
+    try {
+      const res = await http.post(
+        `/study-plan/plan-management/${studyPlanId}/courses`,
+        {
+          level,
+          courseId,
+        }
+      )
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.data?.message) {
+        throw new Error(error.response?.data?.message)
+      }
+      throw error
+    }
+  }
+
+  static async editCourseStudyPlan({
+    courseId,
+    studyPlanId,
+    level,
+  }: {
+    studyPlanId: StudyPlan['id']
+    courseId: Course['id']
+    level: number
+  }): Promise<void> {
+    try {
+      const res = await http.put(
+        `/study-plan/plan-management/${studyPlanId}/courses/${courseId}`,
+        {
+          level,
+        }
+      )
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.data?.message) {
+        throw new Error(error.response?.data?.message)
+      }
+      throw error
+    }
+  }
+
+  static async deleteCourseFromStudyPlan({
+    courseId,
+    studyPlanId,
+  }: {
+    studyPlanId: StudyPlan['id']
+    courseId: Course['id']
+  }): Promise<void> {
+    try {
+      const res = await http.delete(
+        `/study-plan/plan-management/${studyPlanId}/courses/${courseId}`
+      )
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
     } catch (error) {
       if (isAxiosError(error) && error.response?.data?.message) {
         throw new Error(error.response?.data?.message)

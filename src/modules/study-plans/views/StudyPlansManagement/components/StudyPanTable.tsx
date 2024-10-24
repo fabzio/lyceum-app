@@ -30,7 +30,7 @@ export default function StudyPlanTable() {
   const columns = useMemo(() => studyPlanTableColumns, [])
 
   const handleRowClick = (studyPlan: StudyPlan) => {
-    console.log('studyPlan', studyPlan)
+    
     navigate({
       to: '/plan-de-estudios/gestionar/$planId',
       params: { planId: studyPlan.id.toString() },
