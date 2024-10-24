@@ -28,4 +28,10 @@ export const QueryKeys = {
     COURSES: 'courses',
     STUDY_PLANS: 'study_plans',
   },
+  users: {
+    STUDENTS: 'students',
+    PROFESSORS: 'professors',
+    ADMINISTRATIVES: 'administratives',
+    EXTERNS: 'externs',
+  },
 }
