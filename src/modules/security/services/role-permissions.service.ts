@@ -13,8 +13,8 @@ class RolePermissionService implements RolePermissionDAO {
     const rolePermissionsResponse = await db
       .select({
         role: {
-          id: modules.id,
-          name: permissions.description,
+          id: roles.id,
+          name: roles.name,
           unitType: roles.unitType,
         },
         permission: {
