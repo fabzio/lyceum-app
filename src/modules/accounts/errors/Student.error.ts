@@ -1,6 +1,6 @@
 import { createErrorFactory } from '@/middlewares/errorMiddlewares'
 
 export const StudenNotFoundError = createErrorFactory(
-  'StudenNotFoundError',
+  'StudentNotFoundError',
   404
 )
