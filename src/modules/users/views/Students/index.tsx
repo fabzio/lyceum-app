@@ -7,7 +7,8 @@ export default function StudentManagement() {
       <div className="w-full flex flex-col md:flex-row justify-between gap-4">
         <SearchStudentInput />
 
-        {/* <div className="flex gap-2">
+        {/* TODO: Implementar MasiveStudentsDialog y NewStudentDialog
+        <div className="flex gap-2">
           <MasiveStudentsDialog />
           <NewStudentDialog />
         </div> */}
