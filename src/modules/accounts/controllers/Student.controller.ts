@@ -51,6 +51,7 @@ class StudentController {
       } catch (error) {
         if (error instanceof LyceumError) {
           c.status(error.code)
+          return c.json({ success: false, message: error.message }); // Ensure response
         }
         throw error
       }
