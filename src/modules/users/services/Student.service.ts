@@ -34,24 +34,24 @@ class StudentService {
     }
   }
 
-  // static async addCourse(
-  //   courses: Pick<Course, 'code' | 'credits' | 'name'>[]
-  // ): Promise<void> {
-  //   try {
-  //     const res = await http.post('/study-plan/course-management', {
-  //       courseList: courses,
-  //     })
-  //     const response = res.data as ResponseAPI
-  //     if (!response.success) {
-  //       throw new Error(response.message)
-  //     }
-  //   } catch (error) {
-  //     if (axios.isAxiosError(error)) {
-  //       throw new Error(error.response?.data.message || error.message)
-  //     }
-  //     throw error
-  //   }
-  // }
+  static async addStudent(
+    students: Pick<Student, 'code' | 'name' | 'firstSurname' | 'secondSurname' | 'email'>[]
+  ): Promise<void> {
+    try {
+      const res = await http.post('/accounts/students', {
+        studentList: students,
+      })
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
 
   // static async updateCourse(args: {
   //   code: string

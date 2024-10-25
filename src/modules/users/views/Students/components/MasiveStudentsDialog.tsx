@@ -20,9 +20,9 @@ import {
 import { Input } from '@/components/ui/input'
 import { QueryKeys } from '@/constants/queryKeys'
 import { useToast } from '@/hooks/use-toast'
-import { Course } from '@/interfaces/models/Course'
 import { getCsvData } from '@/lib/utils'
-import CourseService from '@/modules/study-plans/services/course.service'
+import { Student } from '@/modules/users/interfaces/Student'
+import StudentService from '@/modules/users/services/Student.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Loader2, Upload } from 'lucide-react'
@@ -30,7 +30,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-export default function MasiveCoursesDialog() {
+export default function MasiveStudentsDialog() {
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
   const { toast } = useToast()
@@ -38,10 +38,10 @@ export default function MasiveCoursesDialog() {
     resolver: zodResolver(formSchema),
   })
   const { mutate, isPending } = useMutation({
-    mutationFn: CourseService.addCourse,
+    mutationFn: StudentService.addStudent,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [QueryKeys.studyPlan.COURSES],
+        queryKey: [QueryKeys.users.STUDENTS],
       })
       setIsOpen(false)
     },
@@ -56,9 +56,14 @@ export default function MasiveCoursesDialog() {
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     const dataJson = await getCsvData<
-      Pick<Course, 'code' | 'credits' | 'name'>
+      Pick<Student, 'code' | 'name' | 'firstSurname' | 'secondSurname' | 'email'>
     >(data.file)
-    mutate(dataJson)
+    const dataParsed = dataJson.map((student) => ({
+      ...student,
+      code: student.code.toString(),
+    }))
+    
+    mutate(dataParsed)
   }
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -69,9 +74,9 @@ export default function MasiveCoursesDialog() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Importar cursos desde archivo</DialogTitle>
+          <DialogTitle>Importar estudiantes desde archivo</DialogTitle>
           <DialogDescription>
-            Sube un archivo CSV con los cursos que desea importar
+            Sube un archivo CSV con los estudiantes que desea importar
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
