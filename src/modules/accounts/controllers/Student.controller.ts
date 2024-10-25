@@ -4,10 +4,32 @@ import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
 import { StudentDAO } from '../daos/StudentDAO'
+import { createStudentsDTO } from '../dtos/StudentDTO'
 
 class StudentController {
   private router = new Hono()
   private studentService: StudentDAO = new StudentService()
+
+  public createStudent = this.router.post(
+    '/',
+    zValidator('json', createStudentsDTO),
+    async (c) => {
+      const { studentList } = c.req.valid('json')
+      try {
+        const response: ResponseAPI = {
+          data: await this.studentService.createStudent(studentList),
+          message: 'Students created',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
 
   public getStudentDetail = this.router.get(
     '/:code',

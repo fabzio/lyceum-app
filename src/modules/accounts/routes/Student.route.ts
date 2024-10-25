@@ -14,6 +14,7 @@ class StudentRoute implements Route {
   private initializeRoutes() {
     this.router.route('/', this.studentController.getStudentDetail)
     this.router.route('/', this.studentController.getStudents)
+    //this.router.route('/', this.studentController.createStudent)
   }
 }
 export default StudentRoute
