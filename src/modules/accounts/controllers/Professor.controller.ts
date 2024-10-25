@@ -1,23 +1,29 @@
 import { Hono } from 'hono'
 import { ProfessorService } from '../services'
 import { zValidator } from '@hono/zod-validator'
+import { z } from 'zod'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
-import { createProfessorsDTO } from '../dtos/ProfessorDTO'
+import { ProfessorDAO } from '../daos/ProfessorDAO'
 
 class ProfessorController {
   private router = new Hono()
-  private professorService = new ProfessorService()
+  private professorService: ProfessorDAO = new ProfessorService()
 
-  public createProfessor = this.router.post(
-    '/',
-    zValidator('json', createProfessorsDTO),
+  public getProfessorDetail = this.router.get(
+    '/:code',
+    zValidator(
+      'param',
+      z.object({
+        code: z.string().length(8),
+      })
+    ),
     async (c) => {
-      const { professorList } = c.req.valid('json')
+      const { code } = c.req.valid('param')
       try {
         const response: ResponseAPI = {
-          //data: await this.professorService.createProfessor(professorList),
-          message: 'Professor created',
+          data: await this.professorService.getProfessorDetail({ code }),
           success: true,
+          message: 'Professor retrived',
         }
         return c.json(response)
       } catch (error) {
@@ -29,27 +35,33 @@ class ProfessorController {
     }
   )
 
-  public getProfessors = this.router.get('/', async (c) => {
-    const response: ResponseAPI = {
-      //data: await this.professorService.getProfessors(),
-      message: 'Professors retrieved',
-      success: true,
+  public getProfessors = this.router.get(
+    '/',
+    zValidator(
+      'query',
+      z.object({
+        q: z.string().optional(),
+        page: z.string().transform((v) => parseInt(v)),
+        limit: z.string().transform((v) => parseInt(v)),
+        sortBy: z.string().optional(),
+      })
+    ),
+    async (c) => {
+      try {
+        const response: ResponseAPI = {
+          data: await this.professorService.getAllProfessors(),
+          success: true,
+          message: 'Professors retrived',
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
     }
-    return c.json(response)
-  })
-
-  public getProfessorDetail = this.router.get('/:professorId', async (c) => {
-    const { professorId } = c.req.param()
-
-    const response: ResponseAPI = {
-      //data: await this.professorService.getProfessorDetail({
-      //  professorId: professorId,
-      //}),
-      message: 'Professor retrieved',
-      success: true,
-    }
-    return c.json(response)
-  })
+  )
 }
 
 export default ProfessorController

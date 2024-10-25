@@ -1,5 +1,5 @@
 export interface ExternalDAO {
-  getAllExternal(): Promise<
+  getAllExternals(): Promise<
     Array<{
       code: string
       name: string
