@@ -7,27 +7,36 @@ import {
 import { Button } from '@/components/ui/button'
 import { Assigment } from '@/interfaces/models'
 import { RoleAssigment } from '@/interfaces/models/RoleAssigment'
+import groupBy from 'just-group-by'
 
 interface Props {
   assigments: Assigment[]
 }
 
 export default function AssigmentAccordion({ assigments }: Props) {
+  const rolesByAccount = groupBy(
+    assigments,
+    (assigment) => assigment.account.name
+  )
   return (
     <Accordion type="single" collapsible>
-      {assigments.map((assigment, idx) => (
-        <AccordionItem value={`item-${idx}`} key={assigment.user}>
+      {Object.entries(rolesByAccount).map(([account, roles]) => (
+        <AccordionItem key={account} value={account}>
           <AccordionTrigger>
-            <div className="flex justify-between w-full px-2">
-              <span>{assigment.user}</span>
-
-              <span className="font-normal no-underline">{`${assigment.roles.length} rol${
-                assigment.roles.length > 1 ? 'es' : ''
-              }`}</span>
+            <div className="w-full px-2 flex justify-between">
+              <h3>{account}</h3>
+              <p>
+                {roles.length} {roles.length === 1 ? 'rol' : 'roles'}
+              </p>
             </div>
           </AccordionTrigger>
           <AccordionContent>
-            <AssigmentAccordionItem roles={assigment.roles} />
+            <AssigmentAccordionItem
+              roles={roles.map((role) => ({
+                key: role.role.name,
+                value: role.unit.name,
+              }))}
+            />
           </AccordionContent>
         </AccordionItem>
       ))}
@@ -35,7 +44,7 @@ export default function AssigmentAccordion({ assigments }: Props) {
   )
 }
 
-export function AssigmentAccordionItem({ roles }: { roles: RoleAssigment[] }) {
+function AssigmentAccordionItem({ roles }: { roles: RoleAssigment[] }) {
   return (
     <ul className="flex flex-col gap-2">
       {roles.map((role) => (

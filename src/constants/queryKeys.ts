@@ -3,6 +3,7 @@ export const QueryKeys = {
     PERMISSIONS: 'permissions',
     MODULES: 'modules',
     ROLE_PERMISSIONS: 'role_permissions',
+    ROLE_ACCOUNTS: 'role_accounts',
   },
   faq: {
     FAQS: 'faqs',
