@@ -64,7 +64,9 @@ class StudentService implements StudentDAO {
             ilike(accounts.name, `%${params.q}%`),
             ilike(accounts.code, `%${params.q}%`)
           ),
-          eq(accountRoles.roleId, 1)
+          eq(accountRoles.roleId, BaseRoles.STUDENT),
+          //FIXME: Estaria listando solo los estudiantes activos, deberia listar todos? Tal vez para la vista del admin?
+          eq(accounts.state, 'active')
         )
       )
     const mappedFields = {
@@ -95,7 +97,7 @@ class StudentService implements StudentDAO {
             ilike(accounts.name, `%${params.q}%`),
             ilike(accounts.code, `%${params.q}%`)
           ),
-          eq(accountRoles.roleId, 1),
+          eq(accountRoles.roleId, BaseRoles.STUDENT),
           //FIXME: Estaria listando solo los estudiantes activos, deberia listar todos? Tal vez para la vista del admin?
           eq(accounts.state, 'active')
         )

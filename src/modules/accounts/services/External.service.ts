@@ -1,6 +1,6 @@
 import db from '@/database'
 import { accounts, units, accountRoles } from '@/database/schema'
-import { asc, desc, eq, sql } from 'drizzle-orm'
+import { and, asc, desc, eq, ilike, or, sql } from 'drizzle-orm'
 import { ExternalDAO } from '../daos/ExternalDAO'
 import { ExternalNotFoundError } from '../errors'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
@@ -30,7 +30,11 @@ class ExternalService implements ExternalDAO {
       .from(accounts)
       .innerJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
       .innerJoin(units, eq(units.id, accounts.unitId))
-      .where(eq(accountRoles.roleId, BaseRoles.EXTERNAL))
+      .where(and(
+        or(ilike(accounts.name, `%${params.q}%`),
+          ilike(accounts.code, `%${params.q}%`)),
+        eq(accountRoles.roleId, BaseRoles.EXTERNAL)
+      ))
     const mappedFields = {
       ['name']: accounts.name,
       ['code']: accounts.code,
@@ -55,7 +59,11 @@ class ExternalService implements ExternalDAO {
     .from(accounts)
     .innerJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
     .innerJoin(units, eq(units.id, accounts.unitId))
-    .where(eq(accountRoles.roleId, BaseRoles.EXTERNAL))
+    .where(and(
+      or(ilike(accounts.name, `%${params.q}%`),
+        ilike(accounts.code, `%${params.q}%`)),
+      eq(accountRoles.roleId, BaseRoles.EXTERNAL)
+    ))
       .offset(params.page * params.limit)
       .limit(params.limit)
       .orderBy(
