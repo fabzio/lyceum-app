@@ -2,7 +2,6 @@ import {
   foreignKey,
   smallint,
   primaryKey,
-  serial,
   uuid,
   boolean,
   integer,

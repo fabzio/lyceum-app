@@ -5,13 +5,15 @@ import { z } from 'zod'
 import { schema } from '..'
 import { studyPlans } from './studyPlans'
 import { units } from './units'
+import { studyPlanStatus } from './enums'
 
 export const specialityStudyPlans = schema.table(
   'speciality_study_plans',
   {
     specialityId: integer('speciality_id').notNull(),
     studyPlanId: integer('study_plan_id').notNull(),
-    current: boolean('current').default(true),
+    current: boolean('current').default(false).notNull(),
+    state: studyPlanStatus('state').default('editing').notNull(),
   },
   (table) => {
     return {

@@ -13,8 +13,10 @@ export const studyPlans = schema.table(
   'study_plans',
   {
     id: serial('id').primaryKey(),
-    initTerm: integer('init_term').notNull(),
+    initTerm: integer('init_term'),
     endTerm: integer('end_term'),
+    startLevel: integer('start_level').notNull(),
+    levelsCount: integer('levels_count').notNull(),
   },
   (table) => {
     return {
