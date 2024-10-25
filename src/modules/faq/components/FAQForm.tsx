@@ -24,6 +24,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { FAQ } from '../interfaces/FAQ'
+import { useToast } from '@/hooks/use-toast'
 
 interface Props {
   mode: 'create' | 'edit'
@@ -32,17 +33,25 @@ interface Props {
 }
 export default function FAQForm({ handleClose, mode, faq }: Props) {
   const queryClient = useQueryClient()
+  const { toast } = useToast()
   const { data: categories } = useQuery({
     queryKey: [QueryKeys.faq.FAQ_CATEGORIES],
     queryFn: () => FAQCategoryService.getFAQCategories(),
   })
   const createMutation = useMutation({
     mutationFn: FAQService.createFAQ,
-    onSettled: () => handleClose(),
+    onMutate: () => handleClose(),
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.faq.FAQS],
       }),
+    onError: ({ message }) => {
+      toast({
+        title: 'Error',
+        description: message,
+        variant: 'destructive',
+      })
+    },
   })
   const updateMutation = useMutation({
     mutationFn: FAQService.updateFAQ,
@@ -51,6 +60,13 @@ export default function FAQForm({ handleClose, mode, faq }: Props) {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.faq.FAQS],
       }),
+    onError: ({ message }) => {
+      toast({
+        title: 'Error',
+        description: message,
+        variant: 'destructive',
+      })
+    },
   })
 
   const form = useForm<z.infer<typeof schema>>({
@@ -68,7 +84,7 @@ export default function FAQForm({ handleClose, mode, faq }: Props) {
       updateMutation.mutate({
         ...data,
         faqCategoryId: parseInt(data.category),
-        id: faq?.id!,
+        id: faq!.id,
       })
   }
   return (
