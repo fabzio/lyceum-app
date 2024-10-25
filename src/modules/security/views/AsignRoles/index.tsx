@@ -1,10 +1,16 @@
 import { Input } from '@/components/ui/input'
 import AssigmentAccordion from './components/AssigmentAccordion'
 import SelectFilter from './components/SelectFilter'
-import { Assigment } from '@/interfaces/models'
-import NewAssigment from './components/NewAssigment'
+import NewAssigment from './components/NewAssignmentDialog'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import RoleAccountsService from '../../services/RoleAccounts.service'
+import { QueryKeys } from '@/constants/queryKeys'
 
 export default function AsignRoles() {
+  const { data } = useSuspenseQuery({
+    queryKey: [QueryKeys.security.ROLE_ACCOUNTS],
+    queryFn: RoleAccountsService.getRoleAccounts,
+  })
   return (
     <div className="flex flex-col my-6 p-2">
       <div className="w-full flex flex-col md:flex-row justify-between gap-2">
@@ -17,32 +23,8 @@ export default function AsignRoles() {
         </div>
       </div>
       <div>
-        <AssigmentAccordion assigments={assigments} />
+        <AssigmentAccordion assigments={data} />
       </div>
     </div>
   )
 }
-const assigments: Assigment[] = [
-  {
-    user: 'Fabrizio',
-    roles: [
-      {
-        key: 'Admin',
-        value: 'PUCP',
-      },
-    ],
-  },
-  {
-    user: 'Ricardo',
-    roles: [
-      {
-        key: 'Director de carrera',
-        value: 'Ingeniería de Software',
-      },
-      {
-        key: 'Admin',
-        value: 'PUCP',
-      },
-    ],
-  },
-]

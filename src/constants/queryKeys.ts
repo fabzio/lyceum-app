@@ -1,8 +1,13 @@
 export const QueryKeys = {
+  unit: {
+    UNITS: 'units',
+    UNIT: 'unit',
+  },
   security: {
     PERMISSIONS: 'permissions',
     MODULES: 'modules',
     ROLE_PERMISSIONS: 'role_permissions',
+    ROLE_ACCOUNTS: 'role_accounts',
   },
   faq: {
     FAQS: 'faqs',

@@ -1,6 +1,11 @@
-import { RoleAssigment } from './RoleAssigment'
-
 export interface Assigment {
-  user: string
-  roles: RoleAssigment[]
+  id: string
+  name: string
+  code: string
+  roles: {
+    id: number
+    name: string
+    unitId: number
+    unitName: string
+  }[]
 }

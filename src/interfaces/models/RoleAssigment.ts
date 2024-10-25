@@ -1,4 +1,6 @@
 export interface RoleAssigment {
-  key: string
-  value: string
+  id: number
+  name: string
+  unitId: number
+  unitName: string
 }
