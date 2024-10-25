@@ -1,11 +1,12 @@
 import db from '@/database'
 import { accountRoles, accounts, units } from '@/database/schema'
-import { and, asc, desc, eq, ilike, or, sql } from 'drizzle-orm'
+import { and, asc, desc, eq, ilike, or, sql, inArray } from 'drizzle-orm'
 import { AdministrativeNotFound } from '../errors'
 import { AdministrativeDAO } from '../daos'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { PaginatedData } from '@/interfaces/PaginatedData'
 import { uuid } from 'drizzle-orm/pg-core'
+import { DuplicateAdministrativeCode } from '../errors/Administrative.error'
 
 class AdministrativeService implements AdministrativeDAO {
   async getAdministrativeDetail(params: { code: string }) {
@@ -120,7 +121,7 @@ class AdministrativeService implements AdministrativeDAO {
   }
   //TODO Add methods here
 
-  async uploadAdministrativeList(administrativeList: {
+  public async uploadAdministrativeList(administrativeList: {
     name: string
     firstSurname: string
     secondSurname: string 
@@ -128,26 +129,46 @@ class AdministrativeService implements AdministrativeDAO {
     email: string
     }[]
   ){
-    const newAccounts = await db.insert(accounts).values(
-      administrativeList.map((newUser) => ({
-        name: newUser.name,
-        firstSurname: newUser.firstSurname,
-        secondSurname: newUser.secondSurname,
-        code: newUser.code,
-        email: newUser.email,
-        googleId: '',
-        state: 'active' as const,
-        unitId: 1,
-      }))
-    ).returning({ uuid: accounts.id });
+    const existingAdministratives = await db
+      .select()
+      .from(accounts)
+      .where(
+        inArray(
+          accounts.code,
+          administrativeList.map((administrative) => administrative.code)
+        )
+      )
+    if (existingAdministratives.length > 0) {
+      throw new DuplicateAdministrativeCode(
+        'Los siguientes códigos de personal administrativo ya existen: ' +
+        existingAdministratives.map((administrative) => administrative.code).join(', ')
+      )
+    }
 
-    await db.insert(accountRoles).values(
-      newAccounts.map((account) => ({
-        accountId: account.uuid,
-        roleId: 3,
-        unitId: 1,
-      }))
-    );
+    await db.transaction(async (tx) => {
+      const newAccounts = await tx.insert(accounts).values(
+        administrativeList.map((newUser) => ({
+          name: newUser.name,
+          firstSurname: newUser.firstSurname,
+          secondSurname: newUser.secondSurname,
+          code: newUser.code,
+          email: newUser.email,
+          googleId: '',
+          state: 'active' as const,
+          unitId: 1,
+        }))
+      ).returning({ uuid: accounts.id });
+  
+      await tx.insert(accountRoles).values(
+        newAccounts.map((account) => ({
+          accountId: account.uuid,
+          roleId: BaseRoles.ADMIN,
+          unitId: 1,
+        }))
+      );
+    }
+  )
+
   }
 }
 
