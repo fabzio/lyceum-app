@@ -11,6 +11,9 @@ export interface StudentDAO {
     state: 'active' | 'inactive' | 'deleted'
     speciallity: string
   }>
+  createStudent: (
+    studentList: { code: string; name: string; firstSurname: string; secondSurname: string ; email: string}[]
+  ) => Promise<void>
   getAllStudents(filters: {
     q?: string
     page: number

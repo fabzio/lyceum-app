@@ -1,14 +1,65 @@
 import db from '@/database'
 import { accountRoles, accounts, units } from '@/database/schema'
-import { eq, sql, and, or, ilike, asc, desc } from 'drizzle-orm'
+import { eq, sql, and, or, ilike, asc, desc, inArray } from 'drizzle-orm'
 import { StudentDAO } from '../daos/StudentDAO'
-import { StudenNotFoundError } from '../errors'
+import { DuplicatedStudentCode, StudenNotFoundError } from '../errors'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { PaginatedData } from '@/interfaces/PaginatedData'
-import { Account } from '@/interfaces/models/Account'
-import Accounts from '..'
+//import { Account } from '@/interfaces/models/Account'
+//import Accounts from '..'
 
 class StudentService implements StudentDAO {
+  public async createStudent(
+    studentList: {
+      code: string
+      name: string
+      firstSurname: string
+      secondSurname: string
+      email: string 
+    }[]
+  ) {
+    
+    const existingStudents = await db
+      .select()
+      .from(accounts)
+      .where(
+        inArray(
+          accounts.code,
+          studentList.map((student) => student.code)
+        )
+      )
+    if (existingStudents.length > 0) {
+      throw new DuplicatedStudentCode(
+        'Los siguientes códigos de alumno ya existen: ' +
+          existingStudents.map((student) => student.code).join(', ')
+      )
+    }
+    await db.transaction(async (tx) => {
+      const studentsId = await tx.insert(accounts).values(
+        studentList.map((student) => ({
+          name: student.name,
+          firstSurname: student.firstSurname,
+          secondSurname: student.secondSurname,
+          code: student.code,         
+          email: student.email,       
+          googleId: null, 
+          state: 'active' as const,
+          //unidad como se obtiene?
+          unitId: 1,
+        }))
+      ).returning({studentId: accounts.id})
+      await tx.insert(accountRoles).values(
+        studentsId.map((student) => ({
+          accountId: student.studentId,
+          roleId: BaseRoles.STUDENT,
+          unitId: 1,
+        }))
+      )
+    }
+  )
+    
+  }
+
   async getStudentDetail(params: { code: string }) {
     const student = await db
       .select({

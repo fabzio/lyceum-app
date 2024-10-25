@@ -25,7 +25,7 @@ export const accounts = schema.table(
     firstSurname: varchar('first_surname', { length: 60 }).notNull(),
     secondSurname: varchar('second_surname', { length: 60 }).notNull(),
     code: char('code', { length: 8 }).notNull(),
-    googleId: varchar('google_id', { length: 60 }).notNull(),
+    googleId: varchar('google_id', { length: 60 }),
     email: varchar('email', { length: 60 }).notNull(),
     state: accountStatus('state').notNull().default('active'),
     unitId: integer('unit_id').notNull(),
