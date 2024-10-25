@@ -5,6 +5,7 @@ import RoleAccountsService from '../services/role-accounts.service'
 import { accounts, roles, units } from '@/database/schema'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
 import { unitsSchema } from '@/database/schema/units'
+import { accountRoleSchema } from '../dto/RoleAccountsDTO'
 
 class RoleAccountsController {
   private router = new Hono()
@@ -26,15 +27,9 @@ class RoleAccountsController {
     }
   })
 
-  private accountRoleSchema = z.object({
-    accountId: z.string().uuid(),
-    roleId: z.number(),
-    unitId: z.number(),
-  })
-
   public insertAccountRole = this.router.post(
     '/',
-    zValidator('json', this.accountRoleSchema),
+    zValidator('json', accountRoleSchema),
     async (c) => {
       const accountRole = c.req.valid('json')
       try {
@@ -56,7 +51,7 @@ class RoleAccountsController {
 
   public deleteAccountRole = this.router.delete(
     '/',
-    zValidator('json', this.accountRoleSchema),
+    zValidator('json', accountRoleSchema),
     async (c) => {
       try {
         const accountRole = c.req.valid('json')

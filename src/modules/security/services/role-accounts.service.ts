@@ -3,7 +3,7 @@ import { accounts } from '@/database/schema'
 import { accountRoles } from '@/database/schema/accountRoles'
 import { roles } from '@/database/schema/roles'
 import { units, UnitsInsertSchema } from '@/database/schema/units'
-import { and, eq, ilike, sql } from 'drizzle-orm'
+import { and, eq, sql } from 'drizzle-orm'
 
 class RoleAccountsService {
   async getAllAccountRoles() {
@@ -29,7 +29,48 @@ class RoleAccountsService {
       .innerJoin(units, eq(accountRoles.unitId, units.id))
       .where(eq(roles.editable, true))
 
-    return accountRolesResponse
+    const formattedResponse = accountRolesResponse.reduce(
+      (
+        acc: {
+          id: string
+          name: string
+          code: string
+          roles: {
+            id: number
+            name: string
+            unitId: number
+            unitName: string
+          }[]
+        }[],
+        curr
+      ) => {
+        const accountIndex = acc.findIndex(
+          (account) => account.id === curr.account.id
+        )
+        const role = {
+          id: curr.role.id,
+          name: curr.role.name,
+          unitId: curr.unit.id,
+          unitName: curr.unit.name,
+        }
+
+        if (accountIndex === -1) {
+          acc.push({
+            id: curr.account.id,
+            name: curr.account.name,
+            code: curr.account.code,
+            roles: [role],
+          })
+        } else {
+          acc[accountIndex].roles.push(role)
+        }
+
+        return acc
+      },
+      []
+    )
+
+    return formattedResponse
   }
 
   async insertAccountRole(accountRole: {
