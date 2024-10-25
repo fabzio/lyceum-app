@@ -1,3 +1,4 @@
+import MasiveStudentsDialog from "./components/MasiveStudentsDialog";
 import SearchStudentInput from "./components/SearchStudentInput";
 import StudentTable from "./components/StudentTable";
 
@@ -7,11 +8,10 @@ export default function StudentManagement() {
       <div className="w-full flex flex-col md:flex-row justify-between gap-4">
         <SearchStudentInput />
 
-        {/* TODO: Implementar MasiveStudentsDialog y NewStudentDialog
+        {/* TODO: Implementar NewStudentDialog*/
         <div className="flex gap-2">
           <MasiveStudentsDialog />
-          <NewStudentDialog />
-        </div> */}
+        </div>}
       </div>
       <StudentTable />
     </div>
