@@ -4,6 +4,7 @@ import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
 import { ProfessorDAO } from '../daos/ProfessorDAO'
+import { createProfessorsDTO } from '../dtos/ProfessorDTO'
 
 class ProfessorController {
   private router = new Hono()
@@ -65,6 +66,28 @@ class ProfessorController {
   )
 
   //TODO: Implementar INSERTAR
+
+  public createProfessor = this.router.post(
+    '/',
+    zValidator('json', createProfessorsDTO),
+    async (c) => {
+      const { professorList } = c.req.valid('json')
+      try {
+        const response: ResponseAPI = {
+          //data: await this.professorService.createProfessor(professorList),
+          message: 'Professor created',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
 
 }
 

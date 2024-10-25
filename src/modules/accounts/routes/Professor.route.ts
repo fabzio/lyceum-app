@@ -7,7 +7,6 @@ class ProfessorRoute implements Route {
   public router = new Hono()
   private professorController = new ProfessorController()
 
-
   constructor() {
     this.initializeRoutes()
   }
