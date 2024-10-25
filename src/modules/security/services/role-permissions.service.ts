@@ -4,11 +4,27 @@ import { modules, permissions, rolePermissions, roles } from '@/database/schema'
 
 import { RolePermissionDAO } from '../dao/RolePermissionsDAO'
 import { RolePermission } from '@/interfaces/models/RolePermission'
-import { eq } from 'drizzle-orm'
+import { and, eq, ilike } from 'drizzle-orm'
 import { Permission } from '@/interfaces/models/Permission'
 import { RolesSchema } from '@/database/schema/roles'
 
 class RolePermissionService implements RolePermissionDAO {
+  async searchRolePermissions(search: string): Promise<
+    {
+      id: number
+      name: string
+      unitType: string
+    }[]
+  > {
+    return await db
+      .select({
+        id: roles.id,
+        name: roles.name,
+        unitType: roles.unitType,
+      })
+      .from(roles)
+      .where(and(ilike(roles.name, `%${search}%`), eq(roles.editable, true)))
+  }
   async getAllRolePermissions(): Promise<RolePermission[]> {
     const rolePermissionsResponse = await db
       .select({

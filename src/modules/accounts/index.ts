@@ -5,6 +5,7 @@ import {
   ProfessorRoute,
   AdministrativeRoute,
   ExternalRoute,
+  GenericRoute,
 } from './routes'
 
 class Accounts implements Route {
@@ -19,6 +20,7 @@ class Accounts implements Route {
       new ProfessorRoute(),
       new AdministrativeRoute(),
       new ExternalRoute(),
+      new GenericRoute(),
     ]
     this.initializeRoutes()
   }

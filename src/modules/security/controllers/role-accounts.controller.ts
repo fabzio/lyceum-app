@@ -4,6 +4,7 @@ import { z } from 'zod'
 import RoleAccountsService from '../services/role-accounts.service'
 import { accounts, roles, units } from '@/database/schema'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
+import { unitsSchema } from '@/database/schema/units'
 
 class RoleAccountsController {
   private router = new Hono()
@@ -63,6 +64,32 @@ class RoleAccountsController {
 
         const response: ResponseAPI = {
           message: 'Account role deleted',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public getUnitScope = this.router.get(
+    '/unit-scope',
+    zValidator(
+      'query',
+      z.object({
+        unitType: unitsSchema.shape.type,
+      })
+    ),
+    async (c) => {
+      const { unitType } = c.req.valid('query')
+      try {
+        const response: ResponseAPI = {
+          data: await this.roleAccountsService.getUnitScope(unitType),
+          message: 'Unit scope retrieved',
           success: true,
         }
         return c.json(response)
