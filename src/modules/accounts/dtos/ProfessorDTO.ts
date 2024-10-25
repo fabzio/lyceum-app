@@ -5,8 +5,8 @@ export const createProfessorsDTO = z.object({
     z.object({
       code: z.string(),
       name: z.string(),
-      first_surname: z.string(),
-      second_surname: z.string(),
+      firstSurname: z.string(),
+      secondSurname: z.string(),
       email: z.string(),
     })
   ),

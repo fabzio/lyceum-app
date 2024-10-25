@@ -27,7 +27,7 @@ export interface ProfessorDAO {
     }>
   >
   createProfessor: (
-    courseList: {
+    professorList: {
       code: string
       name: string
       firstSurname: string
