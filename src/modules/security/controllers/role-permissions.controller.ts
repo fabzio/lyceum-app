@@ -19,6 +19,27 @@ class RolePermissionsController {
     return c.json(response)
   })
 
+  public searchRolePermissions = this.router.get(
+    '/search',
+    zValidator(
+      'query',
+      z.object({
+        q: z.string(),
+      })
+    ),
+    async (c) => {
+      const { q } = c.req.valid('query')
+
+      const response: ResponseAPI = {
+        data: await this.permissionService.searchRolePermissions(q),
+        message: 'Role permissions retrieved',
+        success: true,
+      }
+
+      return c.json(response)
+    }
+  )
+
   public insertRolePermission = this.router.post(
     '/',
     zValidator(

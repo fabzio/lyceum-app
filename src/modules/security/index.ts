@@ -1,7 +1,11 @@
 import { Route } from '@/interfaces/route'
 import { Hono } from 'hono'
-import { ModuleRoute, PermissionRoute } from './routes'
-import RolePermissionsRoute from './routes/role-permission.route'
+import {
+  ModuleRoute,
+  PermissionRoute,
+  RoleAccountsRoute,
+  RolePermissionsRoute,
+} from './routes'
 
 class Security implements Route {
   public path = '/security'
@@ -14,6 +18,7 @@ class Security implements Route {
       new PermissionRoute(),
       new ModuleRoute(),
       new RolePermissionsRoute(),
+      new RoleAccountsRoute(),
     ]
     this.initializeRoutes()
   }
