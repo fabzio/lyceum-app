@@ -78,6 +78,7 @@ export default function AssigmentForm({ handleClose }: Props) {
                 <FormLabel>Usuario</FormLabel>
                 <FormControl>
                   <QuickSearchInput
+                    placeholder="Buscar usuario por código o nombre"
                     searchFn={(q) => AccountsService.getAccount({ q })}
                     handleSelect={(item) => field.onChange(item?.id)}
                     renderOption={(item) => (
@@ -107,6 +108,7 @@ export default function AssigmentForm({ handleClose }: Props) {
                 <FormLabel>Rol</FormLabel>
                 <FormControl>
                   <QuickSearchInput
+                    placeholder="Buscar rol por nombre"
                     searchFn={(q) => RolePermissionService.getRole({ q })}
                     handleSelect={(item) => {
                       setUnitType(item?.unitType || null)

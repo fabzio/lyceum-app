@@ -1,16 +1,11 @@
-
 export interface Assigment {
-  account: {
-    id: string
-    code: string
-    name: string
-  }
-  role: {
+  id: string
+  name: string
+  code: string
+  roles: {
     id: number
     name: string
-  }
-  unit: {
-    id: number
-    name: string
-  }
+    unitId: number
+    unitName: string
+  }[]
 }

@@ -61,6 +61,27 @@ class RoleAccountsService {
       throw error
     }
   }
+
+  public static async revokeRoleAccount(data: {
+    accountId: string
+    roleId: number
+    unitId: number
+  }) {
+    try {
+      const res = await http.delete('security/role-accounts', { data })
+      const response = res.data as ResponseAPI
+
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
 }
 
 export default RoleAccountsService

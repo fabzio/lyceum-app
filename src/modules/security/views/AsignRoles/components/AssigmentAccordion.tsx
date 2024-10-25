@@ -4,56 +4,62 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { Button } from '@/components/ui/button'
 import { Assigment } from '@/interfaces/models'
 import { RoleAssigment } from '@/interfaces/models/RoleAssigment'
-import groupBy from 'just-group-by'
+import RevokeConfirmationDialog from './RevokeConfirmationDialog'
 
 interface Props {
   assigments: Assigment[]
 }
 
-export default function AssigmentAccordion({ assigments }: Props) {
-  const rolesByAccount = groupBy(
-    assigments,
-    (assigment) => assigment.account.name
-  )
+export default function AssigmentAccordion({ assigments = [] }: Props) {
   return (
     <Accordion type="single" collapsible>
-      {Object.entries(rolesByAccount).map(([account, roles]) => (
-        <AccordionItem key={account} value={account}>
-          <AccordionTrigger>
-            <div className="w-full px-2 flex justify-between">
-              <h3>{account}</h3>
-              <p>
-                {roles.length} {roles.length === 1 ? 'rol' : 'roles'}
-              </p>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>
-            <AssigmentAccordionItem
-              roles={roles.map((role) => ({
-                key: role.role.name,
-                value: role.unit.name,
-              }))}
-            />
-          </AccordionContent>
-        </AccordionItem>
-      ))}
+      {assigments.length > 0 ? (
+        assigments.map(({ id, name, roles }) => (
+          <AccordionItem key={id} value={id}>
+            <AccordionTrigger>
+              <div className="w-full px-2 flex justify-between">
+                <h3>{name}</h3>
+                <p>
+                  {roles.length} {roles.length === 1 ? 'rol' : 'roles'}
+                </p>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <AssigmentAccordionItem roles={roles} accountId={id} />
+            </AccordionContent>
+          </AccordionItem>
+        ))
+      ) : (
+        <div className="text-center text-muted-foreground mt-2">
+          No hay roles asignados
+        </div>
+      )}
     </Accordion>
   )
 }
 
-function AssigmentAccordionItem({ roles }: { roles: RoleAssigment[] }) {
+function AssigmentAccordionItem({
+  roles,
+  accountId,
+}: {
+  roles: RoleAssigment[]
+  accountId: string
+}) {
   return (
     <ul className="flex flex-col gap-2">
       {roles.map((role) => (
-        <li className="flex justify-between" key={role.key}>
+        <li className="flex justify-between" key={role.id}>
           <div>
-            <span className="font-">{role.key}</span> {role.value}
+            <span className="font-">{role.name}</span> {role.unitName}
           </div>
           <div>
-            <Button variant="destructive">Revocar</Button>
+            <RevokeConfirmationDialog
+              accountId={accountId}
+              roleId={role.id}
+              unitId={role.unitId}
+            />
           </div>
         </li>
       ))}
