@@ -8,10 +8,21 @@ class ExternalController {
   private router = new Hono()
   private externalService = new ExternalService()
 
-  public getExternals = this.router.get('/', async (c) => {
+  public getExternals = this.router.get('/',
+    zValidator(
+      'query',
+      z.object({
+        q: z.string().optional(),
+        page: z.string().transform((v) => parseInt(v)),
+        limit: z.string().transform((v) => parseInt(v)),
+        sortBy: z.string().optional(),
+      })
+    ),
+    async (c) => {
     try {
+      const filters = c.req.valid('query')
       const response: ResponseAPI = {
-        data: await this.externalService.getAllExternal(), // llamada al servicio
+        data: await this.externalService.getAllExternals(filters), // llamada al servicio
         success: true,
         message: 'Externals retrieved',
       }
