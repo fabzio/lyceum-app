@@ -4,9 +4,10 @@ import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
 import { ExternalDAO } from '../daos/ExternalDAO'
+
 class ExternalController {
   private router = new Hono()
-  private externalService = new ExternalService()
+  private externalService: ExternalDAO = new ExternalService()
 
   public getExternals = this.router.get('/',
     zValidator(

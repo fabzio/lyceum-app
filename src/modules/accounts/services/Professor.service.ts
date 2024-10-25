@@ -4,8 +4,36 @@ import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { PaginatedData } from '@/interfaces/PaginatedData'
 import { and, asc, desc, eq, ilike, or, sql } from 'drizzle-orm'
 import { ProfessorDAO } from '../daos/ProfessorDAO'
+import { ProfessorNotFoundError } from '../errors/Professor.error'
 
 class ProfessorService implements ProfessorDAO {
+  
+  async getProfessorDetail(params: { code: string }) {
+    const professor = await db
+      .select({
+        code: accounts.code,
+        name: accounts.name,
+        firstSurname: accounts.firstSurname,
+        secondSurname: accounts.secondSurname,
+        email: accounts.email,
+        state: accounts.state,
+        speciallity: units.name,
+      })
+      .from(accounts)
+      .innerJoin(units, eq(units.id, accounts.unitId))
+      .innerJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
+      .where(
+        and(
+          eq(accounts.code, params.code),
+          eq(accountRoles.roleId, BaseRoles.PROFESSOR)
+        )
+      )
+    if (professor.length === 0) {
+      throw new ProfessorNotFoundError('El profesor no fue encontrado')
+    }
+    const [professorDetail] = professor
+    return professorDetail
+  }
   public async getAllProfessors(params: {
     q?: string
     page: number
