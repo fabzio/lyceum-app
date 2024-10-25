@@ -65,6 +65,7 @@ class ProfessorController {
     }
   )
 
+  //TODO: Implementar INSERTAR
   public createProfessor = this.router.post(
     '/',
     zValidator('json', createProfessorsDTO),
@@ -72,7 +73,15 @@ class ProfessorController {
       const { professorList } = c.req.valid('json')
       try {
         const response: ResponseAPI = {
-          //data: await this.professorService.createProfessor(professorList),
+          data: await this.professorService.createProfessor(
+            professorList.map((professor) => ({
+              code: professor.code,
+              name: professor.name,
+              firstSurname: professor.first_surname,
+              secondSurname: professor.second_surname,
+              email: professor.email,
+            }))
+          ),
           message: 'Professor created',
           success: true,
         }
