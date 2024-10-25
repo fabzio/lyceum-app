@@ -51,7 +51,6 @@ class StudentController {
         const filters = c.req.valid('query')
         const data = await this.studentService.getAllStudents(filters)
         const response: ResponseAPI = {
-          //TODO: Cambiar el mock data por la llamada al servicio
           data: data,
           success: true,
           message: 'Students retrived',

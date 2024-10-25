@@ -25,7 +25,6 @@ class ProfessorController {
         const filters = c.req.valid('query')
         const data = await this.professorService.getAllProfessors(filters)
         const response: ResponseAPI = {
-          //TODO: Cambiar el mock data por la llamada al servicio
           data: data,
           success: true,
           message: 'Professors retrived',
@@ -39,7 +38,6 @@ class ProfessorController {
       }
     }
   )
-  //TODO: Implementar el resto de los metodos
   public getProfessorDetail = this.router.get(
     '/:code',
     zValidator(
@@ -65,6 +63,9 @@ class ProfessorController {
       }
     }
   )
+
+  //TODO: Implementar INSERTAR
+
 }
 
 export default ProfessorController
