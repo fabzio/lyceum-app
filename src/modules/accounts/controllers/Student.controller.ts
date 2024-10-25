@@ -48,56 +48,11 @@ class StudentController {
     ),
     async (c) => {
       try {
+        const filters = c.req.valid('query')
+        const data = await this.studentService.getAllStudents(filters)
         const response: ResponseAPI = {
           //TODO: Cambiar el mock data por la llamada al servicio
-          data: {
-            "result": [
-              {
-                  "code": "ACC001",
-                  "name": "John",
-                  "firstSurname": "Doe",
-                  "secondSurname": "Smith",
-                  "email": "john.doe@example.com",
-                  "state": "active"
-              },
-              {
-                  "code": "ACC002",
-                  "name": "Jane",
-                  "firstSurname": "Williams",
-                  "secondSurname": "Brown",
-                  "email": "jane.williams@example.com",
-                  "state": "inactive"
-              },
-              {
-                  "code": "ACC003",
-                  "name": "Alice",
-                  "firstSurname": "Johnson",
-                  "secondSurname": "Miller",
-                  "email": "alice.johnson@example.com",
-                  "state": "active"
-              },
-              {
-                  "code": "ACC004",
-                  "name": "Bob",
-                  "firstSurname": "Davis",
-                  "secondSurname": "Garcia",
-                  "email": "bob.davis@example.com",
-                  "state": "pending"
-              },
-              {
-                  "code": "ACC005",
-                  "name": "Charlie",
-                  "firstSurname": "Martinez",
-                  "secondSurname": "Lopez",
-                  "email": "charlie.martinez@example.com",
-                  "state": "active"
-              }
-          ],
-            "rowCount": 29,
-            "currentPage": 0,
-            "totalPages": 6,
-            "hasNext": true
-        }, // mock data
+          data: data,
           success: true,
           message: 'Students retrived',
         }

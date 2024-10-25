@@ -9,8 +9,7 @@ class ExternalController {
   private router = new Hono()
   private externalService: ExternalDAO = new ExternalService()
 
-  public getExternals = this.router.get(
-    '/',
+  public getExternals = this.router.get('/',
     zValidator(
       'query',
       z.object({
@@ -21,21 +20,21 @@ class ExternalController {
       })
     ),
     async (c) => {
-      try {
-        const response: ResponseAPI = {
-          data: await this.externalService.getAllExternals(),  // llamada al servicio
-          success: true,
-          message: 'Externals retrieved',
-        }
-        return c.json(response)
-      } catch (error) {
-        if (error instanceof LyceumError) {
-          c.status(error.code)
-        }
-        throw error
+    try {
+      const filters = c.req.valid('query')
+      const response: ResponseAPI = {
+        data: await this.externalService.getAllExternals(filters), // llamada al servicio
+        success: true,
+        message: 'Externals retrieved',
       }
+      return c.json(response)
+    } catch (error) {
+      if (error instanceof LyceumError) {
+        c.status(error.code)
+      }
+      throw error
     }
-  )
+  })
 }
 
 export default ExternalController

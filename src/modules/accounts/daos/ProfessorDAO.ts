@@ -1,3 +1,5 @@
+import { PaginatedData } from "@/interfaces/PaginatedData"
+
 export interface ProfessorDAO {
     getProfessorDetail(params: { code: string }): Promise<{
         code: string
@@ -7,10 +9,13 @@ export interface ProfessorDAO {
         email: string
         state: 'active' | 'inactive' | 'deleted'
         speciallity: string
-      }>
-
-    getAllProfessors(): Promise<
-      Array<{
+        }>
+    getAllProfessors(filters: {
+        q?: string
+        page: number
+        limit: number
+        sortBy?: string
+    }): Promise<PaginatedData<{
         code: string
         name: string
         firstSurname: string
@@ -18,7 +23,6 @@ export interface ProfessorDAO {
         email: string
         state: 'active' | 'inactive' | 'deleted'
         speciallity: string
-      }>
-    >
-  }
-  
+    }>>
+}
+

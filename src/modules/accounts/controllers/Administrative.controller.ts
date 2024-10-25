@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { AdministrativeService } from '../services'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
+import { LyceumError } from '@/middlewares/errorMiddlewares'
 
 class AdministrativeController {
   private router = new Hono()
@@ -38,6 +39,36 @@ class AdministrativeController {
       }
     }
   )
+  public getAdministratives = this.router.get(
+    '/',
+    zValidator(
+      'query',
+      z.object({
+        q: z.string().optional(),
+        page: z.string().transform((v) => parseInt(v)),
+        limit: z.string().transform((v) => parseInt(v)),
+        sortBy: z.string().optional(),
+      })
+    ),
+    async (c) => {
+      try {
+        const filters = c.req.valid('query')
+        const data = await this.administrativeService.getAllAdministratives(filters)
+        const response: ResponseAPI = {
+          data: data,
+          success: true,
+          message: 'Administratives retrived',
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+  //TODO: Implementar el resto de los metodos
 }
 
 export default AdministrativeController

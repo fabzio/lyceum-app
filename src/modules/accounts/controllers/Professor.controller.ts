@@ -9,6 +9,37 @@ class ProfessorController {
   private router = new Hono()
   private professorService: ProfessorDAO = new ProfessorService()
 
+  public getProfessors = this.router.get(
+    '/',
+    zValidator(
+      'query',
+      z.object({
+        q: z.string().optional(),
+        page: z.string().transform((v) => parseInt(v)),
+        limit: z.string().transform((v) => parseInt(v)),
+        sortBy: z.string().optional(),
+      })
+    ),
+    async (c) => {
+      try {
+        const filters = c.req.valid('query')
+        const data = await this.professorService.getAllProfessors(filters)
+        const response: ResponseAPI = {
+          //TODO: Cambiar el mock data por la llamada al servicio
+          data: data,
+          success: true,
+          message: 'Professors retrived',
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+  //TODO: Implementar el resto de los metodos
   public getProfessorDetail = this.router.get(
     '/:code',
     zValidator(
@@ -24,34 +55,6 @@ class ProfessorController {
           data: await this.professorService.getProfessorDetail({ code }),
           success: true,
           message: 'Professor retrived',
-        }
-        return c.json(response)
-      } catch (error) {
-        if (error instanceof LyceumError) {
-          c.status(error.code)
-        }
-        throw error
-      }
-    }
-  )
-
-  public getProfessors = this.router.get(
-    '/',
-    zValidator(
-      'query',
-      z.object({
-        q: z.string().optional(),
-        page: z.string().transform((v) => parseInt(v)),
-        limit: z.string().transform((v) => parseInt(v)),
-        sortBy: z.string().optional(),
-      })
-    ),
-    async (c) => {
-      try {
-        const response: ResponseAPI = {
-          data: await this.professorService.getAllProfessors(),
-          success: true,
-          message: 'Professors retrived',
         }
         return c.json(response)
       } catch (error) {
