@@ -1,4 +1,8 @@
 export const QueryKeys = {
+  unit: {
+    UNITS: 'units',
+    UNIT: 'unit',
+  },
   security: {
     PERMISSIONS: 'permissions',
     MODULES: 'modules',

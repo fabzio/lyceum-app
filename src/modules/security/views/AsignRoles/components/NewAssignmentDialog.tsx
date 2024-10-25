@@ -1,36 +1,19 @@
-import Autocomplete from '@/components/Autocomplete'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Label } from '@/components/ui/label'
-import { Select, SelectTrigger, SelectValue } from '@/components/ui/select'
 import AssigmentForm from './AssigmentForm'
-
-const users = [
-  {
-    code: '20112345',
-    name: 'Fabrizio Franco',
-  },
-  {
-    code: '20112346',
-    name: 'Ricardo Flores',
-  },
-  {
-    code: '20112347',
-    name: 'Juan Perez',
-  },
-]
+import { useState } from 'react'
 
 export default function NewAssignmentDialog() {
+  const [isOpen, setIsOpen] = useState(false)
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button>Nueva asignación</Button>
       </DialogTrigger>
@@ -41,7 +24,7 @@ export default function NewAssignmentDialog() {
             Asigna los roles a los usuarios del sistema
           </DialogDescription>
         </DialogHeader>
-        <AssigmentForm />
+        <AssigmentForm handleClose={() => setIsOpen(false)} />
       </DialogContent>
     </Dialog>
   )
