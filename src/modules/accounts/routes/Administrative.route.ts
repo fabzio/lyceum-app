@@ -17,6 +17,10 @@ class AdministrativeRoute implements Route {
       '/',
       this.administrativeController.getAdministrativeDetail
     )
+    this.router.route(
+      '/',
+      this.administrativeController.uploadAdministrativeList
+    )
   }
 }
 

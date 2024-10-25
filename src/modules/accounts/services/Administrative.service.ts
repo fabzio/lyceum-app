@@ -5,6 +5,7 @@ import { AdministrativeNotFound } from '../errors'
 import { AdministrativeDAO } from '../daos'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { PaginatedData } from '@/interfaces/PaginatedData'
+import { uuid } from 'drizzle-orm/pg-core'
 
 class AdministrativeService implements AdministrativeDAO {
   async getAdministrativeDetail(params: { code: string }) {
@@ -118,6 +119,36 @@ class AdministrativeService implements AdministrativeDAO {
     }
   }
   //TODO Add methods here
+
+  async uploadAdministrativeList(administrativeList: {
+    name: string
+    firstSurname: string
+    secondSurname: string 
+    code: string
+    email: string
+    }[]
+  ){
+    const newAccounts = await db.insert(accounts).values(
+      administrativeList.map((newUser) => ({
+        name: newUser.name,
+        firstSurname: newUser.firstSurname,
+        secondSurname: newUser.secondSurname,
+        code: newUser.code,
+        email: newUser.email,
+        googleId: '',
+        state: 'active' as const,
+        unitId: 1,
+      }))
+    ).returning({ uuid: accounts.id });
+
+    await db.insert(accountRoles).values(
+      newAccounts.map((account) => ({
+        accountId: account.uuid,
+        roleId: 3,
+        unitId: 1,
+      }))
+    );
+  }
 }
 
 export default AdministrativeService
