@@ -66,6 +66,7 @@ class RiskStudentReportService {
       })
       await tx.update(riskStudents).set({
         updated: true,
+        score,
       })
     })
   }
