@@ -2,12 +2,14 @@ import db from '@/database'
 import { accountRoles, accounts, units } from '@/database/schema'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { PaginatedData } from '@/interfaces/PaginatedData'
-import { and, asc, desc, eq, ilike, or, sql } from 'drizzle-orm'
+import { and, asc, desc, eq, ilike, inArray, or, sql } from 'drizzle-orm'
 import { ProfessorDAO } from '../daos/ProfessorDAO'
-import { ProfessorNotFoundError } from '../errors/Professor.error'
+import {
+  DuplicatedProfessorCode,
+  ProfessorNotFoundError,
+} from '../errors/Professor.error'
 
 class ProfessorService implements ProfessorDAO {
-  
   async getProfessorDetail(params: { code: string }) {
     const professor = await db
       .select({
@@ -39,16 +41,18 @@ class ProfessorService implements ProfessorDAO {
     page: number
     limit: number
     sortBy?: string
-  }): Promise<PaginatedData<{
-    code: string
-    name: string
-    firstSurname: string
-    secondSurname: string
-    email: string
-    //TODO: Decidir si se debe listar solo los profesores activos o todos
-    state: 'active' | 'inactive' | 'deleted'
-    speciallity: string
-  }>> {
+  }): Promise<
+    PaginatedData<{
+      code: string
+      name: string
+      firstSurname: string
+      secondSurname: string
+      email: string
+      //TODO: Decidir si se debe listar solo los profesores activos o todos
+      state: 'active' | 'inactive' | 'deleted'
+      speciallity: string
+    }>
+  > {
     const [field, order] = params.sortBy?.split('.') || ['name', 'asc']
 
     const [{ total }] = await db
@@ -60,10 +64,13 @@ class ProfessorService implements ProfessorDAO {
       .innerJoin(units, eq(units.id, accounts.unitId))
       .where(
         and(
-        or(ilike(accounts.name, `%${params.q}%`),
-          ilike(accounts.code, `%${params.q}%`)),
-        eq(accountRoles.roleId, BaseRoles.PROFESSOR)
-      ))
+          or(
+            ilike(accounts.name, `%${params.q}%`),
+            ilike(accounts.code, `%${params.q}%`)
+          ),
+          eq(accountRoles.roleId, BaseRoles.PROFESSOR)
+        )
+      )
     const mappedFields = {
       ['name']: accounts.name,
       ['code']: accounts.code,
@@ -90,10 +97,13 @@ class ProfessorService implements ProfessorDAO {
       .innerJoin(units, eq(units.id, accounts.unitId))
       .where(
         and(
-        or(ilike(accounts.name, `%${params.q}%`),
-          ilike(accounts.code, `%${params.q}%`)),
-        eq(accountRoles.roleId, BaseRoles.PROFESSOR)
-      ))
+          or(
+            ilike(accounts.name, `%${params.q}%`),
+            ilike(accounts.code, `%${params.q}%`)
+          ),
+          eq(accountRoles.roleId, BaseRoles.PROFESSOR)
+        )
+      )
       .offset(params.page * params.limit)
       .limit(params.limit)
       .orderBy(
@@ -119,6 +129,55 @@ class ProfessorService implements ProfessorDAO {
     }
   }
   //TODO Add methods here
+  public async createProfessor(
+    professorList: {
+      code: string
+      name: string
+      firstSurname: string
+      secondSurname: string
+      email: string
+    }[]
+  ) {
+    const existingProfessors = await db
+      .select()
+      .from(accounts)
+      .where(
+        inArray(
+          accounts.code,
+          professorList.map((accounts) => accounts.code)
+        )
+      )
+    if (existingProfessors.length > 0) {
+      throw new DuplicatedProfessorCode(
+        'Los siguientes profesores ya existen: ' +
+          existingProfessors.map((accounts) => accounts.code).join(', ')
+      )
+    }
+    await db.transaction(async (tx) => {
+      const studentsId = await tx
+        .insert(accounts)
+        .values(
+          professorList.map((professor) => ({
+            name: professor.name,
+            firstSurname: professor.firstSurname,
+            secondSurname: professor.secondSurname,
+            code: professor.code,
+            email: professor.email,
+            googleId: null,
+            state: 'active' as const,
+            unitId: 1, //no deberia tener unitId porque es de muchos a muchos
+          }))
+        )
+        .returning({ professorId: accounts.id })
+      await tx.insert(accountRoles).values(
+        studentsId.map((professor) => ({
+          accountId: professor.professorId,
+          roleId: BaseRoles.PROFESSOR,
+          unitId: 1,
+        }))
+      )
+    })
+  }
 }
 
 export default ProfessorService
