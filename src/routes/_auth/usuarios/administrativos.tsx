@@ -1,7 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router'
-import Administratives from '@/modules/users/views/Administratives'
+import Profesors from '@/modules/users/views/Administratives'
+import { AdministrativesFilters } from '@/modules/users/views/Administratives/interfaces/CourseFIlters'
+import { QueryKeys } from '@/constants/queryKeys'
+import AdministrativeService from '@/modules/users/services/Administrative.service'
 
 export const Route = createFileRoute('/_auth/usuarios/administrativos')({
-  //TODO: Implement loader
-  component: () => <Administratives />,
+  validateSearch: () => ({}) as AdministrativesFilters,
+  loader: async ({ context: { queryClient } }) => {
+    return queryClient.ensureQueryData({
+      queryKey: [QueryKeys.users.PROFESSORS, {}],
+      queryFn: () => AdministrativeService.fetchAdministratives({}),
+    })
+  },
+  component: () => <Profesors />,
 })
