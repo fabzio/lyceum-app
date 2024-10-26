@@ -25,6 +25,11 @@ interface AdministrativeDAO {
     state: 'active' | 'inactive' | 'deleted'
     speciallity: string
   }>>
+
+  uploadAdministrativeList: (
+    administrativeList: { name: string; firstSurname: string; secondSurname: string ; code: string; email: string}[]
+  ) => Promise<void>
+
 }
 
 export default AdministrativeDAO
