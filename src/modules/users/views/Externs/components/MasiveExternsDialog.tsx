@@ -1,4 +1,3 @@
-//TODO: Adaptar la carga masiva para el externo
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -23,7 +22,7 @@ import { QueryKeys } from '@/constants/queryKeys'
 import { useToast } from '@/hooks/use-toast'
 import { getCsvData } from '@/lib/utils'
 import { Student } from '@/modules/users/interfaces/Student'
-import StudentService from '@/modules/users/services/Student.service'
+import ExternService from '@/modules/users/services/Extern.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Loader2, Upload } from 'lucide-react'
@@ -31,7 +30,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-export default function MasiveStudentsDialog() {
+export default function MasiveExternsDialog() {
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
   const { toast } = useToast()
@@ -39,10 +38,10 @@ export default function MasiveStudentsDialog() {
     resolver: zodResolver(formSchema),
   })
   const { mutate, isPending } = useMutation({
-    mutationFn: StudentService.addStudent,
+    mutationFn: ExternService.addExternal,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [QueryKeys.users.STUDENTS],
+        queryKey: [QueryKeys.users.EXTERNS],
       })
       setIsOpen(false)
     },
@@ -59,9 +58,9 @@ export default function MasiveStudentsDialog() {
     const dataJson = await getCsvData<
       Pick<Student, 'code' | 'name' | 'firstSurname' | 'secondSurname' | 'email'>
     >(data.file)
-    const dataParsed = dataJson.map((student) => ({
-      ...student,
-      code: student.code.toString(),
+    const dataParsed = dataJson.map((external) => ({
+      ...external,
+      code: external.code.toString(),
     }))
     
     mutate(dataParsed)
@@ -75,9 +74,9 @@ export default function MasiveStudentsDialog() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Importar estudiantes desde archivo</DialogTitle>
+          <DialogTitle>Importar externos desde archivo</DialogTitle>
           <DialogDescription>
-            Sube un archivo CSV con los estudiantes que desea importar
+            Sube un archivo CSV con los externos que desea importar
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>

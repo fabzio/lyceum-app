@@ -12,7 +12,7 @@ export default function SearchExternInput() {
   return (
     <Input
       type="search"
-      placeholder="🔎 Buscar profesor por nombre o código"
+      placeholder="🔎 Buscar externo por nombre o código"
       className="w-full md:w-2/4"
       onChange={onChangeFilter}
     />
