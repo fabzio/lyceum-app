@@ -12,9 +12,8 @@ import {
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { aliasedTable, and, desc, eq, inArray, sql } from 'drizzle-orm'
 import { RiskStudentDAO } from '../dao/RiskStudentDAO'
-import {
-  InsertRiskStudentsDTO,
-} from '../dto/riskStudentDTO'
+import { InsertRiskStudentsDTO } from '../dto/riskStudentDTO'
+import { RiskStudentNotFoundError } from '../errors/RiskStudent.error'
 class RiskStudentService implements RiskStudentDAO {
   public async getAllRiskStudent() {
     const professor = aliasedTable(accounts, 'professor')
@@ -25,7 +24,6 @@ class RiskStudentService implements RiskStudentDAO {
           code: student.code,
           name: student.name,
           surname: sql<string>`concat(${student.firstSurname}, ' ', ${student.secondSurname})`,
-          email: student.email,
         },
         course: {
           code: courses.code,
@@ -34,10 +32,10 @@ class RiskStudentService implements RiskStudentDAO {
         schedule: {
           id: schedules.id,
           code: schedules.code,
-          professor: sql<string>`concat(${professor.name}, ' ', ${professor.firstSurname}, ' ', ${professor.secondSurname})`,
         },
         score: riskStudents.score,
         reason: riskReasons.description,
+        state: riskStudents.updated,
       })
       .from(riskStudents)
       .innerJoin(student, eq(riskStudents.studentId, student.id))
@@ -57,6 +55,68 @@ class RiskStudentService implements RiskStudentDAO {
       .where(eq(terms.current, true))
 
     return riskStudentsResponse
+  }
+
+  public async getRiskStudentDetail({
+    scheduleId,
+    studentCode,
+  }: {
+    scheduleId: number
+    studentCode: string
+  }) {
+    const professor = aliasedTable(accounts, 'professor')
+    const student = aliasedTable(accounts, 'student')
+    const riskStudentResponse = await db
+      .select({
+        student: {
+          code: student.code,
+          name: student.name,
+          surname: sql<string>`concat(${student.firstSurname}, ' ', ${student.secondSurname})`,
+          email: student.email,
+        },
+        course: {
+          code: courses.code,
+          name: courses.name,
+        },
+        schedule: {
+          id: schedules.id,
+          code: schedules.code,
+          professorName: professor.name,
+          professorCode: professor.code,
+          professorSurname: sql<string>`concat(${professor.firstSurname}, ' ', ${professor.secondSurname})`,
+          professorEmail: professor.email,
+        },
+        score: riskStudents.score,
+        reason: riskReasons.description,
+        state: riskStudents.updated,
+      })
+      .from(riskStudents)
+      .innerJoin(student, eq(riskStudents.studentId, student.id))
+      .innerJoin(schedules, eq(riskStudents.scheduleId, schedules.id))
+      .innerJoin(courses, eq(schedules.courseId, courses.id))
+      .innerJoin(riskReasons, eq(riskStudents.reasonId, riskReasons.id))
+      .innerJoin(
+        scheduleAccounts,
+        and(
+          eq(schedules.id, scheduleAccounts.scheduleId),
+          eq(scheduleAccounts.roleId, BaseRoles.PROFESSOR),
+          eq(scheduleAccounts.lead, true)
+        )
+      )
+      .innerJoin(professor, eq(scheduleAccounts.accountId, professor.id))
+      .innerJoin(terms, eq(terms.id, schedules.termId))
+      .where(
+        and(
+          eq(schedules.id, scheduleId),
+          eq(student.code, studentCode),
+          eq(terms.current, true)
+        )
+      )
+    if (riskStudentResponse.length === 0) {
+      throw new RiskStudentNotFoundError('El alumno no está en riesgo')
+    }
+    const [selected] = riskStudentResponse
+    return selected
   }
 
   public async getRiskStudentReports({
