@@ -72,7 +72,7 @@ export default function NewReportDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>Reponder solicitud de reporte</Button>
+        <Button>Responder solicitud de reporte</Button>
       </DialogTrigger>
 
       <DialogContent>

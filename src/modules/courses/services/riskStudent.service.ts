@@ -6,16 +6,26 @@ import { RiskStudentReport } from '../interfaces/RiskStudentReport'
 import { Course } from '@/interfaces/models/Course'
 import axios from 'axios'
 import { getRiskStudentDetail } from '../interfaces/RiskStudentDetail'
+import { Filters, PaginatedData } from '@/interfaces/types'
 
 class RiskStudentService {
-  public static async getRiskStudents(): Promise<RiskStudentGeneral[]> {
+  public static async getRiskStudents(
+    filters: Filters
+  ): Promise<PaginatedData<RiskStudentGeneral>> {
     try {
-      const res = await http.get('/courses/risk-students')
+      const res = await http.get('/courses/risk-students', {
+        params: {
+          q: filters.q || '',
+          page: filters.pageIndex || 0,
+          limit: filters.pageSize || 5,
+          sortBy: filters.sortBy || 'code.asc',
+        },
+      })
       const response = res.data as ResponseAPI
       if (!response.success) {
         throw new Error(response.message)
       }
-      return response.data as RiskStudentGeneral[]
+      return response.data as PaginatedData<RiskStudentGeneral>
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(error.response?.data.message || error.message)
