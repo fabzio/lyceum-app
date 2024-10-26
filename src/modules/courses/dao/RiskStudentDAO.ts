@@ -3,10 +3,11 @@ import { Course } from '@/interfaces/models/Course'
 import { RiskStudent } from '@/interfaces/models/RiskStudent'
 import { Schedule } from '@/interfaces/models/Schedule'
 import { InsertRiskStudentsDTO } from '../dto/riskStudentDTO'
+import { PaginatedData } from '@/interfaces/PaginatedData'
 
 export interface RiskStudentDAO {
   getAllRiskStudent: () => Promise<
-    {
+    PaginatedData<{
       student: {
         code: Account['code']
         name: Account['name']
@@ -22,7 +23,7 @@ export interface RiskStudentDAO {
       }
       score: number | null
       reason: string
-    }[]
+    }>
   >
   getRiskStudentDetail: (params: {
     scheduleId: number

@@ -54,7 +54,13 @@ class RiskStudentService implements RiskStudentDAO {
       .innerJoin(terms, eq(terms.id, schedules.termId))
       .where(eq(terms.current, true))
 
-    return riskStudentsResponse
+    return {
+      result: riskStudentsResponse,
+      rowCount: riskStudentsResponse.length,
+      currentPage: 1,
+      totalPages: 1,
+      hasNext: false,
+    }
   }
 
   public async getRiskStudentDetail({
