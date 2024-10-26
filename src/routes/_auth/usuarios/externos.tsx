@@ -8,7 +8,7 @@ export const Route = createFileRoute('/_auth/usuarios/externos')({
   validateSearch: () => ({}) as ExternsFilters,
   loader: async ({ context: { queryClient } }) => {
     return queryClient.ensureQueryData({
-      queryKey: [QueryKeys.users.PROFESSORS, {}],
+      queryKey: [QueryKeys.users.EXTERNS, {}],
       queryFn: () => ExternService.fetchExterns({}),
     })
   },
