@@ -11,6 +11,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { ModeToggle } from '@/layouts/components/ModeToggle'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { GoogleLogin, useGoogleOneTapLogin } from '@react-oauth/google'
 import { useNavigate } from '@tanstack/react-router'
 import { Link } from '@tanstack/react-router'
 import moment from 'moment'
@@ -21,6 +22,11 @@ export default function LoginPage() {
   const navigate = useNavigate()
   const form = useForm({
     resolver: zodResolver(formSchema),
+  })
+  useGoogleOneTapLogin({
+    onSuccess: (token) => {
+      console.log(token)
+    },
   })
   const handleLogin = () => {
     navigate({
@@ -106,6 +112,10 @@ export default function LoginPage() {
                 </div>
               </form>
             </Form>
+            <GoogleLogin
+              onSuccess={(token) => console.log(token)}
+              auto_select
+            />
           </div>
         </div>
 
