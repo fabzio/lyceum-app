@@ -25,7 +25,7 @@ export default function ReportsCard({
     >
       <CardHeader>
         <CardTitle className="text-lg tracking-wider">
-          {capitalize(date, 'all')}
+          {capitalize(date)}
         </CardTitle>
       </CardHeader>
       <CardContent>

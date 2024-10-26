@@ -3,26 +3,25 @@ import { Textarea } from '@/components/ui/textarea'
 import { QueryKeys } from '@/constants/queryKeys'
 import { RiskStudentReport } from '@/modules/courses/interfaces/RiskStudentReport'
 import RiskStudentReportService from '@/modules/courses/services/riskStudentReport.service'
-import useCourseStore from '@/modules/courses/store'
 import { useQuery } from '@tanstack/react-query'
+import { useParams, useSearch } from '@tanstack/react-router'
 import { Angry, Frown, Laugh, Meh, Smile } from 'lucide-react'
+import moment from 'moment'
 
-interface Props {
-  reportId: number | null
-}
-export default function ReportDetail({ reportId }: Props) {
-  const { selectedRiskStudent } = useCourseStore()
-
-  if (!selectedRiskStudent && !reportId)
-    return <p>No se ha seleccionado un estudiante</p>
-
+export default function ReportDetail() {
+  const { code } = useParams({
+    from: '/_auth/cursos/alumnos-riesgo/$code',
+  })
+  const { scheduleId, reportId } = useSearch({
+    from: '/_auth/cursos/alumnos-riesgo/$code',
+  })
   const { data: reportsDetail, isLoading } = useQuery({
     queryKey: [QueryKeys.courses.RISK_STUDENT_REPORT, reportId ?? 0],
     queryFn: () =>
       RiskStudentReportService.getRiskStudentReport({
-        reportId,
-        studentCode: selectedRiskStudent!.student.code,
-        scheduleId: selectedRiskStudent!.schedule.id,
+        reportId: reportId ?? null,
+        studentCode: code,
+        scheduleId: +scheduleId,
       }),
   })
   let reportDetail: RiskStudentReport | null = null
@@ -32,17 +31,12 @@ export default function ReportDetail({ reportId }: Props) {
   }
   const getColorForFace = (faceScore: number) =>
     reportDetail?.score === faceScore ? mapColor[faceScore - 1] : 'gray'
-
-  if (!reportDetail)
-    return (
-      <p className="text-center">
-        No hay reportes para este estudiante todavíam, solicita al docente que
-        genere una.
-      </p>
-    )
   return (
     <>
-      <h3 className="text-2xl font-semibold mt-4">Calificación</h3>
+      <div>
+        <h3 className="text-2xl font-semibold mt-4">Calificación</h3>
+        <span> {moment(reportDetail?.date).calendar()}</span>
+      </div>
       <div className="flex justify-center space-x-4">
         {isLoading ? (
           Array.from({ length: 5 }).map((_, idx) => (

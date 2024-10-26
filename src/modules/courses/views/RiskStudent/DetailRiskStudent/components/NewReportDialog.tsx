@@ -52,6 +52,9 @@ export default function NewReportDialog() {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.courses.RISK_STUDENT_REPORT, code],
       })
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.courses.RISK_STUDENT, code],
+      })
       form.reset()
       setIsOpen(false)
     },
@@ -69,7 +72,7 @@ export default function NewReportDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>Enviar reporte</Button>
+        <Button>Reponder solicitud de reporte</Button>
       </DialogTrigger>
 
       <DialogContent>

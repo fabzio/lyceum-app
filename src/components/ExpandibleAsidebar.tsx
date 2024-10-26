@@ -4,9 +4,10 @@ import { useState } from 'react'
 
 interface Props {
   children: React.ReactNode
+  defaultOpen?: boolean
 }
-export default function ExpandibleAsidebar({ children }: Props) {
-  const [isOpen, setIsOpen] = useState(false)
+export default function ExpandibleAsidebar({ children, defaultOpen }: Props) {
+  const [isOpen, setIsOpen] = useState(defaultOpen ?? false)
   return (
     <div className="flex h-full">
       <aside

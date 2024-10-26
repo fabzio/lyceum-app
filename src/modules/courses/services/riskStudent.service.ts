@@ -4,6 +4,8 @@ import { Account } from '@/interfaces/models/Account'
 import { Schedule } from '@/interfaces/models/Schedule'
 import { RiskStudentReport } from '../interfaces/RiskStudentReport'
 import { Course } from '@/interfaces/models/Course'
+import axios from 'axios'
+import { getRiskStudentDetail } from '../interfaces/RiskStudentDetail'
 
 class RiskStudentService {
   public static async getRiskStudents(): Promise<RiskStudentGeneral[]> {
@@ -11,12 +13,40 @@ class RiskStudentService {
       const res = await http.get('/courses/risk-students')
       const response = res.data as ResponseAPI
       if (!response.success) {
-        throw new Error('Error')
+        throw new Error(response.message)
       }
       return response.data as RiskStudentGeneral[]
     } catch (error) {
-      console.error(error)
-      return []
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+
+  public static async getRiskStudentDetail({
+    studentCode,
+    scheduleId,
+  }: {
+    studentCode: Account['code']
+    scheduleId: Schedule['id']
+  }): Promise<getRiskStudentDetail> {
+    try {
+      const res = await http.get(`/courses/risk-students/${studentCode}`, {
+        params: {
+          scheduleId,
+        },
+      })
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data as getRiskStudentDetail
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
     }
   }
 
@@ -28,11 +58,14 @@ class RiskStudentService {
     scheduleId: Schedule['id']
   }): Promise<RiskStudentReport[]> {
     try {
-      const res = await http.get(`/courses/risk-students/${studentCode}`, {
-        params: {
-          scheduleId,
-        },
-      })
+      const res = await http.get(
+        `/courses/risk-students/${studentCode}/reports`,
+        {
+          params: {
+            scheduleId,
+          },
+        }
+      )
       const response = res.data as ResponseAPI
       if (!response.success) {
         throw new Error('Error')
