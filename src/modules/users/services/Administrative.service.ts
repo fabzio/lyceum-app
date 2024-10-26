@@ -7,11 +7,8 @@ import axios from 'axios'
 class AdministrativeService {
   static async fetchAdministratives(
     filtersAndPagination: Filters
-  )
-  : Promise<PaginatedData<Administrative>> 
-  {
+  ): Promise<PaginatedData<Administrative>> {
     try {
-      
       const res = await http.get('/accounts/admins', {
         params: {
           q: filtersAndPagination.q || '',
@@ -35,10 +32,13 @@ class AdministrativeService {
   }
 
   static async addAdministrative(
-    administratives: Pick<Administrative, 'code' | 'name' | 'firstSurname' | 'secondSurname' | 'email'>[]
+    administratives: Pick<
+      Administrative,
+      'code' | 'name' | 'firstSurname' | 'secondSurname' | 'email'
+    >[]
   ): Promise<void> {
     try {
-      const res = await http.post('/accounts/administratives', {
+      const res = await http.post('/accounts/admins', {
         administrativeList: administratives,
       })
       const response = res.data as ResponseAPI
