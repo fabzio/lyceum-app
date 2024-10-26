@@ -153,17 +153,30 @@ class ProfessorService implements ProfessorDAO {
           existingProfessors.map((accounts) => accounts.code).join(', ')
       )
     }
-    await db.insert(accounts).values(
-      professorList.map((accounts) => ({
-        ...accounts,
-        code: accounts.code,
-        name: accounts.name,
-        firstSurname: accounts.firstSurname,
-        secondSurname: accounts.secondSurname,
-        email: accounts.email,
-        unitId: 1, //no deberia tener unitId porque es de muchos a muchos
-      }))
-    )
+    await db.transaction(async (tx) => {
+      const studentsId = await tx
+        .insert(accounts)
+        .values(
+          professorList.map((professor) => ({
+            name: professor.name,
+            firstSurname: professor.firstSurname,
+            secondSurname: professor.secondSurname,
+            code: professor.code,
+            email: professor.email,
+            googleId: null,
+            state: 'active' as const,
+            unitId: 1, //no deberia tener unitId porque es de muchos a muchos
+          }))
+        )
+        .returning({ professorId: accounts.id })
+      await tx.insert(accountRoles).values(
+        studentsId.map((professor) => ({
+          accountId: professor.professorId,
+          roleId: BaseRoles.PROFESSOR,
+          unitId: 1,
+        }))
+      )
+    })
   }
 }
 
