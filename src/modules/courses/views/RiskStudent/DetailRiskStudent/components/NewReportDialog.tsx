@@ -14,7 +14,13 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { QueryKeys } from '@/constants/queryKeys'
 import RiskStudentReportService from '@/modules/courses/services/riskStudentReport.service'
@@ -46,6 +52,10 @@ export default function NewReportDialog() {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.courses.RISK_STUDENT_REPORT, code],
       })
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.courses.RISK_STUDENT, code],
+      })
+      form.reset()
       setIsOpen(false)
     },
   })
@@ -62,7 +72,7 @@ export default function NewReportDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>Nuevo reporte</Button>
+        <Button>Responder solicitud de reporte</Button>
       </DialogTrigger>
 
       <DialogContent>
@@ -82,9 +92,20 @@ export default function NewReportDialog() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Puntaje</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" />
-                  </FormControl>
+                  <Select onValueChange={field.onChange}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccione rendimiento" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="1">Muy malo</SelectItem>
+                      <SelectItem value="2">Malo</SelectItem>
+                      <SelectItem value="3">Regular</SelectItem>
+                      <SelectItem value="4">Bueno</SelectItem>
+                      <SelectItem value="5">Excelente</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

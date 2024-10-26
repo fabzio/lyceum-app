@@ -24,7 +24,7 @@ import {
 } from './ui/pagination'
 import { Button } from './ui/button'
 
-type Props<T extends Record<string, string | number | boolean>> = {
+type Props<T extends Record<string, any>> = {
   data: T[]
   columns: ColumnDef<T>[]
   pagination: PaginationState
@@ -37,9 +37,7 @@ type Props<T extends Record<string, string | number | boolean>> = {
   onRowClick?: (row: T) => void
 }
 
-export default function DataTable<
-  T extends Record<string, string | number | boolean>,
->({
+export default function DataTable<T extends Record<string, any>>({
   data,
   columns,
   pagination,

@@ -15,6 +15,7 @@ export const QueryKeys = {
   },
   courses: {
     RISK_STUDENTS: 'risk_students',
+    RISK_STUDENT: 'risk_student',
     RISK_STUDENT_REPORTS: 'risk_student_reports',
     RISK_STUDENT_REPORT: 'risk_student_report',
   },

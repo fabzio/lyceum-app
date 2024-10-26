@@ -1,32 +1,63 @@
 import moment from 'moment'
 import ReportsCard from './ReportsCard'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import ExpandibleAsidebar from '@/components/ExpandibleAsidebar'
+import { useQuery } from '@tanstack/react-query'
+import { QueryKeys } from '@/constants/queryKeys'
+import RiskStudentService from '@/modules/courses/services/riskStudent.service'
+import { useNavigate, useParams, useSearch } from '@tanstack/react-router'
+import { Skeleton } from '@/components/ui/skeleton'
 
-interface Props {
-  reports: {
-    id: number
-    date: string
-    score: number
-  }[]
-  selectedReport: number | null
-  setSelectedReport: (id: number) => void
-}
-export default function ReportList({
-  reports,
-  selectedReport,
-  setSelectedReport,
-}: Props) {
+export default function ReportList() {
+  const { code } = useParams({
+    from: '/_auth/cursos/alumnos-riesgo/$code',
+  })
+  const { scheduleId, reportId } = useSearch({
+    from: '/_auth/cursos/alumnos-riesgo/$code',
+  })
+  const naviagte = useNavigate({
+    from: '/cursos/alumnos-riesgo/$code',
+  })
+  const setSelectedReport = (reportId: number) => {
+    naviagte({
+      search: {
+        reportId: reportId,
+        scheduleId,
+      },
+    })
+  }
+  const { data: reports, isLoading } = useQuery({
+    queryKey: [QueryKeys.courses.RISK_STUDENT_REPORTS, code],
+    queryFn: () =>
+      RiskStudentService.getRiskStudentReports({
+        scheduleId: +scheduleId,
+        studentCode: code,
+      }),
+  })
+  if (isLoading)
+    return (
+      <ul className="flex flex-col">
+        {Array.from({ length: 5 }).map((_, idx) => (
+          <Skeleton key={idx} className="h-12 w-full" />
+        ))}
+      </ul>
+    )
   return (
-    <div className="flex flex-col gap-2 flex-grow">
-      {reports.map((report, idx) => (
-        <ReportsCard
-          key={report.id}
-          id={report.id}
-          date={moment(report.date).calendar()}
-          score={report.score}
-          selectReport={setSelectedReport}
-          selected={selectedReport ? selectedReport === report.id : idx === 0}
-        />
-      ))}
-    </div>
+    <ExpandibleAsidebar defaultOpen>
+      <ScrollArea className="h-svh w-full">
+        <div className="flex flex-col gap-2 flex-grow">
+          {reports?.map((report, idx) => (
+            <ReportsCard
+              key={report.id}
+              id={report.id}
+              date={moment(report.date).calendar()}
+              score={report.score}
+              selectReport={setSelectedReport}
+              selected={reportId ? reportId === report.id : idx === 0}
+            />
+          ))}
+        </div>
+      </ScrollArea>
+    </ExpandibleAsidebar>
   )
 }

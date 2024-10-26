@@ -8,7 +8,7 @@ export const Route = createFileRoute('/_auth/usuarios/administrativos')({
   validateSearch: () => ({}) as AdministrativesFilters,
   loader: async ({ context: { queryClient } }) => {
     return queryClient.ensureQueryData({
-      queryKey: [QueryKeys.users.PROFESSORS, {}],
+      queryKey: [QueryKeys.users.ADMINISTRATIVES, {}],
       queryFn: () => AdministrativeService.fetchAdministratives({}),
     })
   },

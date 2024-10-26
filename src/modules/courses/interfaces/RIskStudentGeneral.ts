@@ -20,4 +20,5 @@ export interface RiskStudentGeneral {
   }
   reason: string
   score: number
+  state: boolean
 }
