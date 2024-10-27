@@ -1,0 +1,58 @@
+/* Button.module.css */
+
+.button {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -webkit-appearance: none;
+  background-image: none;
+  border: 1px solid;
+  border-radius: 20px;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-family: 'Roboto', arial, sans-serif;
+  font-size: 14px;
+  height: 40px;
+  letter-spacing: 0.25px;
+  outline: none;
+  overflow: hidden;
+  padding: 0 12px;
+  text-align: center;
+  transition: background-color .218s, border-color .218s, box-shadow .218s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: min-content;
+}
+
+.buttonIcon {
+  height: 20px;
+  margin-right: 12px;
+  min-width: 20px;
+  width: 20px;
+}
+
+.buttonContents {
+  font-weight: 500;
+}
+
+.lightTheme {
+  background-color: white;
+  color: #1f1f1f;
+  border-color: #747775;
+}
+
+.lightTheme:hover {
+  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15);
+}
+
+.darkTheme {
+  background-color: #131314;
+  color: #e3e3e3;
+  border-color: #8e918f;
+}
+
+.darkTheme:hover {
+  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15);
+}

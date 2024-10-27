@@ -19,7 +19,7 @@ export default function RiskStudentTable() {
   const { filters, setFilters } = useFilters('/_auth/cursos/alumnos-riesgo')
   const { data } = useQuery({
     queryKey: [QueryKeys.courses.RISK_STUDENTS, filters],
-    queryFn: ()=>RiskStudentService.getRiskStudents(filters),
+    queryFn: () => RiskStudentService.getRiskStudents(filters),
     placeholderData: keepPreviousData,
   })
   const paginationState = {

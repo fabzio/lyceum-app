@@ -10,16 +10,21 @@ import {
 } from '@/components/ui/dialog'
 import RiskStudentService from '@/modules/courses/services/riskStudent.service'
 import { useToast } from '@/hooks/use-toast'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
+import { QueryKeys } from '@/constants/queryKeys'
 
 export default function UpdateConfirmationDialog() {
+  const queryCliente = useQueryClient()
   const [isOpen, setIsOpen] = useState(false)
   const { toast } = useToast()
   const { mutate, isPending } = useMutation({
     mutationFn: RiskStudentService.updateRiskStudentReport,
     onSuccess: () => {
+      queryCliente.invalidateQueries({
+        queryKey: [QueryKeys.courses.RISK_STUDENTS, {}],
+      })
       setIsOpen(false)
       toast({
         title: 'Solicitud enviada',

@@ -29,11 +29,11 @@ export const StudentTableColumns: ColumnDef<Student>[] = [
   },
   {
     accessorFn: (row) => `${row.name} ${row.firstSurname} ${row.secondSurname}`,
-    header: 'Nombre'    
+    header: 'Nombre',
   },
   //XXX: Decidir si se deja el código anterior o se usa el código de abajo
   // {
-  //   accessorKey: 'name',    
+  //   accessorKey: 'name',
   //   header: ({ column }) => (
   //     <Button
   //       variant="ghost"
@@ -46,7 +46,7 @@ export const StudentTableColumns: ColumnDef<Student>[] = [
   //   cell: ({ row }) => (String(row.getValue('name')))
   // },
   // {
-  //   accessorKey: 'firstSurname',    
+  //   accessorKey: 'firstSurname',
   //   header: ({ column }) => (
   //     <Button
   //       variant="ghost"
@@ -82,18 +82,14 @@ export const StudentTableColumns: ColumnDef<Student>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {(row.getValue('email'))}
-      </div>
-    ),
+    cell: ({ row }) => <div>{row.getValue('email')}</div>,
   },
   {
     accessorKey: 'actions',
     header: 'Acciones',
     //TODO: Agregar funcionalidad para editar y deshabilitar estudiantes
     //cell: ({ row }) => {
-      cell: ({ }) => {
+    cell: ({}) => {
       // const { code } = row.original
       // const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
       // const [isDisableDialogOpen, setIsDisableDialogOpen] = useState(false)
@@ -108,13 +104,9 @@ export const StudentTableColumns: ColumnDef<Student>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {/* <DropdownMenuItem onClick={() => setIsEditDialogOpen(true)}> */}
-            <DropdownMenuItem> 
-              Editar
-            </DropdownMenuItem>
+            <DropdownMenuItem>Editar</DropdownMenuItem>
             {/* <DropdownMenuItem onClick={() => setIsDisableDialogOpen(true)}> */}
-            <DropdownMenuItem> 
-              Deshabilitar
-            </DropdownMenuItem>
+            <DropdownMenuItem>Deshabilitar</DropdownMenuItem>
           </DropdownMenuContent>
           {/* <EditStudentDialog
             isOpen={isEditDialogOpen}

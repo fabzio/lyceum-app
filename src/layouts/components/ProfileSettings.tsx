@@ -8,15 +8,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useNavigate } from '@tanstack/react-router'
 import { LogOut, User } from 'lucide-react'
 
 export default function ProfileSettings() {
-  const navigate = useNavigate()
   const handleLogout = () => {
-    navigate({
-      to: '/login',
-    })
+    window.location.href = '/api/v1/oauth/logout'
   }
   return (
     <DropdownMenu>

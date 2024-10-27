@@ -9,7 +9,7 @@ const queryClient = new QueryClient()
 
 const router = createRouter({
   routeTree,
-  context: { authenticated: undefined!, queryClient },
+  context: { auth: undefined!, queryClient },
   defaultErrorComponent: ({ error }) => (
     <ErrorPage displayErrorMessage={error.message} />
   ),
@@ -22,11 +22,15 @@ declare module '@tanstack/react-router' {
   }
 }
 export default function App() {
-  const authenticated = useAuth()
-
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} context={{ authenticated }} />
+      <InnerApp />
     </QueryClientProvider>
   )
+}
+
+function InnerApp() {
+  const auth = useAuth()
+  if (auth.isLoading) return <div></div>
+  return <RouterProvider router={router} context={{ auth }} />
 }

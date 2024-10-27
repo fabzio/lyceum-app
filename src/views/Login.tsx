@@ -16,6 +16,7 @@ import { Link } from '@tanstack/react-router'
 import moment from 'moment'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import GoogleButton from './components/GoogleButton'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -98,11 +99,11 @@ export default function LoginPage() {
                     </div>
                   )}
                 />
-
-                <div>
+                <div className="flex flex-col gap-1">
                   <Button type="submit" className="w-full">
                     Ingresar
                   </Button>
+                  <GoogleButton />
                 </div>
               </form>
             </Form>
