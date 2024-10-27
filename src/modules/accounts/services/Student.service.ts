@@ -40,11 +40,8 @@ class StudentService implements StudentDAO {
           name: student.name,
           firstSurname: student.firstSurname,
           secondSurname: student.secondSurname,
-          code: student.code,         
-          email: student.email,       
-          googleId: null, 
-          state: 'active' as const,
-          //unidad como se obtiene?
+          code: student.code,
+          email: student.email,
           unitId: 1,
         }))
       ).returning({studentId: accounts.id})

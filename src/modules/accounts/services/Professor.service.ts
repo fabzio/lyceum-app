@@ -164,7 +164,6 @@ class ProfessorService implements ProfessorDAO {
             code: professor.code,
             email: professor.email,
             googleId: null,
-            state: 'active' as const,
             unitId: 1, //no deberia tener unitId porque es de muchos a muchos
           }))
         )

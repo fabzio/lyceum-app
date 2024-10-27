@@ -10,12 +10,13 @@ export const permissions = schema.table(
   {
     id: serial('id').primaryKey(),
     description: varchar('description').notNull(),
+    name: varchar('name').notNull(),
     moduleId: integer('module_id').notNull(),
   },
   (table) => {
     return {
       permissionsModuleFk: foreignKey({
-        columns: [table.id],
+        columns: [table.moduleId],
         foreignColumns: [modules.id],
         name: 'permissions_module_fk',
       }),

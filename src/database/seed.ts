@@ -8,7 +8,6 @@ import {
 } from '@config'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
-import { faker } from '@faker-js/faker'
 
 const queryClient = postgres({
   db: DB_DATABASE,
@@ -19,17 +18,31 @@ const queryClient = postgres({
   max: 1,
   ssl: 'allow',
 })
-const db = drizzle(queryClient)
+const db = drizzle(queryClient, {
+  logger: true,
+})
 import { pgSchema } from 'drizzle-orm/pg-core'
-import { accountRoles, accounts, courses, roles, terms, units } from './schema'
+import {
+  accountRoles,
+  accounts,
+  courses,
+  modules,
+  permissions,
+  rolePermissions,
+  roles,
+  terms,
+  units,
+} from './schema'
 import { areasMap, facultiesMock, specialitiesMap } from './mock/units'
 import { UnitsInsertSchema } from './schema/units'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
+import BaseModules, { BaseModulesDict } from '@/auth/modules'
 
 export const schema = pgSchema(DB_SCHEMA)
 
 console.log('Seed start')
 await db.transaction(async (tx) => {
+  //Units
   const [{ universityId }] = await tx
     .insert(units)
     .values({
@@ -119,7 +132,7 @@ await db.transaction(async (tx) => {
       editable: false,
     },
   ])
-
+  //Terms
   await tx.insert(terms).values([
     {
       name: '2024-1',
@@ -202,7 +215,7 @@ await db.transaction(async (tx) => {
       current: false,
     },
   ])
-
+  //Base account
   const [{ accountId }] = await tx
     .insert(accounts)
     .values({
@@ -211,15 +224,80 @@ await db.transaction(async (tx) => {
       secondSurname: 'Pinto',
       code: '20212486',
       email: 'fmontoya@pucp.edu.pe',
-      unitId: 1,
+      unitId: universityId,
     })
     .returning({ accountId: accounts.id })
 
   await tx.insert(accountRoles).values({
     accountId,
     roleId: BaseRoles.ADMIN,
-    unitId: 1,
+    unitId: universityId,
   })
+
+  const insertedModules = await tx
+    .insert(modules)
+    .values(
+      BaseModules.map((module) => ({
+        name: module.name,
+        code: module.code,
+      }))
+    )
+    .returning({
+      moduleId: modules.id,
+      moduleCode: modules.code,
+    })
+  const permissionsInserted = (
+    await Promise.all(
+      BaseModules.map((module) => {
+        return tx
+          .insert(permissions)
+          .values(
+            module.permissions.map((permission) => ({
+              name: permission.name,
+              description: permission.description,
+              moduleId: insertedModules.find(
+                (insertedModule) => insertedModule.moduleCode === module.code
+              )?.moduleId!,
+            }))
+          )
+          .returning({
+            permissionId: permissions.id,
+            permissionName: permissions.name,
+            moduleId: permissions.moduleId,
+          })
+      })
+    )
+  ).flat()
+
+  const [{ roleId }] = await tx
+    .insert(roles)
+    .values({
+      name: 'Administrador',
+      unitType: 'university',
+      editable: true,
+    })
+    .returning({
+      roleId: roles.id,
+    })
+
+  await tx.insert(rolePermissions).values(
+    permissionsInserted
+      .filter(
+        (permission) =>
+          permission.moduleId ===
+            insertedModules.find(
+              (module) => module.moduleCode === BaseModulesDict.USERS
+            )?.moduleId! ||
+          permission.moduleId ===
+            insertedModules.find(
+              (module) => module.moduleCode === BaseModulesDict.SECURITY
+            )?.moduleId!
+      )
+      .map((permission) => ({
+        roleId,
+        permissionId: permission.permissionId,
+      }))
+  )
 })
 console.log('Seed end')
 queryClient.end()
