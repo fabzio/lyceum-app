@@ -8,6 +8,7 @@ import { showRoutes } from 'hono/dev'
 import { googleAuth } from '@hono/oauth-providers/google'
 import { jwt } from 'hono/jwt'
 import { authRoute, oauthRoute } from './auth'
+import { authMiddleware } from './auth/authMiddleware'
 
 class App {
   public app: Hono
@@ -39,7 +40,7 @@ class App {
         scope: ['email', 'profile', 'openid'],
       })
     )
-    this.app.use('/auth/*', jwt({ secret: SECRET_KEY! }))
+    this.app.use('/auth/*', authMiddleware)
   }
 
   private initializeRoutes(routes: Route[]) {

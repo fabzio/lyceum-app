@@ -21,92 +21,205 @@ const queryClient = postgres({
 })
 const db = drizzle(queryClient)
 import { pgSchema } from 'drizzle-orm/pg-core'
-import { accounts, courses, roles, terms, units } from './schema'
+import { accountRoles, accounts, courses, roles, terms, units } from './schema'
+import { areasMap, facultiesMock, specialitiesMap } from './mock/units'
+import { UnitsInsertSchema } from './schema/units'
+import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 
 export const schema = pgSchema(DB_SCHEMA)
 
-const accountsData: (typeof accounts.$inferInsert)[] = []
-
 console.log('Seed start')
-const [{ universityId }] = await db
-  .insert(units)
-  .values({
-    name: 'PUCP',
-    type: 'university',
-  })
-  .returning({
-    universityId: units.id,
-  })
+await db.transaction(async (tx) => {
+  const [{ universityId }] = await tx
+    .insert(units)
+    .values({
+      name: 'PUCP',
+      type: 'university',
+    })
+    .returning({
+      universityId: units.id,
+    })
 
-const [{ facultyId }] = await db
-  .insert(units)
-  .values({
-    name: 'Ciencias e Ingeniería',
-    type: 'faculty',
-    parentId: universityId,
-  })
-  .returning({
-    facultyId: units.id,
-  })
+  const faculties = await tx
+    .insert(units)
+    .values(
+      facultiesMock.map((faculty) => ({ ...faculty, parentId: universityId }))
+    )
+    .returning({
+      facultyId: units.id,
+      facultyName: units.name,
+    })
 
-const [{ specialityId }] = await db
-  .insert(units)
-  .values({
-    name: 'Ingeniería Informática',
-    type: 'speciality',
-    parentId: facultyId,
-  })
-  .returning({
-    specialityId: units.id,
-  })
+  const specialities = (
+    await Promise.all(
+      faculties.map((faculty) => {
+        return tx
+          .insert(units)
+          .values(
+            specialitiesMap[faculty.facultyName].map(
+              (speciality) =>
+                ({
+                  name: speciality,
+                  type: 'speciality',
+                  parentId: faculty.facultyId,
+                } as UnitsInsertSchema)
+            )
+          )
+          .returning({
+            specialityId: units.id,
+            specialityName: units.name,
+          })
+      })
+    )
+  ).flat()
 
-await db.insert(units).values({
-  name: 'Ingeniería de Software',
-  type: 'area',
-  parentId: specialityId,
+  await Promise.all(
+    specialities.map((speciality) => {
+      if (areasMap[speciality.specialityName]) {
+        return tx
+          .insert(units)
+          .values(
+            areasMap[speciality.specialityName].map(
+              (area) =>
+                ({
+                  name: area,
+                  type: 'area',
+                  parentId: speciality.specialityId,
+                } as UnitsInsertSchema)
+            )
+          )
+          .returning({
+            termId: units.id,
+            termName: units.name,
+          })
+      }
+    })
+  )
+
+  //Base roles
+  await tx.insert(roles).values([
+    {
+      name: 'Estudiante',
+      unitType: 'university',
+      editable: false,
+    },
+    {
+      name: 'Profesor',
+      unitType: 'university',
+      editable: false,
+    },
+    {
+      name: 'Administrador',
+      unitType: 'university',
+      editable: false,
+    },
+    {
+      name: 'Externo',
+      unitType: 'university',
+      editable: false,
+    },
+  ])
+
+  await tx.insert(terms).values([
+    {
+      name: '2024-1',
+      current: false,
+    },
+    {
+      name: '2024-2',
+      current: true,
+    },
+    {
+      name: '2025-0',
+      current: false,
+    },
+    {
+      name: '2025-1',
+      current: false,
+    },
+    {
+      name: '2025-2',
+      current: false,
+    },
+    {
+      name: '2026-0',
+      current: false,
+    },
+    {
+      name: '2026-1',
+      current: false,
+    },
+    {
+      name: '2026-2',
+      current: false,
+    },
+    {
+      name: '2027-0',
+      current: false,
+    },
+    {
+      name: '2027-1',
+      current: false,
+    },
+    {
+      name: '2027-2',
+      current: false,
+    },
+    {
+      name: '2028-0',
+      current: false,
+    },
+    {
+      name: '2028-1',
+      current: false,
+    },
+    {
+      name: '2028-2',
+      current: false,
+    },
+    {
+      name: '2029-0',
+      current: false,
+    },
+    {
+      name: '2029-1',
+      current: false,
+    },
+    {
+      name: '2029-2',
+      current: false,
+    },
+    {
+      name: '2030-0',
+      current: false,
+    },
+    {
+      name: '2030-1',
+      current: false,
+    },
+    {
+      name: '2030-2',
+      current: false,
+    },
+  ])
+
+  const [{ accountId }] = await tx
+    .insert(accounts)
+    .values({
+      name: 'Fabrizio Randall',
+      firstSurname: 'Montoya',
+      secondSurname: 'Pinto',
+      code: '20212486',
+      email: 'fmontoya@pucp.edu.pe',
+      unitId: 1,
+    })
+    .returning({ accountId: accounts.id })
+
+  await tx.insert(accountRoles).values({
+    accountId,
+    roleId: BaseRoles.ADMIN,
+    unitId: 1,
+  })
 })
-
-for (let i = 0; i < 10; i++) {
-  accountsData.push({
-    name: faker.person.firstName(),
-    code: faker.string.numeric(8),
-    email: faker.internet.email(),
-    firstSurname: faker.person.lastName(),
-    secondSurname: faker.person.lastName(),
-    googleId: faker.internet.password(),
-    unitId: faker.number.int({
-      min: 1,
-      max: 4,
-    }),
-  })
-}
-//Accounts
-await db.insert(accounts).values(accountsData)
-
-//Base roles
-await db.insert(roles).values([
-  {
-    name: 'Estudiante',
-    unitType: 'university',
-    editable: false,
-  },
-  {
-    name: 'Profesor',
-    unitType: 'university',
-    editable: false,
-  },
-  {
-    name: 'Administrador',
-    unitType: 'university',
-    editable: false,
-  },
-  {
-    name: 'Externo',
-    unitType: 'university',
-    editable: false,
-  },
-])
-
-//Units
 console.log('Seed end')
 queryClient.end()

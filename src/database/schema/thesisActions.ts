@@ -32,19 +32,19 @@ export const thesisActions = schema.table(
       columns: [table.requestId],
       foreignColumns: [thesis.id],
       name: 'request_fk',
-    }),
+    }).onDelete('cascade'),
 
     accountFk: foreignKey({
       columns: [table.accountId],
       foreignColumns: [accounts.id],
       name: 'account_fk',
-    }),
+    }).onDelete('cascade'),
 
     roleFk: foreignKey({
       columns: [table.roleId],
       foreignColumns: [roles.id],
       name: 'role_fk',
-    }),
+    }).onDelete('cascade'),
   })
 )
 

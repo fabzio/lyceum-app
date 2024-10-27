@@ -5,6 +5,7 @@ import { jwt } from 'hono/jwt'
 export const authMiddleware = createMiddleware(async (c, next) => {
   const jwtMiddleware = jwt({
     secret: SECRET_KEY!,
+    cookie: 'lyceum-tkn',
   })
   return jwtMiddleware(c, next)
 })

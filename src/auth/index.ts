@@ -3,7 +3,7 @@ import GenericService from '@/modules/accounts/services/Generic.service'
 import { revokeToken } from '@hono/oauth-providers/google'
 import { Hono } from 'hono'
 import { deleteCookie, setCookie } from 'hono/cookie'
-import { sign } from 'hono/jwt'
+import { decode, sign } from 'hono/jwt'
 import { authMiddleware } from './authMiddleware'
 
 export const oauthRoute = new Hono()
@@ -53,6 +53,6 @@ export const authRoute = new Hono().get(
       c.status(401)
       return c.json({ message: 'Unauthorized', success: false })
     }
-    return c.json({ message: 'Authorized', success: true })
+    return c.json({ data: token, message: 'Authorized', success: true })
   }
 )
