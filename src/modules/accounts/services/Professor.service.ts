@@ -112,7 +112,7 @@ class ProfessorService implements ProfessorDAO {
         )
       )
     const result = ProfessorsResponse.map((Professor) => ({
-      code: 'asdf',
+      code: Professor.code,
       name: Professor.name,
       firstSurname: Professor.firstSurname,
       secondSurname: Professor.secondSurname,
