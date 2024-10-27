@@ -10,11 +10,13 @@ export const modules = schema.table(
   'modules',
   {
     id: serial('id').primaryKey(),
-    name: varchar('name', { length: 60 }),
+    name: varchar('name', { length: 60 }).notNull(),
+    code: varchar('code', { length: 30 }).notNull(),
   },
   (table) => {
     return {
       moduleUnique: unique('modules_unique').on(table.name),
+      moduleCodeUnique: unique('modules_code_unique').on(table.code),
     }
   }
 )

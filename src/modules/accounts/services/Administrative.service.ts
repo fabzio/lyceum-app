@@ -153,8 +153,6 @@ class AdministrativeService implements AdministrativeDAO {
           secondSurname: newUser.secondSurname,
           code: newUser.code,
           email: newUser.email,
-          googleId: '',
-          state: 'active' as const,
           unitId: 1,
         }))
       ).returning({ uuid: accounts.id });
