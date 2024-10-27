@@ -11,22 +11,17 @@ import {
 import { Input } from '@/components/ui/input'
 import { ModeToggle } from '@/layouts/components/ModeToggle'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { GoogleLogin, useGoogleOneTapLogin } from '@react-oauth/google'
 import { useNavigate } from '@tanstack/react-router'
 import { Link } from '@tanstack/react-router'
 import moment from 'moment'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import GoogleButton from './components/GoogleButton'
 
 export default function LoginPage() {
   const navigate = useNavigate()
   const form = useForm({
     resolver: zodResolver(formSchema),
-  })
-  useGoogleOneTapLogin({
-    onSuccess: (token) => {
-      console.log(token)
-    },
   })
   const handleLogin = () => {
     navigate({
@@ -104,18 +99,14 @@ export default function LoginPage() {
                     </div>
                   )}
                 />
-
-                <div>
+                <div className="flex flex-col gap-1">
                   <Button type="submit" className="w-full">
                     Ingresar
                   </Button>
+                  <GoogleButton />
                 </div>
               </form>
             </Form>
-            <GoogleLogin
-              onSuccess={(token) => console.log(token)}
-              auto_select
-            />
           </div>
         </div>
 

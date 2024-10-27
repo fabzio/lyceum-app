@@ -4,10 +4,6 @@ import axios from 'axios'
 const http = axios.create({
   baseURL: '/api/v1',
   timeout: 5000,
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: 'Bearer tu-token',
-  },
 })
 
 export default http

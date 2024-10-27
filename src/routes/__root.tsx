@@ -12,7 +12,7 @@ import { QueryClient } from '@tanstack/react-query'
 import { Toaster } from '@/components/ui/toaster'
 
 type RouterContext = {
-  authenticated: AuthContext
+  auth: AuthContext
   queryClient: QueryClient
 }
 

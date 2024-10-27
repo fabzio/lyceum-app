@@ -35,14 +35,11 @@ export const riskStudentColumns: ColumnDef<RiskStudentGeneral>[] = [
   {
     header: 'Última Puntuación',
     accessorKey: 'score',
-    accessorFn: (data) => data.score ?? 'N/A',
-    cell: ({ row }) => <div>{row.getValue('score')}</div>,
+    cell: ({ row }) => <div>{row.getValue('score') ?? 'N/A'}</div>,
   },
   {
     header: 'Estado',
     accessorKey: 'state',
-    accessorFn: (data) =>
-      data.state ? 'Reporte actualizdo' : 'Reporte solicitado',
     cell: ({ row }) => (
       <div>
         {row.getValue('state')

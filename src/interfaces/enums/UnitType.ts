@@ -4,5 +4,6 @@ export const UnitType = {
   SPECIALTY: 'speciality',
   SECTION: 'section',
   UNIVERSITY: 'university',
+  AREA: 'area',
 }
 export type UnitType = (typeof UnitType)[keyof typeof UnitType]
