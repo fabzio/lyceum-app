@@ -1,11 +1,14 @@
 import { Hono } from 'hono'
 import { logger } from 'hono/logger'
 import { prettyJSON } from 'hono/pretty-json'
-import { cors } from 'hono/cors'
 import { errorHandler, notFound } from './middlewares'
 import { Route } from './interfaces/route'
-import { PORT } from './config'
+import { G_CLIENT_ID, G_CLIENT_SECRET, PORT, SECRET_KEY } from './config'
 import { showRoutes } from 'hono/dev'
+import { googleAuth } from '@hono/oauth-providers/google'
+import { jwt } from 'hono/jwt'
+import { authRoute, oauthRoute } from './auth'
+import { authMiddleware } from './auth/authMiddleware'
 
 class App {
   public app: Hono
@@ -29,6 +32,15 @@ class App {
 
   private initializeMiddlewares() {
     this.app.use('*', logger(), prettyJSON())
+    this.app.use(
+      '/oauth',
+      googleAuth({
+        client_id: G_CLIENT_ID,
+        client_secret: G_CLIENT_SECRET,
+        scope: ['email', 'profile', 'openid'],
+      })
+    )
+    this.app.use('/auth/*', authMiddleware)
   }
 
   private initializeRoutes(routes: Route[]) {
@@ -37,6 +49,8 @@ class App {
       console.log(`Route ${route.path} initialized`)
       this.app.route(route.path, route.router)
     })
+    this.app.route('/oauth', oauthRoute)
+    this.app.route('/auth', authRoute)
     showRoutes(this.app, {
       colorize: true,
       verbose: true,

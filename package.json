@@ -21,6 +21,7 @@
     "typescript": "5.6.3"
   },
   "dependencies": {
+    "@hono/oauth-providers": "^0.6.2",
     "@hono/zod-validator": "0.4.1",
     "drizzle-orm": "0.35.1",
     "drizzle-zod": "0.5.1",
