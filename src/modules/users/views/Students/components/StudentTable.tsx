@@ -6,6 +6,7 @@ import { sortByToState, stateToSortBy } from '@/lib/table'
 import StudentService from '@/modules/users/services/Student.service'
 import { StudentTableColumns } from './columns'
 import { useFilters } from '@/hooks/useFilters'
+import { useNavigate } from '@tanstack/react-router'
 
 export const DEFAULT_PAGE_INDEX = 0
 export const DEFAULT_PAGE_SIZE = 10
@@ -23,7 +24,9 @@ export default function StudentTable() {
   }
   const sortingState = sortByToState(filters.sortBy)
   const columns = useMemo(() => StudentTableColumns, [])
-
+  const navigate = useNavigate({
+    from: '/usuarios',
+  })
   return (
     <>
       <DataTable
@@ -49,6 +52,15 @@ export default function StudentTable() {
           rowCount: students?.rowCount,
           pageCount: students?.totalPages,
         }}
+        onRowClick={(student) =>
+          navigate({
+            to: '/usuarios/estudiantes/$code',
+            params: { code: student.code },
+            search: {
+              mode: 'view',
+            },
+          })
+        }
       />
     </>
   )
