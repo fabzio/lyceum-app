@@ -7,11 +7,8 @@ import axios from 'axios'
 class ProfessorService {
   static async fetchProfessors(
     filtersAndPagination: Filters
-  )
-  : Promise<PaginatedData<Professor>> 
-  {
+  ): Promise<PaginatedData<Professor>> {
     try {
-      
       const res = await http.get('/accounts/professors', {
         params: {
           q: filtersAndPagination.q || '',
@@ -35,7 +32,10 @@ class ProfessorService {
   }
 
   static async addProfessor(
-    professors: Pick<Professor, 'code' | 'name' | 'firstSurname' | 'secondSurname' | 'email'>[]
+    professors: Pick<
+      Professor,
+      'code' | 'name' | 'firstSurname' | 'secondSurname' | 'email'
+    >[]
   ): Promise<void> {
     try {
       const res = await http.post('/accounts/professors', {
@@ -45,6 +45,21 @@ class ProfessorService {
       if (!response.success) {
         throw new Error(response.message)
       }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+  static async getProfessorDetail(code: string): Promise<Professor> {
+    try {
+      const res = await http.get(`/accounts/professors/${code}`)
+      const response = res.data as ResponseAPI<Professor>
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(error.response?.data.message || error.message)
