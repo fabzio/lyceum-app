@@ -53,6 +53,22 @@ class StudentService {
     }
   }
 
+  static async getStudentDetail (code: string): Promise<Student> {
+    try {
+      const res = await http.get(`/accounts/students/${code}`)
+      const response = res.data as ResponseAPI<Student>
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+
   // static async updateCourse(args: {
   //   code: string
   //   course: Pick<Course, 'code' | 'credits' | 'name'>
