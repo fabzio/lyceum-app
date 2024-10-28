@@ -1,15 +1,15 @@
 import { AnimatePresence } from 'framer-motion'
-import AsideDesktop from './Aside/AsideDesktop'
 import NavbarDesktop from './Navbar/NavbarDesktop'
 import styles from './layout.module.css'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import Aside from './Aside/Aside'
 interface Props {
   children: React.ReactNode
 }
 export default function Layout({ children }: Props) {
   return (
     <div className={styles.mainLayout}>
-      <AsideDesktop />
+      <Aside />
       <NavbarDesktop />
       <ScrollArea>
         <main className="[grid-area:main]">

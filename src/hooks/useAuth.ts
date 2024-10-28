@@ -1,7 +1,9 @@
 import http from '@/lib/http'
+import { Session, useSessionStore } from '@/store'
 import { useQuery } from '@tanstack/react-query'
 
 export const useAuth = () => {
+  const { syncSession } = useSessionStore()
   const { data: isAuth, isLoading } = useQuery({
     queryKey: ['auth'],
     queryFn: async () => {
@@ -11,8 +13,10 @@ export const useAuth = () => {
         if (!res.success) {
           throw new Error(res.message)
         }
+        syncSession(res.data as Session)
         return res.success
       } catch (error) {
+        console.error('Error verifying auth:', error)
         return false
       }
     },
