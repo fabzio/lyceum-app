@@ -2,7 +2,7 @@ import { AppModule } from '@/interfaces/AppModule'
 import { GraduationCap } from 'lucide-react'
 
 export const StudyPlanModule: AppModule = {
-  code: '5',
+  code: 'STUDY_PLAN',
   label: 'Planes de Estudio',
   path: '/plan-de-estudios',
   icon: <GraduationCap />,
