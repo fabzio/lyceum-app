@@ -1,11 +1,11 @@
 export const UserPermissionsDict = {
-  READ_STUDENTS: 'Ver estudiantes',
-  WRITE_STUDENTS: 'Crear estudiantes',
-  READ_PROFESSORS: 'Ver profesores',
-  WRITE_PROFESSORS: 'Crear profesores',
-  READ_ADMINISTRIVES: 'Ver administrativos',
-  WRITE_ADMINISTRIVES: 'Crear administrativos',
-  READ_EXTERNALS: 'Ver externos',
+  READ_STUDENTS: 'READ_STUDENTS',
+  WRITE_STUDENTS: 'WRITE_STUDENTS',
+  READ_PROFESSORS: 'READ_PROFESSORS',
+  WRITE_PROFESSORS: 'WRITE_PROFESSORS',
+  READ_ADMINISTRIVES: 'READ_ADMINISTRIVES',
+  WRITE_ADMINISTRIVES: 'WRITE_ADMINISTRIVES',
+  READ_EXTERNALS: 'READ_EXTERNALS',
 } as const
 export type UserPermissionsKey = keyof typeof UserPermissionsDict
 

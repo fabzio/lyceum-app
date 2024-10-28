@@ -3,7 +3,7 @@ import GenericService from '@/modules/accounts/services/Generic.service'
 import { revokeToken } from '@hono/oauth-providers/google'
 import { Hono } from 'hono'
 import { deleteCookie, setCookie } from 'hono/cookie'
-import { decode, sign } from 'hono/jwt'
+import { sign } from 'hono/jwt'
 import { authMiddleware } from './authMiddleware'
 
 export const oauthRoute = new Hono()
@@ -34,6 +34,7 @@ export const oauthRoute = new Hono()
       )
       return c.redirect('http://localhost:5173')
     } catch (error) {
+      console.error(error)
       return c.redirect('http://localhost:5173/login')
     }
   })

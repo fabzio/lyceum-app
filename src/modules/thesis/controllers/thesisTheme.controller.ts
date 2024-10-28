@@ -71,10 +71,12 @@ class ThesisThemeController {
   public insertThesisThemeAction = this.router.post(
     '/:code/history',
     zValidator('json', insertThesisActionDTO),
+    //TODO: obtener permiso del usuario
+    //TODO obtener permiso de la ultima accion
     async (c) => {
       const { code } = c.req.param()
       const { content, isFile, action, accountId, roleId } = c.req.valid('json')
-
+ 
       try {
         const response: ResponseAPI = {
           data: await this.thesisThemeService.insertThemeRequestAction({
