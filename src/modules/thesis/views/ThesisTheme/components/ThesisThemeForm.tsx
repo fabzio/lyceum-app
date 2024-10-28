@@ -15,17 +15,19 @@ import { Textarea } from '@/components/ui/textarea'
 import { QueryKeys } from '@/constants/queryKeys'
 import { useToast } from '@/hooks/use-toast'
 import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
+import { useSessionStore } from '@/store'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useParams } from '@tanstack/react-router'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-interface Props {
-  requestCode: string
-}
-export default function ThesisThemeForm({ requestCode }: Props) {
+export default function ThesisThemeForm() {
+  const { session, getRoleWithPermission } = useSessionStore()
+  const { requestCode } = useParams({
+    from: '/_auth/tesis/tema-tesis/$requestCode',
+  })
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const navigate = useNavigate({
@@ -34,6 +36,8 @@ export default function ThesisThemeForm({ requestCode }: Props) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      action: undefined,
+      content: '',
       isFile: false,
     },
   })
@@ -66,16 +70,16 @@ export default function ThesisThemeForm({ requestCode }: Props) {
       to: '/tesis/propuesta-jurados',
     })
   }
-  const alreayReviewed =
-    thesisDetail?.lastAction?.account === 'd64a8b97-6373-48ab-a106-bff68293e968'
+  
+  const alreayReviewed = thesisDetail?.lastAction?.account === session!.id
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     mutate({
-      accountId: 'd64a8b97-6373-48ab-a106-bff68293e968',
+      accountId: session!.id,
       action: data.action,
       code: requestCode,
       isFile: data.isFile,
-      roleId: 3,
+      roleId: getRoleWithPermission('APROVE_THESIS_PHASE_1')!.roleId,
       content: data.isFile ? 'file-url' : data.content,
     })
     form.reset()

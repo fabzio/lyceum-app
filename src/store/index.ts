@@ -5,6 +5,7 @@ import { ModulesDict } from '@/interfaces/enums/modules'
 import { PermissionCode } from '@/interfaces/enums/permissions'
 
 export type Session = {
+  id: Account['id']
   name: Account['name']
   surname: string
   email: string
@@ -23,6 +24,10 @@ type SessionStore = {
   session: Session | null
   syncSession: (session: Session) => void
   getAllowedModules: () => ModulesDict[]
+  getRoleWithPermission: (permission: PermissionCode) => {
+    roleId: number
+    unitId: number
+  } | null
   havePermission: (permission: PermissionCode) => boolean
   resetSession: () => void
   getFullName: () => string
@@ -42,6 +47,15 @@ export const useSessionStore = create<SessionStore>()(
           (rolePermission) => rolePermission.permission === permission
         )
       ) || false,
+    getRoleWithPermission: (permission) => {
+      return (
+        get().session?.roles.find((role) =>
+          role.permissions.some(
+            (rolePermission) => rolePermission.permission === permission
+          )
+        ) ?? null
+      )
+    },
     getFullName: () => `${get().session?.name} ${get().session?.surname}`,
     resetSession: () => set({}),
   }))
