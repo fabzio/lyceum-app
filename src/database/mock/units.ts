@@ -156,7 +156,7 @@ export const departmentsMock = [
 ]
 
 ;('')
-const sectionsMap: Record<string, string[]> = {
+export const sectionsMap: Record<string, string[]> = {
   Ciencias: ['Física', 'Matemáticas', 'Química'],
   'Informática, Electrónica y de las Telecomunicaciones': [
     'Informática',

@@ -16,10 +16,8 @@ export const accountStatus = schema.enum('account_status', [
 ])
 
 export const scheduleStatus = schema.enum('schedule_status', [
-  'visible',
-  'hidden',
-  'finished',
-  'approved',
+  'saved',
+  'editing',
 ])
 
 export const thesisRequestStatus = schema.enum('thesis_request_step', [
@@ -48,3 +46,8 @@ export const studyPlanStatus = schema.enum('study_plan_status', [
   'editing',
   'saved',
 ])
+
+export const enrollmentProposalStatus = schema.enum(
+  'enrollment_proposal_status',
+  ['requested', 'sended', 'aproved', 'assigned']
+)

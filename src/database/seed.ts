@@ -7,7 +7,7 @@ import {
   DB_USERNAME,
 } from '@config'
 import { drizzle } from 'drizzle-orm/postgres-js'
-import postgres from 'postgres'
+import postgres, { toCamel } from 'postgres'
 
 const queryClient = postgres({
   db: DB_DATABASE,
@@ -33,7 +33,13 @@ import {
   terms,
   units,
 } from './schema'
-import { areasMap, facultiesMock, specialitiesMap } from './mock/units'
+import {
+  areasMap,
+  departmentsMock,
+  facultiesMock,
+  sectionsMap,
+  specialitiesMap,
+} from './mock/units'
 import { UnitsInsertSchema } from './schema/units'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import BaseModules, { BaseModulesDict } from '@/auth/modules'
@@ -109,6 +115,34 @@ await db.transaction(async (tx) => {
     })
   )
 
+  const departmentInserted = await tx
+    .insert(units)
+    .values(
+      departmentsMock.map((department) => ({
+        name: department,
+        type: 'department' as const,
+        parentId: universityId,
+      }))
+    )
+    .returning({
+      departmentId: units.id,
+      departmentName: units.name,
+    })
+  const sectionsToInsert = departmentInserted
+    .map((department) => {
+      const sections = sectionsMap[department.departmentName] ?? []
+      return sections.map(
+        (section) =>
+          ({
+            name: section,
+            type: 'section',
+            parentId: department.departmentId,
+          } as UnitsInsertSchema)
+      )
+    })
+    .flat()
+
+  await tx.insert(units).values(sectionsToInsert)
   //Base roles
   await tx.insert(roles).values([
     {

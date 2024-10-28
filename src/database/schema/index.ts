@@ -7,12 +7,16 @@ export {
   enrollmentModifcationStatus,
   enrollmentRequestType,
   studyPlanStatus,
+  enrollmentProposalStatus,
 } from '@/database/schema/enums'
 export { accountRoles } from '@/database/schema/accountRoles'
 export { accounts } from '@/database/schema/accounts'
 export { courses } from '@/database/schema/courses'
-export { faqs } from '@/database/schema/faqs'
+export { enrollmentModifications } from '@/database/schema/enrollmentModifications'
+export { enrollmentProposal } from '@/database/schema/enrollmentProposal'
+export { enrollmentProposalCourses } from '@/database/schema/enrollmentProposalCourses'
 export { faqCategories } from '@/database/schema/faqCategories'
+export { faqs } from '@/database/schema/faqs'
 export { modules } from '@/database/schema/modules'
 export { permissions } from '@/database/schema/permissions'
 export { riskReasons } from '@/database/schema/riskReasons'
@@ -31,4 +35,3 @@ export { thesisActions } from '@/database/schema/thesisActions'
 export { thesisJuries } from '@/database/schema/thesisJuries'
 export { thesis } from '@/database/schema/thesis'
 export { units } from '@/database/schema/units'
-export { enrollmentModifications } from '@/database/schema/enrollmentModifications'

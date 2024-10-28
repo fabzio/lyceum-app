@@ -14,7 +14,6 @@ import { z } from 'zod'
 import { schedules } from './schedules'
 import { enrollmentModifcationStatus, enrollmentRequestType } from './enums'
 
-// Definición de la tabla "enrollmentModifications"
 export const enrollmentModifications = schema.table(
   'enrollment_modifications',
   {
