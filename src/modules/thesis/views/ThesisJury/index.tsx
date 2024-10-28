@@ -5,6 +5,8 @@ import NewJuryRequestDialog from './components/NewJuryRequestDialog'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import ThesisJuryRequestService from '@/modules/thesis/services/thesisJuryRequest.service'
 import { QueryKeys } from '@/constants/queryKeys'
+import Need from '@/components/Need'
+import { ThesisPermissionsDict } from '@/interfaces/enums/permissions/Thesis'
 
 export default function ThesisJuryRequestList() {
   const { data: thesisJuryRequest } = useSuspenseQuery({
@@ -20,9 +22,9 @@ export default function ThesisJuryRequestList() {
         <div className="flex gap-3">
           <ThesisJuryRequestSelectFilter />
         </div>
-        <div>
+        <Need permissions={ThesisPermissionsDict.REQUEST_THESIS_JURY}>
           <NewJuryRequestDialog />
-        </div>
+        </Need>
       </div>
       {!thesisJuryRequest.length ? (
         <p className="flex justify-center py-3">

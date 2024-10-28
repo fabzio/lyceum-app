@@ -5,8 +5,7 @@ import { QueryKeys } from '@/constants/queryKeys'
 
 import ThesisThemeList from './components/ThesisThemeList'
 import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
-import { Link } from '@tanstack/react-router'
-import { Button } from '@/components/ui/button'
+import NewThesisRequest from './components/NewThesisRequest'
 
 export default function ThesisTheme() {
   const { data: thesisThemeRequests } = useSuspenseQuery({
@@ -22,9 +21,7 @@ export default function ThesisTheme() {
         <div className="flex gap-3">
           <ThesisThemeSelectFilter />
         </div>
-        <Link to="/tesis/nueva-solicitud">
-          <Button>Nueva solicitud</Button>
-        </Link>
+        <NewThesisRequest />
       </div>
       <ThesisThemeList thesisThemeRequests={thesisThemeRequests} />
     </div>

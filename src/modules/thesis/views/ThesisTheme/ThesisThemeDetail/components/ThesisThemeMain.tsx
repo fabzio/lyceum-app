@@ -15,8 +15,8 @@ import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequ
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
 import { Download } from 'lucide-react'
-import ThesisThemeForm from '../../components/ThesisThemeForm'
 import { Badge } from '@/components/ui/badge'
+import ThesisResponseSection from '../../components/ThesisResponseSection'
 
 export default function ThesisThemeMain() {
   const { requestCode } = useParams({
@@ -111,7 +111,7 @@ export default function ThesisThemeMain() {
                 </TableBody>
               </Table>
             </div>
-            <ThesisThemeForm requestCode={requestCode} />
+            <ThesisResponseSection />
           </div>
         </ScrollArea>
       </div>

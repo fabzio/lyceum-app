@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
+import { useSessionStore } from '@/store'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
@@ -25,6 +26,7 @@ import { useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 export default function NewThesisForm() {
+  const { session } = useSessionStore()
   const navigate = useNavigate({
     from: '/tesis/nueva-solicitud',
   })
@@ -68,7 +70,7 @@ export default function NewThesisForm() {
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     mutate({
       ...data,
-      applicantCode: '48824566',
+      applicantCode: session!.code,
       advisors: data.advisors.map((advisor) => advisor.code),
       students: data.students.map((student) => student.code),
       areaId: +data.areaId,
@@ -111,12 +113,11 @@ export default function NewThesisForm() {
                     <SelectValue placeholder="Elija un área de su especialidad" />
                   </SelectTrigger>
                 </FormControl>
+                {/*FIXME: Cargar areas del backend*/}
                 <SelectContent>
-                  {Array.from({ length: 5 }).map((_, index) => (
-                    <SelectItem key={index} value={index.toString()}>
-                      Área {index}
-                    </SelectItem>
-                  ))}
+                  <SelectItem value="72">Ingeniería de Software</SelectItem>
+                  <SelectItem value="73">Ciberseguridad</SelectItem>
+                  <SelectItem value="74">Ciencia de la Computación</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
