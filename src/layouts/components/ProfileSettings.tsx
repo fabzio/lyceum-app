@@ -8,10 +8,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useSessionStore } from '@/store'
 import { LogOut, User } from 'lucide-react'
 
 export default function ProfileSettings() {
+  const { resetSession } = useSessionStore()
   const handleLogout = () => {
+    resetSession()
     window.location.href = '/api/v1/oauth/logout'
   }
   return (

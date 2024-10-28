@@ -7,7 +7,7 @@ import EnrollmentModifyMain from './EnrollmentModifyMain'
 import EnrollmentModifyAux from './EnrollmentModifyAux'
 import EnrollmentModifyAside from './EnrollmentModifyAside'
 
-export default function ThesisJuryDetail() {
+export default function EnrollmentModifyDetail() {
   return (
     <div className="flex h-full">
       <EnrollmentModifyAside />

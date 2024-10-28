@@ -1,7 +1,8 @@
 import { ValidRoutes } from '@/constants/paths'
+import { ModulesDict } from './enums/modules'
 
 type AppModule = {
-  code: string
+  code: ModulesDict
   label: string
   description: string
   path: ValidRoutes

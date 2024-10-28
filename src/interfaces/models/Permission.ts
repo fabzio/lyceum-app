@@ -1,8 +1,9 @@
+import { PermissionCode } from '../enums/permissions'
 import { Module } from './Module'
 
 export interface Permission {
   id: number
   description: string
-  risk: number
+  name: PermissionCode
   moduleName: Module['name']
 }

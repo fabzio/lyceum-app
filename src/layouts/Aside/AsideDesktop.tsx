@@ -4,77 +4,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { ValidRoutes } from '@/constants/paths'
-import { StudyPlanModule } from '@/modules/study-plans/study-plan.module'
 import { Link } from '@tanstack/react-router'
-import {
-  Book,
-  Home,
-  MessageCircleQuestion,
-  ShieldCheck,
-  Building2,
-  CalendarRange,
-  FileUser,
-  Users,
-} from 'lucide-react'
+import { AsideElement } from './Aside'
 
-type AsideElement = {
-  icon: JSX.Element
-  path: ValidRoutes
-  params?: Record<string, string>
-  label: string
+interface Props {
+  asideElements: AsideElement[]
 }
-
-const asideElements: AsideElement[] = [
-  {
-    icon: <Home />,
-    path: '/',
-    label: 'Inicio',
-  },
-  {
-    icon: <ShieldCheck />,
-    path: '/seguridad',
-    label: 'Seguridad',
-  },
-  {
-    icon: <Users />,
-    path: '/usuarios',
-    label: 'Gestión de Usuarios',
-  },
-  {
-    icon: <Building2 />,
-    path: '/unidad/$name',
-    params: { name: 'PUCP' },
-    label: 'Unidad',
-  },
-  {
-    icon: <MessageCircleQuestion />,
-    path: '/preguntas-frecuentes',
-    label: 'Preguntas frecuentes',
-  },
-  {
-    icon: <FileUser />,
-    path: '/cursos',
-    label: 'Procesos de estudiantes',
-  },
-  {
-    icon: <Book />,
-    path: '/tesis',
-    label: 'Tesis',
-  },
-  {
-    icon: <CalendarRange />,
-    path: '/matricula',
-    label: 'Solicitudes de Matricula',
-  },
-  {
-    icon: StudyPlanModule.icon!,
-    path: StudyPlanModule.path,
-    label: StudyPlanModule.label,
-  },
-]
-
-export default function AsideDesktop() {
+export default function AsideDesktop({ asideElements =[]}: Props) {
   return (
     <aside className="[grid-area:aside] flex flex-col shadow-sm">
       <ul className="flex flex-col justify-between gap-5 mt-10">
