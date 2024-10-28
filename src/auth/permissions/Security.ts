@@ -1,9 +1,9 @@
 export const SecurityPermissionsDict = {
-  READ_PERMISSIONS: 'Ver permisos del sistema',
-  CREATE_ROLES: 'Crear roles del sistema',
-  READ_ROLES: 'Ver roles del sistema',
-  ASSING_ROLES: 'Asignar roles a usuarios',
-  READ_ASSIGN_ROLES: 'Ver roles asignados a usuarios',
+  READ_PERMISSIONS: 'READ_PERMISSIONS',
+  CREATE_ROLES: 'CREATE_ROLES',
+  READ_ROLES: 'READ_ROLES',
+  ASSING_ROLES: 'ASSING_ROLES',
+  READ_ASSIGN_ROLES: 'READ_ASSIGN_ROLES',
 }
 
 const SecurityPermissions = [
