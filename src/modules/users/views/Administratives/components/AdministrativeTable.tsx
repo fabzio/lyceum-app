@@ -6,6 +6,7 @@ import { AdministrativeTableColumns } from './columns'
 import { useFilters } from '@/hooks/useFilters'
 import AdministrativeService from '@/modules/users/services/Administrative.service'
 import DataTable from '@/components/DataTable'
+import { Navigate } from '@tanstack/react-router'
 
 export const DEFAULT_PAGE_INDEX = 0
 export const DEFAULT_PAGE_SIZE = 10
@@ -49,6 +50,15 @@ export default function AdministrativeTable() {
           rowCount: administratives?.rowCount,
           pageCount: administratives?.totalPages,
         }}
+        onRowClick={(administativo) =>
+          Navigate({
+            to: '/usuarios/administativos/$code',
+            params: { code: administativo.code },
+            search: {
+              mode: 'view',
+            },
+          })
+        }
       />
     </>
   )

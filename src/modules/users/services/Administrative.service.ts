@@ -53,6 +53,22 @@ class AdministrativeService {
     }
   }
 
+  static async getAdministrativeDetail(code: string): Promise<Administrative> {
+    try {
+      const res = await http.get(`/accounts/admins/${code}`)
+      const response = res.data as ResponseAPI<Administrative>
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+
   // static async updateCourse(args: {
   //   code: string
   //   course: Pick<Course, 'code' | 'credits' | 'name'>
