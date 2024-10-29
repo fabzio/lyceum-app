@@ -6,7 +6,7 @@ import { AdministrativeTableColumns } from './columns'
 import { useFilters } from '@/hooks/useFilters'
 import AdministrativeService from '@/modules/users/services/Administrative.service'
 import DataTable from '@/components/DataTable'
-import { Navigate } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 
 export const DEFAULT_PAGE_INDEX = 0
 export const DEFAULT_PAGE_SIZE = 10
@@ -24,7 +24,9 @@ export default function AdministrativeTable() {
   }
   const sortingState = sortByToState(filters.sortBy)
   const columns = useMemo(() => AdministrativeTableColumns, [])
-
+  const navigate = useNavigate({
+    from: '/usuarios/administrativos',
+  })
   return (
     <>
       <DataTable
@@ -51,7 +53,7 @@ export default function AdministrativeTable() {
           pageCount: administratives?.totalPages,
         }}
         onRowClick={(administativo) =>
-          Navigate({
+          navigate({
             to: '/usuarios/administativos/$code',
             params: { code: administativo.code },
             search: {

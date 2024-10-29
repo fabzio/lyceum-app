@@ -7,8 +7,7 @@ import ActionButton from './components/ActionButton'
 import { useRef } from 'react'
 import GeneralInfo from './components/GeneralInfo'
 
-
-export default function AdministrativeDEtail() {
+export default function AdministrativeDetail() {
   const { code } = useParams({
     from: '/_auth/usuarios/administativos/$code',
   })
