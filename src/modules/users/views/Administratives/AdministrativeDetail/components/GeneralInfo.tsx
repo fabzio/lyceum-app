@@ -1,23 +1,22 @@
-import { Student } from '@/modules/users/interfaces/Student'
-import AcademicInformation from './AcademicInformation'
 import ContacInformation from './ContactInformation'
-import PersonalInformation from './PersonalInformation'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useSearch } from '@tanstack/react-router'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import PersonalInformation from './PersonalInformation'
+import { Administrative } from '@/modules/users/interfaces/Administrative'
 
 interface Props {
-  student: Student
+  administative: Administrative
   refSubmitButtom: React.RefObject<HTMLButtonElement>
 }
 
-export default function GeneralInfo({ student, refSubmitButtom }: Props) {
+export default function GeneralInfo({ administative, refSubmitButtom }: Props) {
   const { mode } = useSearch({
-    from: '/_auth/usuarios/estudiantes/$code',
+    from: '/_auth/usuarios/administativos/$code',
   })
   const form = useForm<z.infer<typeof formSchema>>({
-    defaultValues: student,
+    defaultValues: administative,
     resolver: zodResolver(formSchema),
   })
 
@@ -30,7 +29,6 @@ export default function GeneralInfo({ student, refSubmitButtom }: Props) {
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <fieldset disabled={mode === 'view'}>
           <PersonalInformation />
-          <AcademicInformation />
           <ContacInformation />
         </fieldset>
         <button hidden={true} type={'submit'} ref={refSubmitButtom} />
@@ -45,6 +43,4 @@ const formSchema = z.object({
   secondSurname: z.string(),
   email: z.string().email(),
   phone: z.string().optional(),
-  speciality: z.string(),
-  code: z.string().regex(/^\d{8}$/),
 })
