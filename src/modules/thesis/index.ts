@@ -1,6 +1,7 @@
 import { Route } from '@/interfaces/route'
 import { Hono } from 'hono'
 import { ThesisJuryRoute, ThesisThemeRoute } from './routes'
+import { authMiddleware } from '@/auth/authMiddleware'
 
 class Thesis implements Route {
   public path = '/thesis'
@@ -10,6 +11,7 @@ class Thesis implements Route {
 
   constructor() {
     this.routes = [new ThesisThemeRoute(), new ThesisJuryRoute()]
+    this.initializeMiddlewares()
     this.initializeRoutes()
   }
 
@@ -20,6 +22,10 @@ class Thesis implements Route {
     this.routes.forEach((route) => {
       this.router.route(route.path, route.router)
     })
+  }
+
+  private initializeMiddlewares() {
+    this.router.use('/', authMiddleware)
   }
 }
 export default Thesis
