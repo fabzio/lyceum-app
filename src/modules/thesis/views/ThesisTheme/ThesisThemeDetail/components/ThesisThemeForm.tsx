@@ -14,17 +14,22 @@ import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { QueryKeys } from '@/constants/queryKeys'
 import { useToast } from '@/hooks/use-toast'
+import { ThesisPermissionsDict } from '@/interfaces/enums/permissions/Thesis'
 import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
 import { useSessionStore } from '@/store'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 export default function ThesisThemeForm() {
-  const { session, getRoleWithPermission } = useSessionStore()
+  const { session, getRoleWithPermission, havePermission } = useSessionStore()
   const { requestCode } = useParams({
     from: '/_auth/tesis/tema-tesis/$requestCode',
   })
@@ -36,7 +41,7 @@ export default function ThesisThemeForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      action: undefined,
+      action: 'undefined',
       content: '',
       isFile: false,
     },
@@ -57,7 +62,7 @@ export default function ThesisThemeForm() {
     data: thesisDetail,
     refetch,
     isError,
-  } = useQuery({
+  } = useSuspenseQuery({
     queryKey: [QueryKeys.thesis.THESIS_REQUEST_DETAIL, requestCode],
     queryFn: () => ThesisThemeRequestService.getThemeRequestDetail(requestCode),
   })
@@ -70,19 +75,29 @@ export default function ThesisThemeForm() {
       to: '/tesis/propuesta-jurados',
     })
   }
-  
-  const alreayReviewed = thesisDetail?.lastAction?.account === session!.id
+
+  const permissionRequeriment = mapPermissionPhase[thesisDetail.phase]
+  const canReview =
+    havePermission(permissionRequeriment) && thesisDetail.phase !== 0
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
+    if (data.action === 'undefined') {
+      toast({
+        title: 'Error',
+        variant: 'destructive',
+        description: 'Debes seleccionar una acción',
+      })
+      return
+    }
+    form.reset()
     mutate({
       accountId: session!.id,
       action: data.action,
       code: requestCode,
       isFile: data.isFile,
-      roleId: getRoleWithPermission('APROVE_THESIS_PHASE_1')!.roleId,
+      roleId: getRoleWithPermission(permissionRequeriment)!.roleId,
       content: data.isFile ? 'file-url' : data.content,
     })
-    form.reset()
   }
   return (
     <Form {...form}>
@@ -90,7 +105,7 @@ export default function ThesisThemeForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-2 mb-5"
       >
-        {!alreayReviewed && (
+        {canReview && (
           <>
             {' '}
             <FormField
@@ -102,21 +117,22 @@ export default function ThesisThemeForm() {
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      value={field.value}
                       orientation="horizontal"
                       className="flex"
                     >
+                      <RadioGroupItem hidden value="undefined" />
                       <div>
-                        <RadioGroupItem id="r1" value="approved">
-                          Aprobado
-                        </RadioGroupItem>
-                        <Label htmlFor="r1">Aprobar</Label>
+                        <RadioGroupItem id="r1" value="approved" />
+                        <Label className="ml-1" htmlFor="r1">
+                          Aprobar
+                        </Label>
                       </div>
                       <div>
-                        <RadioGroupItem id="r2" value="denied">
-                          Denegado
-                        </RadioGroupItem>
-                        <Label htmlFor="r2">Observar</Label>
+                        <RadioGroupItem id="r2" value="denied" />
+                        <Label className="ml-1" htmlFor="r2">
+                          Observar
+                        </Label>
                       </div>
                     </RadioGroup>
                   </FormControl>
@@ -166,24 +182,22 @@ export default function ThesisThemeForm() {
                 </FormItem>
               )}
             />
+            <Button className="w-full" disabled={isPending || !canReview}>
+              {isPending ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                'Enviar respuesta'
+              )}
+            </Button>
           </>
         )}
-        <Button className="w-full" disabled={isPending || alreayReviewed}>
-          {isPending ? (
-            <Loader2 className="animate-spin" />
-          ) : alreayReviewed ? (
-            'Respuesta enviada'
-          ) : (
-            'Enviar respuesta'
-          )}
-        </Button>
       </form>
     </Form>
   )
 }
 
 const formSchema = z.object({
-  action: z.enum(['approved', 'denied'], {
+  action: z.enum(['approved', 'denied', 'undefined'], {
     required_error: 'Este campo es requerido',
   }),
   isFile: z.boolean({
@@ -200,3 +214,10 @@ const formSchema = z.object({
   ]),
   file: z.instanceof(FileList).optional(),
 })
+
+const mapPermissionPhase: Record<0 | 1 | 2 | 3, ThesisPermissionsDict> = {
+  0: 'CREATE_THESIS',
+  1: 'APROVE_THESIS_PHASE_1',
+  2: 'APROVE_THESIS_PHASE_2',
+  3: 'APROVE_THESIS_PHASE_3',
+}

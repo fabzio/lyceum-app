@@ -4,6 +4,7 @@ export interface ThesisThemeDetail {
   date: string
   area: string
   juryState: 'unassigned' | 'requested' | 'assigned'
+  phase: 0 | 1 | 2 | 3
   applicant: {
     name: string
     code: string
