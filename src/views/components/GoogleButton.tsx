@@ -11,15 +11,11 @@ export default function GoogleButton() {
       : 'light'
   }
 
-  const handleClick = () => {
-    window.location.href = '/api/v1/oauth'
-  }
-
   return (
-    <button
+    <a
+      href="/api/v1/oauth"
       type="button"
       className={`${styles.button} ${theme === 'system' ? systemTheme : theme}`}
-      onClick={handleClick}
     >
       <div className={styles.buttonIcon}>
         <svg
@@ -49,6 +45,6 @@ export default function GoogleButton() {
         </svg>
       </div>
       <span className={styles.buttonContents}>Ingresar con Google</span>
-    </button>
+    </a>
   )
 }
