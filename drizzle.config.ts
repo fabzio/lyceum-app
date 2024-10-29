@@ -3,6 +3,7 @@ import {
   DB_HOST,
   DB_PASSWORD,
   DB_PORT,
+  DB_SCHEMA,
   DB_USERNAME,
 } from '@config'
 import { defineConfig } from 'drizzle-kit'
@@ -24,5 +25,5 @@ export default defineConfig({
     ssl: 'allow',
   },
   verbose: true,
-  schemaFilter: ['dev'],
+  schemaFilter: [DB_SCHEMA],
 })

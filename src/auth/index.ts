@@ -1,4 +1,4 @@
-import { SECRET_KEY } from '@/config'
+import { FRONT_END_URL, SECRET_KEY } from '@/config'
 import GenericService from '@/modules/accounts/services/Generic.service'
 import { revokeToken } from '@hono/oauth-providers/google'
 import { Hono } from 'hono'
@@ -13,7 +13,7 @@ export const oauthRoute = new Hono()
     const profile = c.get('user-google')
     if (!token || !scopes || !profile) {
       c.status(401)
-      return c.redirect('http://localhost:5173/login')
+      return c.redirect(`${FRONT_END_URL}/login`)
     }
     try {
       const payload = await GenericService.googleLogin({
@@ -32,17 +32,17 @@ export const oauthRoute = new Hono()
           SECRET_KEY!
         )
       )
-      return c.redirect('http://localhost:5173')
+      return c.redirect(`${FRONT_END_URL}`)
     } catch (error) {
       console.error(error)
-      return c.redirect('http://localhost:5173/login')
+      return c.redirect(`${FRONT_END_URL}/login`)
     }
   })
   .get('/logout', async (c) => {
     const token = c.get('token')
     if (token?.token) await revokeToken(token.token)
     deleteCookie(c, 'lyceum-tkn')
-    return c.redirect('http://localhost:5173/login')
+    return c.redirect(`${FRONT_END_URL}/login`)
   })
 
 export const authRoute = new Hono().get(

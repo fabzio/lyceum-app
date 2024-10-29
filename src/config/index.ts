@@ -10,4 +10,5 @@ export const {
   G_CLIENT_ID,
   G_CLIENT_SECRET,
   SECRET_KEY,
+  FRONT_END_URL,
 } = process.env

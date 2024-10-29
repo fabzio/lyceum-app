@@ -3,25 +3,10 @@ import {
   DB_HOST,
   DB_PASSWORD,
   DB_PORT,
-  DB_SCHEMA,
   DB_USERNAME,
 } from '@config'
 import { drizzle } from 'drizzle-orm/postgres-js'
-import postgres, { toCamel } from 'postgres'
-
-const queryClient = postgres({
-  db: DB_DATABASE,
-  host: DB_HOST,
-  port: Number(DB_PORT),
-  user: DB_USERNAME,
-  password: DB_PASSWORD,
-  max: 1,
-  ssl: 'allow',
-})
-const db = drizzle(queryClient, {
-  logger: true,
-})
-import { pgSchema } from 'drizzle-orm/pg-core'
+import postgres from 'postgres'
 import {
   accountRoles,
   accounts,
@@ -44,7 +29,16 @@ import { UnitsInsertSchema } from './schema/units'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import BaseModules, { BaseModulesDict } from '@/auth/modules'
 
-export const schema = pgSchema(DB_SCHEMA)
+const queryClient = postgres({
+  db: DB_DATABASE,
+  host: DB_HOST,
+  port: Number(DB_PORT),
+  user: DB_USERNAME,
+  password: DB_PASSWORD,
+  max: 1,
+  ssl: 'allow',
+})
+const db = drizzle(queryClient, { logger: true })
 
 console.log('Seed start')
 await db.transaction(async (tx) => {
