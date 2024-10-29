@@ -11,7 +11,7 @@ import {
   ThesisAccountsSchema,
 } from '@/database/schema/thesisAccounts'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
-import { and, eq, sql } from 'drizzle-orm'
+import { and, asc, eq, sql } from 'drizzle-orm'
 import { ThesisThemeDAO } from '../dao/thesisThemeDAO'
 import { ThesisActionsSchema } from '@/database/schema/thesisActions'
 import { CreateThesisDTO } from '../dto/ThesisThemeDTO'
@@ -52,6 +52,7 @@ class ThesisThemeService implements ThesisThemeDAO {
         date: thesis.date,
         area: units.name,
         juryState: thesis.juryState,
+        phase: thesis.aprovationPhase,
         applicant: {
           name: sql<string>`concat(${accounts.name}, ' ', ${accounts.firstSurname}, ' ', ${accounts.secondSurname})`,
           code: accounts.code,
@@ -137,6 +138,7 @@ class ThesisThemeService implements ThesisThemeDAO {
       .innerJoin(thesis, eq(thesis.id, thesisActions.requestId))
       .innerJoin(roles, eq(thesisActions.roleId, roles.id))
       .where(eq(thesis.requestCode, requestCode))
+      .orderBy(asc(thesisActions.date))
   }
 
   async insertThemeRequestAction(
@@ -147,6 +149,7 @@ class ThesisThemeService implements ThesisThemeDAO {
     const thesisToInsert = await db
       .select({
         requestId: thesis.id,
+        phase: thesis.aprovationPhase,
       })
       .from(thesis)
       .where(eq(thesis.requestCode, params.requestCode))
@@ -156,12 +159,43 @@ class ThesisThemeService implements ThesisThemeDAO {
         'Tesis a insertar acción no encontrada'
       )
 
-    const [{ requestId }] = thesisToInsert
-    await db.insert(thesisActions).values({ ...params, requestId })
+    const [{ requestId, phase }] = thesisToInsert
+    await db.transaction(async (tx) => {
+      const [{ actionInsertId }] = await tx
+        .insert(thesisActions)
+        .values({ ...params, requestId })
+        .returning({
+          actionInsertId: thesisActions.id,
+        })
 
-    // FIXME : La aprovación de la tesis se tiene que evaluar por el rol del usuario
-    if (params.roleId === BaseRoles.ADMIN && params.action === 'approved')
-      await this.completeThesisRequest({ requestCode: params.requestCode })
+      if (params.action === 'denied') {
+        await tx
+          .update(thesis)
+          .set({ aprovationPhase: 0 })
+          .where(eq(thesis.id, requestId))
+      } else if (params.action === 'approved') {
+        if (phase < 3) {
+          await tx
+            .update(thesis)
+            .set({ aprovationPhase: phase + 1 })
+            .where(eq(thesis.id, requestId))
+        } else {
+          await tx
+            .update(thesis)
+            .set({ aproved: true, aprovationPhase: 4 })
+            .where(eq(thesis.id, requestId))
+        }
+      } else if (params.action === 'sended') {
+        await tx
+          .update(thesis)
+          .set({ aprovationPhase: 1 })
+          .where(eq(thesis.id, requestId))
+      }
+      await tx
+        .update(thesis)
+        .set({ lastActionId: actionInsertId })
+        .where(eq(thesis.id, requestId))
+    })
   }
 
   async createThesisThemeRequest(newThesisTheme: CreateThesisDTO) {

@@ -332,6 +332,12 @@ await db.transaction(async (tx) => {
         permissionId: permission.permissionId,
       }))
   )
+
+  await tx.insert(accountRoles).values({
+    accountId,
+    roleId,
+    unitId: universityId,
+  })
 })
 console.log('Seed end')
 queryClient.end()
