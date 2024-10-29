@@ -102,7 +102,7 @@ export default function ThesisThemeMain() {
                   {thesisThemeRequestDetail?.advisors.map((advisor) => (
                     <TableRow key={advisor.code}>
                       <TableCell>{advisor.code}</TableCell>
-                      <TableCell>{advisor.name}</TableCell>
+                      <TableCell>{`${advisor.name} ${advisor.firstSurname} ${advisor.secondSurname}`}</TableCell>
                       <TableCell>
                         <Checkbox checked={advisor.principal} disabled />
                       </TableCell>

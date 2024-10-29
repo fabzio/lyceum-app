@@ -56,13 +56,16 @@ export default function MasiveStudentsDialog() {
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     const dataJson = await getCsvData<
-      Pick<Student, 'code' | 'name' | 'firstSurname' | 'secondSurname' | 'email'>
+      Pick<
+        Student,
+        'code' | 'name' | 'firstSurname' | 'secondSurname' | 'email'
+      >
     >(data.file)
     const dataParsed = dataJson.map((student) => ({
       ...student,
       code: student.code.toString(),
     }))
-    
+
     mutate(dataParsed)
   }
   return (
@@ -83,6 +86,7 @@ export default function MasiveStudentsDialog() {
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <FormField
               name="file"
+              // eslint-disable-next-line
               render={({ field: { value, onChange, ...filedProps } }) => (
                 <FormItem>
                   <FormLabel>Archivo</FormLabel>

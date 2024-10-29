@@ -22,6 +22,9 @@ class ThesisThemeRequestService {
         historyId: number
       }
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
       throw error
     }
   }
@@ -113,7 +116,7 @@ class ThesisThemeRequestService {
       })
       const response = res.data as ResponseAPI
       if (!response.success) {
-        throw new Error('Error')
+        throw new Error(response.message)
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
