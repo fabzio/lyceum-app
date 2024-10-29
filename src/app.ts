@@ -3,10 +3,9 @@ import { logger } from 'hono/logger'
 import { prettyJSON } from 'hono/pretty-json'
 import { errorHandler, notFound } from './middlewares'
 import { Route } from './interfaces/route'
-import { G_CLIENT_ID, G_CLIENT_SECRET, PORT, SECRET_KEY } from './config'
+import { G_CLIENT_ID, G_CLIENT_SECRET, PORT } from './config'
 import { showRoutes } from 'hono/dev'
 import { googleAuth } from '@hono/oauth-providers/google'
-import { jwt } from 'hono/jwt'
 import { authRoute, oauthRoute } from './auth'
 import { authMiddleware } from './auth/authMiddleware'
 
@@ -24,6 +23,7 @@ class App {
 
   public listen() {
     console.info(`🚀 App listening on the port ${this.port}`)
+    console.info(`ENV: ${process.env.NODE_ENV}`)
   }
 
   public getServer() {
