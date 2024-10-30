@@ -2,10 +2,10 @@ import { createErrorFactory } from '@/middlewares/errorMiddlewares'
 
 export const AlreadyApprovedError = createErrorFactory(
   'AlreadyApprovedError',
-  404
+  409
 )
 
 export const NoPreviousinSentStateError = createErrorFactory(
   'NoPreviousinSentStateError',
-  404
+  400
 )

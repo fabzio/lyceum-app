@@ -2,12 +2,12 @@ import { createErrorFactory } from '@/middlewares/errorMiddlewares'
 
 export const RepeatedProfessorError = createErrorFactory(
   'RepeatedProfessorError',
-  404
+  400
 )
 
 export const NoProfessorsSendedError = createErrorFactory(
   'NoProfessorsSendedError',
-  404
+  400
 )
 
 export const ScheduleNotFoundError = createErrorFactory(
@@ -17,10 +17,10 @@ export const ScheduleNotFoundError = createErrorFactory(
 
 export const ProfessorAlreadyAddedError = createErrorFactory(
   'ProfessorAlreadyAddedError',
-  404
+  409
 )
 
 export const LeadProfessorAlreadyExistsError = createErrorFactory(
   'LeadProfessorAlreadyExistsError',
-  404
+  409
 )
