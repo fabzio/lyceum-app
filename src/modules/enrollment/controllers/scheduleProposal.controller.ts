@@ -16,11 +16,6 @@ class ScheduleProposalController {
     zValidator('json', insertCourseToSchPropDTO),
     async (c) => {
       const { enrollmentProposalId, coursesList } = c.req.valid('json')
-      console.log(
-        'Received and validated enrollmantProposalId and coursesList:',
-        enrollmentProposalId,
-        coursesList
-      )
       try {
         const response: ResponseAPI = {
           data: await this.scheduleProposalService.insertCourseToScheduleProposal(
