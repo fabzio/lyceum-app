@@ -31,7 +31,7 @@ export default function StudyPlansManagment() {
 
 const tabs: Tab[] = [
   {
-    path: '/plan-de-estudios',
+    path: '/plan-de-estudios/cursos',
     label: 'Gestión de cursos',
     permissions: [
       StudyPlanPermissionsDict.MANAGE_COURSES,

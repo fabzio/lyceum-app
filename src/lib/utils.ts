@@ -52,3 +52,12 @@ export const filterTabs = (
     )
   })
 }
+
+export const haveSomePermission = (
+  sessionPermissions: PermissionCode[],
+  permissions: PermissionCode[]
+) => {
+  return permissions.some((permission) =>
+    sessionPermissions.includes(permission)
+  )
+}

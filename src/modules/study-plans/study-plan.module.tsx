@@ -14,7 +14,7 @@ export const StudyPlanModule: AppModule = {
       label: 'Gestión de cursos',
       path: '/plan-de-estudios/cursos',
       permissions: [
-        StudyPlanPermissionsDict.MANAGE_COURSES,
+        StudyPlanPermissionsDict.READ_COURSES,
         StudyPlanPermissionsDict.MANAGE_COURSES,
       ],
     },

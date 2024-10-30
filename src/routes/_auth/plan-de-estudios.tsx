@@ -1,8 +1,17 @@
 import TransitionPage from '@/components/anim/TransitionPage'
 import StudyPlans from '@/modules/study-plans'
-import { createFileRoute } from '@tanstack/react-router'
+import { StudyPlanModule } from '@/modules/study-plans/study-plan.module'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/plan-de-estudios')({
+  beforeLoad: ({ context: { sessionStore } }) => {
+    const { getAllowedModules } = sessionStore
+    if (!getAllowedModules().includes(StudyPlanModule.code)) {
+      throw redirect({
+        to: '/',
+      })
+    }
+  },
   component: () => <StudyPlansPage />,
 })
 

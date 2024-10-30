@@ -20,7 +20,7 @@ export type Session = {
     }[]
   }[]
 }
-type SessionStore = {
+export type SessionStore = {
   session: Session | null
   syncSession: (session: Session) => void
   getAllowedModules: () => ModulesDict[]
