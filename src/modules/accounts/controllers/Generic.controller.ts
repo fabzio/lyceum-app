@@ -14,14 +14,16 @@ class GenericController {
       'query',
       z.object({
         q: z.string(),
+        userType: z.string().optional(),
       })
     ),
     async (c) => {
-      const { q } = c.req.valid('query')
+      const { q, userType } = c.req.valid('query')
       try {
         const response: ResponseAPI = {
           data: await this.accountService.getAccount({
             q,
+            userType: parseInt(userType ?? ''),
           }),
           message: 'Account retrieved',
           success: true,
