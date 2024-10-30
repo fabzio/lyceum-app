@@ -1,6 +1,10 @@
 import { Route } from '@/interfaces/route'
 import { Hono } from 'hono'
-import { EnrollmentModificationRoute, ScheduleProposalRoute } from './routes'
+import {
+  EnrollmentModificationRoute,
+  ScheduleProposalRoute,
+  ScheduleDistributionRoute,
+} from './routes'
 
 class Enrollment implements Route {
   public path = '/enrollment'
@@ -12,6 +16,7 @@ class Enrollment implements Route {
     this.routes = [
       new EnrollmentModificationRoute(),
       new ScheduleProposalRoute(),
+      new ScheduleDistributionRoute(),
     ]
     this.initializeRoutes()
   }

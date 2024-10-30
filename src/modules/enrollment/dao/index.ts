@@ -1,1 +1,2 @@
 export { default as ScheduleProposalDAO } from './scheduleProposalDAO'
+export { default as ScheduleDistributionDAO } from './scheduleDistributionDAO'
