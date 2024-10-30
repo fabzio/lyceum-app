@@ -11,7 +11,7 @@ export const DEFAULT_PAGE_INDEX = 0
 export const DEFAULT_PAGE_SIZE = 10
 
 export default function CourseTable() {
-  const { filters, setFilters } = useFilters('/_auth/plan-de-estudios/')
+  const { filters, setFilters } = useFilters('/_auth/plan-de-estudios/cursos')
   const { data: courses } = useQuery({
     queryKey: [QueryKeys.studyPlan.COURSES, filters],
     queryFn: () => CourseService.fetchCourses(filters),

@@ -4,7 +4,7 @@ import CourseService from '@/modules/study-plans/services/course.service'
 import CourseManagement from '@/modules/study-plans/views/CoursesManagment'
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_auth/plan-de-estudios/')({
+export const Route = createFileRoute('/_auth/plan-de-estudios/cursos')({
   validateSearch: () => ({}) as CourseFilters,
   loader: async ({ context: { queryClient } }) => {
     return queryClient.ensureQueryData({
