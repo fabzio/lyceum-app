@@ -6,3 +6,9 @@ export type AccountInfo = {
   code: string
   googleId: string
 }
+
+declare module 'hono' {
+  interface ContextVariableMap {
+    jwtPayload: AccountInfo
+  }
+}

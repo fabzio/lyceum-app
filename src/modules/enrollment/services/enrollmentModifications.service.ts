@@ -7,7 +7,7 @@ import {
   units,
 } from '@/database/schema'
 import { aliasedTable, eq, sql } from 'drizzle-orm'
-import { EnrollmentModificationDAO } from '../dao/enrollmentModificationDAO'
+import { EnrollmentModificationDAO } from '../dao/EnrollmentModificationDAO'
 import { EnrollmentModificationsSchema } from '@/database/schema/enrollmentModifications'
 
 class EnrollmentModificationService implements EnrollmentModificationDAO {

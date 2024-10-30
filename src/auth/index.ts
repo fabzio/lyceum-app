@@ -54,6 +54,22 @@ export const authRoute = new Hono().get(
       c.status(401)
       return c.json({ message: 'Unauthorized', success: false })
     }
-    return c.json({ data: token, message: 'Authorized', success: true })
+    const updatedData = await GenericService.googleLogin({
+      email: token.email,
+      googleId: token.googleId,
+    })
+    setCookie(
+      c,
+      'lyceum-tkn',
+      await sign(
+        {
+          ...updatedData,
+          exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
+          iat: Math.floor(Date.now() / 1000),
+        },
+        SECRET_KEY!
+      )
+    )
+    return c.json({ data: updatedData, message: 'Authorized', success: true })
   }
 )
