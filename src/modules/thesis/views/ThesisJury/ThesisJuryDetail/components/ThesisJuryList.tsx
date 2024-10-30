@@ -22,6 +22,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { MoreHorizontal, Save, X } from 'lucide-react'
+import Need from '@/components/Need'
+import { ThesisPermissionsDict } from '@/interfaces/enums/permissions/Thesis'
 
 export default function ThesisJuryList() {
   const { requestCode } = useParams({
@@ -46,7 +48,9 @@ export default function ThesisJuryList() {
       <div className="flex items-center p-2">
         <div className="w-full flex justify-between items-center h-10 py-2">
           <h2 className="text-xl font-bold">Jurados</h2>
-          {thesisDetail?.juryState === 'requested' && <SearchJuryDialog />}
+          <Need permissions={ThesisPermissionsDict.ASSIGN_THESIS_JURY}>
+            {thesisDetail?.juryState === 'requested' && <SearchJuryDialog />}
+          </Need>
         </div>
       </div>
       <Separator />
@@ -76,7 +80,15 @@ export default function ThesisJuryList() {
   )
 }
 
-function JuryRow({ code, name }: { code: string; name: string }) {
+function JuryRow({
+  code,
+  name,
+}: {
+  code: string
+  name: string
+  firstSurname: string
+  secondSurname: string
+}) {
   return (
     <TableRow>
       <TableCell>{code}</TableCell>

@@ -1,3 +1,4 @@
+import QuickSearchInput from '@/components/QuickSearchInput.tsx/QuickSearchInput'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -9,14 +10,16 @@ import {
 } from '@/components/ui/dialog'
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
 import { QueryKeys } from '@/constants/queryKeys'
+import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import ThesisJuryRequestService from '@/modules/thesis/services/thesisJuryRequest.service'
+import AccountsService from '@/service/Accounts.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
@@ -68,11 +71,6 @@ export default function SearchJuryDialog() {
     })
   }
 
-  const getJuryName = (code: string) => {
-    const juror = mockProfessors.find((prof) => prof.code === code)
-    return juror ? juror.name : 'Jurado no encontrado'
-  }
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -91,56 +89,74 @@ export default function SearchJuryDialog() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-2"
           >
-            <FormField
-              name="jurors"
-              render={() => (
-                <FormItem>
-                  <div className="flex justify-between items-center">
-                    <FormLabel>Lista de jurados</FormLabel>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() =>
-                        append({
-                          code: '',
-                        })
-                      }
-                    >
-                      <PlusIcon />
-                    </Button>
-                  </div>
-                  <ul className="flex flex-col gap-2">
-                    {fields.map((field, index) => (
-                      <li key={field.id} className="flex gap-1 items-center">
-                        <Input
-                          {...form.register(`jurors.${index}.code`)}
-                          placeholder="Código"
-                          className="w-1/3"
-                        />
-                        <Input
-                          value={getJuryName(
-                            form.watch(`jurors.${index}.code`)
-                          )}
-                          readOnly
-                          placeholder="Nombre del jurado"
-                          className="w-2/3"
-                        />
-                        <Button
-                          type="button"
-                          size="icon"
-                          variant="ghost"
-                          onClick={() => remove(index)}
-                        >
-                          <X />
-                        </Button>
-                      </li>
-                    ))}
-                  </ul>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() =>
+                append({
+                  code: '',
+                })
+              }
+            >
+              <PlusIcon />
+            </Button>
+            <>
+              {fields.map((field, index) => (
+                <div key={field.id} className="flex gap-2 items-center">
+                  <FormField
+                    name={`jurors.${index}.code`}
+                    defaultValue={field.code}
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel>Asesor</FormLabel>
+                        <div className="flex gap-2">
+                          <div className="flex-grow">
+                            <FormControl>
+                              <QuickSearchInput
+                                placeholder="Buscar asesor por código o nombre"
+                                searchFn={(q) =>
+                                  AccountsService.getAccount({
+                                    q,
+                                    userType: BaseRoles.TEACHER,
+                                  })
+                                }
+                                handleSelect={(item) =>
+                                  field.onChange(item?.code)
+                                }
+                                renderOption={(item) => (
+                                  <div className="hover:bg-muted">
+                                    {`${item.name} ${item.firstSurname} ${item.secondSurname} ${item.code}`}
+                                  </div>
+                                )}
+                                renderSelected={(item) => (
+                                  <article>
+                                    <h5 className="font-semibold">
+                                      {`${item.name} ${item.firstSurname} ${item.secondSurname}`}
+                                    </h5>
+                                    <p className="text-xs">{item.code}</p>
+                                  </article>
+                                )}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </div>
+                          <Button
+                            type="button"
+                            size="icon"
+                            variant="outline"
+                            onClick={() => remove(index)}
+                          >
+                            <X />
+                          </Button>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              ))}
+            </>
 
             <Button disabled={isPending}>
               {isPending ? <Loader2 className="animate-spin" /> : 'Asignar'}
@@ -161,21 +177,3 @@ const formSchema = z.object({
     )
     .nonempty('Debes ingresar al menos un jurado'),
 })
-
-const mockProfessors = [
-  {
-    id: '19211f01-4d69-4d99-a424-a5134e63138f',
-    code: '43831099',
-    name: 'Deion Bosque Nolan',
-  },
-  {
-    id: '798e4ad4-7543-4dbc-aaee-68f647f182e8',
-    code: '05602940',
-    name: 'Karen Dare Robel',
-  },
-  {
-    id: '4d333558-179d-4c5a-b072-93b3194d79c4',
-    code: '82602285',
-    name: 'Sallie Crona Oberbrunner',
-  },
-]

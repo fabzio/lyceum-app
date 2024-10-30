@@ -2,16 +2,20 @@ import { Outlet, useLocation } from '@tanstack/react-router'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ValidRoutes } from '@/constants/paths'
 import { useTabs } from '@/hooks/useTabs'
+import { ThesisPermissionsDict } from '@/interfaces/enums/permissions/Thesis'
+import { useSessionStore } from '@/store'
+import { filterTabs, Tab } from '@/lib/utils'
 
 export default function TesisManagement() {
+  const { getAllPermissions } = useSessionStore()
   const { pathname } = useLocation()
   const { activeTab, handleChangeTab } = useTabs(pathname as ValidRoutes)
-
+  const filteredTabs = filterTabs(tabs, getAllPermissions())
   return (
     <div className="w-full">
       <Tabs value={activeTab} onValueChange={handleChangeTab}>
-        <TabsList className="grid grid-cols-1 md:grid-cols-2 h-full md:w-full">
-          {tabs.map((tab) => (
+        <TabsList>
+          {filteredTabs.map((tab) => (
             <TabsTrigger value={tab.path} key={tab.path}>
               {tab.label}
             </TabsTrigger>
@@ -25,18 +29,24 @@ export default function TesisManagement() {
   )
 }
 
-type Tab = {
-  path: ValidRoutes
-  label: string
-}
-
 const tabs: Tab[] = [
   {
-    path: '/tesis',
+    path: '/tesis/tema-tesis',
     label: 'Tema de tesis',
+    permissions: [
+      ThesisPermissionsDict.APROVE_THESIS_PHASE_1,
+      ThesisPermissionsDict.APROVE_THESIS_PHASE_2,
+      ThesisPermissionsDict.APROVE_THESIS_PHASE_3,
+      ThesisPermissionsDict.CREATE_THESIS,
+      ThesisPermissionsDict.READ_THESIS,
+    ],
   },
   {
     path: '/tesis/propuesta-jurados',
     label: 'Jurado de tesis',
+    permissions: [
+      ThesisPermissionsDict.ASSIGN_THESIS_JURY,
+      ThesisPermissionsDict.REQUEST_THESIS_JURY,
+    ],
   },
 ]

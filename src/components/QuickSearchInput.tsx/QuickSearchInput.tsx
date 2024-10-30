@@ -12,6 +12,7 @@ interface Props<T> {
   handleSelect: (value: T | null) => void
   renderOption: (item: T) => React.ReactNode
   renderSelected: (item: T) => React.ReactNode
+  className?: string
 }
 export default function QuickSearchInput<T>({
   handleSelect,
@@ -19,6 +20,7 @@ export default function QuickSearchInput<T>({
   placeholder,
   renderOption,
   renderSelected,
+  className,
 }: Props<T>) {
   const [item, setItem] = useState<T | null>(null)
   const { mutate, isPending, data, isSuccess } = useMutation({
@@ -38,7 +40,7 @@ export default function QuickSearchInput<T>({
     mutate(query)
   }, 300)
   return (
-    <div className="relative">
+    <div className={`relative ${className}`}>
       {item ? (
         <Card className="p-2 flex items-center justify-between">
           {renderSelected(item)}

@@ -4,7 +4,7 @@ export const SecurityPermissionsDict = {
   READ_ROLES: 'READ_ROLES',
   ASSING_ROLES: 'ASSING_ROLES',
   READ_ASSIGN_ROLES: 'READ_ASSIGN_ROLES',
-}
+} as const
 
 export type SecurityPermissionsDict = keyof typeof SecurityPermissionsDict
 const SecurityPermissions = [

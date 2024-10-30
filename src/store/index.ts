@@ -28,6 +28,7 @@ type SessionStore = {
     roleId: number
     unitId: number
   } | null
+  getAllPermissions: () => PermissionCode[]
   havePermission: (permission: PermissionCode) => boolean
   resetSession: () => void
   getFullName: () => string
@@ -56,6 +57,10 @@ export const useSessionStore = create<SessionStore>()(
         ) ?? null
       )
     },
+    getAllPermissions: () =>
+      get().session?.roles.flatMap((role) =>
+        role.permissions.map((rolePermission) => rolePermission.permission)
+      ) || [],
     getFullName: () => `${get().session?.name} ${get().session?.surname}`,
     resetSession: () => set({}),
   }))

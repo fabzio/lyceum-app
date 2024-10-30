@@ -1,3 +1,4 @@
+import Need from '@/components/Need'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -11,6 +12,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { QueryKeys } from '@/constants/queryKeys'
+import { ThesisPermissionsDict } from '@/interfaces/enums/permissions/Thesis'
 import ThesisJuryRequestService from '@/modules/thesis/services/thesisJuryRequest.service'
 import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
 import {
@@ -68,18 +70,22 @@ export default function ThesisJuryMain() {
                 <h3 className="font-semibold mb-2">Área</h3>
                 <p>{thesisThemeRequestDetail?.area}</p>
               </div>
-              <Button
-                disabled={thesisThemeRequestDetail?.juryState !== 'unassigned'}
-                onClick={handleRequestJury}
-              >
-                {isPending ? (
-                  <Loader2 className="animate-spin" />
-                ) : (
-                  mapButtonMessage[
-                    thesisThemeRequestDetail?.juryState ?? 'unassigned'
-                  ]
-                )}
-              </Button>
+              <Need permissions={ThesisPermissionsDict.REQUEST_THESIS_JURY}>
+                <Button
+                  disabled={
+                    thesisThemeRequestDetail?.juryState !== 'unassigned'
+                  }
+                  onClick={handleRequestJury}
+                >
+                  {isPending ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    mapButtonMessage[
+                      thesisThemeRequestDetail?.juryState ?? 'unassigned'
+                    ]
+                  )}
+                </Button>
+              </Need>
             </div>
             <div>
               <h3 className="font-semibold mb-2">Alumnos</h3>
@@ -129,7 +135,7 @@ export default function ThesisJuryMain() {
                   {thesisThemeRequestDetail?.advisors.map((advisor) => (
                     <TableRow key={advisor.code}>
                       <TableCell>{advisor.code}</TableCell>
-                      <TableCell>{advisor.name}</TableCell>
+                      <TableCell>{`${advisor.name} ${advisor.firstSurname} ${advisor.secondSurname}`}</TableCell>
                       <TableCell>
                         <Checkbox checked={advisor.principal} disabled />
                       </TableCell>
