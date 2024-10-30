@@ -13,7 +13,7 @@ class EnrollmentApprovalcontroller {
     new EnrollmentApprovalService()
 
   public changeProposedEnrollmentToApproved = this.router.post(
-    '/changeToApproved/',
+    '/Enrollment/',
     zValidator('json', changeStateToApprovedDTO),
     async (c) => {
       const { enrollmentProposalId } = c.req.valid('json')
