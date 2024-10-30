@@ -8,18 +8,24 @@ import { QueryKeys } from '@/constants/queryKeys'
 import StudyPlanService from '@/modules/study-plans/services/studyPlan.service'
 import { sortByToState, stateToSortBy } from '@/lib/table'
 import { useNavigate } from '@tanstack/react-router'
+import { useSessionStore } from '@/store'
+import { StudyPlanPermissionsDict } from '@/interfaces/enums/permissions/StudyPlan'
 
 const DEFAULT_PAGE_INDEX = 0
 const DEFAULT_PAGE_SIZE = 10
 
 export default function StudyPlanTable() {
   const navigate = useNavigate()
+  const { getRoleWithPermission } = useSessionStore()
   const { filters, setFilters } = useFilters(
     '/_auth/plan-de-estudios/gestionar'
   )
   const { data: studyPlans } = useQuery({
     queryKey: [QueryKeys.studyPlan.STUDY_PLANS, filters],
-    queryFn: () => StudyPlanService.getStudyPlans(3),
+    queryFn: () =>
+      StudyPlanService.getStudyPlans(
+        getRoleWithPermission(StudyPlanPermissionsDict.READ_STUDY_PLAN)!.unitId
+      ),
     placeholderData: keepPreviousData,
   })
   const paginationState = {
@@ -30,7 +36,6 @@ export default function StudyPlanTable() {
   const columns = useMemo(() => studyPlanTableColumns, [])
 
   const handleRowClick = (studyPlan: StudyPlan) => {
-    
     navigate({
       to: '/plan-de-estudios/gestionar/$planId',
       params: { planId: studyPlan.id.toString() },

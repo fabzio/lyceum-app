@@ -6,12 +6,15 @@ import { courseTableColumns } from './columns'
 import DataTable from '@/components/DataTable'
 import { useMemo } from 'react'
 import { sortByToState, stateToSortBy } from '@/lib/table'
+import { useSessionStore } from '@/store'
+import { StudyPlanPermissionsDict } from '@/interfaces/enums/permissions/StudyPlan'
 
 export const DEFAULT_PAGE_INDEX = 0
 export const DEFAULT_PAGE_SIZE = 10
 
 export default function CourseTable() {
-  const { filters, setFilters } = useFilters('/_auth/plan-de-estudios/')
+  const { filters, setFilters } = useFilters('/_auth/plan-de-estudios/cursos')
+  const { havePermission } = useSessionStore()
   const { data: courses } = useQuery({
     queryKey: [QueryKeys.studyPlan.COURSES, filters],
     queryFn: () => CourseService.fetchCourses(filters),
@@ -22,8 +25,15 @@ export default function CourseTable() {
     pageSize: filters.pageSize || DEFAULT_PAGE_SIZE,
   }
   const sortingState = sortByToState(filters.sortBy)
-  const columns = useMemo(() => courseTableColumns, [])
-
+  const columns = useMemo(
+    () =>
+      courseTableColumns.filter(
+        (_, idx) =>
+          !havePermission(StudyPlanPermissionsDict.MANAGE_COURSES) &&
+          idx !== courseTableColumns.length - 1
+      ),
+    [havePermission]
+  )
   return (
     <>
       <DataTable

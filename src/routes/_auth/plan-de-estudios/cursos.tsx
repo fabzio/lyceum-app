@@ -2,18 +2,17 @@ import { QueryKeys } from '@/constants/queryKeys'
 import { StudyPlanPermissionsDict } from '@/interfaces/enums/permissions/StudyPlan'
 import { haveSomePermission } from '@/lib/utils'
 import { CourseFilters } from '@/modules/study-plans/interfaces/CourseFIlters'
-import StudyPlanService from '@/modules/study-plans/services/studyPlan.service'
-import StudyPlanDetail from '@/modules/study-plans/views/StudyPlansManagement/StudyPlanDetail'
+import CourseService from '@/modules/study-plans/services/course.service'
+import CourseManagement from '@/modules/study-plans/views/CoursesManagment'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
-export const Route = createFileRoute(
-  '/_auth/plan-de-estudios/gestionar/$planId'
-)({
+export const Route = createFileRoute('/_auth/plan-de-estudios/cursos')({
   beforeLoad: ({ context: { sessionStore } }) => {
     const { getAllPermissions } = sessionStore
     if (
       !haveSomePermission(getAllPermissions(), [
-        StudyPlanPermissionsDict.MANAGE_STUDY_PLAN,
+        StudyPlanPermissionsDict.READ_COURSES,
+        StudyPlanPermissionsDict.MANAGE_COURSES,
       ])
     ) {
       throw redirect({
@@ -22,10 +21,11 @@ export const Route = createFileRoute(
     }
   },
   validateSearch: () => ({}) as CourseFilters,
-  loader: async ({ params: { planId }, context: { queryClient } }) =>
-    queryClient.ensureQueryData({
-      queryKey: [QueryKeys.studyPlan.STUDY_PLANS],
-      queryFn: () => StudyPlanService.getStudyPlanDetail(+planId),
-    }),
-  component: () => <StudyPlanDetail />,
+  loader: async ({ context: { queryClient } }) => {
+    return queryClient.ensureQueryData({
+      queryKey: [QueryKeys.studyPlan.COURSES, {}],
+      queryFn: () => CourseService.fetchCourses({}),
+    })
+  },
+  component: () => <CourseManagement />,
 })
