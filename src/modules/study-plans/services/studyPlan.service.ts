@@ -19,12 +19,20 @@ export default StudyPlanService;
 */
 
 class StudyPlanService {
-  static async createStudyPlan(
+  static async createStudyPlan({
+    specialityId,
+    startLevel,
+    levelsCount,
+  }: {
     specialityId: Unit['id']
-  ): Promise<StudyPlan['id']> {
+    startLevel: number
+    levelsCount: number
+  }): Promise<StudyPlan['id']> {
     try {
       const res = await http.post(`/study-plan/plan-management`, {
         specialityId,
+        startLevel,
+        levelsCount,
       })
       const response = res.data as ResponseAPI
       if (!response.success) {
