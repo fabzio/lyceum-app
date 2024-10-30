@@ -12,7 +12,7 @@ class ScheduleDistributioncontroller {
     new ScheduleDistributionService()
 
   public insertProfessorToScheduleProposal = this.router.post(
-    '/',
+    '/insertProfessorsToSchedule/',
     zValidator('json', insertProfesorToSchDTO),
     async (c) => {
       const { scheduleId, professorsList } = c.req.valid('json')
