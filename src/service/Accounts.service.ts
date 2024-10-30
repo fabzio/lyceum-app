@@ -1,12 +1,19 @@
+import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { Account } from '@/interfaces/models/Account'
 import http from '@/lib/http'
 import axios from 'axios'
 
 class AccountsService {
-  public static async getAccount({ q }: { q: string }) {
+  public static async getAccount({
+    q,
+    userType,
+  }: {
+    q: string
+    userType?: BaseRoles
+  }): Promise<Account[]> {
     try {
       const res = await http.get('/accounts/generic', {
-        params: { q },
+        params: { q, userType },
       })
       const response = res.data as ResponseAPI
       if (!response.success) {

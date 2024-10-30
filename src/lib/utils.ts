@@ -1,6 +1,8 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import Papa from 'papaparse'
+import { ValidRoutes } from '@/constants/paths'
+import { PermissionCode } from '@/interfaces/enums/permissions'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -31,5 +33,22 @@ export const getCsvData = <T>(csv: File): Promise<T[]> => {
         }
       },
     })
+  })
+}
+
+export type Tab = {
+  path: ValidRoutes
+  label: string
+  permissions: PermissionCode[]
+}
+export const filterTabs = (
+  tabs: Tab[],
+  sessionPermissions: PermissionCode[]
+) => {
+  return tabs.filter((tab) => {
+    if (!tab.permissions || tab.permissions.length === 0) return true
+    return tab.permissions.some((permission) =>
+      sessionPermissions.includes(permission)
+    )
   })
 }

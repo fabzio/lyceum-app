@@ -3,21 +3,22 @@ import { ModulesDict } from '@/interfaces/enums/modules'
 import { StudyPlanModule } from '@/modules/study-plans/study-plan.module'
 import { useSessionStore } from '@/store'
 import {
-  Book,
   Building2,
   CalendarRange,
-  FileUser,
   Home,
   MessageCircleQuestion,
-  ShieldCheck,
-  Users,
 } from 'lucide-react'
 import AsideDesktop from './AsideDesktop'
+import { ThesisModule } from '@/modules/thesis/thesis.module'
+import { PermissionCode } from '@/interfaces/enums/permissions'
+import { SecurityModule } from '@/modules/security/security.module'
+import { UserModule } from '@/modules/users/users.module'
+import { CoursesModule } from '@/modules/courses/courses.module'
 
 export default function Aside() {
   const { getAllowedModules } = useSessionStore()
   const allowedModules = getAllowedModules()
-  
+
   const filteredAsideElements = asideElements.filter(
     (element) =>
       allowedModules.includes(element.moduleCode) ||
@@ -32,6 +33,11 @@ export type AsideElement = {
   params?: Record<string, string>
   label: string
   moduleCode: ModulesDict
+  submodules: {
+    path: ValidRoutes
+    label: string
+    permissions: PermissionCode[]
+  }[]
 }
 const asideElements: AsideElement[] = [
   {
@@ -39,53 +45,62 @@ const asideElements: AsideElement[] = [
     path: '/',
     label: 'Inicio',
     moduleCode: ModulesDict.HOME,
+    submodules: [],
   },
   {
-    icon: <ShieldCheck />,
-    path: '/seguridad',
-    label: 'Seguridad',
-    moduleCode: ModulesDict.SECURITY,
+    icon: SecurityModule.icon,
+    path: SecurityModule.path,
+    label: SecurityModule.label,
+    moduleCode: SecurityModule.code,
+    submodules: SecurityModule.submodules,
   },
   {
-    icon: <Users />,
-    path: '/usuarios',
-    label: 'Gestión de Usuarios',
-    moduleCode: ModulesDict.USERS,
+    icon: UserModule.icon,
+    path: UserModule.path,
+    label: UserModule.label,
+    moduleCode: UserModule.code,
+    submodules: UserModule.submodules,
   },
   {
     icon: <Building2 />,
     path: '/unidad/$name',
     label: 'Unidad',
     moduleCode: ModulesDict.UNITS,
+    submodules: [],
   },
   {
     icon: <MessageCircleQuestion />,
     path: '/preguntas-frecuentes',
     label: 'Preguntas frecuentes',
     moduleCode: ModulesDict.FAQ,
+    submodules: [],
   },
   {
-    icon: <FileUser />,
-    path: '/cursos',
-    label: 'Procesos de estudiantes',
-    moduleCode: ModulesDict.STUDY_PROCESS,
+    icon: CoursesModule.icon,
+    path: CoursesModule.path,
+    label: CoursesModule.label,
+    moduleCode: CoursesModule.code,
+    submodules: CoursesModule.submodules,
   },
   {
-    icon: <Book />,
-    path: '/tesis',
-    label: 'Tesis',
-    moduleCode: ModulesDict.THESIS,
+    icon: ThesisModule.icon,
+    path: ThesisModule.path,
+    label: ThesisModule.label,
+    moduleCode: ThesisModule.code,
+    submodules: ThesisModule.submodules,
   },
   {
     icon: <CalendarRange />,
     path: '/matricula',
     label: 'Solicitudes de Matricula',
     moduleCode: ModulesDict.ENROLLMENT,
+    submodules: [],
   },
   {
     icon: StudyPlanModule.icon!,
     path: StudyPlanModule.path,
     label: StudyPlanModule.label,
     moduleCode: StudyPlanModule.code,
+    submodules: StudyPlanModule.submodules,
   },
 ]

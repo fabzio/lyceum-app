@@ -4,7 +4,7 @@ import {
   ResizablePanelGroup,
 } from '@/components/ui/resizable'
 import ThesisJuryMain from './components/ThesisJuryMain'
-import ThesisJuryHistory from './components/ThesisJuryHList'
+import ThesisJuryHistory from './components/ThesisJuryList'
 
 export default function ThesisJuryDetailSection() {
   return (

@@ -10,7 +10,7 @@ export default function SecurityManagement() {
   return (
     <div className="w-full">
       <Tabs value={activeTab} onValueChange={handleChangeTab}>
-        <TabsList className="grid grid-cols-1 md:grid-cols-3 h-full md:w-full">
+        <TabsList className="h-full">
           {tabs.map((tab) => (
             <TabsTrigger value={tab.path} key={tab.path}>
               {tab.label}
@@ -32,7 +32,7 @@ type Tab = {
 
 const tabs: Tab[] = [
   {
-    path: '/seguridad',
+    path: '/seguridad/asignacion-roles',
     label: 'Asignar roles',
   },
   {

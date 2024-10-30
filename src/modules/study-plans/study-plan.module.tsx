@@ -8,4 +8,16 @@ export const StudyPlanModule: AppModule = {
   path: '/plan-de-estudios',
   icon: <GraduationCap />,
   description: 'Módulo de gestión de planes de estudio',
+  submodules: [
+    {
+      label: 'Gestión de cursos',
+      path: '/plan-de-estudios',
+      permissions: [],
+    },
+    {
+      label: 'Gestión de plan de estudios',
+      path: '/plan-de-estudios/gestionar',
+      permissions: [],
+    },
+  ],
 }
