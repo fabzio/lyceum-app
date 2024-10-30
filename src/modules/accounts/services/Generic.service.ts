@@ -6,28 +6,63 @@ import {
   permissions,
   rolePermissions,
 } from '@/database/schema'
-import { eq, ilike, inArray, or, sql } from 'drizzle-orm'
+import { BaseRoles } from '@/interfaces/enums/BaseRoles'
+import { and, eq, ilike, inArray, or, sql } from 'drizzle-orm'
 
 class GenericService {
-  public async getAccount({ q }: { q: string }) {
-    return await db
-      .select({
-        id: accounts.id,
-        name: accounts.name,
-        firstSurname: accounts.firstSurname,
-        secondSurname: accounts.secondSurname,
-        code: accounts.code,
-      })
-      .from(accounts)
-      .where(
-        or(
-          ilike(accounts.name, `%${q}%`),
-          ilike(accounts.firstSurname, `%${q}%`),
-          ilike(accounts.secondSurname, `%${q}%`),
-          ilike(accounts.code, `%${q}%`)
+  public async getAccount({
+    q,
+    userType,
+  }: {
+    q: string
+    userType?: BaseRoles
+  }) {
+    if (!userType) {
+      return await db
+        .select({
+          id: accounts.id,
+          name: accounts.name,
+          firstSurname: accounts.firstSurname,
+          secondSurname: accounts.secondSurname,
+          code: accounts.code,
+        })
+        .from(accounts)
+        .where(
+          or(
+            sql`concat(${accounts.name}, ' ', ${accounts.firstSurname}, ' ', ${
+              accounts.secondSurname
+            }) ilike ${`%${q}%`}`,
+            ilike(accounts.code, `%${q}%`)
+          )
         )
-      )
-      .limit(5)
+        .limit(5)
+    } else {
+      return await db
+        .select({
+          id: accounts.id,
+          name: accounts.name,
+          firstSurname: accounts.firstSurname,
+          secondSurname: accounts.secondSurname,
+          code: accounts.code,
+        })
+        .from(accounts)
+        .innerJoin(
+          accountRoles,
+          and(
+            eq(accountRoles.accountId, accounts.id),
+            eq(accountRoles.roleId, userType)
+          )
+        )
+        .where(
+          or(
+            sql`concat(${accounts.name}, ' ', ${accounts.firstSurname}, ' ', ${
+              accounts.secondSurname
+            }) ilike ${`%${q}%`}`,
+            ilike(accounts.code, `%${q}%`)
+          )
+        )
+        .limit(5)
+    }
   }
 
   public static async googleLogin({
