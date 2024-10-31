@@ -4,7 +4,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import ExpandibleAsidebar from '@/components/ExpandibleAsidebar'
 import { useQuery } from '@tanstack/react-query'
 import { QueryKeys } from '@/constants/queryKeys'
-import RiskStudentService from '@/modules/courses/services/riskStudent.service'
+import RiskStudentService from '@/modules/student-process/services/riskStudent.service'
 import { useNavigate, useParams, useSearch } from '@tanstack/react-router'
 import { Skeleton } from '@/components/ui/skeleton'
 

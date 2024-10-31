@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import RiskStudentService from '@/modules/courses/services/riskStudent.service'
+import RiskStudentService from '@/modules/student-process/services/riskStudent.service'
 import { useToast } from '@/hooks/use-toast'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'

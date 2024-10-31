@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { QueryKeys } from '@/constants/queryKeys'
-import RiskStudentReportService from '@/modules/courses/services/riskStudentReport.service'
+import RiskStudentReportService from '@/modules/student-process/services/riskStudentReport.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { DialogDescription } from '@radix-ui/react-dialog'
 import { useMutation, useQueryClient } from '@tanstack/react-query'

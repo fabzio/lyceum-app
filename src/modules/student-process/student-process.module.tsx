@@ -2,7 +2,7 @@ import { AppModule } from '@/interfaces/AppModule'
 import { ModulesDict } from '@/interfaces/enums/modules'
 import { FileUser } from 'lucide-react'
 
-export const CoursesModule: AppModule = {
+export const StudentProcessModule: AppModule = {
   code: ModulesDict.STUDY_PROCESS,
   label: 'Procesos de estudiantes',
   description: 'Gestión de solicitudes de estudiantes y cursos',

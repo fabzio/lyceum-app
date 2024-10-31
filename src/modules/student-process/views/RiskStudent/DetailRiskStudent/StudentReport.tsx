@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { QueryKeys } from '@/constants/queryKeys'
-import RiskStudentService from '@/modules/courses/services/riskStudent.service'
+import RiskStudentService from '@/modules/student-process/services/riskStudent.service'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { useParams, useSearch } from '@tanstack/react-router'
 import NewReportDialog from './components/NewReportDialog'

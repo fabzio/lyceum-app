@@ -12,3 +12,4 @@ export type PermissionCode =
   | StudyPlanPermissions
   | StudentProcessPermissionsDict
   | EnrollmentPermissionsDict
+  | 'TODO_PERMISSION'

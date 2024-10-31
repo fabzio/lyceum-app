@@ -21,12 +21,12 @@ export const EnrollmentModule: AppModule = {
     {
       label: 'Propuesta de Horarios',
       path: '/matricula/propuesta-horarios',
-      permissions: [],
+      permissions: ['TODO_PERMISSION'],
     },
     {
       label: 'Distribución de Matrícula',
       path: '/matricula/distribucion',
-      permissions: [],
+      permissions: ['TODO_PERMISSION'],
     },
   ],
 }

@@ -1,11 +1,12 @@
 import SubRoutesManagement from '@/components/SubRoutesManagement'
 import { Tab } from '@/lib/utils'
-import { UserModule } from '../users.module'
+import { StudentProcessModule } from '../student-process.module'
 
-export default function UserManagement() {
+export default function StudentProcessManagement() {
   return <SubRoutesManagement tabs={tabs} />
 }
-const tabs: Tab[] = UserModule.submodules.map((submodule) => ({
+
+const tabs: Tab[] = StudentProcessModule.submodules.map((submodule) => ({
   label: submodule.label,
   path: submodule.path,
   permissions: submodule.permissions,
