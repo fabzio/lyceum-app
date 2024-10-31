@@ -1,3 +1,10 @@
+import AsignationButton from './components/AsignationButton'
+
 export default function EnrollmentPropose() {
-  return <div>index</div>
+  return (
+    <div>
+      {/* Agregamos el botón de asignación */}
+      <AsignationButton />
+    </div>
+  )
 }
