@@ -12,7 +12,7 @@ const tabs: Tab[] = [
     permissions: [],
   },
   {
-    path: '/matricula/propuesta',
+    path: '/matricula/propuesta-horarios',
     label: 'Propuesta de matricula',
     permissions: [],
   },

@@ -1,3 +1,5 @@
 export default function EnrollmentPropose() {
-  return <div>index</div>
+  return (
+    <div>index</div>
+  )
 }

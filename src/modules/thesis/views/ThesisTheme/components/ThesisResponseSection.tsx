@@ -2,8 +2,14 @@ import ThesisThemeForm from '../ThesisThemeDetail/components/ThesisThemeForm'
 import { ThesisPermissionsDict } from '@/interfaces/enums/permissions/Thesis'
 import Need from '@/components/Need'
 import ThesisUploadCorrections from '../ThesisThemeDetail/components/ThesisUploadCorrections'
+import { useSessionStore } from '@/store'
 
 export default function ThesisResponseSection() {
+  const { havePermission } = useSessionStore()
+  console.log(
+    'havePermission',
+    havePermission(ThesisPermissionsDict.APROVE_THESIS_PHASE_1)
+  )
   return (
     <>
       <Need
@@ -17,7 +23,7 @@ export default function ThesisResponseSection() {
         <ThesisThemeForm />
       </Need>
       <Need permissions={ThesisPermissionsDict.CREATE_THESIS}>
-        <ThesisUploadCorrections/>
+        <ThesisUploadCorrections />
       </Need>
     </>
   )
