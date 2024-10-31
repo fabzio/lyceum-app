@@ -3,11 +3,12 @@ import { logger } from 'hono/logger'
 import { prettyJSON } from 'hono/pretty-json'
 import { errorHandler, notFound } from './middlewares'
 import { Route } from './interfaces/route'
-import { G_CLIENT_ID, G_CLIENT_SECRET, PORT } from './config'
+import { FRONT_END_URL, G_CLIENT_ID, G_CLIENT_SECRET, PORT } from './config'
 import { showRoutes } from 'hono/dev'
 import { googleAuth } from '@hono/oauth-providers/google'
 import { authRoute, oauthRoute } from './auth'
 import { authMiddleware } from './auth/authMiddleware'
+import { cors } from 'hono/cors'
 
 class App {
   public app: Hono
@@ -32,6 +33,14 @@ class App {
 
   private initializeMiddlewares() {
     this.app.use('*', logger(), prettyJSON())
+    this.app.use(
+      '*',
+      cors({
+        origin: process.env.NODE_ENV === 'production' ? FRONT_END_URL! : '*',
+        credentials: true,
+        allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      })
+    )
     this.app.use(
       '/oauth',
       googleAuth({
