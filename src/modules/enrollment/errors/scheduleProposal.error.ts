@@ -19,3 +19,7 @@ export const CourseAlreadyAddedError = createErrorFactory(
   'CourseAlreadyAddedError',
   404
 )
+
+export const InvalidStatusChangeError = createErrorFactory('InvalidStatusChangeError',
+  409
+)

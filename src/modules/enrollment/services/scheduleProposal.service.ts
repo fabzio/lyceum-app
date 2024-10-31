@@ -9,6 +9,7 @@ import {
   NoCoursesSendedError,
   EnrollmentProposalNotFoundError,
   CourseAlreadyAddedError,
+  InvalidStatusChangeError,
 } from '../errors'
 import Enrollment from '..'
 import { ScheduleProposalDAO } from '../dao'
@@ -81,6 +82,45 @@ class ScheduleProposalService implements ScheduleProposalDAO {
       }))
     )
   }
+
+  public async updateScheduleProposalStatus(
+    enrollmentProposalId: number,
+    newStatus: 'requested' | 'sended' | 'aproved' | 'assigned'
+  ): Promise<void> {
+    // 1. Obtener el estado actual de la propuesta
+    const [existingProposal] = await db
+      .select({ state: enrollmentProposal.state })
+      .from(enrollmentProposal)
+      .where(eq(enrollmentProposal.id, enrollmentProposalId))
+
+    if (!existingProposal) {
+      throw new EnrollmentProposalNotFoundError(
+        'La propuesta de inscripción no existe'
+      )
+    }
+
+    // 2. Validar el cambio de estado
+    const validTransitions = {
+      requested: 'sended',
+      sended: 'aproved',
+      aproved: 'assigned',
+      assigned: null,
+    }
+
+    const currentState = existingProposal.state
+    if (!(validTransitions[currentState] === newStatus)) {
+      throw new InvalidStatusChangeError(
+        `No se puede cambiar el estado de ${currentState} a ${newStatus}`
+      )
+    }
+
+    // 3. Actualizar el estado si es válido
+    await db
+      .update(enrollmentProposal)
+      .set({ state: newStatus })
+      .where(eq(enrollmentProposal.id, enrollmentProposalId))
+  }
+
 }
 
 export default ScheduleProposalService
