@@ -1,32 +1,9 @@
-import { Outlet, useLocation } from '@tanstack/react-router'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ValidRoutes } from '@/constants/paths'
-import { useTabs } from '@/hooks/useTabs'
 import { ThesisPermissionsDict } from '@/interfaces/enums/permissions/Thesis'
-import { useSessionStore } from '@/store'
-import { filterTabs, Tab } from '@/lib/utils'
+import { Tab } from '@/lib/utils'
+import SubRoutesManagement from '@/components/SubRoutesManagement'
 
-export default function TesisManagement() {
-  const { getAllPermissions } = useSessionStore()
-  const { pathname } = useLocation()
-  const { activeTab, handleChangeTab } = useTabs(pathname as ValidRoutes)
-  const filteredTabs = filterTabs(tabs, getAllPermissions())
-  return (
-    <div className="w-full">
-      <Tabs value={activeTab} onValueChange={handleChangeTab}>
-        <TabsList>
-          {filteredTabs.map((tab) => (
-            <TabsTrigger value={tab.path} key={tab.path}>
-              {tab.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        <section className="mt-2">
-          <Outlet />
-        </section>
-      </Tabs>
-    </div>
-  )
+export default function ThesisManagement() {
+  return <SubRoutesManagement tabs={tabs} />
 }
 
 const tabs: Tab[] = [

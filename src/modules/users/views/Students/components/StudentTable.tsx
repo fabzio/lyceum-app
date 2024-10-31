@@ -12,7 +12,7 @@ export const DEFAULT_PAGE_INDEX = 0
 export const DEFAULT_PAGE_SIZE = 10
 
 export default function StudentTable() {
-  const { filters, setFilters } = useFilters('/_auth/usuarios/')
+  const { filters, setFilters } = useFilters('/_auth/usuarios/estudiantes')
   const { data: students } = useQuery({
     queryKey: [QueryKeys.users.STUDENTS, filters],
     queryFn: () => StudentService.fetchStudents(filters),

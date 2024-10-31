@@ -11,7 +11,7 @@ export const UserModule: AppModule = {
   submodules: [
     {
       label: 'Estudiantes',
-      path: '/usuarios/',
+      path: '/usuarios/estudiantes',
       permissions: [
         UserPermissionsDict.READ_STUDENTS,
         UserPermissionsDict.WRITE_STUDENTS,

@@ -1,6 +1,8 @@
-import MasiveProfessorsDialog from "./components/MasiveProfessorsDialog";
-import SearchProfessorInput from "./components/SearchProfessorInput";
-import ProfessorTable from "./components/ProfessorTable";
+import MasiveProfessorsDialog from './components/MasiveProfessorsDialog'
+import SearchProfessorInput from './components/SearchProfessorInput'
+import ProfessorTable from './components/ProfessorTable'
+import Need from '@/components/Need'
+import { UserPermissionsDict } from '@/interfaces/enums/permissions/Users'
 
 export default function ProfessorManagement() {
   return (
@@ -8,12 +10,16 @@ export default function ProfessorManagement() {
       <div className="w-full flex flex-col md:flex-row justify-between gap-4">
         <SearchProfessorInput />
 
-        {/* TODO: Implementar NewProfessorDialog*/
-        <div className="flex gap-2">
-          <MasiveProfessorsDialog />
-        </div>}
+        {/* TODO: Implementar NewProfessorDialog*/}
+        <Need permissions={[UserPermissionsDict.WRITE_PROFESSORS]}>
+          <div className="flex gap-2">
+            <MasiveProfessorsDialog />
+          </div>
+        </Need>
       </div>
-      <ProfessorTable />
+      <Need permissions={[UserPermissionsDict.READ_PROFESSORS]}>
+        <ProfessorTable />
+      </Need>
     </div>
   )
 }
