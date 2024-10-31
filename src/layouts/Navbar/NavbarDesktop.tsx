@@ -6,7 +6,7 @@ import TSRBreadCums from '@/components/TSRBreadCums'
 
 export default function NavbarDesktop() {
   return (
-    <nav className="sticky top-0 w-full [grid-area:nav] py-2 px-4 flex justify-between shadow-sm pe-16 backdrop-blur-md z-50">
+    <nav className="sticky top-0 w-full [grid-area:nav] py-2 px-4 flex justify-between items-center shadow-sm pe-16 backdrop-blur-md z-50">
       <TSRBreadCums />
       <SearchBar />
       <section className="flex items-center gap-4">
