@@ -1,5 +1,6 @@
 import { useTheme } from '@/context/ThemeProvider'
 import styles from './GoogleButton.module.css'
+import { API_URL } from '@/config'
 
 export default function GoogleButton() {
   const { theme } = useTheme()
@@ -13,7 +14,7 @@ export default function GoogleButton() {
 
   return (
     <a
-      href="/api/v1/oauth"
+      href={`${process.env.NODE_ENV === 'production' ? API_URL : ''}/api/v1/oauth`}
       type="button"
       className={`${styles.button} ${theme === 'system' ? systemTheme : theme}`}
     >
