@@ -1,6 +1,12 @@
 import { Route } from '@/interfaces/route'
 import { Hono } from 'hono'
-import { EnrollmentModificationRoute, ScheduleProposalRoute } from './routes'
+import {
+  EnrollmentModificationRoute,
+  ScheduleProposalRoute,
+  ScheduleDistributionRoute,
+  EnrollmentApprovalRoute,
+} from './routes'
+import { ne } from 'drizzle-orm'
 
 class Enrollment implements Route {
   public path = '/enrollment'
@@ -12,6 +18,8 @@ class Enrollment implements Route {
     this.routes = [
       new EnrollmentModificationRoute(),
       new ScheduleProposalRoute(),
+      new ScheduleDistributionRoute(),
+      new EnrollmentApprovalRoute(),
     ]
     this.initializeRoutes()
   }
