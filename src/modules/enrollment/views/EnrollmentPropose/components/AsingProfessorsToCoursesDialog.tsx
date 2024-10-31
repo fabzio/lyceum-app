@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -21,22 +20,12 @@ import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { X } from 'lucide-react'
 
-// Schema de validación de formulario
-const formSchema = z.object({
-  professors: z
-    .array(
-      z.object({
-        code: z.string().regex(/^[0-9]{8}$/, 'Código de profesor inválido'),
-      })
-    )
-    .nonempty('Debes ingresar al menos un profesor'),
-})
-
 // Mock de datos para profesores
 const mockProfessors = [
-  { code: '43831099', name: 'Deion Bosque Nolan' },
-  { code: '05602940', name: 'Karen Dare Robel' },
-  { code: '82602285', name: 'Sallie Crona Oberbrunner' },
+  { code: '19987080', name: 'Rony Cueva Moscoso' },
+  { code: '19962356', name: 'Manuel Tupia Anticona' },
+  { code: '19703421', name: 'Miguel Guanira Erazo' },
+  { code: '20035698', name: 'Freddy Paz Espinoza' },
 ]
 
 export default function AsingProfessorsToCoursesDialog() {
@@ -64,11 +53,11 @@ export default function AsingProfessorsToCoursesDialog() {
       : []
 
   // Manejar búsqueda no exitosa
-  const handleSearchChange = (e:any) => {
+  const handleSearchChange = (e: any) => {
     const value = e.target.value
     setSearchTerm(value)
     // Mostrar "Profesor no encontrado" solo si hay al menos 3 caracteres y no hay coincidencias en la búsqueda
-    setNotFound(value.length >= 2 && filteredProfessors.length == 0)
+    setNotFound(value.length >= 2 && filteredProfessors.length === 0)
   }
 
   // Obtener el nombre de un profesor con base en el código
@@ -78,7 +67,7 @@ export default function AsingProfessorsToCoursesDialog() {
   }
 
   // Agregar profesor a la lista seleccionada
-  const handleSelectProfessor = (professor:any) => {
+  const handleSelectProfessor = (professor: any) => {
     const isAlreadySelected = fields.some(
       (field) => field.code === professor.code
     )
@@ -87,23 +76,20 @@ export default function AsingProfessorsToCoursesDialog() {
     }
   }
 
-  const onSubmit = ({ professors }: z.infer<typeof formSchema>) => {
-    // Guardar en localStorage
-    localStorage.setItem('selectedProfessors', JSON.stringify(professors))
-    // No cerrar automáticamente el diálogo
+  const onSubmit = ({}: z.infer<typeof formSchema>) => {
+    //Aqui se deberia guardar la asignación de profesores
+    // Cerrar el diálogo al guardar
+    setIsOpen(false)
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>Asignar Profesores</Button>
+        <Button>Asignar Docentes</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Asignar Profesores</DialogTitle>
-          <DialogDescription>
-            Ingresa los códigos de los profesores que quieres asignar
-          </DialogDescription>
+          <DialogTitle>Asignar Docentes</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -143,7 +129,7 @@ export default function AsingProfessorsToCoursesDialog() {
 
             <FormField
               name="professors"
-              // @ts-ignore
+              //@ts-ignore
               render={({ field, fieldState }) => (
                 <FormItem>
                   <div className="flex justify-between items-center">
@@ -178,17 +164,12 @@ export default function AsingProfessorsToCoursesDialog() {
                     ))}
                   </ul>
                   {/* Verifica si hay un error de validación y muestra un mensaje adecuado */}
-                  {fieldState.error ? (
-                    <FormMessage>{fieldState.error.message}</FormMessage>
-                  ) : null}
+                  <FormMessage />
                 </FormItem>
               )}
             />
 
             <div className="flex justify-end gap-2 mt-4">
-              <Button variant="secondary" onClick={() => setIsOpen(false)}>
-                Cancelar
-              </Button>
               <Button type="submit">Guardar</Button>
             </div>
           </form>
@@ -197,3 +178,14 @@ export default function AsingProfessorsToCoursesDialog() {
     </Dialog>
   )
 }
+
+// Schema de validación de formulario
+const formSchema = z.object({
+  professors: z
+    .array(
+      z.object({
+        code: z.string().regex(/^[0-9]{8}$/),
+      })
+    )
+    .nonempty('Debe ingresar al menos un profesor'),
+})
