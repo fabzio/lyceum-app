@@ -8,6 +8,11 @@ export interface ScheduleProposalDAO {
       hiddenSchedules: number
     }[]
   ): Promise<void>
+
+  updateScheduleProposalStatus(
+    enrollmentProposalId: number,
+    newStatus: 'requested' | 'sended' | 'aproved' | 'assigned'
+  ): Promise<void>
 }
 
 export default ScheduleProposalDAO

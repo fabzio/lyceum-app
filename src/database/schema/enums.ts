@@ -51,3 +51,4 @@ export const enrollmentProposalStatus = schema.enum(
   'enrollment_proposal_status',
   ['requested', 'sended', 'aproved', 'assigned']
 )
+

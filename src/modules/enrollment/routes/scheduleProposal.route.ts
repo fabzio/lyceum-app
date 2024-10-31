@@ -15,7 +15,8 @@ class ScheduleProposalRoute implements Route {
   private initializeRoutes() {
     this.router.route(
       '/',
-      this.scheduleProposalController.insertCourseToScheduleProposal
+      this.scheduleProposalController.insertCourseToScheduleProposal,
+      
     )
   }
 }
