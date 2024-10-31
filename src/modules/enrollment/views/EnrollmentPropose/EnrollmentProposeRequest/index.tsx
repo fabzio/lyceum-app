@@ -1,6 +1,10 @@
+import AsingProfessorsToCoursesDialog from "../components/AsingProfessorsToCoursesDialog";
+
 export default function EnrollmentProposeRequest
 () {
   return (
-    <div>index</div>
+    <div>
+      <AsingProfessorsToCoursesDialog />
+    </div>
   )
 }

@@ -3,7 +3,7 @@ import EnrollmentProposeRequest from '@/modules/enrollment/views/EnrollmentPropo
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
-  '/_auth/matricula/propuesta/$requestNumber',
+  '/_auth/matricula/propuesta-horarios/$requestNumber',
 )({
   component: () => <SceduleProposalRequestPage />,
 })

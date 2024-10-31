@@ -143,6 +143,7 @@ export default function AsingProfessorsToCoursesDialog() {
 
             <FormField
               name="professors"
+              // @ts-ignore
               render={({ field, fieldState }) => (
                 <FormItem>
                   <div className="flex justify-between items-center">
