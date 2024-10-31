@@ -1,46 +1,25 @@
-import { Outlet, useLocation } from '@tanstack/react-router'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ValidRoutes } from '@/constants/paths'
-import { useTabs } from '@/hooks/useTabs'
+import SubRoutesManagement from '@/components/SubRoutesManagement'
+import { Tab } from '@/lib/utils'
 
 export default function StudentProcessManagement() {
-  const { pathname } = useLocation()
-  const { activeTab, handleChangeTab } = useTabs(pathname as ValidRoutes)
-
-  return (
-    <div className="w-full">
-      <Tabs value={activeTab} onValueChange={handleChangeTab}>
-        <TabsList className="h-full">
-          {tabs.map((tab) => (
-            <TabsTrigger value={tab.path} key={tab.path}>
-              {tab.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        <section className="mt-2">
-          <Outlet />
-        </section>
-      </Tabs>
-    </div>
-  )
-}
-
-type Tab = {
-  path: ValidRoutes
-  label: string
+  return <SubRoutesManagement tabs={tabs} />
 }
 
 const tabs: Tab[] = [
   {
     path: '/cursos',
     label: 'Cartas de Presentación',
+    permissions: [],
   },
+
   {
     path: '/cursos/alumnos-riesgo',
     label: 'Alumnos en Riesgo',
+    permissions: [],
   },
   {
     path: '/cursos/retiro-alumnos',
     label: 'Retiro de Alumnos',
+    permissions: [],
   },
 ]

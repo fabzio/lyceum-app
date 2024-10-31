@@ -3,7 +3,7 @@ import { useFilters } from '@/hooks/useFilters'
 import debounce from 'debounce'
 
 export default function SearchStudentInput() {
-  const { setFilters } = useFilters('/_auth/usuarios/')
+  const { setFilters } = useFilters('/_auth/usuarios/estudiantes')
 
   const onChangeFilter = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters({ q: e.target.value })

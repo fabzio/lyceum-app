@@ -1,6 +1,8 @@
-import MasiveStudentsDialog from "./components/MasiveStudentsDialog";
-import SearchStudentInput from "./components/SearchStudentInput";
-import StudentTable from "./components/StudentTable";
+import Need from '@/components/Need'
+import MasiveStudentsDialog from './components/MasiveStudentsDialog'
+import SearchStudentInput from './components/SearchStudentInput'
+import StudentTable from './components/StudentTable'
+import { UserPermissionsDict } from '@/interfaces/enums/permissions/Users'
 
 export default function StudentManagement() {
   return (
@@ -8,12 +10,16 @@ export default function StudentManagement() {
       <div className="w-full flex flex-col md:flex-row justify-between gap-4">
         <SearchStudentInput />
 
-        {/* TODO: Implementar NewStudentDialog*/
-        <div className="flex gap-2">
-          <MasiveStudentsDialog />
-        </div>}
+        {/* TODO: Implementar NewStudentDialog*/}
+        <Need permissions={[UserPermissionsDict.WRITE_STUDENTS]}>
+          <div className="flex gap-2">
+            <MasiveStudentsDialog />
+          </div>
+        </Need>
       </div>
-      <StudentTable />
+      <Need permissions={[UserPermissionsDict.READ_STUDENTS]}>
+        <StudentTable />
+      </Need>
     </div>
   )
 }

@@ -1,46 +1,31 @@
-import { Outlet, useLocation } from '@tanstack/react-router'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ValidRoutes } from '@/constants/paths'
-import { useTabs } from '@/hooks/useTabs'
+import SubRoutesManagement from '@/components/SubRoutesManagement'
+import { SecurityPermissionsDict } from '@/interfaces/enums/permissions/Security'
+import { Tab } from '@/lib/utils'
 
 export default function SecurityManagement() {
-  const { pathname } = useLocation()
-  const { activeTab, handleChangeTab } = useTabs(pathname as ValidRoutes)
-
-  return (
-    <div className="w-full">
-      <Tabs value={activeTab} onValueChange={handleChangeTab}>
-        <TabsList className="h-full">
-          {tabs.map((tab) => (
-            <TabsTrigger value={tab.path} key={tab.path}>
-              {tab.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        <section className="mt-2">
-          <Outlet />
-        </section>
-      </Tabs>
-    </div>
-  )
-}
-
-type Tab = {
-  path: ValidRoutes
-  label: string
+  return <SubRoutesManagement tabs={tabs} />
 }
 
 const tabs: Tab[] = [
   {
     path: '/seguridad/asignacion-roles',
     label: 'Asignar roles',
+    permissions: [
+      SecurityPermissionsDict.ASSING_ROLES,
+      SecurityPermissionsDict.READ_ASSIGN_ROLES,
+    ],
   },
   {
     path: '/seguridad/roles',
     label: 'Gestión de roles',
+    permissions: [
+      SecurityPermissionsDict.CREATE_ROLES,
+      SecurityPermissionsDict.READ_ROLES,
+    ],
   },
   {
     path: '/seguridad/permisos',
     label: 'Permisos',
+    permissions: [SecurityPermissionsDict.READ_PERMISSIONS],
   },
 ]

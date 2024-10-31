@@ -1,50 +1,39 @@
-import { Outlet, useLocation } from '@tanstack/react-router'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ValidRoutes } from '@/constants/paths'
-import { useTabs } from '@/hooks/useTabs'
+import SubRoutesManagement from '@/components/SubRoutesManagement'
+import { Tab } from '@/lib/utils'
+import { UserPermissionsDict } from '@/interfaces/enums/permissions/Users'
 
 export default function UserManagement() {
-  const { pathname } = useLocation()
-  const { activeTab, handleChangeTab } = useTabs(pathname as ValidRoutes)
 
-  return (
-    <div className="w-full">
-      <Tabs value={activeTab} onValueChange={handleChangeTab}>
-        <TabsList className="h-full ">
-          {tabs.map((tab) => (
-            <TabsTrigger value={tab.path} key={tab.path}>
-              {tab.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        <section className="mt-2">
-          <Outlet />
-        </section>
-      </Tabs>
-    </div>
-  )
+  return <SubRoutesManagement tabs={tabs} />
 }
-
-type Tab = {
-  path: ValidRoutes
-  label: string
-}
-
 const tabs: Tab[] = [
   {
-    path: '/usuarios',
+    path: '/usuarios/estudiantes',
     label: 'Estudiantes',
+    permissions: [
+      UserPermissionsDict.READ_STUDENTS,
+      UserPermissionsDict.WRITE_STUDENTS,
+    ],
   },
   {
     path: '/usuarios/docentes',
     label: 'Docentes',
+    permissions: [
+      UserPermissionsDict.READ_PROFESSORS,
+      UserPermissionsDict.WRITE_PROFESSORS,
+    ],
   },
   {
     path: '/usuarios/administrativos',
     label: 'Administrativos',
+    permissions: [
+      UserPermissionsDict.READ_ADMINISTRIVES,
+      UserPermissionsDict.WRITE_ADMINISTRIVES,
+    ],
   },
   {
     path: '/usuarios/externos',
     label: 'Externos',
+    permissions: [UserPermissionsDict.READ_EXTERNALS],
   },
 ]
