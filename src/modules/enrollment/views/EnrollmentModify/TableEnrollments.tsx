@@ -30,7 +30,7 @@ export default function TableEnrollments({
   tableEnrollments,
 }: TableEnrollmentsProps) {
   const navigate = useNavigate({
-    from: '/matricula',
+    from: '/matricula/modificacion-matricula',
   })
   const OnRowClick = (enrollment: EnrollmentGeneral) => {
     console.log(enrollment.requestNumber)

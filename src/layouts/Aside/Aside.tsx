@@ -4,7 +4,6 @@ import { StudyPlanModule } from '@/modules/study-plans/study-plan.module'
 import { useSessionStore } from '@/store'
 import {
   Building2,
-  CalendarRange,
   Home,
   MessageCircleQuestion,
 } from 'lucide-react'
@@ -14,6 +13,7 @@ import { PermissionCode } from '@/interfaces/enums/permissions'
 import { SecurityModule } from '@/modules/security/security.module'
 import { UserModule } from '@/modules/users/users.module'
 import { CoursesModule } from '@/modules/courses/courses.module'
+import { EnrollmentModule } from '@/modules/enrollment/enrollment.module'
 
 export default function Aside() {
   const { getAllowedModules } = useSessionStore()
@@ -90,11 +90,11 @@ const asideElements: AsideElement[] = [
     submodules: ThesisModule.submodules,
   },
   {
-    icon: <CalendarRange />,
-    path: '/matricula',
-    label: 'Solicitudes de Matricula',
-    moduleCode: ModulesDict.ENROLLMENT,
-    submodules: [],
+    icon: EnrollmentModule.icon,
+    path: EnrollmentModule.path,
+    label: EnrollmentModule.label,
+    moduleCode: EnrollmentModule.code,
+    submodules: EnrollmentModule.submodules,
   },
   {
     icon: StudyPlanModule.icon!,

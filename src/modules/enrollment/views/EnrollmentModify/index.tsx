@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import EnrollmentService from '@/modules/enrollment/services/enrollment.service'
 import TableEnrollments from './TableEnrollments'
 import { QueryKeys } from '@/constants/queryKeys'
+import Need from '@/components/Need'
+import { EnrollmentPermissionsDict } from '@/interfaces/enums/permissions/Enrollment'
 
 export default function EnrollmentModify() {
   const { data: enrollments } = useSuspenseQuery({
@@ -17,9 +19,17 @@ export default function EnrollmentModify() {
         <div className="flex gap-2">
           <SelectFilter filterType="ReasonFilter" />
         </div>
-        <Button className="w-full md:w-auto">Nueva Solicitud</Button>
+        <Need
+          permissions={EnrollmentPermissionsDict.REQUEST_ADITIONAL_ENROLLMENT}
+        >
+          <Button className="w-full md:w-auto">Nueva Solicitud</Button>
+        </Need>
       </div>
-      <TableEnrollments tableEnrollments={enrollments} />
+      <Need
+        permissions={EnrollmentPermissionsDict.REVIEW_ADDITIONAL_ENROLLMENT}
+      >
+        <TableEnrollments tableEnrollments={enrollments} />
+      </Need>
     </div>
   )
 }

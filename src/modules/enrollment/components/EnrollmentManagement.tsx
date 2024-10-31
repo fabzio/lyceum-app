@@ -7,7 +7,7 @@ export default function EnrollmentManagement() {
 
 const tabs: Tab[] = [
   {
-    path: '/matricula',
+    path: '/matricula/modificacion-matricula',
     label: 'Modificación de matrícula',
     permissions: [],
   },
