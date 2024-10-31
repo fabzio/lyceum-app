@@ -41,6 +41,9 @@ export default function RolePermissionForm({ handleClose }: Props) {
   const form = useForm<z.infer<typeof newRoleSchema>>({
     resolver: zodResolver(newRoleSchema),
     shouldUnregister: true,
+    defaultValues: {
+      name: '',
+    },
   })
   const { control, handleSubmit } = form
   const { fields, append, remove } = useFieldArray({

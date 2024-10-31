@@ -3,6 +3,8 @@ import UploadCSVDialog from './components/UploadCSVDialog'
 import UpdateConfirmationDialog from './components/UpdateConfirmationDialog'
 import RiskStudentTable from './components/RiskStudentTable'
 import SearchRiskStudentInput from './components/SearchRiskStudentInput'
+import Need from '@/components/Need'
+import { StudentProcessPermissionsDict } from '@/interfaces/enums/permissions/StudentProcess'
 
 export default function RiskStudents() {
   //ANOTACION 1: FALTA FILTRAR POR NOTAS : "Listo Filtrar por Puntacion"
@@ -17,11 +19,21 @@ export default function RiskStudents() {
           <SelectFilter filterType="ScoreFilter" />
         </div>
         <div className="flex gap-2">
-          <UpdateConfirmationDialog />
-          <UploadCSVDialog />
+          <Need
+            permissions={
+              StudentProcessPermissionsDict.REQUEST_RISK_STUDENT_REPORT
+            }
+          >
+            <UpdateConfirmationDialog />
+          </Need>
+          <Need permissions={StudentProcessPermissionsDict.LOAD_RISK_STUDENTS}>
+            <UploadCSVDialog />
+          </Need>
         </div>
       </div>
-      <RiskStudentTable />
+      <Need permissions={StudentProcessPermissionsDict.READ_RISK_STUDENTS}>
+        <RiskStudentTable />
+      </Need>
     </div>
   )
 }
