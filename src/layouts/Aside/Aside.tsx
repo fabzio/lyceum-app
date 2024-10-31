@@ -2,18 +2,14 @@ import { ValidRoutes } from '@/constants/paths'
 import { ModulesDict } from '@/interfaces/enums/modules'
 import { StudyPlanModule } from '@/modules/study-plans/study-plan.module'
 import { useSessionStore } from '@/store'
-import {
-  Building2,
-  CalendarRange,
-  Home,
-  MessageCircleQuestion,
-} from 'lucide-react'
+import { Building2, Home, MessageCircleQuestion } from 'lucide-react'
 import AsideDesktop from './AsideDesktop'
 import { ThesisModule } from '@/modules/thesis/thesis.module'
 import { PermissionCode } from '@/interfaces/enums/permissions'
 import { SecurityModule } from '@/modules/security/security.module'
 import { UserModule } from '@/modules/users/users.module'
-import { CoursesModule } from '@/modules/courses/courses.module'
+import { StudentProcessModule } from '@/modules/student-process/student-process.module'
+import { EnrollmentModule } from '@/modules/enrollment/enrollment.module'
 
 export default function Aside() {
   const { getAllowedModules } = useSessionStore()
@@ -76,11 +72,11 @@ const asideElements: AsideElement[] = [
     submodules: [],
   },
   {
-    icon: CoursesModule.icon,
-    path: CoursesModule.path,
-    label: CoursesModule.label,
-    moduleCode: CoursesModule.code,
-    submodules: CoursesModule.submodules,
+    icon: StudentProcessModule.icon,
+    path: StudentProcessModule.path,
+    label: StudentProcessModule.label,
+    moduleCode: StudentProcessModule.code,
+    submodules: StudentProcessModule.submodules,
   },
   {
     icon: ThesisModule.icon,
@@ -90,11 +86,11 @@ const asideElements: AsideElement[] = [
     submodules: ThesisModule.submodules,
   },
   {
-    icon: <CalendarRange />,
-    path: '/matricula',
-    label: 'Solicitudes de Matricula',
-    moduleCode: ModulesDict.ENROLLMENT,
-    submodules: [],
+    icon: EnrollmentModule.icon,
+    path: EnrollmentModule.path,
+    label: EnrollmentModule.label,
+    moduleCode: EnrollmentModule.code,
+    submodules: EnrollmentModule.submodules,
   },
   {
     icon: StudyPlanModule.icon!,

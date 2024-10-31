@@ -1,27 +1,14 @@
 import { Tab } from '@/lib/utils'
-import { StudyPlanPermissionsDict } from '@/interfaces/enums/permissions/StudyPlan'
 
 import SubRoutesManagement from '@/components/SubRoutesManagement'
+import { StudyPlanModule } from '../study-plan.module'
 
 export default function StudyPlansManagment() {
   return <SubRoutesManagement tabs={tabs} />
 }
 
-const tabs: Tab[] = [
-  {
-    path: '/plan-de-estudios/cursos',
-    label: 'Gestión de cursos',
-    permissions: [
-      StudyPlanPermissionsDict.MANAGE_COURSES,
-      StudyPlanPermissionsDict.READ_COURSES,
-    ],
-  },
-  {
-    path: '/plan-de-estudios/gestionar',
-    label: 'Gestión de plan de estudios',
-    permissions: [
-      StudyPlanPermissionsDict.MANAGE_STUDY_PLAN,
-      StudyPlanPermissionsDict.READ_STUDY_PLAN,
-    ],
-  },
-]
+const tabs: Tab[] = StudyPlanModule.submodules.map((submodule) => ({
+  label: submodule.label,
+  path: submodule.path,
+  permissions: submodule.permissions,
+}))

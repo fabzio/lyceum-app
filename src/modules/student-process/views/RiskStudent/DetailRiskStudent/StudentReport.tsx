@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { QueryKeys } from '@/constants/queryKeys'
-import RiskStudentService from '@/modules/courses/services/riskStudent.service'
+import RiskStudentService from '@/modules/student-process/services/riskStudent.service'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { useParams, useSearch } from '@tanstack/react-router'
 import NewReportDialog from './components/NewReportDialog'
@@ -8,6 +8,8 @@ import { Separator } from '@/components/ui/separator'
 import { Label } from '@/components/ui/label'
 import ReportDetail from './components/ReportDetail'
 import RiskStudentTrack from './components/RiskStudentTrack'
+import Need from '@/components/Need'
+import { StudentProcessPermissionsDict } from '@/interfaces/enums/permissions/StudentProcess'
 
 export default function StudentReport() {
   const { code } = useParams({
@@ -35,9 +37,15 @@ export default function StudentReport() {
               No se ha solicitado un nuevo reporte
             </Button>
           ) : (
-            <div className="flex justify-center ">
-              <NewReportDialog />
-            </div>
+            <Need
+              permissions={
+                StudentProcessPermissionsDict.UPDATE_RISK_STUDENT_REPORT
+              }
+            >
+              <div className="flex justify-center ">
+                <NewReportDialog />
+              </div>
+            </Need>
           )}
         </div>
       </div>

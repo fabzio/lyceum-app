@@ -1,4 +1,4 @@
-import { RiskStudentGeneral } from '@/modules/courses/interfaces/RIskStudentGeneral'
+import { RiskStudentGeneral } from '@/modules/student-process/interfaces/RIskStudentGeneral'
 import { ColumnDef } from '@tanstack/react-table'
 
 export const riskStudentColumns: ColumnDef<RiskStudentGeneral>[] = [

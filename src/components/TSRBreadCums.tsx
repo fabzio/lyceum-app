@@ -6,6 +6,7 @@ import {
   BreadcrumbSeparator,
 } from './ui/breadcrumb'
 import { Link } from '@tanstack/react-router'
+import { Fragment } from 'react/jsx-runtime'
 
 export default function TSRBreadCums() {
   const { breadcrumbRoutes } = useTSRBreadCums()
@@ -25,12 +26,12 @@ export default function TSRBreadCums() {
             .replace(/-/g, ' ')
             .replace(/^./, (char) => char.toUpperCase())
           return (
-            <>
-              <BreadcrumbItem key={index}>
+            <Fragment key={route.path}>
+              <BreadcrumbItem>
                 <Link to={route.path}>{label}</Link>
               </BreadcrumbItem>
               {index < breadcrumbRoutes.length - 1 && <BreadcrumbSeparator />}
-            </>
+            </Fragment>
           )
         })}
       </BreadcrumbList>

@@ -4,10 +4,10 @@ import DataTable from '@/components/DataTable'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { QueryKeys } from '@/constants/queryKeys'
 import { useFilters } from '@/hooks/useFilters'
-import RiskStudentService from '@/modules/courses/services/riskStudent.service'
+import RiskStudentService from '@/modules/student-process/services/riskStudent.service'
 import { sortByToState, stateToSortBy } from '@/lib/table'
 import { useNavigate } from '@tanstack/react-router'
-import { RiskStudentGeneral } from '@/modules/courses/interfaces/RIskStudentGeneral'
+import { RiskStudentGeneral } from '@/modules/student-process/interfaces/RIskStudentGeneral'
 
 const DEFAULT_PAGE_INDEX = 0
 const DEFAULT_PAGE_SIZE = 5

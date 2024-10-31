@@ -16,8 +16,8 @@ import {
   PaginationPrevious,
   PaginationContent,
 } from '@/components/ui/pagination'
-import { RiskStudentGeneral } from '@/modules/courses/interfaces/RIskStudentGeneral'
-import useCourseStore from '@/modules/courses/store'
+import { RiskStudentGeneral } from '@/modules/student-process/interfaces/RIskStudentGeneral'
+import useCourseStore from '@/modules/student-process/store'
 
 interface TableRiskStudentsProps {
   tableRiskStudents: RiskStudentGeneral[]
