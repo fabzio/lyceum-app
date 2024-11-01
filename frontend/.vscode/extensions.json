@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "vivaxy.vscode-conventional-commits",
+    "esbenp.prettier-vscode",
+    "yoavbls.pretty-ts-errors",
+    "bradlc.vscode-tailwindcss",
+    "eamodio.gitlens",
+    "usernamehw.errorlens",
+    "formulahendry.auto-close-tag",
+    "pkief.material-icon-theme",
+    "gruntfuggly.todo-tree"
+  ]
+}
