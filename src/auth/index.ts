@@ -5,7 +5,12 @@ import { Hono } from 'hono'
 import { deleteCookie, setCookie } from 'hono/cookie'
 import { sign } from 'hono/jwt'
 import { authMiddleware } from './authMiddleware'
+import { CookieOptions } from 'hono/utils/cookie'
 
+const cookieOptions: CookieOptions = {
+  sameSite: 'Lax',
+  httpOnly: true,
+}
 export const oauthRoute = new Hono()
   .get('/', async (c) => {
     const token = c.get('token')
@@ -30,7 +35,8 @@ export const oauthRoute = new Hono()
             iat: Math.floor(Date.now() / 1000),
           },
           SECRET_KEY!
-        )
+        ),
+        cookieOptions
       )
       return c.redirect(`${FRONT_END_URL}`)
     } catch (error) {
@@ -68,7 +74,8 @@ export const authRoute = new Hono().get(
           iat: Math.floor(Date.now() / 1000),
         },
         SECRET_KEY!
-      )
+      ),
+      cookieOptions
     )
     return c.json({ data: updatedData, message: 'Authorized', success: true })
   }

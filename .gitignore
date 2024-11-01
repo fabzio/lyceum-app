@@ -173,3 +173,4 @@ dist
 #migrations
 
 src/database/migrations
+frontend/src/routeTree.gen.ts

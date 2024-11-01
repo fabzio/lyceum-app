@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.4
 FROM oven/bun AS build 
 
 WORKDIR /app
