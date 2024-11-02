@@ -4,6 +4,7 @@ import { zValidator } from '@hono/zod-validator'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
 import {
   insertCourseToSchPropDTO,
+  insertScheduleProposalDTO,
   updateScheduleProposalStatusDTO,
   updateCoursesOfASchPropDTO,
 } from '../dtos'
@@ -68,6 +69,30 @@ class ScheduleProposalController {
           message: 'Status updated successfully',
           success: true,
         })
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public insertScheduleProposal = this.router.post(
+    '/',
+    zValidator('json', insertScheduleProposalDTO),
+    async (c) => {
+      const { facultyId, accountId } = c.req.valid('json')
+      try {
+        const response: ResponseAPI = {
+          data: await this.scheduleProposalService.insertScheduleProposal(
+            facultyId,
+            accountId
+          ),
+          message: 'Schedule Proposal created successfully',
+          success: true,
+        }
+        return c.json(response)
       } catch (error) {
         if (error instanceof LyceumError) {
           c.status(error.code)

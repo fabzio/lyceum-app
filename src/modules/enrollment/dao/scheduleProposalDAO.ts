@@ -14,6 +14,8 @@ export interface ScheduleProposalDAO {
     newStatus: 'requested' | 'sended' | 'aproved' | 'assigned'
   ): Promise<void>
 
+  insertScheduleProposal(facultyId: number, accountId: string): Promise<void>
+
   updateCoursesInScheduleProposal(
     enrollmentProposalId: number,
     coursesList: {
