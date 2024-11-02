@@ -1,8 +1,11 @@
 import { Hono } from 'hono'
-import { EnrollmentModificationDAO } from '../dao/enrollmentModificationDAO'
+import { EnrollmentModificationDAO } from '../dao/EnrollmentModificationDAO'
 import { EnrollmentModificationsService } from '../services'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
+import { enrollmentModificationsSchema } from '@/database/schema/enrollmentModifications'
+import { LyceumError } from '@/middlewares/errorMiddlewares'
+import { createEnrollmentModifications } from '../dtos'
 
 class EnrollmentModificationController {
   private router = new Hono()
@@ -54,6 +57,27 @@ class EnrollmentModificationController {
         data: null,
       }
       return c.json(response)
+    }
+  )
+
+  public createEnrollment = this.router.post(
+    '/',
+    zValidator('json', createEnrollmentModifications),
+    async (c) => {
+      const newEnrollmentModify = c.req.valid('json')
+      try {
+        const response: ResponseAPI = {
+          data: await this.enrollmentService.createEnrollmentRequest(
+            newEnrollmentModify
+          ),
+          message: 'Request created',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) c.status(error.code)
+        throw error
+      }
     }
   )
 }

@@ -43,4 +43,12 @@ export interface EnrollmentModificationDAO {
     EnrollmentModificationsSchema,
     'requestNumber' | 'state'
   >): Promise<void>
+  createEnrollmentRequest({
+    reason,
+    requestType,
+    scheduleId,
+    studentId,
+  }: Omit<EnrollmentModificationsSchema, 'requestNumber' | ''>): Promise<
+    EnrollmentModificationsSchema['requestNumber']
+  >
 }

@@ -5,9 +5,10 @@ import {
   courses,
   schedules,
   units,
+  terms,
 } from '@/database/schema'
-import { aliasedTable, eq, sql } from 'drizzle-orm'
-import { EnrollmentModificationDAO } from '../dao/enrollmentModificationDAO'
+import { aliasedTable, desc, eq, sql } from 'drizzle-orm'
+import { EnrollmentModificationDAO } from '../dao/EnrollmentModificationDAO'
 import { EnrollmentModificationsSchema } from '@/database/schema/enrollmentModifications'
 
 class EnrollmentModificationService implements EnrollmentModificationDAO {
@@ -88,6 +89,47 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
         state,
       })
       .where(eq(enrollmentModifications.requestNumber, requestNumber))
+  }
+  public async createEnrollmentRequest({
+    reason,
+    requestType,
+    scheduleId,
+    studentId,
+  }: Omit<EnrollmentModificationsSchema, 'requestNumber' | ''>) {
+    const currentTerm = await db
+      .select({
+        termId: terms.name,
+      })
+      .from(terms)
+      .where(eq(terms.current, true))
+    if (!currentTerm) {
+      throw new Error('No current term found')
+    }
+    const lastCode = await db
+      .select({
+        requestNumber: enrollmentModifications.requestNumber,
+      })
+      .from(enrollmentModifications)
+      .orderBy(desc(enrollmentModifications.requestNumber))
+      .limit(1)
+
+    const [year, term] = currentTerm[0].termId.split('-')
+    let newCode: number
+    if (lastCode.length === 0) {
+      newCode = parseInt(`${year}${term}0000`)
+    } else {
+      newCode = lastCode[0].requestNumber + 1
+    }
+
+    await db.insert(enrollmentModifications).values({
+      requestNumber: newCode,
+      reason,
+      requestType,
+      scheduleId,
+      studentId,
+    })
+
+    return newCode
   }
 }
 
