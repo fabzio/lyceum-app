@@ -42,5 +42,6 @@ export const QueryKeys = {
     PROFESSORS: 'professors',
     ADMINISTRATIVES: 'administratives',
     EXTERNS: 'externs',
+    GENERIC: 'generic',
   },
 }

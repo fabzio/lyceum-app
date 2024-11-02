@@ -1,3 +1,4 @@
+/*
 import ExpandibleAsidebar from '@frontend/components/ExpandibleAsidebar'
 import { Button } from '@frontend/components/ui/button'
 import { Input } from '@frontend/components/ui/input'
@@ -34,3 +35,4 @@ export default function EnrollmentModifyAside() {
     </ExpandibleAsidebar>
   )
 }
+*/

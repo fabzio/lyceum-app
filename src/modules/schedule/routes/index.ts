@@ -1,0 +1,1 @@
+export { default as ScheduleGenericRoute } from './scheduleGeneric.route'

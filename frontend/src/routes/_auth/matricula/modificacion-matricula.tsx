@@ -4,7 +4,7 @@ import { haveSomePermission } from '@frontend/lib/utils'
 import EnrollmentService from '@frontend/modules/enrollment/services/enrollment.service'
 import EnrollmentModify from '@frontend/modules/enrollment/views/EnrollmentModify'
 import { createFileRoute, redirect } from '@tanstack/react-router'
-
+import { EnrollmentFilters } from '@frontend/modules/enrollment/interfaces/EnrollmentFilters'
 export const Route = createFileRoute('/_auth/matricula/modificacion-matricula')(
   {
     beforeLoad: ({ context: { sessionStore } }) => {
@@ -22,10 +22,11 @@ export const Route = createFileRoute('/_auth/matricula/modificacion-matricula')(
     },
     loader: async ({ context: { queryClient } }) => {
       return queryClient.ensureQueryData({
-        queryKey: [QueryKeys.enrollment.ENROLLMENTS_MODIFY],
-        queryFn: () => EnrollmentService.getAllEnrollments(),
+        queryKey: [QueryKeys.enrollment.ENROLLMENTS_MODIFY, {}],
+        queryFn: () => EnrollmentService.getAllEnrollments({}),
       })
     },
+    validateSearch: () => ({}) as EnrollmentFilters,
     component: () => <EnrollmentModify />,
   }
 )

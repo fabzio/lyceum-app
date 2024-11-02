@@ -1,18 +1,50 @@
 import http from '@frontend/lib/http'
 import { EnrollmentGeneral } from '../interfaces/EnrollmentGeneral'
+import { EnrollmentModification } from '../interfaces/EnrollmentModification';
+import axios from 'axios';
+import { Filters } from '@frontend/interfaces/types';
 
 class EnrollmentService {
-  public static async getAllEnrollments(): Promise<EnrollmentGeneral[]> {
+
+  public static async insertEnroll(enrollment: EnrollmentModification): Promise<void> {
     try {
-      const res = await http.get('/enrollment/modifications')
-      const response = res.data as ResponseAPI
+        // Realizamos la petición POST al endpoint /enrollment
+        const res = await http.post('/enrollment/modifications', enrollment);
+        const response = res.data as ResponseAPI;
+
+        // Verificamos si la respuesta indica éxito
+        if (!response.success) {
+            throw new Error(response.message);
+        }
+    } catch (error) {
+        // Manejo de errores de Axios
+        if (axios.isAxiosError(error)) {
+            throw new Error(error.response?.data.message || error.message);
+        }
+        throw error; // Re-lanzamos el error si no es de Axios
+    }
+}
+
+  public static async getAllEnrollments( filtersAndPagination: Filters): Promise<PaginatedData<EnrollmentGeneral>> {
+    try {
+      const res = await http.get('/enrollment/modifications/paginated', {
+        params: {
+          q: filtersAndPagination.q || '',
+          page: filtersAndPagination.pageIndex || 0,
+          limit: filtersAndPagination.pageSize || 5,
+          sortBy: filtersAndPagination.sortBy || 'requestNumber.asc',
+        },
+      })
+      const response = res.data as ResponseAPI<PaginatedData<EnrollmentGeneral>>
       if (!response.success) {
         throw new Error('Error')
       }
-      return response.data as EnrollmentGeneral[]
+      return response.data;
     } catch (error) {
-      console.error(error)
-      return []
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message);
+      }
+      throw error;
     }
   }
 

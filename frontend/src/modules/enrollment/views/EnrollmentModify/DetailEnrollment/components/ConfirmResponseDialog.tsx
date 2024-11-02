@@ -48,7 +48,7 @@ export default function ConfirmResponseDialog({ response }: Props) {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {response === 'approved' ? (
-          <Button>Aprovar</Button>
+          <Button>Aprobar</Button>
         ) : (
           <Button variant="secondary">Rechazar</Button>
         )}
