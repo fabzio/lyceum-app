@@ -1,12 +1,12 @@
 //import { Input } from '@frontend/components/ui/input'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import SelectFilter from './SelectFilter'
-import { Button } from '@frontend/components/ui/button'
 import EnrollmentService from '@frontend/modules/enrollment/services/enrollment.service'
 import TableEnrollments from './TableEnrollments'
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import Need from '@frontend/components/Need'
 import { EnrollmentPermissionsDict } from '@frontend/interfaces/enums/permissions/Enrollment'
+import NewEnrollmentModification from './components/NewEnrollmentModification'
 
 export default function EnrollmentModify() {
   const { data: enrollments } = useSuspenseQuery({
@@ -22,7 +22,7 @@ export default function EnrollmentModify() {
         <Need
           permissions={EnrollmentPermissionsDict.REQUEST_ADITIONAL_ENROLLMENT}
         >
-          <Button className="w-full md:w-auto">Nueva Solicitud</Button>
+          <NewEnrollmentModification />
         </Need>
       </div>
       <Need

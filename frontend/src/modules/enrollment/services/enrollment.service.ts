@@ -1,5 +1,7 @@
 import http from '@frontend/lib/http'
 import { EnrollmentGeneral } from '../interfaces/EnrollmentGeneral'
+import axios from 'axios'
+import { Account } from '@frontend/interfaces/models/Account'
 
 class EnrollmentService {
   public static async getAllEnrollments(): Promise<EnrollmentGeneral[]> {
@@ -50,6 +52,37 @@ class EnrollmentService {
     } catch (error) {
       console.error(error)
       throw new Error('Failed to update enrollment request data')
+    }
+  }
+
+  public static async createEnrollmentModification({
+    scheduleId,
+    reason,
+    requestType,
+    studentId,
+  }: {
+    studentId: Account['id']
+    scheduleId: number
+    requestType: 'aditional' | 'withdrawal'
+    reason: string
+  }) {
+    try {
+      const res = await http.post('/enrollment/modifications', {
+        scheduleId,
+        reason,
+        requestType,
+        studentId,
+      })
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data as EnrollmentGeneral
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
     }
   }
 }

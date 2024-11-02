@@ -1,4 +1,4 @@
-import { MutationFunction, useMutation } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { Input } from '../ui/input'
 import debounce from 'debounce'
 import { Loader2, X } from 'lucide-react'
@@ -8,12 +8,13 @@ import { useState } from 'react'
 
 interface Props<T> {
   placeholder?: string
-  searchFn: MutationFunction<T[], string>
+  searchFn: (q: string) => Promise<T[]>
   handleSelect: (value: T | null) => void
   renderOption: (item: T) => React.ReactNode
   renderSelected: (item: T) => React.ReactNode
   className?: string
 }
+
 export default function QuickSearchInput<T>({
   handleSelect,
   searchFn,
@@ -69,7 +70,7 @@ export default function QuickSearchInput<T>({
             </li>
           )}
           {isSuccess &&
-            data.map((item: T, idx) => (
+            data?.map((item: T, idx) => (
               <li key={idx} className="w-full" onClick={() => onSelect(item)}>
                 {renderOption(item)}
               </li>
