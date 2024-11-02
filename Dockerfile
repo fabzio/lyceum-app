@@ -3,34 +3,40 @@ FROM oven/bun AS build
 
 WORKDIR /app
 
-COPY bun.lockb .
-COPY package.json .
-COPY tsconfig.json .
+# Copiar archivos de configuración y código fuente
+COPY bun.lockb ./
+COPY package.json ./
+COPY tsconfig.json ./
+COPY src ./src
+COPY frontend ./frontend
+
+# Instalar dependencias de backend
 RUN bun install --frozen-lockfile
 
-COPY src ./src
+# Instalar dependencias de frontend
+WORKDIR /app/frontend
+RUN bun install --ci
 
+# Construir el backend
 ENV NODE_ENV=production
+WORKDIR /app
 RUN bun build ./src/server.ts --compile --outfile cli
 
-# Install frontend node modules
-COPY frontend/bun.lockb frontend/package.json ./frontend/
-RUN cd frontend && bun install --ci
-
-# Copy application code
-COPY . .
-
-# Change to frontend directory and build the frontend app
+# Construir el frontend
 WORKDIR /app/frontend
 RUN bun run build
-# Remove all files in frontend except for the dist folder
-RUN find . -mindepth 1 ! -regex '^./dist\(/ .* \)?' -delete
 
+# Etapa de producción
 FROM ubuntu:latest
 
 WORKDIR /app
-# copy the compiled binary from the build image
+
+# Copiar el binario del backend y los assets del frontend
 COPY --from=build /app/cli /app/cli
 COPY --from=build /app/frontend/dist /app/frontend/dist
+
+# Exponer el puerto adecuado
 EXPOSE 8080
+
+# Comando de inicio
 ENTRYPOINT ["/app/cli"]

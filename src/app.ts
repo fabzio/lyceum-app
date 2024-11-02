@@ -3,7 +3,7 @@ import { logger } from 'hono/logger'
 import { prettyJSON } from 'hono/pretty-json'
 import { errorHandler, notFound } from './middlewares'
 import { Route } from './interfaces/route'
-import {  G_CLIENT_ID, G_CLIENT_SECRET, PORT } from './config'
+import { G_CLIENT_ID, G_CLIENT_SECRET, PORT } from './config'
 import { showRoutes } from 'hono/dev'
 import { googleAuth } from '@hono/oauth-providers/google'
 import { authRoute, oauthRoute } from './auth'
@@ -46,6 +46,7 @@ class App {
 
   private initializeRoutes(routes: Route[]) {
     const lyceumRoutes = new Hono().basePath('/api/v1')
+    lyceumRoutes.get('/', (c) => c.json({ message: 'Welcome to Lyceum API' }))
     routes.forEach((route) => {
       console.log(`Route ${route.path} initialized`)
       lyceumRoutes.route(route.path, route.router)
