@@ -1,3 +1,5 @@
-export { InsertCourseToSchPropDTO } from './scheduleProposalDTO'
+export { insertCourseToSchPropDTO } from './scheduleProposalDTO'
 export { insertProfesorToSchDTO } from './scheduleDistributionDTO'
 export { changeStateToApprovedDTO } from './enrollmentApprovalDTO'
+export { updateCoursesOfASchPropDTO } from './scheduleProposalDTO'
+export { updateScheduleProposalStatusDTO } from './scheduleProposalDTO'

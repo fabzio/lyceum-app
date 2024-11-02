@@ -1,5 +1,6 @@
 import { Route } from '@/interfaces/route'
 import { Hono } from 'hono'
+
 import { ScheduleProposalController } from '../controllers'
 
 class ScheduleProposalRoute implements Route {
@@ -15,8 +16,8 @@ class ScheduleProposalRoute implements Route {
   private initializeRoutes() {
     this.router.route(
       '/',
-      this.scheduleProposalController.insertCourseToScheduleProposal,
-      
+      this.scheduleProposalController.insertCourseToScheduleProposal //Ya no agregar las demás funciones del controlador
+      //con que esté el primero ya se jalan los demás
     )
   }
 }

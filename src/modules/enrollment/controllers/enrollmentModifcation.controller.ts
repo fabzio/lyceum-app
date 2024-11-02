@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { EnrollmentModificationDAO } from '../dao/EnrollmentModificationDAO'
+import { EnrollmentModificationDAO } from '../dao/enrollmentModificationDAO'
 import { EnrollmentModificationsService } from '../services'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
