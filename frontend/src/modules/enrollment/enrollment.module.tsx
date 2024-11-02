@@ -18,6 +18,7 @@ export const EnrollmentModule: AppModule = {
         EnrollmentPermissionsDict.REVIEW_ADDITIONAL_ENROLLMENT,
       ],
     },
+    //TODO: Por que no aparece en el menu?
     {
       label: 'Propuesta de Horarios',
       path: '/matricula/propuesta-horarios',
