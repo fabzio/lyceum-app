@@ -13,7 +13,7 @@ interface Props {
 
 export default function GeneralInfo({ administative, refSubmitButtom }: Props) {
   const { mode } = useSearch({
-    from: '/_auth/usuarios/administativos/$code',
+    from: '/_auth/usuarios/administrativos/$code',
   })
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: administative,

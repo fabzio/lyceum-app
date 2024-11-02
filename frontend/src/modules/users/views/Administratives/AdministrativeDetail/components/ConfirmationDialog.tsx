@@ -17,22 +17,22 @@ interface Props {
 
 export default function ConfirmationDialog({ refSubmitButtom }: Props) {
   const { code } = useParams({
-    from: '/_auth/usuarios/administativos/$code',
+    from: '/_auth/usuarios/administrativos/$code',
   })
   const navigate = useNavigate({
-    from: '/usuarios/administativos/$code',
+    from: '/usuarios/administrativos/$code',
   })
 
   const [isOpen, setIsOpen] = useState(false)
   const { mode } = useSearch({
-    from: '/_auth/usuarios/administativos/$code',
+    from: '/_auth/usuarios/administrativos/$code',
   })
 
   const handleSubmit = () => {
     console.log(mode)
     refSubmitButtom.current?.click()
     navigate({
-      to: '/usuarios/administativos/$code',
+      to: '/usuarios/administrativos/$code',
       params: { code },
       search: { mode: 'view' },
     })

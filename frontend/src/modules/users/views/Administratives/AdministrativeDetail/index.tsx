@@ -9,7 +9,7 @@ import GeneralInfo from './components/GeneralInfo'
 
 export default function AdministrativeDetail() {
   const { code } = useParams({
-    from: '/_auth/usuarios/administativos/$code',
+    from: '/_auth/usuarios/administrativos/$code',
   })
   const { data: administative } = useSuspenseQuery({
     queryKey: [QueryKeys.users.ADMINISTRATIVES, code],

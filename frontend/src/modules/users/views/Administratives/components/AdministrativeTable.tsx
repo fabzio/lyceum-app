@@ -54,7 +54,7 @@ export default function AdministrativeTable() {
         }}
         onRowClick={(administativo) =>
           navigate({
-            to: '/usuarios/administativos/$code',
+            to: '/usuarios/administrativos/$code',
             params: { code: administativo.code },
             search: {
               mode: 'view',
