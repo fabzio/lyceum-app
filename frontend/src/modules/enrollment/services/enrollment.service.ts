@@ -1,5 +1,7 @@
 import http from '@frontend/lib/http'
 import { EnrollmentGeneral } from '../interfaces/EnrollmentGeneral'
+import EnrollmentProposal from '../interfaces/EnrollmentProposal'
+import { CourseProposalVisibility } from '../interfaces/CourseProposal'
 import { EnrollmentModification } from '../interfaces/EnrollmentModification'
 import axios from 'axios'
 import { Filters } from '@frontend/interfaces/types'
@@ -85,6 +87,70 @@ class EnrollmentService {
     } catch (error) {
       console.error(error)
       throw new Error('Failed to update enrollment request data')
+    }
+  }
+
+  public static async getEnrollmentProposals({
+    facultyId,
+    filters
+  }: {
+    facultyId: number,
+    filters: any
+  }): Promise<PaginatedData<EnrollmentProposal>>{
+    try {
+      // const res = await http.get(`/enrollment/scheduleProposal/${facultyId}`)
+
+      //TODO: Borrar las tres lineas de abajo porque son para que no bote error
+      let a = facultyId
+      facultyId = a
+      a = filters
+
+      const res = {
+        data:{
+          data:{
+            result:[{
+          courseId: 101,
+          courseName: "Advanced Business Studies",
+          schedules: [
+            {
+              code: "BUS101-M1",
+              courseId: "BUS101",
+              courseName: "Business Management I",
+              vacants: 25,
+              visibility: CourseProposalVisibility.visible
+            },
+            {
+              code: "FIN202-A1",
+              courseId: "FIN202",
+              courseName: "Financial Analysis II",
+              vacants: 30,
+              visibility: CourseProposalVisibility.hidden
+            },
+            {
+              code: "MKT303-E1",
+              courseId: "MKT303",
+              courseName: "Marketing Strategies",
+              vacants: 20,
+              visibility: CourseProposalVisibility.visible
+            }
+          ]
+          }],
+        rowCount: 50,
+        currentPage: 1,
+        totalPages: 1,
+        hasNext: false}
+  },
+        message:'Mock data',
+        success:true}
+      
+      const response = res.data as ResponseAPI<PaginatedData<EnrollmentProposal>>
+      // if (!response.success) {
+      //   throw new Error('Error')
+      // }
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error('Failed to get enrollment request data')
     }
   }
 }
