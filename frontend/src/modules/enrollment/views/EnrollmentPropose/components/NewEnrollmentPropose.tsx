@@ -1,6 +1,7 @@
 import { Button } from '@frontend/components/ui/button'
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -9,29 +10,28 @@ import {
   DialogTrigger,
 } from '@frontend/components/ui/dialog'
 export default function NewEnrollmentPropose() {
-  const handleClick = () => {
-    
-  }
+  const handleClick = () => {}
   return (
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button>Solicitar propuesta</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Solicitar propuesta de matricula</DialogTitle>
-            <DialogDescription>
-              Inicia el proceso de propuesta de matricula para todas las especialidades. Se solicita confirmación para comenzar la solicitud propuesta de matricula.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <div className="flex w-full justify-between">
-              <Button variant="outline">Cancelar</Button>
-              <Button onClick={handleClick}>Solicitar propuesta</Button>
-            </div>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    )
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button>Solicitar propuesta</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Solicitar propuesta de matricula</DialogTitle>
+          <DialogDescription>
+            Inicia el proceso de propuesta de matricula para todas las
+            especialidades. Se solicita confirmación para comenzar la solicitud
+            propuesta de matricula.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="secondary">Cancelar</Button>
+          </DialogClose>
+          <Button onClick={handleClick}>Solicitar propuesta</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
 }
-  
