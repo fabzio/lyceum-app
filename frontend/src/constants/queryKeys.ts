@@ -27,6 +27,7 @@ export const QueryKeys = {
     THESIS_JURIES: 'thesis_juries',
   },
   enrollment: {
+    COURSE_PROPOSALS: 'course_proposals',
     ENROLLMENTS_MODIFY: 'enrollments_modify',
     ENROLLMENTS_MODIFY_DETAIL: 'enrollment_modify_detail',
   },
