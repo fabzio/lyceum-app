@@ -9,10 +9,10 @@ interface Props {
 
 export default function ActionButton({ refSubmitButtom }: Props) {
   const { code } = useParams({
-    from: '/_auth/usuarios/administativos/$code',
+    from: '/_auth/usuarios/administrativos/$code',
   })
   const { mode } = useSearch({
-    from: '/_auth/usuarios/administativos/$code',
+    from: '/_auth/usuarios/administrativos/$code',
   })
   return (
     <div>
@@ -21,7 +21,7 @@ export default function ActionButton({ refSubmitButtom }: Props) {
       )}
       {mode === 'view' && (
         <Link
-          to="/usuarios/administativos/$code"
+          to="/usuarios/administrativos/$code"
           params={{ code }}
           search={{
             mode: 'edit',

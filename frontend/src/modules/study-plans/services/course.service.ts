@@ -29,7 +29,26 @@ class CourseService {
       throw error
     }
   }
-
+  //por el momento funciona con fetch pero si no se desea paginacion se deberia implementar lo siguiente:
+  /*
+  static async getCourse(name: string): Promise<Course> {
+    try {
+      const res = await http.get('/study-plan/course-management', {
+        params: { q: name },
+      })
+      const response = res.data as ResponseAPI<Course>
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+  */
   static async addCourse(
     courses: Pick<Course, 'code' | 'credits' | 'name'>[]
   ): Promise<void> {

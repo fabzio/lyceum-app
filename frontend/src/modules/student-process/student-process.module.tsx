@@ -14,5 +14,10 @@ export const StudentProcessModule: AppModule = {
       path: '/cursos/alumnos-riesgo',
       permissions: [],
     },
+    {
+      label: 'Horarios',
+      path: '/cursos/horarios',
+      permissions: [],
+    }
   ],
 }

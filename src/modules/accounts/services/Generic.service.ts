@@ -5,9 +5,11 @@ import {
   modules,
   permissions,
   rolePermissions,
+  scheduleAccounts,
 } from '@/database/schema'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
-import { and, eq, ilike, inArray, or, sql } from 'drizzle-orm'
+import { PaginatedData } from '@/interfaces/PaginatedData'
+import { and, asc, desc, eq, ilike, inArray, or, sql } from 'drizzle-orm'
 
 class GenericService {
   public async getAccount({
@@ -62,6 +64,101 @@ class GenericService {
           )
         )
         .limit(5)
+    }
+  }
+
+  public async getAccountsBySchedule(params: {
+    q?: string
+    page: number
+    limit: number
+    sortBy?: string
+    scheduleId?: string // Parámetro `scheduleId`
+  }): Promise<PaginatedData<{
+    code: string
+    name: string
+    firstSurname: string
+    secondSurname: string
+    email: string
+    roles: number[]
+  }>> {
+    const [field, order] = params.sortBy?.split('.') || ['name', 'asc']
+    // Obtener el total de registros con el filtro `scheduleId`
+    const [{ total }] = await db
+      .select({
+        total: sql<string>`count(*)`,
+      })
+      .from(accounts)
+      .leftJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
+      .innerJoin(scheduleAccounts, eq(scheduleAccounts.accountId, accounts.id)) // JOIN con `scheduleAccounts`
+      .where(
+        and(
+          or(
+            ilike(accounts.name, `%${params.q}%`),
+            ilike(accounts.code, `%${params.q}%`)
+          ),
+          eq(accounts.state, 'active'),
+          params.scheduleId ? eq(scheduleAccounts.scheduleId, Number(params.scheduleId)) : sql`1=1` // Filtro opcional `scheduleId`
+        )
+      )
+    const mappedFields = {
+      ['name']: accounts.name,
+      ['code']: accounts.code,
+      ['firstSurname']: accounts.firstSurname,
+      ['secondSurname']: accounts.secondSurname,
+      ['email']: accounts.email,
+      ['roles']: accountRoles.roleId,
+    }
+    const mappedSortBy = {
+      ['asc']: asc,
+      ['desc']: desc,
+    }
+    // Obtener los datos con la misma estructura de filtros
+    const AccountsResponse = await db
+      .select({
+        id: accounts.id,
+        code: accounts.code,
+        name: accounts.name,
+        firstSurname: accounts.firstSurname,
+        secondSurname: accounts.secondSurname,
+        email: accounts.email,
+        roles: sql<number[]>`array_agg(${accountRoles.roleId})`,
+      })
+      .from(accounts)
+      .leftJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
+      .innerJoin(scheduleAccounts, eq(scheduleAccounts.accountId, accounts.id)) // JOIN con `scheduleAccounts`
+      .where(
+        and(
+          or(
+            ilike(accounts.name, `%${params.q}%`),
+            ilike(accounts.code, `%${params.q}%`)
+          ),
+          eq(accounts.state, 'active'),
+          params.scheduleId ? eq(scheduleAccounts.scheduleId, Number(params.scheduleId)) : sql`1=1` // Filtro opcional `scheduleId`
+        )
+      )
+      .groupBy(accounts.id)
+      .offset(params.page * params.limit)
+      .limit(params.limit)
+      .orderBy(
+        mappedSortBy[order as keyof typeof mappedSortBy](
+          mappedFields[field as keyof typeof mappedFields]
+        )
+      )
+    // Mapear los resultados y devolverlos en el formato esperado
+    const result = AccountsResponse.map((account) => ({
+      code: account.code,
+      name: account.name,
+      firstSurname: account.firstSurname,
+      secondSurname: account.secondSurname,
+      email: account.email,
+      roles: account.roles,
+    }))
+    return {
+      result,
+      rowCount: +total,
+      currentPage: params.page,
+      totalPages: Math.ceil(+total / params.limit),
+      hasNext: +total > (params.page + 1) * params.limit,
     }
   }
 

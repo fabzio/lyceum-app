@@ -1,5 +1,5 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import Profesors from '@frontend/modules/users/views/Administratives'
+import Administratives from '@frontend/modules/users/views/Administratives'
 import { AdministrativesFilters } from '@frontend/modules/users/views/Administratives/interfaces/CourseFIlters'
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import AdministrativeService from '@frontend/modules/users/services/Administrative.service'
@@ -27,5 +27,5 @@ export const Route = createFileRoute('/_auth/usuarios/administrativos')({
       queryFn: () => AdministrativeService.fetchAdministratives({}),
     })
   },
-  component: () => <Profesors />,
+  component: () => <Administratives />,
 })

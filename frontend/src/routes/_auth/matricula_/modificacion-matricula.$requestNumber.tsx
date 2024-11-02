@@ -17,6 +17,10 @@ export const Route = createFileRoute(
       })
     }
   },
+  validateSearch: () =>
+    ({}) as {
+      mode: 'view'
+    },
   loader: async ({ params: { requestNumber }, context: { queryClient } }) => {
     return queryClient.ensureQueryData({
       queryKey: [QueryKeys.enrollment.ENROLLMENTS_MODIFY_DETAIL, requestNumber],

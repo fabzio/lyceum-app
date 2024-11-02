@@ -10,7 +10,7 @@ import { Fragment } from 'react/jsx-runtime'
 
 export default function TSRBreadCums() {
   const { breadcrumbRoutes } = useTSRBreadCums()
-  console.log(breadcrumbRoutes)
+
   if (breadcrumbRoutes.length === 0) return <div></div>
   return (
     <Breadcrumb>

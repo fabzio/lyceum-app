@@ -20,10 +20,10 @@ export const enrollmentModifications = schema.table(
     id: serial('id').primaryKey(),
     studentId: uuid('student_id').notNull(),
     scheduleId: integer('schedule_id').notNull(),
-    requestNumber: integer('request_number').notNull(),
+    requestNumber: integer('request_number').unique(),
     state: enrollmentModifcationStatus('state').default('requested').notNull(),
     requestType: enrollmentRequestType('request_type').notNull(),
-    reason: varchar('reason', { length: 255 }),
+    reason: varchar('reason', { length: 255 }).notNull(),
     date: timestamp('date').defaultNow().notNull(),
   },
   (table) => ({

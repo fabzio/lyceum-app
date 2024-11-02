@@ -6,7 +6,7 @@ import AdministrativeService from '@frontend/modules/users/services/Administrati
 import AdministrativeDetail from '@frontend/modules/users/views/Administratives/AdministrativeDetail'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_auth/usuarios/administativos/$code')({
+export const Route = createFileRoute('/_auth/usuarios/administrativos/$code')({
   beforeLoad: ({ context: { sessionStore } }) => {
     const { getAllPermissions } = sessionStore
     if (

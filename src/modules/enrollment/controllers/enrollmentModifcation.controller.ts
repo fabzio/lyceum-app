@@ -1,22 +1,46 @@
 import { Hono } from 'hono'
-import { EnrollmentModificationDAO } from '../dao/enrollmentModificationDAO'
+import { EnrollmentModificationDAO } from '../dao/EnrollmentModificationDAO'
 import { EnrollmentModificationsService } from '../services'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
+import { enrollmentModificationsSchema } from '@/database/schema/enrollmentModifications'
+import { LyceumError } from '@/middlewares/errorMiddlewares'
+import { createEnrollmentModificationDTO } from '../dtos'
 
 class EnrollmentModificationController {
   private router = new Hono()
   private enrollmentService: EnrollmentModificationDAO =
     new EnrollmentModificationsService()
 
-  public getEnrollments = this.router.get('/', async (c) => {
-    const response: ResponseAPI = {
-      data: await this.enrollmentService.getAllEnrollments(),
-      message: 'Enrollments retrieved',
-      success: true,
-    }
-    return c.json(response)
-  })
+    public getEnrollments = this.router.get(
+      '/paginated',
+      zValidator(
+        'query',
+        z.object({
+          q: z.string().optional(),
+          page: z.string().transform((v) => parseInt(v)),
+          limit: z.string().transform((v) => parseInt(v)),
+          sortBy: z.string().optional(),
+        })
+      ),
+      async (c) => {
+        try {
+          const filters = c.req.valid('query');
+          const data = await this.enrollmentService.getAllEnrollments(filters);
+          const response: ResponseAPI = {
+            data: data,
+            success: true,
+            message: 'Enrollments retrieved',
+          };
+          return c.json(response);
+        } catch (error) {
+          if (error instanceof LyceumError) {
+            c.status(error.code);
+          }
+          throw error;
+        }
+      }
+    );
 
   public getEnrollment = this.router.get('/:requestNumber', async (c) => {
     const { requestNumber } = c.req.param()
@@ -54,6 +78,27 @@ class EnrollmentModificationController {
         data: null,
       }
       return c.json(response)
+    }
+  )
+
+  public createEnrollment = this.router.post(
+    '/',
+    zValidator('json', createEnrollmentModificationDTO),
+    async (c) => {
+      const newEnrollmentModify = c.req.valid('json')
+      try {
+        const response: ResponseAPI = {
+          data: await this.enrollmentService.createEnrollmentRequest(
+            newEnrollmentModify
+          ),
+          message: 'Request created',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) c.status(error.code)
+        throw error
+      }
     }
   )
 }

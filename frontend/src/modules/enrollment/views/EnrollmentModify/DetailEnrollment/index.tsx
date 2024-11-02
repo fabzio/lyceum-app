@@ -5,12 +5,12 @@ import {
 } from '@frontend/components/ui/resizable'
 import EnrollmentModifyMain from './EnrollmentModifyMain'
 import EnrollmentModifyAux from './EnrollmentModifyAux'
-import EnrollmentModifyAside from './EnrollmentModifyAside'
+//import EnrollmentModifyAside from './EnrollmentModifyAside'
 
-export default function EnrollmentModifyDetail() {
+export default function DetailEnrollment() {
+  //<EnrollmentModifyAside />
   return (
     <div className="flex h-full">
-      <EnrollmentModifyAside />
       <ResizablePanelGroup
         direction="horizontal"
         className="max-h-[calc(100vh-3.5rem)] overflow-y-hidden items-stretch"

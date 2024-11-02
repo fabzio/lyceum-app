@@ -1,0 +1,1 @@
+export { default as ScheduleGenericService } from './scheduleGeneric.service'
