@@ -2,6 +2,8 @@ import db from '@/database'
 import {
   enrollmentProposal,
   enrollmentProposalCourses,
+  terms,
+  units,
 } from '@/database/schema'
 import { eq, inArray } from 'drizzle-orm'
 import {
@@ -121,6 +123,46 @@ class ScheduleProposalService implements ScheduleProposalDAO {
       .where(eq(enrollmentProposal.id, enrollmentProposalId))
   }
 
+  public async insertScheduleProposal(facultyId: number, accountId: string) {
+    //validacion 1: la facultad debe existir
+    const existingFaculty = await db
+      .select()
+      .from(units)
+      .where(eq(units.id, facultyId))
+    if (existingFaculty.length === 0) {
+      throw new Error('La facultad no existe')
+    }
+
+    //validacion 2: la fecha de creacion de la propuesta debe estar dentro del ciclo vigente
+    const currentTerm = await db
+      .select()
+      .from(terms)
+      .where(eq(terms.current, true))
+    if (currentTerm.length === 0) {
+      //TODO: Encontrar la forma de validar que la fecha de creacion de la propuesta esté dentro del ciclo vigente
+      throw new Error(
+        'No se puede solicitar una propuesta fuera del ciclo vigente'
+      )
+    }
+
+    //validación 3: la facultad debe tener al menos una expecialidad
+    const existingSpecialties = await db
+      .select()
+      .from(units)
+      .where(eq(units.parentId, facultyId))
+    if (existingSpecialties.length === 0) {
+      throw new Error('La facultad no tiene especialidades')
+    }
+
+    //insertamos la propuesta
+    const enrollmentProposalId = await db.insert(enrollmentProposal).values(
+      existingSpecialties.map((specialitie) => ({
+        specialityId: specialitie.id,
+        accountId: accountId,
+        termId: currentTerm[0].id,
+      }))
+    )
+  }
 }
 
 export default ScheduleProposalService

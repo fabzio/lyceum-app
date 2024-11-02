@@ -21,8 +21,19 @@ export const updateScheduleProposalStatusDTO = z.object({
       vacanciesPerSchema: z.number().max(80).min(1),
       visibleSchedules: z.number().max(10).min(1),
       hiddenSchedules: z.number().max(10).min(1),
-    }),
-  )
+    })
+  ),
 })
 
-export type UpdateScheduleProposalStatusDTO = z.infer<typeof updateScheduleProposalStatusDTO>
+export type UpdateScheduleProposalStatusDTO = z.infer<
+  typeof updateScheduleProposalStatusDTO
+>
+
+export const insertScheduleProposalDTO = z.object({
+  facultyId: z.number().min(1),
+  accountId: z.string().min(1),
+})
+
+export type InsertScheduleProposalDTO = z.infer<
+  typeof insertScheduleProposalDTO
+>
