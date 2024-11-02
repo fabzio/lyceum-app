@@ -1,7 +1,7 @@
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import EnrollmentService from '@frontend/modules/enrollment/services/enrollment.service'
 import EnrollmentPropose from '@frontend/modules/enrollment/views/EnrollmentPropose'
-import { EnrollmentProposalFilters } from '@frontend/modules/enrollment/views/EnrollmentPropose/interfaces/EnrollmentProposalFIlters'
+import { EnrollmentProposalFilters } from '@frontend/modules/enrollment/views/EnrollmentPropose/interfaces/EnrollmentProposalFilters'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/matricula/propuesta-horarios')({

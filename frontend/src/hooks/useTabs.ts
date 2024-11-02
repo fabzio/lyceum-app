@@ -7,11 +7,12 @@ export const useTabs = (initalPath: ValidRoutes) => {
 
   const [activeTab, setActiveTab] = useState(initalPath)
 
-  const handleChangeTab = (value: string) => {
+  const handleChangeTab = (value: string, params: string) => {
     const route = value as ValidRoutes
     setActiveTab(route)
     navigate({
       to: route,
+      params,
     })
   }
 
