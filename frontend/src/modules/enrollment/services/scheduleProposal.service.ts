@@ -6,12 +6,9 @@ class ScheduleProposalService {
     newStatus: string
   ): Promise<void> {
     try {
-      const res = await http.post(
-        `enrollment/schedule-proposal/${scheduleId}`,
-        {
-          newStatus: newStatus,
-        }
-      )
+      const res = await http.put(`enrollment/schedule-proposal/${scheduleId}`, {
+        newStatus: newStatus,
+      })
       const response = res.data as ResponseAPI<null>
       if (!response.success) {
         throw new Error(response.message)
