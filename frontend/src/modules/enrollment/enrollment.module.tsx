@@ -18,16 +18,22 @@ export const EnrollmentModule: AppModule = {
         EnrollmentPermissionsDict.REVIEW_ADDITIONAL_ENROLLMENT,
       ],
     },
-    //TODO: Por que no aparece en el menu?
     {
       label: 'Propuesta de Horarios',
       path: '/matricula/propuesta-horarios',
-      permissions: ['TODO_PERMISSION'],
+      permissions: [
+        EnrollmentPermissionsDict.REQUEST_SCHEDULE_PROPOSAL,
+        EnrollmentPermissionsDict.MANAGE_SCHEDULE_PROPOSAL,
+        EnrollmentPermissionsDict.REVIEW_SCHEDULE_PROPOSAL,
+      ],
     },
     {
       label: 'Distribución de Matrícula',
       path: '/matricula/distribucion',
-      permissions: ['TODO_PERMISSION'],
+      permissions: [
+        EnrollmentPermissionsDict.ASSIGN_SCHEDULE_PROFESORS,
+        EnrollmentPermissionsDict.READ_SCHEDULE_PROFESORS,
+      ],
     },
   ],
 }
