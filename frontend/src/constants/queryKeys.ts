@@ -28,6 +28,7 @@ export const QueryKeys = {
   },
   enrollment: {
     COURSE_PROPOSALS: 'course_proposals',
+    ENROLLMENT_PROPOSALS: 'enrollment_proposals',
     ENROLLMENTS_MODIFY: 'enrollments_modify',
     ENROLLMENTS_MODIFY_DETAIL: 'enrollment_modify_detail',
   },

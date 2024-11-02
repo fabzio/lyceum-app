@@ -3,6 +3,10 @@ export type CourseProposal = {
   courseId: string
   courseName: string
   vacants: number
-  visible: number
-  hidden: number
+  visibility: CourseProposalVisibility
+}
+
+export enum CourseProposalVisibility {
+  visible,
+  hidden
 }

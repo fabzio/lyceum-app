@@ -8,6 +8,7 @@ export default function EnrollmentDistribution() {
   <div className="w-full flex flex-col md:flex-row justify-between gap-4">
     <SearchCourseProposalInput />
   </div>
+  {/* TODO: Agregar permisos */}
   <Need permissions={[UserPermissionsDict.READ_STUDENTS]}>
     <CourseProposalTable />
   </Need>
