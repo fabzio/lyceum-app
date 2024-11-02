@@ -28,6 +28,7 @@ import {
 import { UnitsInsertSchema } from './schema/units'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import BaseModules, { BaseModulesDict } from '@/auth/modules'
+import { ThesisPermissions } from '@/auth/permissions'
 
 const queryClient = postgres({
   db: DB_DATABASE,
@@ -141,12 +142,12 @@ await db.transaction(async (tx) => {
   await tx.insert(roles).values([
     {
       name: 'Estudiante',
-      unitType: 'university',
+      unitType: 'speciality',
       editable: false,
     },
     {
       name: 'Profesor',
-      unitType: 'university',
+      unitType: 'section',
       editable: false,
     },
     {
@@ -244,23 +245,91 @@ await db.transaction(async (tx) => {
     },
   ])
   //Base account
-  const [{ accountId }] = await tx
+  const accountsId = await tx
     .insert(accounts)
-    .values({
-      name: 'Fabrizio Randall',
-      firstSurname: 'Montoya',
-      secondSurname: 'Pinto',
-      code: '20212486',
-      email: 'fmontoya@pucp.edu.pe',
-      unitId: universityId,
-    })
+    .values([
+      {
+        name: 'Fabrizio Randall',
+        firstSurname: 'Montoya',
+        secondSurname: 'Pinto',
+        code: '20212486',
+        email: 'fmontoya@pucp.edu.pe',
+        unitId: universityId,
+      },
+      {
+        name: 'Ricardo Bartra',
+        firstSurname: 'Smith',
+        secondSurname: 'Bartra',
+        code: '20176243',
+        email: 'ricardo.bartra@pucp.edu.pe',
+        unitId: universityId,
+      },
+      {
+        name: 'Leonardo Vega',
+        firstSurname: 'Grijalva',
+        secondSurname: 'Vega',
+        code: '20240102',
+        email: 'a20197102@pucp.edu.pe',
+        unitId: universityId,
+      },
+      {
+        name: 'Sebastian Castillejo',
+        firstSurname: 'Franco',
+        secondSurname: 'Castillejo',
+        code: '20190948',
+        email: 'a20190948@pucp.edu.pe',
+        unitId: universityId,
+      },
+      {
+        name: 'Piero Alvarez',
+        firstSurname: 'Castillo',
+        secondSurname: 'Alvarez',
+        code: '20195903',
+        email: 'alvarez.piero@pucp.edu.pe',
+        unitId: universityId,
+      },
+      {
+        name: 'Diego Ancajima',
+        firstSurname: 'Diaz',
+        secondSurname: 'Ancajima',
+        code: '20202308',
+        email: 'a20202308@pucp.edu.pe',
+        unitId: universityId,
+      },
+      {
+        name: 'Jhoyfer Melendez',
+        firstSurname: 'Torres',
+        secondSurname: 'Melendez',
+        code: '20203823',
+        email: 'jmelendezt@pucp.edu.pe',
+        unitId: universityId,
+      },
+      {
+        name: 'Alonso Alvarado',
+        firstSurname: 'Eslava',
+        secondSurname: 'Alvarado',
+        code: '20180731',
+        email: 'aalvaradoe@pucp.edu.pe',
+        unitId: universityId,
+      },
+      {
+        name: 'Paul Espettia',
+        firstSurname: 'Rodríguez',
+        secondSurname: 'Espettia',
+        code: '20181395',
+        email: 'paul.espettia@pucp.edu.pe',
+        unitId: universityId,
+      },
+    ])
     .returning({ accountId: accounts.id })
 
-  await tx.insert(accountRoles).values({
-    accountId,
-    roleId: BaseRoles.ADMIN,
-    unitId: universityId,
-  })
+  await tx.insert(accountRoles).values(
+    accountsId.map(({ accountId }) => ({
+      accountId,
+      roleId: BaseRoles.ADMIN,
+      unitId: universityId,
+    }))
+  )
 
   const insertedModules = await tx
     .insert(modules)
@@ -327,11 +396,20 @@ await db.transaction(async (tx) => {
       }))
   )
 
-  await tx.insert(accountRoles).values({
-    accountId,
-    roleId,
-    unitId: universityId,
+  await tx.insert(rolePermissions).values({
+    permissionId: permissionsInserted.find(
+      (permission) => permission.permissionName === ThesisPermissions[0].name
+    )?.permissionId!,
+    roleId: BaseRoles.STUDENT,
   })
+
+  await tx.insert(accountRoles).values(
+    accountsId.map(({ accountId }) => ({
+      accountId,
+      roleId,
+      unitId: universityId,
+    }))
+  )
 })
 console.log('Seed end')
 queryClient.end()
