@@ -3,7 +3,7 @@ import {
   SelectTrigger,
   SelectValue,
   SelectContent,
-} from '@/components/ui/select'
+} from '@frontend/components/ui/select'
 
 export default function SelectFilter() {
   return (

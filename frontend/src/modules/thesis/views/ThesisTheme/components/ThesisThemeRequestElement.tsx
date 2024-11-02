@@ -4,12 +4,12 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+} from '@frontend/components/ui/card'
+import { Badge } from '@frontend/components/ui/badge'
 import { useNavigate } from '@tanstack/react-router'
-import { ThesisThemeRequest } from '@/modules/thesis/interfaces/ThesisThemeRequest'
+import { ThesisThemeRequest } from '@frontend/modules/thesis/interfaces/ThesisThemeRequest'
 import moment from 'moment'
-import { mapStatus } from '@/modules/thesis/utils'
+import { mapStatus } from '@frontend/modules/thesis/utils'
 
 type Props = ThesisThemeRequest
 

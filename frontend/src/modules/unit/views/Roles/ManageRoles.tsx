@@ -1,4 +1,9 @@
-import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+} from '@frontend/components/ui/table'
 
 export default function ManageRoles() {
   const roles = [

@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@frontend/components/ui/card'
 import {
   Form,
   FormControl,
@@ -6,14 +11,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from '@frontend/components/ui/form'
+import { Input } from '@frontend/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from '@/components/ui/select'
+} from '@frontend/components/ui/select'
 import { SelectValue } from '@radix-ui/react-select'
 import { useSearch } from '@tanstack/react-router'
 import { useFormContext } from 'react-hook-form'

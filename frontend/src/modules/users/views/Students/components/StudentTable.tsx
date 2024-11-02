@@ -1,11 +1,11 @@
-import { QueryKeys } from '@/constants/queryKeys'
+import { QueryKeys } from '@frontend/constants/queryKeys'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import DataTable from '@/components/DataTable'
+import DataTable from '@frontend/components/DataTable'
 import { useMemo } from 'react'
-import { sortByToState, stateToSortBy } from '@/lib/table'
-import StudentService from '@/modules/users/services/Student.service'
+import { sortByToState, stateToSortBy } from '@frontend/lib/table'
+import StudentService from '@frontend/modules/users/services/Student.service'
 import { StudentTableColumns } from './columns'
-import { useFilters } from '@/hooks/useFilters'
+import { useFilters } from '@frontend/hooks/useFilters'
 import { useNavigate } from '@tanstack/react-router'
 
 export const DEFAULT_PAGE_INDEX = 0

@@ -1,9 +1,9 @@
-import TransitionPage from '@/components/anim/TransitionPage'
-import EnrollmentProposeRequest from '@/modules/enrollment/views/EnrollmentPropose/EnrollmentProposeRequest'
+import TransitionPage from '@frontend/components/anim/TransitionPage'
+import EnrollmentProposeRequest from '@frontend/modules/enrollment/views/EnrollmentPropose/EnrollmentProposeRequest'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
-  '/_auth/matricula/propuesta-horarios/$requestNumber',
+  '/_auth/matricula/propuesta-horarios/$requestNumber'
 )({
   component: () => <SceduleProposalRequestPage />,
 })

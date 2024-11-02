@@ -1,10 +1,10 @@
-import { Input } from '@/components/ui/input'
+import { Input } from '@frontend/components/ui/input'
 import AssigmentAccordion from './components/AssigmentAccordion'
 import SelectFilter from './components/SelectFilter'
 import NewAssigment from './components/NewAssignmentDialog'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import RoleAccountsService from '../../services/RoleAccounts.service'
-import { QueryKeys } from '@/constants/queryKeys'
+import { QueryKeys } from '@frontend/constants/queryKeys'
 
 export default function AsignRoles() {
   const { data } = useSuspenseQuery({

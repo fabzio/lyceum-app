@@ -1,5 +1,5 @@
-import { Permission } from '@/interfaces/models'
-import http from '@/lib/http'
+import { Permission } from '@frontend/interfaces/models'
+import http from '@frontend/lib/http'
 
 class PermissionService {
   public static async getPermissions(module?: number) {

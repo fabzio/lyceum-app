@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
 import { riskStudentColumns } from './columns'
-import DataTable from '@/components/DataTable'
+import DataTable from '@frontend/components/DataTable'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { QueryKeys } from '@/constants/queryKeys'
-import { useFilters } from '@/hooks/useFilters'
-import RiskStudentService from '@/modules/student-process/services/riskStudent.service'
-import { sortByToState, stateToSortBy } from '@/lib/table'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import { useFilters } from '@frontend/hooks/useFilters'
+import RiskStudentService from '@frontend/modules/student-process/services/riskStudent.service'
+import { sortByToState, stateToSortBy } from '@frontend/lib/table'
 import { useNavigate } from '@tanstack/react-router'
-import { RiskStudentGeneral } from '@/modules/student-process/interfaces/RIskStudentGeneral'
+import { RiskStudentGeneral } from '@frontend/modules/student-process/interfaces/RIskStudentGeneral'
 
 const DEFAULT_PAGE_INDEX = 0
 const DEFAULT_PAGE_SIZE = 5

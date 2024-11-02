@@ -5,9 +5,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
-import { Course } from '@/interfaces/models/Course'
+} from '@frontend/components/ui/table'
+import { Button } from '@frontend/components/ui/button'
+import { Course } from '@frontend/interfaces/models/Course'
 
 //import { Edit3 } from 'lucide-react';
 

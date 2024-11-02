@@ -1,12 +1,12 @@
-import { Label } from '@/components/ui/label'
-import { Separator } from '@/components/ui/separator'
-import { QueryKeys } from '@/constants/queryKeys'
-import ThesisThemeStepper from '@/modules/thesis/components/ThesisThemeStepper'
-import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
+import { Label } from '@frontend/components/ui/label'
+import { Separator } from '@frontend/components/ui/separator'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import ThesisThemeStepper from '@frontend/modules/thesis/components/ThesisThemeStepper'
+import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisThemeRequest.service'
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
 import ThesisThemeReview from '../../components/ThesisThemeReview'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { ScrollArea } from '@frontend/components/ui/scroll-area'
 
 export default function ThesisThemeHistory() {
   const { requestCode } = useParams({

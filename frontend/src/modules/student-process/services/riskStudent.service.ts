@@ -1,12 +1,12 @@
-import http from '@/lib/http'
+import http from '@frontend/lib/http'
 import { RiskStudentGeneral } from '../interfaces/RIskStudentGeneral'
-import { Account } from '@/interfaces/models/Account'
-import { Schedule } from '@/interfaces/models/Schedule'
+import { Account } from '@frontend/interfaces/models/Account'
+import { Schedule } from '@frontend/interfaces/models/Schedule'
 import { RiskStudentReport } from '../interfaces/RiskStudentReport'
-import { Course } from '@/interfaces/models/Course'
+import { Course } from '@frontend/interfaces/models/Course'
 import axios from 'axios'
 import { getRiskStudentDetail } from '../interfaces/RiskStudentDetail'
-import { Filters, PaginatedData } from '@/interfaces/types'
+import { Filters, PaginatedData } from '@frontend/interfaces/types'
 
 class RiskStudentService {
   public static async getRiskStudents(

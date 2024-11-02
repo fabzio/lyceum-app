@@ -1,15 +1,15 @@
-import DataTable from '@/components/DataTable'
+import DataTable from '@frontend/components/DataTable'
 import { useMemo } from 'react'
 import { studyPlanTableColumns } from './columns'
-import { StudyPlan } from '@/interfaces/models/StudyPlan'
-import { useFilters } from '@/hooks/useFilters'
+import { StudyPlan } from '@frontend/interfaces/models/StudyPlan'
+import { useFilters } from '@frontend/hooks/useFilters'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { QueryKeys } from '@/constants/queryKeys'
-import StudyPlanService from '@/modules/study-plans/services/studyPlan.service'
-import { sortByToState, stateToSortBy } from '@/lib/table'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import StudyPlanService from '@frontend/modules/study-plans/services/studyPlan.service'
+import { sortByToState, stateToSortBy } from '@frontend/lib/table'
 import { useNavigate } from '@tanstack/react-router'
-import { useSessionStore } from '@/store'
-import { StudyPlanPermissionsDict } from '@/interfaces/enums/permissions/StudyPlan'
+import { useSessionStore } from '@frontend/store'
+import { StudyPlanPermissionsDict } from '@frontend/interfaces/enums/permissions/StudyPlan'
 
 const DEFAULT_PAGE_INDEX = 0
 const DEFAULT_PAGE_SIZE = 10

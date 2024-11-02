@@ -1,5 +1,5 @@
-import { Module } from '@/interfaces/models'
-import http from '@/lib/http'
+import { Module } from '@frontend/interfaces/models'
+import http from '@frontend/lib/http'
 
 class ModuleService {
   public static async getModules() {

@@ -4,7 +4,7 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select'
+} from '@frontend/components/ui/select'
 
 interface SelectFilterProps {
   onFilterChange?: (score: string) => void

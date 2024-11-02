@@ -1,4 +1,4 @@
-import http from '@/lib/http'
+import http from '@frontend/lib/http'
 import { EnrollmentGeneral } from '../interfaces/EnrollmentGeneral'
 
 class EnrollmentService {

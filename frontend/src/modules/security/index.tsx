@@ -1,4 +1,4 @@
-import PageLayout from '@/layouts/PageLayout'
+import PageLayout from '@frontend/layouts/PageLayout'
 import SecurityManagement from './components/SecurityManagement'
 
 export default function Security() {

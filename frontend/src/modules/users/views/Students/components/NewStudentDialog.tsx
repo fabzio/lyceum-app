@@ -1,5 +1,5 @@
 // TODO: Adaptar el siguiente código para que funcione con la entidad de Estudiantes
-// import { Button } from '@/components/ui/button'
+// import { Button } from '@frontend/components/ui/button'
 // import {
 //   Dialog,
 //   DialogContent,
@@ -7,7 +7,7 @@
 //   DialogHeader,
 //   DialogTitle,
 //   DialogTrigger,
-// } from '@/components/ui/dialog'
+// } from '@frontend/components/ui/dialog'
 
 // // import CourseForm from './CourseForm'
 // import { useState } from 'react'
@@ -27,7 +27,7 @@
 //             Crea un nuevo curso gestionado por su especialidad
 //           </DialogDescription>
 //         </DialogHeader>
-        // <CourseForm mode="create" handleClose={() => setIsOpen(false)} />
+// <CourseForm mode="create" handleClose={() => setIsOpen(false)} />
 //       </DialogContent>
 //     </Dialog>
 //   )

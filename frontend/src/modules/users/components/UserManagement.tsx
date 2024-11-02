@@ -1,5 +1,5 @@
-import SubRoutesManagement from '@/components/SubRoutesManagement'
-import { Tab } from '@/lib/utils'
+import SubRoutesManagement from '@frontend/components/SubRoutesManagement'
+import { Tab } from '@frontend/lib/utils'
 import { UserModule } from '../users.module'
 
 export default function UserManagement() {

@@ -1,4 +1,4 @@
-import NotFound from '@/layouts/NotFound'
+import NotFound from '@frontend/layouts/NotFound'
 
 export default function ThesisNotFound() {
   return (

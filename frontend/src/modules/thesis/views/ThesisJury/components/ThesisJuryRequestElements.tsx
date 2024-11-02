@@ -4,10 +4,10 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+} from '@frontend/components/ui/card'
+import { Badge } from '@frontend/components/ui/badge'
 import { useNavigate } from '@tanstack/react-router'
-import ThesisJuryRequest from '@/modules/thesis/interfaces/ThesisJuryRequest'
+import ThesisJuryRequest from '@frontend/modules/thesis/interfaces/ThesisJuryRequest'
 import moment from 'moment'
 
 type Props = ThesisJuryRequest

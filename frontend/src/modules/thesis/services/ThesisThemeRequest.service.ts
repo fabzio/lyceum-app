@@ -1,4 +1,4 @@
-import http from '@/lib/http'
+import http from '@frontend/lib/http'
 import { ThesisThemeRequest } from '../interfaces/ThesisThemeRequest'
 import { ThesisThemeDetail } from '../interfaces/ThesisThemeDetail'
 import { ThesisThemeRequestAction } from '../interfaces/ThesisThemeRequestAction'

@@ -1,6 +1,6 @@
-import { Tab } from '@/lib/utils'
+import { Tab } from '@frontend/lib/utils'
 
-import SubRoutesManagement from '@/components/SubRoutesManagement'
+import SubRoutesManagement from '@frontend/components/SubRoutesManagement'
 import { StudyPlanModule } from '../study-plan.module'
 
 export default function StudyPlansManagment() {

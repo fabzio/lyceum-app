@@ -1,4 +1,4 @@
-import { ValidRoutes } from '@/constants/paths'
+import { ValidRoutes } from '@frontend/constants/paths'
 import { ModulesDict } from './enums/modules'
 import { PermissionCode } from './enums/permissions'
 

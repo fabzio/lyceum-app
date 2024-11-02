@@ -1,8 +1,8 @@
 import { useSuspenseQuery } from '@tanstack/react-query'
 import GeneralInfo from './components/GeneralInfo'
-import { QueryKeys } from '@/constants/queryKeys'
+import { QueryKeys } from '@frontend/constants/queryKeys'
 import { useParams } from '@tanstack/react-router'
-import StudentService from '@/modules/users/services/Student.service'
+import StudentService from '@frontend/modules/users/services/Student.service'
 import ActionButton from './components/ActionButton'
 import { useRef } from 'react'
 

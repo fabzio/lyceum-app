@@ -1,10 +1,10 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import Estudiantes from '@/modules/users/views/Students'
-import { StudentsFilters } from '@/modules/users/views/Students/interfaces/CourseFIlters'
-import { QueryKeys } from '@/constants/queryKeys'
-import StudentService from '@/modules/users/services/Student.service'
-import { haveSomePermission } from '@/lib/utils'
-import { UserPermissionsDict } from '@/interfaces/enums/permissions/Users'
+import Estudiantes from '@frontend/modules/users/views/Students'
+import { StudentsFilters } from '@frontend/modules/users/views/Students/interfaces/CourseFIlters'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import StudentService from '@frontend/modules/users/services/Student.service'
+import { haveSomePermission } from '@frontend/lib/utils'
+import { UserPermissionsDict } from '@frontend/interfaces/enums/permissions/Users'
 
 export const Route = createFileRoute('/_auth/usuarios/estudiantes')({
   beforeLoad: ({ context: { sessionStore } }) => {

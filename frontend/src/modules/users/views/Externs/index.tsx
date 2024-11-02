@@ -1,8 +1,8 @@
 import MasiveExternsDialog from './components/MasiveExternsDialog'
 import SearchExternInput from './components/SearchExternInput'
 import ExternTable from './components/ExternTable'
-import Need from '@/components/Need'
-import { UserPermissionsDict } from '@/interfaces/enums/permissions/Users'
+import Need from '@frontend/components/Need'
+import { UserPermissionsDict } from '@frontend/interfaces/enums/permissions/Users'
 
 export default function ExternManagement() {
   return (

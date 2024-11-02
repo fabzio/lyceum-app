@@ -1,5 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { capitalize } from '@/lib/utils'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@frontend/components/ui/card'
+import { capitalize } from '@frontend/lib/utils'
 
 interface Props {
   id: number

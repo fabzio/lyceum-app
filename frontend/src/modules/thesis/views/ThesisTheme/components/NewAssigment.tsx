@@ -1,5 +1,5 @@
-import Autocomplete from '@/components/Autocomplete'
-import { Button } from '@/components/ui/button'
+import Autocomplete from '@frontend/components/Autocomplete'
+import { Button } from '@frontend/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -8,9 +8,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Label } from '@/components/ui/label'
-import { Select, SelectTrigger, SelectValue } from '@/components/ui/select'
+} from '@frontend/components/ui/dialog'
+import { Label } from '@frontend/components/ui/label'
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+} from '@frontend/components/ui/select'
 
 const users = [
   {

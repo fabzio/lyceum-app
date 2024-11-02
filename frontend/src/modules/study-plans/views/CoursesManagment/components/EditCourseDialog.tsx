@@ -4,7 +4,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
+} from '@frontend/components/ui/dialog'
 
 interface Props {
   isOpen: boolean

@@ -5,7 +5,7 @@ import {
   TableRow,
   TableHead,
   TableCell,
-} from '@/components/ui/table'
+} from '@frontend/components/ui/table'
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import {
@@ -15,12 +15,12 @@ import {
   PaginationNext,
   PaginationPrevious,
   PaginationContent,
-} from '@/components/ui/pagination'
-import { EnrollmentGeneral } from '@/modules/enrollment/interfaces/EnrollmentGeneral'
+} from '@frontend/components/ui/pagination'
+import { EnrollmentGeneral } from '@frontend/modules/enrollment/interfaces/EnrollmentGeneral'
 import {
   mapEnrollmentModifyRequestType,
   mapEnrollmentModifyState,
-} from '@/modules/enrollment/utils'
+} from '@frontend/modules/enrollment/utils'
 
 interface TableEnrollmentsProps {
   tableEnrollments: EnrollmentGeneral[]

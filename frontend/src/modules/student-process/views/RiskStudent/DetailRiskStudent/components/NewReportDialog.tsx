@@ -1,11 +1,11 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from '@frontend/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -13,17 +13,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from '@frontend/components/ui/form'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { QueryKeys } from '@/constants/queryKeys'
-import RiskStudentReportService from '@/modules/student-process/services/riskStudentReport.service'
+} from '@frontend/components/ui/select'
+import { Textarea } from '@frontend/components/ui/textarea'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import RiskStudentReportService from '@frontend/modules/student-process/services/riskStudentReport.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { DialogDescription } from '@radix-ui/react-dialog'
 import { useMutation, useQueryClient } from '@tanstack/react-query'

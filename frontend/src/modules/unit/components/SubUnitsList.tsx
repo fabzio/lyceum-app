@@ -1,4 +1,9 @@
-import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+} from '@frontend/components/ui/table'
 import { Link } from '@tanstack/react-router'
 
 export default function SubUnitsList({ subunits = [] }: { subunits: any }) {

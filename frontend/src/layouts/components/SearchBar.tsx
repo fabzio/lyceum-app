@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import {
   CommandDialog,
   CommandEmpty,
@@ -6,7 +6,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command'
+} from '@frontend/components/ui/command'
 import { useState } from 'react'
 
 export default function SearchBar() {

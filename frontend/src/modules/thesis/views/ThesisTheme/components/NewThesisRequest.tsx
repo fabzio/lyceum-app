@@ -1,6 +1,6 @@
-import Need from '@/components/Need'
-import { Button } from '@/components/ui/button'
-import { ThesisPermissionsDict } from '@/interfaces/enums/permissions/Thesis'
+import Need from '@frontend/components/Need'
+import { Button } from '@frontend/components/ui/button'
+import { ThesisPermissionsDict } from '@frontend/interfaces/enums/permissions/Thesis'
 import { Link } from '@tanstack/react-router'
 
 export default function NewThesisRequest() {

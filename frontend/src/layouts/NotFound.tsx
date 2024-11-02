@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button'
-import { ValidRoutes } from '@/constants/paths'
+import { Button } from '@frontend/components/ui/button'
+import { ValidRoutes } from '@frontend/constants/paths'
 import { Link } from '@tanstack/react-router'
 import { FileSearch } from 'lucide-react'
 

@@ -8,7 +8,6 @@ import { showRoutes } from 'hono/dev'
 import { googleAuth } from '@hono/oauth-providers/google'
 import { authRoute, oauthRoute } from './auth'
 import { authMiddleware } from './auth/authMiddleware'
-import { cors } from 'hono/cors'
 import { serveStatic } from 'hono/bun'
 
 class App {
@@ -46,14 +45,14 @@ class App {
   }
 
   private initializeRoutes(routes: Route[]) {
-    const lyceumRoutes = new Hono()
+    const lyceumRoutes = new Hono().basePath('/api/v1')
     routes.forEach((route) => {
       console.log(`Route ${route.path} initialized`)
       lyceumRoutes.route(route.path, route.router)
     })
     lyceumRoutes.route('/oauth', oauthRoute)
     lyceumRoutes.route('/auth', authRoute)
-    this.app.route('/api/v1', lyceumRoutes)
+    this.app.route('/', lyceumRoutes)
     this.app.get('*', serveStatic({ root: './frontend/dist' }))
     this.app.get('*', serveStatic({ path: './frontend/dist/index.html' }))
     showRoutes(lyceumRoutes, {

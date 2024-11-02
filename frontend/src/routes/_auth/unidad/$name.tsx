@@ -1,5 +1,5 @@
-import TransitionPage from '@/components/anim/TransitionPage'
-import Unit from '@/modules/unit'
+import TransitionPage from '@frontend/components/anim/TransitionPage'
+import Unit from '@frontend/modules/unit'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/unidad/$name')({

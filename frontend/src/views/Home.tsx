@@ -1,4 +1,4 @@
-import { useSessionStore } from '@/store'
+import { useSessionStore } from '@frontend/store'
 import { motion } from 'framer-motion'
 
 export default function Home() {

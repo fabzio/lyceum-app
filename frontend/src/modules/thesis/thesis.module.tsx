@@ -1,5 +1,5 @@
-import { AppModule } from '@/interfaces/AppModule'
-import { ThesisPermissionsDict } from '@/interfaces/enums/permissions/Thesis'
+import { AppModule } from '@frontend/interfaces/AppModule'
+import { ThesisPermissionsDict } from '@frontend/interfaces/enums/permissions/Thesis'
 import { Book } from 'lucide-react'
 
 export const ThesisModule: AppModule = {

@@ -1,4 +1,4 @@
-import { ValidRoutes } from '@/constants/paths'
+import { ValidRoutes } from '@frontend/constants/paths'
 import { Permission } from './Permission'
 
 export interface Module {

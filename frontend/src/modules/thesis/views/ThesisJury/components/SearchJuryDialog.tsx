@@ -1,5 +1,5 @@
-import QuickSearchInput from '@/components/QuickSearchInput.tsx/QuickSearchInput'
-import { Button } from '@/components/ui/button'
+import QuickSearchInput from '@frontend/components/QuickSearchInput.tsx/QuickSearchInput'
+import { Button } from '@frontend/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from '@frontend/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -15,11 +15,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { QueryKeys } from '@/constants/queryKeys'
-import { BaseRoles } from '@/interfaces/enums/BaseRoles'
-import ThesisJuryRequestService from '@/modules/thesis/services/thesisJuryRequest.service'
-import AccountsService from '@/service/Accounts.service'
+} from '@frontend/components/ui/form'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import { BaseRoles } from '@frontend/interfaces/enums/BaseRoles'
+import ThesisJuryRequestService from '@frontend/modules/thesis/services/thesisJuryRequest.service'
+import AccountsService from '@frontend/service/Accounts.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'

@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import {
   Dialog,
   DialogClose,
@@ -7,7 +7,7 @@ import {
   DialogFooter,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from '@frontend/components/ui/dialog'
 import { useNavigate, useParams, useSearch } from '@tanstack/react-router'
 import { useState } from 'react'
 

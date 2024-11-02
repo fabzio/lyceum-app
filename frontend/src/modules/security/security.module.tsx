@@ -1,5 +1,5 @@
-import { AppModule } from '@/interfaces/AppModule'
-import { SecurityPermissionsDict } from '@/interfaces/enums/permissions/Security'
+import { AppModule } from '@frontend/interfaces/AppModule'
+import { SecurityPermissionsDict } from '@frontend/interfaces/enums/permissions/Security'
 import { ShieldCheck } from 'lucide-react'
 
 export const SecurityModule: AppModule = {

@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import {
   Dialog,
   DialogClose,
@@ -8,10 +8,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { QueryKeys } from '@/constants/queryKeys'
-import { EnrollmentGeneral } from '@/modules/enrollment/interfaces/EnrollmentGeneral'
-import EnrollmentService from '@/modules/enrollment/services/enrollment.service'
+} from '@frontend/components/ui/dialog'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import { EnrollmentGeneral } from '@frontend/modules/enrollment/interfaces/EnrollmentGeneral'
+import EnrollmentService from '@frontend/modules/enrollment/services/enrollment.service'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
 import { Loader2 } from 'lucide-react'

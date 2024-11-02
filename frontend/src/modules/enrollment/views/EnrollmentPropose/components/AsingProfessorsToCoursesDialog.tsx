@@ -1,19 +1,19 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from '@frontend/components/ui/dialog'
 import {
   Form,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from '@frontend/components/ui/form'
+import { Input } from '@frontend/components/ui/input'
 import { useState } from 'react'
 import { z } from 'zod'
 import { useForm, useFieldArray } from 'react-hook-form'

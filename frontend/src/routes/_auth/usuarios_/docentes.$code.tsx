@@ -1,9 +1,9 @@
-import TransitionPage from '@/components/anim/TransitionPage'
-import { QueryKeys } from '@/constants/queryKeys'
-import { UserPermissionsDict } from '@/interfaces/enums/permissions/Users'
-import { haveSomePermission } from '@/lib/utils'
-import ProfessorService from '@/modules/users/services/Professor.service'
-import ProfessorDetail from '@/modules/users/views/Professors/ProfessorDetail'
+import TransitionPage from '@frontend/components/anim/TransitionPage'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import { UserPermissionsDict } from '@frontend/interfaces/enums/permissions/Users'
+import { haveSomePermission } from '@frontend/lib/utils'
+import ProfessorService from '@frontend/modules/users/services/Professor.service'
+import ProfessorDetail from '@frontend/modules/users/views/Professors/ProfessorDetail'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/usuarios/docentes/$code')({

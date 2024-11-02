@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
-import AsignRoles from '@/modules/security/views/AsignRoles'
-import RoleAccountsService from '@/modules/security/services/RoleAccounts.service'
-import { QueryKeys } from '@/constants/queryKeys'
+import AsignRoles from '@frontend/modules/security/views/AsignRoles'
+import RoleAccountsService from '@frontend/modules/security/services/RoleAccounts.service'
+import { QueryKeys } from '@frontend/constants/queryKeys'
 
 export const Route = createFileRoute('/_auth/seguridad/asignacion-roles')({
   loader: async ({ context: { queryClient } }) =>

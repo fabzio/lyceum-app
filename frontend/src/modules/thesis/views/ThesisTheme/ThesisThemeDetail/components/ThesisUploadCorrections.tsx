@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import {
   Form,
   FormControl,
@@ -6,13 +6,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { QueryKeys } from '@/constants/queryKeys'
-import { useToast } from '@/hooks/use-toast'
-import { ThesisPermissionsDict } from '@/interfaces/enums/permissions/Thesis'
-import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
-import { useSessionStore } from '@/store'
+} from '@frontend/components/ui/form'
+import { Input } from '@frontend/components/ui/input'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import { useToast } from '@frontend/hooks/use-toast'
+import { ThesisPermissionsDict } from '@frontend/interfaces/enums/permissions/Thesis'
+import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisThemeRequest.service'
+import { useSessionStore } from '@frontend/store'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   useMutation,
@@ -81,7 +81,6 @@ export default function ThesisUploadCorrections() {
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <FormField
               name="file"
-              
               // eslint-disable-next-line
               render={({ field: { value, onChange, ...filedProps } }) => (
                 <FormItem>

@@ -1,6 +1,6 @@
-import TransitionPage from '@/components/anim/TransitionPage'
+import TransitionPage from '@frontend/components/anim/TransitionPage'
 import { createFileRoute } from '@tanstack/react-router'
-import Thesis from '@/modules/thesis'
+import Thesis from '@frontend/modules/thesis'
 
 export const Route = createFileRoute('/_auth/tesis')({
   component: () => <TesisPage />,

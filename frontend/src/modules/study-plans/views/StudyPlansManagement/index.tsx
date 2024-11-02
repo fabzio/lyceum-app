@@ -1,7 +1,7 @@
-import Need from '@/components/Need'
+import Need from '@frontend/components/Need'
 import NewStudyPlan from './components/NewStudyPlan'
 import StudyPlanTable from './components/StudyPanTable'
-import { StudyPlanPermissionsDict } from '@/interfaces/enums/permissions/StudyPlan'
+import { StudyPlanPermissionsDict } from '@frontend/interfaces/enums/permissions/StudyPlan'
 
 export default function StudyPlanManagement() {
   return (

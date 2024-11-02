@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -6,12 +6,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from '@frontend/components/ui/dialog'
 
 import { useState } from 'react'
 import NewFAQForm from '../../components/FAQForm'
 import { Pen } from 'lucide-react'
-import { FAQ } from '@/modules/faq/interfaces/FAQ'
+import { FAQ } from '@frontend/modules/faq/interfaces/FAQ'
 
 interface Props {
   faq: FAQ

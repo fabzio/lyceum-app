@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import TransitionPage from '@/components/anim/TransitionPage'
-import Users from '@/modules/users'
+import TransitionPage from '@frontend/components/anim/TransitionPage'
+import Users from '@frontend/modules/users'
 
 export const Route = createFileRoute('/_auth/usuarios')({
   beforeLoad: ({ context: { sessionStore } }) => {

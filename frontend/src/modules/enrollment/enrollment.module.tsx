@@ -1,6 +1,6 @@
-import { AppModule } from '@/interfaces/AppModule'
-import { ModulesDict } from '@/interfaces/enums/modules'
-import { EnrollmentPermissionsDict } from '@/interfaces/enums/permissions/Enrollment'
+import { AppModule } from '@frontend/interfaces/AppModule'
+import { ModulesDict } from '@frontend/interfaces/enums/modules'
+import { EnrollmentPermissionsDict } from '@frontend/interfaces/enums/permissions/Enrollment'
 import { CalendarRange } from 'lucide-react'
 
 export const EnrollmentModule: AppModule = {

@@ -1,7 +1,7 @@
-import { QueryKeys } from '@/constants/queryKeys'
-import ThesisNotFound from '@/modules/thesis/404'
-import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
-import ThesisThemeDetailSection from '@/modules/thesis/views/ThesisTheme/ThesisThemeDetail/ThesisThemeDetailSection'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import ThesisNotFound from '@frontend/modules/thesis/404'
+import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisThemeRequest.service'
+import ThesisThemeDetailSection from '@frontend/modules/thesis/views/ThesisTheme/ThesisThemeDetail/ThesisThemeDetailSection'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/tesis/tema-tesis/$requestCode')({

@@ -1,6 +1,6 @@
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ValidRoutes } from '@/constants/paths'
-import { useTabs } from '@/hooks/useTabs'
+import { Tabs, TabsList, TabsTrigger } from '@frontend/components/ui/tabs'
+import { ValidRoutes } from '@frontend/constants/paths'
+import { useTabs } from '@frontend/hooks/useTabs'
 
 import { Outlet, useParams } from '@tanstack/react-router'
 import { useEffect } from 'react'

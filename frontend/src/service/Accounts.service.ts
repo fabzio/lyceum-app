@@ -1,6 +1,6 @@
-import { BaseRoles } from '@/interfaces/enums/BaseRoles'
-import { Account } from '@/interfaces/models/Account'
-import http from '@/lib/http'
+import { BaseRoles } from '@frontend/interfaces/enums/BaseRoles'
+import { Account } from '@frontend/interfaces/models/Account'
+import http from '@frontend/lib/http'
 import axios from 'axios'
 
 class AccountsService {

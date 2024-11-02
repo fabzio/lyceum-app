@@ -1,8 +1,8 @@
-import { Account } from '@/interfaces/models/Account'
+import { Account } from '@frontend/interfaces/models/Account'
 import { create, StateCreator } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { ModulesDict } from '@/interfaces/enums/modules'
-import { PermissionCode } from '@/interfaces/enums/permissions'
+import { ModulesDict } from '@frontend/interfaces/enums/modules'
+import { PermissionCode } from '@frontend/interfaces/enums/permissions'
 
 export type Session = {
   id: Account['id']

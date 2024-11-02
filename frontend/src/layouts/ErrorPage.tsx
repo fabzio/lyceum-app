@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import { AlertCircle } from 'lucide-react'
 import { useRouter } from '@tanstack/react-router'
 
@@ -6,7 +6,7 @@ import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from '@/components/ui/hover-card'
+} from '@frontend/components/ui/hover-card'
 
 interface ErrorPageProps {
   title?: string
@@ -42,7 +42,7 @@ export default function ErrorPage({
         Reintentar
       </Button>
       {displayErrorMessage && (
-        <HoverCard openDelay={100} >
+        <HoverCard openDelay={100}>
           <HoverCardTrigger className="mt-4 underline text-muted-foreground">
             Ver detalles
           </HoverCardTrigger>

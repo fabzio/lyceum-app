@@ -1,5 +1,5 @@
-import FAQAcordion from '@/modules/faq/components/FAQAccordion'
-import { FAQ } from '@/modules/faq/interfaces/FAQ'
+import FAQAcordion from '@frontend/modules/faq/components/FAQAccordion'
+import { FAQ } from '@frontend/modules/faq/interfaces/FAQ'
 
 interface Props {
   categorizedFAQs: Record<string, FAQ[]>

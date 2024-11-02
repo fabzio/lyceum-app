@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import {
   Dialog,
   DialogClose,
@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from '@frontend/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -16,13 +16,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { QueryKeys } from '@/constants/queryKeys'
-import { useToast } from '@/hooks/use-toast'
-import { Course } from '@/interfaces/models/Course'
-import { getCsvData } from '@/lib/utils'
-import CourseService from '@/modules/study-plans/services/course.service'
+} from '@frontend/components/ui/form'
+import { Input } from '@frontend/components/ui/input'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import { useToast } from '@frontend/hooks/use-toast'
+import { Course } from '@frontend/interfaces/models/Course'
+import { getCsvData } from '@frontend/lib/utils'
+import CourseService from '@frontend/modules/study-plans/services/course.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Loader2, Upload } from 'lucide-react'

@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button'
-import { DialogClose, DialogFooter } from '@/components/ui/dialog'
+import { Button } from '@frontend/components/ui/button'
+import { DialogClose, DialogFooter } from '@frontend/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -7,24 +7,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from '@frontend/components/ui/form'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { QueryKeys } from '@/constants/queryKeys'
-import FAQService from '@/modules/faq/services/faq.service'
-import FAQCategoryService from '@/modules/faq/services/faqCategory.service'
+} from '@frontend/components/ui/select'
+import { Textarea } from '@frontend/components/ui/textarea'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import FAQService from '@frontend/modules/faq/services/faq.service'
+import FAQCategoryService from '@frontend/modules/faq/services/faqCategory.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { SelectValue } from '@radix-ui/react-select'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { FAQ } from '../interfaces/FAQ'
-import { useToast } from '@/hooks/use-toast'
+import { useToast } from '@frontend/hooks/use-toast'
 
 interface Props {
   mode: 'create' | 'edit'

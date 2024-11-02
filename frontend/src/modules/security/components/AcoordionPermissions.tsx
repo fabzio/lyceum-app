@@ -3,10 +3,10 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion'
-import { Permission } from '@/interfaces/models/Permission'
+} from '@frontend/components/ui/accordion'
+import { Permission } from '@frontend/interfaces/models/Permission'
 import groupBy from 'just-group-by'
-import { Checkbox } from '@/components/ui/checkbox'
+import { Checkbox } from '@frontend/components/ui/checkbox'
 import { useFormContext } from 'react-hook-form'
 
 interface Props {

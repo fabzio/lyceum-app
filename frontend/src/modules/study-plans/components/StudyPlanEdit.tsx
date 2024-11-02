@@ -1,17 +1,22 @@
 import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Button } from '@frontend/components/ui/button'
+import { Input } from '@frontend/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+} from '@frontend/components/ui/select'
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from '@frontend/components/ui/tabs'
 import { StudyPlanCourse } from '../interfaces/StudyPlanCourse'
 import { useParams } from '@tanstack/react-router'
-import { Course } from '@/interfaces/models/Course'
+import { Course } from '@frontend/interfaces/models/Course'
 
 type CycleWithCourses = {
   name: string

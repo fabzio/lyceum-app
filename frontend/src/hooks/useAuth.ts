@@ -1,5 +1,5 @@
-import http from '@/lib/http'
-import { Session, useSessionStore } from '@/store'
+import http from '@frontend/lib/http'
+import { Session, useSessionStore } from '@frontend/store'
 import { useQuery } from '@tanstack/react-query'
 
 export const useAuth = () => {

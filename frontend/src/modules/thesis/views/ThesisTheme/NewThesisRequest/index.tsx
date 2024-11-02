@@ -1,4 +1,4 @@
-import { Separator } from '@/components/ui/separator'
+import { Separator } from '@frontend/components/ui/separator'
 import NewThesisForm from '../components/NewThesisForm'
 
 export default function NewThesisRequest() {

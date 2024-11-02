@@ -1,4 +1,4 @@
-import { StudyPlan } from '@/interfaces/models/StudyPlan'
+import { StudyPlan } from '@frontend/interfaces/models/StudyPlan'
 import { ColumnDef } from '@tanstack/react-table'
 import {
   mapStudyPlanStatus,

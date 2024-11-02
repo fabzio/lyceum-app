@@ -3,8 +3,8 @@ import UploadCSVDialog from './components/UploadCSVDialog'
 import UpdateConfirmationDialog from './components/UpdateConfirmationDialog'
 import RiskStudentTable from './components/RiskStudentTable'
 import SearchRiskStudentInput from './components/SearchRiskStudentInput'
-import Need from '@/components/Need'
-import { StudentProcessPermissionsDict } from '@/interfaces/enums/permissions/StudentProcess'
+import Need from '@frontend/components/Need'
+import { StudentProcessPermissionsDict } from '@frontend/interfaces/enums/permissions/StudentProcess'
 
 export default function RiskStudents() {
   //ANOTACION 1: FALTA FILTRAR POR NOTAS : "Listo Filtrar por Puntacion"

@@ -1,5 +1,5 @@
-import { Input } from '@/components/ui/input'
-import { useFilters } from '@/hooks/useFilters'
+import { Input } from '@frontend/components/ui/input'
+import { useFilters } from '@frontend/hooks/useFilters'
 import debounce from 'debounce'
 
 export default function SearchStudentInput() {

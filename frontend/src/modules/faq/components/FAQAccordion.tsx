@@ -3,7 +3,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion'
+} from '@frontend/components/ui/accordion'
 
 import { FAQ } from '../interfaces/FAQ'
 import EditFAQDialog from '../views/FAQs/EditFAQDialog'

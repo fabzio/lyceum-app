@@ -1,4 +1,4 @@
-import { Filters } from '@/interfaces/types'
+import { Filters } from '@frontend/interfaces/types'
 
 export type ExternsFilters = Filters & {
   code?: number

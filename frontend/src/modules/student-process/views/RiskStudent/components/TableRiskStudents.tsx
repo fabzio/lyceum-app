@@ -5,7 +5,7 @@ import {
   TableRow,
   TableHead,
   TableCell,
-} from '@/components/ui/table'
+} from '@frontend/components/ui/table'
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import {
@@ -15,9 +15,9 @@ import {
   PaginationNext,
   PaginationPrevious,
   PaginationContent,
-} from '@/components/ui/pagination'
-import { RiskStudentGeneral } from '@/modules/student-process/interfaces/RIskStudentGeneral'
-import useCourseStore from '@/modules/student-process/store'
+} from '@frontend/components/ui/pagination'
+import { RiskStudentGeneral } from '@frontend/modules/student-process/interfaces/RIskStudentGeneral'
+import useCourseStore from '@frontend/modules/student-process/store'
 
 interface TableRiskStudentsProps {
   tableRiskStudents: RiskStudentGeneral[]

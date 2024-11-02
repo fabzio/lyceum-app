@@ -1,14 +1,14 @@
-import { Button } from '@/components/ui/button'
-import { DialogFooter } from '@/components/ui/dialog'
+import { Button } from '@frontend/components/ui/button'
+import { DialogFooter } from '@frontend/components/ui/dialog'
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+} from '@frontend/components/ui/form'
+import { Input } from '@frontend/components/ui/input'
+import { Label } from '@frontend/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -17,13 +17,13 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { QueryKeys } from '@/constants/queryKeys'
-import { useToast } from '@/hooks/use-toast'
-import { UnitType } from '@/interfaces/models'
-import { mapUnitType } from '@/lib/mapUnitType'
-import PermissionsCombobox from '@/modules/security/components/PermissionsCombobox'
-import RolePermissionService from '@/modules/security/services/role-permission.service'
+} from '@frontend/components/ui/select'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import { useToast } from '@frontend/hooks/use-toast'
+import { UnitType } from '@frontend/interfaces/models'
+import { mapUnitType } from '@frontend/lib/mapUnitType'
+import PermissionsCombobox from '@frontend/modules/security/components/PermissionsCombobox'
+import RolePermissionService from '@frontend/modules/security/services/role-permission.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { DialogClose } from '@radix-ui/react-dialog'
 import { useMutation, useQueryClient } from '@tanstack/react-query'

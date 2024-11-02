@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Input } from '@/components/ui/input'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Input } from '@frontend/components/ui/input'
+import { Card } from '@frontend/components/ui/card'
+import { Button } from '@frontend/components/ui/button'
 import { X } from 'lucide-react'
 
 interface User {

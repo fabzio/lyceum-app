@@ -1,8 +1,8 @@
-import { QueryKeys } from '@/constants/queryKeys'
-import { EnrollmentPermissionsDict } from '@/interfaces/enums/permissions/Enrollment'
-import { haveSomePermission } from '@/lib/utils'
-import EnrollmentService from '@/modules/enrollment/services/enrollment.service'
-import EnrollmentModify from '@/modules/enrollment/views/EnrollmentModify'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import { EnrollmentPermissionsDict } from '@frontend/interfaces/enums/permissions/Enrollment'
+import { haveSomePermission } from '@frontend/lib/utils'
+import EnrollmentService from '@frontend/modules/enrollment/services/enrollment.service'
+import EnrollmentModify from '@frontend/modules/enrollment/views/EnrollmentModify'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/matricula/modificacion-matricula')(

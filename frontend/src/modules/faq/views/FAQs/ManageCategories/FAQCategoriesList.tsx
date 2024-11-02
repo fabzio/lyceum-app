@@ -1,6 +1,6 @@
-import FAQCategoryService from '@/modules/faq/services/faqCategory.service'
+import FAQCategoryService from '@frontend/modules/faq/services/faqCategory.service'
 import NewCategoryDialog from './NewCategoryDialog'
-import { QueryKeys } from '@/constants/queryKeys'
+import { QueryKeys } from '@frontend/constants/queryKeys'
 import { useQuery } from '@tanstack/react-query'
 
 export default function FAQCategoriesList() {

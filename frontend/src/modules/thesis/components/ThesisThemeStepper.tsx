@@ -1,10 +1,10 @@
 import { CheckCircle2, CircleX, Download } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import { ThesisThemeRequestAction } from '../interfaces/ThesisThemeRequestAction'
 import { mapStatus } from '../utils'
 import { Link } from '@tanstack/react-router'
-import { Skeleton } from '@/components/ui/skeleton'
-import { ValidRoutes } from '@/constants/paths'
+import { Skeleton } from '@frontend/components/ui/skeleton'
+import { ValidRoutes } from '@frontend/constants/paths'
 
 interface Props {
   history?: ThesisThemeRequestAction[]

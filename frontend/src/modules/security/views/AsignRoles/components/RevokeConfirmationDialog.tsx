@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import {
   Dialog,
   DialogClose,
@@ -8,9 +8,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { QueryKeys } from '@/constants/queryKeys'
-import RoleAccountsService from '@/modules/security/services/RoleAccounts.service'
+} from '@frontend/components/ui/dialog'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import RoleAccountsService from '@frontend/modules/security/services/RoleAccounts.service'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 

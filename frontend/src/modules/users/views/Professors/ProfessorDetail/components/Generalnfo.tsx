@@ -2,7 +2,7 @@ import AcademicInformation from './AcademicInformation'
 import Personalnformation from './Personalnformation'
 import ContactInfomation from './ContactInfomation'
 import { FormProvider, useForm } from 'react-hook-form'
-import { Professor } from '@/modules/users/interfaces/Professor'
+import { Professor } from '@frontend/modules/users/interfaces/Professor'
 import { useSearch } from '@tanstack/react-router'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -29,7 +29,7 @@ export default function GeneralInfo({ refSubmitButtom, professor }: Props) {
           <AcademicInformation />
           <Personalnformation />
           <ContactInfomation />
-        </fieldset>   
+        </fieldset>
         <button hidden={true} type={'submit'} ref={refSubmitButtom} />
       </form>
     </FormProvider>

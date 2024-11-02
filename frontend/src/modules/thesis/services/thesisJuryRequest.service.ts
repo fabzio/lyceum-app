@@ -1,6 +1,6 @@
-import http from '@/lib/http'
+import http from '@frontend/lib/http'
 import { ThesisThemeDetail } from '../interfaces/ThesisThemeDetail'
-import { Account } from '@/interfaces/models/Account'
+import { Account } from '@frontend/interfaces/models/Account'
 import ThesisJuryRequest from '../interfaces/ThesisJuryRequest'
 import axios from 'axios'
 

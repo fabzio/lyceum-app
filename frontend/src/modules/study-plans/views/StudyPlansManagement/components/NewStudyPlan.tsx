@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import {
   Dialog,
   DialogClose,
@@ -7,7 +7,7 @@ import {
   DialogFooter,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from '@frontend/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -15,12 +15,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { useToast } from '@/hooks/use-toast'
-import { StudyPlanPermissionsDict } from '@/interfaces/enums/permissions/StudyPlan'
-import StudyPlanService from '@/modules/study-plans/services/studyPlan.service'
-import { useSessionStore } from '@/store'
+} from '@frontend/components/ui/form'
+import { Input } from '@frontend/components/ui/input'
+import { useToast } from '@frontend/hooks/use-toast'
+import { StudyPlanPermissionsDict } from '@frontend/interfaces/enums/permissions/StudyPlan'
+import StudyPlanService from '@frontend/modules/study-plans/services/studyPlan.service'
+import { useSessionStore } from '@frontend/store'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'

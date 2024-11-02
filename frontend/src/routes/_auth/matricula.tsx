@@ -1,5 +1,5 @@
-import TransitionPage from '@/components/anim/TransitionPage'
-import Enrollments from '@/modules/enrollment'
+import TransitionPage from '@frontend/components/anim/TransitionPage'
+import Enrollments from '@frontend/modules/enrollment'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/matricula')({

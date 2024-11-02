@@ -1,4 +1,4 @@
-import PageLayout from '@/layouts/PageLayout'
+import PageLayout from '@frontend/layouts/PageLayout'
 import StudyPlansManagment from './components/StudyPlansManagment'
 import { StudyPlanModule } from './study-plan.module'
 

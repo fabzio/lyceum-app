@@ -1,8 +1,8 @@
-import Need from '@/components/Need'
+import Need from '@frontend/components/Need'
 import MasiveStudentsDialog from './components/MasiveStudentsDialog'
 import SearchStudentInput from './components/SearchStudentInput'
 import StudentTable from './components/StudentTable'
-import { UserPermissionsDict } from '@/interfaces/enums/permissions/Users'
+import { UserPermissionsDict } from '@frontend/interfaces/enums/permissions/Users'
 
 export default function StudentManagement() {
   return (

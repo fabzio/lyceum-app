@@ -1,7 +1,7 @@
-import { QueryKeys } from '@/constants/queryKeys'
-import { EnrollmentPermissionsDict } from '@/interfaces/enums/permissions/Enrollment'
-import EnrollmentService from '@/modules/enrollment/services/enrollment.service'
-import DetailEnrollment from '@/modules/enrollment/views/EnrollmentModify/DetailEnrollment'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import { EnrollmentPermissionsDict } from '@frontend/interfaces/enums/permissions/Enrollment'
+import EnrollmentService from '@frontend/modules/enrollment/services/enrollment.service'
+import DetailEnrollment from '@frontend/modules/enrollment/views/EnrollmentModify/DetailEnrollment'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute(

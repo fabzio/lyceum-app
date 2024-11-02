@@ -1,11 +1,11 @@
-import { QueryKeys } from '@/constants/queryKeys'
+import { QueryKeys } from '@frontend/constants/queryKeys'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
-import { sortByToState, stateToSortBy } from '@/lib/table'
+import { sortByToState, stateToSortBy } from '@frontend/lib/table'
 import { ExternTableColumns } from './columns'
-import { useFilters } from '@/hooks/useFilters'
-import ExternService from '@/modules/users/services/Extern.service'
-import DataTable from '@/components/DataTable'
+import { useFilters } from '@frontend/hooks/useFilters'
+import ExternService from '@frontend/modules/users/services/Extern.service'
+import DataTable from '@frontend/components/DataTable'
 
 export const DEFAULT_PAGE_INDEX = 0
 export const DEFAULT_PAGE_SIZE = 10

@@ -1,4 +1,4 @@
-import { SortParams } from '@/interfaces/types'
+import { SortParams } from '@frontend/interfaces/types'
 import { SortingState } from '@tanstack/react-table'
 
 export const sortByToState = (sortBy: SortParams['sortBy'] | undefined) => {

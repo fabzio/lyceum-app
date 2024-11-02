@@ -1,4 +1,4 @@
-import PageLayout from '@/layouts/PageLayout'
+import PageLayout from '@frontend/layouts/PageLayout'
 import EnrollmentManagement from './components/EnrollmentManagement'
 
 export default function Enrollment() {

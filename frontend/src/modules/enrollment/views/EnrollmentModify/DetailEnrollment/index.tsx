@@ -2,7 +2,7 @@ import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from '@/components/ui/resizable'
+} from '@frontend/components/ui/resizable'
 import EnrollmentModifyMain from './EnrollmentModifyMain'
 import EnrollmentModifyAux from './EnrollmentModifyAux'
 import EnrollmentModifyAside from './EnrollmentModifyAside'

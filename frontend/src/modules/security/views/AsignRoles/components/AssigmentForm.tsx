@@ -1,6 +1,6 @@
-import QuickSearchInput from '@/components/QuickSearchInput.tsx/QuickSearchInput'
-import { Button } from '@/components/ui/button'
-import { DialogClose, DialogFooter } from '@/components/ui/dialog'
+import QuickSearchInput from '@frontend/components/QuickSearchInput.tsx/QuickSearchInput'
+import { Button } from '@frontend/components/ui/button'
+import { DialogClose, DialogFooter } from '@frontend/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -8,18 +8,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from '@frontend/components/ui/form'
 import {
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { QueryKeys } from '@/constants/queryKeys'
-import { useToast } from '@/hooks/use-toast'
-import RolePermissionService from '@/modules/security/services/role-permission.service'
-import RoleAccountsService from '@/modules/security/services/RoleAccounts.service'
-import AccountsService from '@/service/Accounts.service'
+} from '@frontend/components/ui/select'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import { useToast } from '@frontend/hooks/use-toast'
+import RolePermissionService from '@frontend/modules/security/services/role-permission.service'
+import RoleAccountsService from '@frontend/modules/security/services/RoleAccounts.service'
+import AccountsService from '@frontend/service/Accounts.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Select } from '@radix-ui/react-select'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'

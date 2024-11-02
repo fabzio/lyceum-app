@@ -1,12 +1,12 @@
-//import { Input } from '@/components/ui/input'
+//import { Input } from '@frontend/components/ui/input'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import SelectFilter from './SelectFilter'
-import { Button } from '@/components/ui/button'
-import EnrollmentService from '@/modules/enrollment/services/enrollment.service'
+import { Button } from '@frontend/components/ui/button'
+import EnrollmentService from '@frontend/modules/enrollment/services/enrollment.service'
 import TableEnrollments from './TableEnrollments'
-import { QueryKeys } from '@/constants/queryKeys'
-import Need from '@/components/Need'
-import { EnrollmentPermissionsDict } from '@/interfaces/enums/permissions/Enrollment'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import Need from '@frontend/components/Need'
+import { EnrollmentPermissionsDict } from '@frontend/interfaces/enums/permissions/Enrollment'
 
 export default function EnrollmentModify() {
   const { data: enrollments } = useSuspenseQuery({

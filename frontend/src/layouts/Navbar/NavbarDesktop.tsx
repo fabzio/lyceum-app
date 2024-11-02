@@ -2,7 +2,7 @@ import { ModeToggle } from '../components/ModeToggle'
 import ProfileSettings from '../components/ProfileSettings'
 import Notifications from '../components/Notifications'
 import SearchBar from '../components/SearchBar'
-import TSRBreadCums from '@/components/TSRBreadCums'
+import TSRBreadCums from '@frontend/components/TSRBreadCums'
 
 export default function NavbarDesktop() {
   return (

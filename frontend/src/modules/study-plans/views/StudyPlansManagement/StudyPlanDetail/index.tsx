@@ -3,9 +3,9 @@ import StudyPlanActions from './StudyPlanActions'
 import StudyPlanCourses from './StudyPlanCourses'
 import StudyPlanAddCourse from './StudyPlanAddCourse'
 import CourseCard from './components/CourseCard'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { useStudyPlan } from '@/modules/study-plans/hooks/useStudyPlan'
-import { Course } from '@/interfaces/models/Course'
+import { ScrollArea } from '@frontend/components/ui/scroll-area'
+import { useStudyPlan } from '@frontend/modules/study-plans/hooks/useStudyPlan'
+import { Course } from '@frontend/interfaces/models/Course'
 
 export default function StudyPlanDetail() {
   const { course, setCourse, handleDragEnd } = useStudyPlan()

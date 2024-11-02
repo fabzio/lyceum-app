@@ -1,17 +1,14 @@
-// import { Course } from '@/interfaces/models/Course'
-import { Filters } from '@/interfaces/types'
-import http from '@/lib/http'
+// import { Course } from '@frontend/interfaces/models/Course'
+import { Filters } from '@frontend/interfaces/types'
+import http from '@frontend/lib/http'
 import { Student } from '../interfaces/Student'
 import axios from 'axios'
 
 class StudentService {
   static async fetchStudents(
     filtersAndPagination: Filters
-  )
-  : Promise<PaginatedData<Student>> 
-  {
+  ): Promise<PaginatedData<Student>> {
     try {
-      
       const res = await http.get('/accounts/students', {
         params: {
           q: filtersAndPagination.q || '',
@@ -35,7 +32,10 @@ class StudentService {
   }
 
   static async addStudent(
-    students: Pick<Student, 'code' | 'name' | 'firstSurname' | 'secondSurname' | 'email'>[]
+    students: Pick<
+      Student,
+      'code' | 'name' | 'firstSurname' | 'secondSurname' | 'email'
+    >[]
   ): Promise<void> {
     try {
       const res = await http.post('/accounts/students', {
@@ -53,7 +53,7 @@ class StudentService {
     }
   }
 
-  static async getStudentDetail (code: string): Promise<Student> {
+  static async getStudentDetail(code: string): Promise<Student> {
     try {
       const res = await http.get(`/accounts/students/${code}`)
       const response = res.data as ResponseAPI<Student>

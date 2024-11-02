@@ -1,4 +1,4 @@
-import { Course } from '@/interfaces/models/Course'
+import { Course } from '@frontend/interfaces/models/Course'
 import { useDroppable } from '@dnd-kit/core'
 import CourseCard from './CourseCard'
 import DraggableCourseCard from './DraggableCourseCard'
@@ -27,7 +27,7 @@ export default function DroppableLevel({ level, courses = [] }: Props) {
               </DraggableCourseCard>
             ))
           ) : (
-            <div className='h-full w-full grid place-content-center'>
+            <div className="h-full w-full grid place-content-center">
               <p className="text-muted-foreground text-center">
                 No hay cursos en este nivel
               </p>

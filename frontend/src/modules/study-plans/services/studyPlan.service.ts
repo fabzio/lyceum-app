@@ -1,11 +1,11 @@
-import http from '@/lib/http'
+import http from '@frontend/lib/http'
 import { StudyPlan } from '../../../interfaces/models/StudyPlan'
 import { isAxiosError } from 'axios'
-import { Unit } from '@/interfaces/models/Unit'
-import { Course } from '@/interfaces/models/Course'
+import { Unit } from '@frontend/interfaces/models/Unit'
+import { Course } from '@frontend/interfaces/models/Course'
 
 /*
-import http from '@/lib/http';
+import http from '@frontend/lib/http';
 
 
 class StudyPlanService {

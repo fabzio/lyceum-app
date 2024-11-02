@@ -1,6 +1,6 @@
-import { AppModule } from '@/interfaces/AppModule'
-import { ModulesDict } from '@/interfaces/enums/modules'
-import { StudyPlanPermissionsDict } from '@/interfaces/enums/permissions/StudyPlan'
+import { AppModule } from '@frontend/interfaces/AppModule'
+import { ModulesDict } from '@frontend/interfaces/enums/modules'
+import { StudyPlanPermissionsDict } from '@frontend/interfaces/enums/permissions/StudyPlan'
 import { GraduationCap } from 'lucide-react'
 
 export const StudyPlanModule: AppModule = {

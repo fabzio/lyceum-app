@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,16 +7,15 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { API_URL } from '@/config'
-import { useSessionStore } from '@/store'
+} from '@frontend/components/ui/dropdown-menu'
+import { useSessionStore } from '@frontend/store'
 import { LogOut, User } from 'lucide-react'
 
 export default function ProfileSettings() {
   const { resetSession } = useSessionStore()
   const handleLogout = () => {
     resetSession()
-    window.location.href = `${process.env.NODE_ENV === 'production' ? API_URL : ''}/api/v1/oauth/logout`
+    window.location.href = '/api/v1/oauth/logout'
   }
   return (
     <DropdownMenu>

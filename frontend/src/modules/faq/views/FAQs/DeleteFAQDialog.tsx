@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import {
   Dialog,
   DialogClose,
@@ -8,10 +8,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { QueryKeys } from '@/constants/queryKeys'
-import { FAQ } from '@/modules/faq/interfaces/FAQ'
-import FAQService from '@/modules/faq/services/faq.service'
+} from '@frontend/components/ui/dialog'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import { FAQ } from '@frontend/modules/faq/interfaces/FAQ'
+import FAQService from '@frontend/modules/faq/services/faq.service'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Trash } from 'lucide-react'
 import { useState } from 'react'

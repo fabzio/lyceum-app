@@ -1,4 +1,4 @@
-import LoginPage from '@/views/Login'
+import LoginPage from '@frontend/views/Login'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/login')({

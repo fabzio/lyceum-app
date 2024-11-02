@@ -2,8 +2,8 @@ import CourseTable from './components/CourseTable'
 import NewCourseDialog from './components/NewCourseDialog'
 import MasiveCoursesDialog from './components/MasiveCoursesDialog'
 import SearchCourseInput from './components/SearchCourseInput'
-import Need from '@/components/Need'
-import { StudyPlanPermissionsDict } from '@/interfaces/enums/permissions/StudyPlan'
+import Need from '@frontend/components/Need'
+import { StudyPlanPermissionsDict } from '@frontend/interfaces/enums/permissions/StudyPlan'
 
 export default function CourseManagement() {
   return (

@@ -1,12 +1,12 @@
-import { Input } from '@/components/ui/input'
+import { Input } from '@frontend/components/ui/input'
 import ThesisJuryRequestSelectFilter from './components/ThesisJuryRequestFilter'
 import ThesisJuryRequestElement from './components/ThesisJuryRequestElements'
 import NewJuryRequestDialog from './components/NewJuryRequestDialog'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import ThesisJuryRequestService from '@/modules/thesis/services/thesisJuryRequest.service'
-import { QueryKeys } from '@/constants/queryKeys'
-import Need from '@/components/Need'
-import { ThesisPermissionsDict } from '@/interfaces/enums/permissions/Thesis'
+import ThesisJuryRequestService from '@frontend/modules/thesis/services/thesisJuryRequest.service'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import Need from '@frontend/components/Need'
+import { ThesisPermissionsDict } from '@frontend/interfaces/enums/permissions/Thesis'
 
 export default function ThesisJuryRequestList() {
   const { data: thesisJuryRequest } = useSuspenseQuery({

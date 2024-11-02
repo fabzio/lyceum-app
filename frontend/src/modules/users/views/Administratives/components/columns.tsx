@@ -1,11 +1,11 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Administrative } from '@/modules/users/interfaces/Administrative'
+} from '@frontend/components/ui/dropdown-menu'
+import { Administrative } from '@frontend/modules/users/interfaces/Administrative'
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
 // TODO: Agregar funcionalidad para editar y deshabilitar profesores

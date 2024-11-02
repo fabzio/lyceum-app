@@ -1,7 +1,7 @@
-import { Skeleton } from '@/components/ui/skeleton'
-import { Textarea } from '@/components/ui/textarea'
-import { QueryKeys } from '@/constants/queryKeys'
-import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
+import { Skeleton } from '@frontend/components/ui/skeleton'
+import { Textarea } from '@frontend/components/ui/textarea'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisThemeRequest.service'
 import { useQuery } from '@tanstack/react-query'
 import { useParams, useSearch } from '@tanstack/react-router'
 

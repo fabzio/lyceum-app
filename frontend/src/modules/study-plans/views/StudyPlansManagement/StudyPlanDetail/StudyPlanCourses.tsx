@@ -1,7 +1,12 @@
-import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { QueryKeys } from '@/constants/queryKeys'
-import StudyPlanService from '@/modules/study-plans/services/studyPlan.service'
+import { Button } from '@frontend/components/ui/button'
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@frontend/components/ui/tabs'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import StudyPlanService from '@frontend/modules/study-plans/services/studyPlan.service'
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
 import DroppableLevel from './components/DroppableLevel'
@@ -45,11 +50,9 @@ export default function StudyPlanCourses() {
           {Array.from({ length: studyPlan.levelsCount }).map((_, i) => (
             <DroppableLevel
               key={i}
-              courses={
-                gropedCoursesByLevel[i + studyPlan.startLevel]?.map(
-                  (studyPlanCourse) => studyPlanCourse.course
-                ) 
-              }
+              courses={gropedCoursesByLevel[i + studyPlan.startLevel]?.map(
+                (studyPlanCourse) => studyPlanCourse.course
+              )}
               level={i + studyPlan.startLevel}
             />
           ))}

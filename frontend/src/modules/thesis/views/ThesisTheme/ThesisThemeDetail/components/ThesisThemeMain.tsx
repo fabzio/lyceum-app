@@ -1,7 +1,7 @@
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
+import { Button } from '@frontend/components/ui/button'
+import { Checkbox } from '@frontend/components/ui/checkbox'
+import { ScrollArea } from '@frontend/components/ui/scroll-area'
+import { Separator } from '@frontend/components/ui/separator'
 import {
   Table,
   TableBody,
@@ -9,13 +9,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { QueryKeys } from '@/constants/queryKeys'
-import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
+} from '@frontend/components/ui/table'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisThemeRequest.service'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
 import { Download } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@frontend/components/ui/badge'
 import ThesisResponseSection from '../../components/ThesisResponseSection'
 
 export default function ThesisThemeMain() {

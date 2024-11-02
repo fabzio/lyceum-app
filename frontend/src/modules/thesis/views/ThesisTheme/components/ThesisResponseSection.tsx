@@ -1,8 +1,8 @@
 import ThesisThemeForm from '../ThesisThemeDetail/components/ThesisThemeForm'
-import { ThesisPermissionsDict } from '@/interfaces/enums/permissions/Thesis'
-import Need from '@/components/Need'
+import { ThesisPermissionsDict } from '@frontend/interfaces/enums/permissions/Thesis'
+import Need from '@frontend/components/Need'
 import ThesisUploadCorrections from '../ThesisThemeDetail/components/ThesisUploadCorrections'
-import { useSessionStore } from '@/store'
+import { useSessionStore } from '@frontend/store'
 
 export default function ThesisResponseSection() {
   const { havePermission } = useSessionStore()

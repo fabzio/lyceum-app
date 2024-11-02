@@ -1,7 +1,7 @@
 import { AnimatePresence } from 'framer-motion'
 import NavbarDesktop from './Navbar/NavbarDesktop'
 import styles from './layout.module.css'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { ScrollArea } from '@frontend/components/ui/scroll-area'
 import Aside from './Aside/Aside'
 interface Props {
   children: React.ReactNode

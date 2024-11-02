@@ -1,8 +1,8 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import Papa from 'papaparse'
-import { ValidRoutes } from '@/constants/paths'
-import { PermissionCode } from '@/interfaces/enums/permissions'
+import { ValidRoutes } from '@frontend/constants/paths'
+import { PermissionCode } from '@frontend/interfaces/enums/permissions'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

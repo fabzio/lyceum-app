@@ -8,24 +8,24 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+} from '@frontend/components/ui/table'
+import { Button } from '@frontend/components/ui/button'
+import { Input } from '@frontend/components/ui/input'
+import { Label } from '@frontend/components/ui/label'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from '@frontend/components/ui/dropdown-menu'
 import { MoreHorizontal, Pencil, Save, X } from 'lucide-react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import FAQCategoryService from '@/modules/faq/services/faqCategory.service'
-import { FAQCategory } from '@/modules/faq/interfaces/FAQCategory'
-import { QueryKeys } from '@/constants/queryKeys'
-import useQueryStore from '@/hooks/useQueryStore'
+import FAQCategoryService from '@frontend/modules/faq/services/faqCategory.service'
+import { FAQCategory } from '@frontend/modules/faq/interfaces/FAQCategory'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import useQueryStore from '@frontend/hooks/useQueryStore'
 import DeleteFAQCategory from './DeleteFAQCategory'
-import { useToast } from '@/hooks/use-toast'
+import { useToast } from '@frontend/hooks/use-toast'
 
 export default function FAQCategoriesManagement() {
   const queryClient = useQueryClient()

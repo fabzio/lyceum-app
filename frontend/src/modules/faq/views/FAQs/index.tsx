@@ -1,11 +1,11 @@
-import { QueryKeys } from '@/constants/queryKeys'
-import FAQService from '@/modules/faq/services/faq.service'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import FAQService from '@frontend/modules/faq/services/faq.service'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import groupBy from 'just-group-by'
 import CategorizedFAQList from './CategorizedFAQList'
 import FAQCategoriesList from './ManageCategories/FAQCategoriesList'
 import NewFAQDialog from './NewFAQDialog'
-import { Separator } from '@/components/ui/separator'
+import { Separator } from '@frontend/components/ui/separator'
 
 export default function FAQs() {
   const { data: faqsList } = useSuspenseQuery({

@@ -1,15 +1,15 @@
-import ExpandibleAsidebar from '@/components/ExpandibleAsidebar'
-import { Button } from '@/components/ui/button'
-import { QueryKeys } from '@/constants/queryKeys'
-import { useFilters } from '@/hooks/useFilters'
-import CourseService from '@/modules/study-plans/services/course.service'
+import ExpandibleAsidebar from '@frontend/components/ExpandibleAsidebar'
+import { Button } from '@frontend/components/ui/button'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import { useFilters } from '@frontend/hooks/useFilters'
+import CourseService from '@frontend/modules/study-plans/services/course.service'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { ListFilter } from 'lucide-react'
 import CourseQuickSearch from './components/CourseQuickSearch'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { ScrollArea } from '@frontend/components/ui/scroll-area'
 import DraggableCourseCard from './components/DraggableCourseCard'
 import CourseCard from './components/CourseCard'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from '@frontend/components/ui/skeleton'
 
 export default function StudyPlanAddCourse() {
   const { filters } = useFilters('/_auth/plan-de-estudios/gestionar/$planId')

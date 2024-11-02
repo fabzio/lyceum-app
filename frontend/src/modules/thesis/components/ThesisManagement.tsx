@@ -1,5 +1,5 @@
-import { Tab } from '@/lib/utils'
-import SubRoutesManagement from '@/components/SubRoutesManagement'
+import { Tab } from '@frontend/lib/utils'
+import SubRoutesManagement from '@frontend/components/SubRoutesManagement'
 import { ThesisModule } from '../thesis.module'
 
 export default function ThesisManagement() {

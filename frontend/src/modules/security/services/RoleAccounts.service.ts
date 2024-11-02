@@ -1,6 +1,6 @@
-import { Assigment } from '@/interfaces/models'
-import { Unit } from '@/interfaces/models/Unit'
-import http from '@/lib/http'
+import { Assigment } from '@frontend/interfaces/models'
+import { Unit } from '@frontend/interfaces/models/Unit'
+import http from '@frontend/lib/http'
 import axios from 'axios'
 
 class RoleAccountsService {

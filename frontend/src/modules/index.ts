@@ -1,4 +1,4 @@
-import { ValidRoutes } from '@/constants/paths'
+import { ValidRoutes } from '@frontend/constants/paths'
 import { SecurityModule } from './security/security.module'
 import { StudyPlanModule } from './study-plans/study-plan.module'
 import { ThesisModule } from './thesis/thesis.module'

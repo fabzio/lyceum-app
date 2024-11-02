@@ -1,5 +1,5 @@
-import { AppModule } from '@/interfaces/AppModule'
-import { ModulesDict } from '@/interfaces/enums/modules'
+import { AppModule } from '@frontend/interfaces/AppModule'
+import { ModulesDict } from '@frontend/interfaces/enums/modules'
 import { FileUser } from 'lucide-react'
 
 export const StudentProcessModule: AppModule = {

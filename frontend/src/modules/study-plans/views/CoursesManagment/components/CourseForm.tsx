@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button'
-import { DialogClose, DialogFooter } from '@/components/ui/dialog'
+import { Button } from '@frontend/components/ui/button'
+import { DialogClose, DialogFooter } from '@frontend/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -7,12 +7,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { QueryKeys } from '@/constants/queryKeys'
-import { useToast } from '@/hooks/use-toast'
-import { Course } from '@/interfaces/models/Course'
-import CourseService from '@/modules/study-plans/services/course.service'
+} from '@frontend/components/ui/form'
+import { Input } from '@frontend/components/ui/input'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import { useToast } from '@frontend/hooks/use-toast'
+import { Course } from '@frontend/interfaces/models/Course'
+import CourseService from '@frontend/modules/study-plans/services/course.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'

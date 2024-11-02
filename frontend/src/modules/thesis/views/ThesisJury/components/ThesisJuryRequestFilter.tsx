@@ -4,7 +4,7 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select'
+} from '@frontend/components/ui/select'
 
 export default function ThesisJuryRequestSelectFilter() {
   return (
@@ -16,12 +16,8 @@ export default function ThesisJuryRequestSelectFilter() {
         <SelectItem value="123">
           Solicitud enviada por secretario académico
         </SelectItem>
-        <SelectItem value="456">
-          Director de carrera propuso jurados
-        </SelectItem>
-        <SelectItem value="789">
-          Terminado
-        </SelectItem>
+        <SelectItem value="456">Director de carrera propuso jurados</SelectItem>
+        <SelectItem value="789">Terminado</SelectItem>
       </SelectContent>
     </Select>
   )

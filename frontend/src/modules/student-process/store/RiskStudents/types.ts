@@ -1,4 +1,4 @@
-import { RiskStudentGeneral } from '@/modules/student-process/interfaces/RIskStudentGeneral'
+import { RiskStudentGeneral } from '@frontend/modules/student-process/interfaces/RIskStudentGeneral'
 
 export interface RiskStudentStore {
   selectedRiskStudent: null | RiskStudentGeneral

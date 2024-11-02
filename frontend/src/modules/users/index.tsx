@@ -1,4 +1,4 @@
-import PageLayout from '@/layouts/PageLayout'
+import PageLayout from '@frontend/layouts/PageLayout'
 import UserManagement from './components/UserManagement'
 
 export default function Users() {

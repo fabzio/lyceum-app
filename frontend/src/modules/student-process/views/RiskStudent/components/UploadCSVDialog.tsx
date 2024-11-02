@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -8,14 +8,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { getCsvData } from '@/lib/utils'
+} from '@frontend/components/ui/dialog'
+import { Input } from '@frontend/components/ui/input'
+import { getCsvData } from '@frontend/lib/utils'
 import { z } from 'zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Upload } from 'lucide-react'
-import RiskStudentService from '@/modules/student-process/services/riskStudent.service'
-import { QueryKeys } from '@/constants/queryKeys'
+import RiskStudentService from '@frontend/modules/student-process/services/riskStudent.service'
+import { QueryKeys } from '@frontend/constants/queryKeys'
 
 const csvSchema = z.object({
   alumno: z

@@ -1,10 +1,10 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import Profesors from '@/modules/users/views/Externs'
-import { ExternsFilters } from '@/modules/users/views/Externs/interfaces/CourseFIlters'
-import { QueryKeys } from '@/constants/queryKeys'
-import ExternService from '@/modules/users/services/Extern.service'
-import { UserPermissionsDict } from '@/interfaces/enums/permissions/Users'
-import { haveSomePermission } from '@/lib/utils'
+import Profesors from '@frontend/modules/users/views/Externs'
+import { ExternsFilters } from '@frontend/modules/users/views/Externs/interfaces/CourseFIlters'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import ExternService from '@frontend/modules/users/services/Extern.service'
+import { UserPermissionsDict } from '@frontend/interfaces/enums/permissions/Users'
+import { haveSomePermission } from '@frontend/lib/utils'
 
 export const Route = createFileRoute('/_auth/usuarios/externos')({
   beforeLoad: ({ context: { sessionStore } }) => {

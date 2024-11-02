@@ -1,5 +1,5 @@
-import { Separator } from '@/components/ui/separator'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Separator } from '@frontend/components/ui/separator'
+import { Skeleton } from '@frontend/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -7,10 +7,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { QueryKeys } from '@/constants/queryKeys'
-import ThesisJuryRequestService from '@/modules/thesis/services/thesisJuryRequest.service'
-import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
+} from '@frontend/components/ui/table'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import ThesisJuryRequestService from '@frontend/modules/thesis/services/thesisJuryRequest.service'
+import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisThemeRequest.service'
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
 import SearchJuryDialog from '../../components/SearchJuryDialog'
@@ -19,11 +19,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
+} from '@frontend/components/ui/dropdown-menu'
+import { Button } from '@frontend/components/ui/button'
 import { MoreHorizontal, Save, X } from 'lucide-react'
-import Need from '@/components/Need'
-import { ThesisPermissionsDict } from '@/interfaces/enums/permissions/Thesis'
+import Need from '@frontend/components/Need'
+import { ThesisPermissionsDict } from '@frontend/interfaces/enums/permissions/Thesis'
 
 export default function ThesisJuryList() {
   const { requestCode } = useParams({

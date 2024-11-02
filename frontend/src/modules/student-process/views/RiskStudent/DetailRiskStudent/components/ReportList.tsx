@@ -1,12 +1,12 @@
 import moment from 'moment'
 import ReportsCard from './ReportsCard'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import ExpandibleAsidebar from '@/components/ExpandibleAsidebar'
+import { ScrollArea } from '@frontend/components/ui/scroll-area'
+import ExpandibleAsidebar from '@frontend/components/ExpandibleAsidebar'
 import { useQuery } from '@tanstack/react-query'
-import { QueryKeys } from '@/constants/queryKeys'
-import RiskStudentService from '@/modules/student-process/services/riskStudent.service'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import RiskStudentService from '@frontend/modules/student-process/services/riskStudent.service'
 import { useNavigate, useParams, useSearch } from '@tanstack/react-router'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from '@frontend/components/ui/skeleton'
 
 export default function ReportList() {
   const { code } = useParams({

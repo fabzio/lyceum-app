@@ -1,4 +1,4 @@
-import { Course } from '@/interfaces/models/Course'
+import { Course } from '@frontend/interfaces/models/Course'
 import { useDraggable } from '@dnd-kit/core'
 
 interface Props extends Course {

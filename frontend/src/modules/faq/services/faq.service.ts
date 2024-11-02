@@ -1,4 +1,4 @@
-import http from '@/lib/http'
+import http from '@frontend/lib/http'
 import { FAQ } from '../interfaces/FAQ'
 import axios from 'axios'
 

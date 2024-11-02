@@ -1,17 +1,14 @@
-// import { Course } from '@/interfaces/models/Course'
-import { Filters } from '@/interfaces/types'
-import http from '@/lib/http'
+// import { Course } from '@frontend/interfaces/models/Course'
+import { Filters } from '@frontend/interfaces/types'
+import http from '@frontend/lib/http'
 import { Extern } from '../interfaces/Extern'
 import axios from 'axios'
 
 class ExternService {
   static async fetchExterns(
     filtersAndPagination: Filters
-  )
-  : Promise<PaginatedData<Extern>> 
-  {
+  ): Promise<PaginatedData<Extern>> {
     try {
-      
       const res = await http.get('/accounts/externals', {
         params: {
           q: filtersAndPagination.q || '',
@@ -35,7 +32,10 @@ class ExternService {
   }
 
   static async addExternal(
-    externals: Pick<Extern, 'code' | 'name' | 'firstSurname' | 'secondSurname' | 'email'>[]
+    externals: Pick<
+      Extern,
+      'code' | 'name' | 'firstSurname' | 'secondSurname' | 'email'
+    >[]
   ): Promise<void> {
     try {
       const res = await http.post('/accounts/externals', {

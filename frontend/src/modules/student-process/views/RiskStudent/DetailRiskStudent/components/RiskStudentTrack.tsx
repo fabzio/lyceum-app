@@ -3,9 +3,9 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from '@/components/ui/chart'
-import { QueryKeys } from '@/constants/queryKeys'
-import RiskStudentService from '@/modules/student-process/services/riskStudent.service'
+} from '@frontend/components/ui/chart'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import RiskStudentService from '@frontend/modules/student-process/services/riskStudent.service'
 import { useQuery } from '@tanstack/react-query'
 import { useParams, useSearch } from '@tanstack/react-router'
 import moment from 'moment'

@@ -1,4 +1,4 @@
-import { Student } from '@/modules/users/interfaces/Student'
+import { Student } from '@frontend/modules/users/interfaces/Student'
 import AcademicInformation from './AcademicInformation'
 import ContacInformation from './ContactInformation'
 import PersonalInformation from './PersonalInformation'

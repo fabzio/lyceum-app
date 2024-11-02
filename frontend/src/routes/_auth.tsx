@@ -1,4 +1,4 @@
-import Layout from '@/layouts'
+import Layout from '@frontend/layouts'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth')({

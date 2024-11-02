@@ -3,9 +3,9 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion'
-import { Assigment } from '@/interfaces/models'
-import { RoleAssigment } from '@/interfaces/models/RoleAssigment'
+} from '@frontend/components/ui/accordion'
+import { Assigment } from '@frontend/interfaces/models'
+import { RoleAssigment } from '@frontend/interfaces/models/RoleAssigment'
 import RevokeConfirmationDialog from './RevokeConfirmationDialog'
 
 interface Props {

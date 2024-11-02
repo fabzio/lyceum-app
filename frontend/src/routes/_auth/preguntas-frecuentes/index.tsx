@@ -1,6 +1,6 @@
-import { QueryKeys } from '@/constants/queryKeys'
-import FAQService from '@/modules/faq/services/faq.service'
-import FAQs from '@/modules/faq/views/FAQs'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import FAQService from '@frontend/modules/faq/services/faq.service'
+import FAQs from '@frontend/modules/faq/views/FAQs'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/preguntas-frecuentes/')({

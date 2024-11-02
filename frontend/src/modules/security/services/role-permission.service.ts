@@ -1,5 +1,5 @@
-import { RolePermission } from '@/interfaces/models'
-import http from '@/lib/http'
+import { RolePermission } from '@frontend/interfaces/models'
+import http from '@frontend/lib/http'
 import axios from 'axios'
 
 class RolePermissionService {

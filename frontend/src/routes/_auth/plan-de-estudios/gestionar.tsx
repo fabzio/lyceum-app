@@ -1,9 +1,9 @@
-import { QueryKeys } from '@/constants/queryKeys'
-import { StudyPlanPermissionsDict } from '@/interfaces/enums/permissions/StudyPlan'
-import { Filters } from '@/interfaces/types'
-import { haveSomePermission } from '@/lib/utils'
-import StudyPlanService from '@/modules/study-plans/services/studyPlan.service'
-import StudyPlanManagement from '@/modules/study-plans/views/StudyPlansManagement'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import { StudyPlanPermissionsDict } from '@frontend/interfaces/enums/permissions/StudyPlan'
+import { Filters } from '@frontend/interfaces/types'
+import { haveSomePermission } from '@frontend/lib/utils'
+import StudyPlanService from '@frontend/modules/study-plans/services/studyPlan.service'
+import StudyPlanManagement from '@frontend/modules/study-plans/views/StudyPlansManagement'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/plan-de-estudios/gestionar')({

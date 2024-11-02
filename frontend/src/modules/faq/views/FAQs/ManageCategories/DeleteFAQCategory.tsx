@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -6,8 +6,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
+} from '@frontend/components/ui/dialog'
+import { DropdownMenuItem } from '@frontend/components/ui/dropdown-menu'
 import { Trash } from 'lucide-react'
 
 interface Props {

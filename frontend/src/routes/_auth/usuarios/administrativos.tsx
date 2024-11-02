@@ -1,10 +1,10 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import Profesors from '@/modules/users/views/Administratives'
-import { AdministrativesFilters } from '@/modules/users/views/Administratives/interfaces/CourseFIlters'
-import { QueryKeys } from '@/constants/queryKeys'
-import AdministrativeService from '@/modules/users/services/Administrative.service'
-import { UserPermissionsDict } from '@/interfaces/enums/permissions/Users'
-import { haveSomePermission } from '@/lib/utils'
+import Profesors from '@frontend/modules/users/views/Administratives'
+import { AdministrativesFilters } from '@frontend/modules/users/views/Administratives/interfaces/CourseFIlters'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import AdministrativeService from '@frontend/modules/users/services/Administrative.service'
+import { UserPermissionsDict } from '@frontend/interfaces/enums/permissions/Users'
+import { haveSomePermission } from '@frontend/lib/utils'
 
 export const Route = createFileRoute('/_auth/usuarios/administrativos')({
   beforeLoad: ({ context: { sessionStore } }) => {

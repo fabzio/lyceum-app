@@ -1,5 +1,5 @@
-import TransitionPage from '@/components/anim/TransitionPage'
-import Home from '@/views/Home'
+import TransitionPage from '@frontend/components/anim/TransitionPage'
+import Home from '@frontend/views/Home'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/')({

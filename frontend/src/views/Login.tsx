@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
+import { Button } from '@frontend/components/ui/button'
+import { Checkbox } from '@frontend/components/ui/checkbox'
 import {
   Form,
   FormControl,
@@ -7,9 +7,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { ModeToggle } from '@/layouts/components/ModeToggle'
+} from '@frontend/components/ui/form'
+import { Input } from '@frontend/components/ui/input'
+import { ModeToggle } from '@frontend/layouts/components/ModeToggle'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from '@tanstack/react-router'
 import { Link } from '@tanstack/react-router'

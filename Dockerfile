@@ -23,7 +23,7 @@ COPY --link . .
 WORKDIR /app/frontend
 RUN bun run build
 # Remove all files in frontend except for the dist folder
-RUN find .- mindepth 1 !- regex '^./dist\(/ .* \)?'-delete
+RUN find . -mindepth 1 ! -regex '^./dist\(/ .* \)?' -delete
 
 FROM ubuntu:latest
 

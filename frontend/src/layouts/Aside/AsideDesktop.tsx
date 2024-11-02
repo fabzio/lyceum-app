@@ -7,10 +7,10 @@ import {
   MenubarLabel,
   MenubarMenu,
   MenubarTrigger,
-} from '@/components/ui/menubar'
-import { filterTabs } from '@/lib/utils'
-import { useSessionStore } from '@/store'
-import { Button } from '@/components/ui/button'
+} from '@frontend/components/ui/menubar'
+import { filterTabs } from '@frontend/lib/utils'
+import { useSessionStore } from '@frontend/store'
+import { Button } from '@frontend/components/ui/button'
 
 interface Props {
   asideElements: AsideElement[]
@@ -28,7 +28,7 @@ export default function AsideDesktop({ asideElements = [] }: Props) {
           )
           return element.moduleCode !== 'HOME' ? (
             <div key={element.moduleCode} className="relative">
-              <MenubarMenu >
+              <MenubarMenu>
                 <MenubarTrigger>{element.icon}</MenubarTrigger>
                 <MenubarContent className="absolute left-16">
                   <MenubarLabel>{element.label}</MenubarLabel>

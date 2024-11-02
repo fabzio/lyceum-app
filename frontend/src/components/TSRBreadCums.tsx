@@ -1,4 +1,4 @@
-import { useTSRBreadCums } from '@/hooks/useTSRBreadCums'
+import { useTSRBreadCums } from '@frontend/hooks/useTSRBreadCums'
 import {
   Breadcrumb,
   BreadcrumbItem,

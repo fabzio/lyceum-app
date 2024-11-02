@@ -1,7 +1,7 @@
-import { QueryKeys } from '@/constants/queryKeys'
-import ErrorPage from '@/layouts/ErrorPage'
-import ThesisJuryRequestService from '@/modules/thesis/services/thesisJuryRequest.service'
-import ThesisJuryRequestList from '@/modules/thesis/views/ThesisJury'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import ErrorPage from '@frontend/layouts/ErrorPage'
+import ThesisJuryRequestService from '@frontend/modules/thesis/services/thesisJuryRequest.service'
+import ThesisJuryRequestList from '@frontend/modules/thesis/views/ThesisJury'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/tesis/propuesta-jurados/')({

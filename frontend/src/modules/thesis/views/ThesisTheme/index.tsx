@@ -1,10 +1,10 @@
-import { Input } from '@/components/ui/input'
+import { Input } from '@frontend/components/ui/input'
 import ThesisThemeSelectFilter from './components/ThesisThemeRequestFilter'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { QueryKeys } from '@/constants/queryKeys'
+import { QueryKeys } from '@frontend/constants/queryKeys'
 
 import ThesisThemeList from './components/ThesisThemeList'
-import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
+import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisThemeRequest.service'
 import NewThesisRequest from './components/NewThesisRequest'
 
 export default function ThesisTheme() {

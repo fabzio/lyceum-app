@@ -1,7 +1,7 @@
-import { Label } from '@/components/ui/label'
-import { Separator } from '@/components/ui/separator'
-import { QueryKeys } from '@/constants/queryKeys'
-import EnrollmentService from '@/modules/enrollment/services/enrollment.service'
+import { Label } from '@frontend/components/ui/label'
+import { Separator } from '@frontend/components/ui/separator'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import EnrollmentService from '@frontend/modules/enrollment/services/enrollment.service'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
 

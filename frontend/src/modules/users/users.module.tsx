@@ -1,5 +1,5 @@
-import { AppModule } from '@/interfaces/AppModule'
-import { UserPermissionsDict } from '@/interfaces/enums/permissions/Users'
+import { AppModule } from '@frontend/interfaces/AppModule'
+import { UserPermissionsDict } from '@frontend/interfaces/enums/permissions/Users'
 import { Users } from 'lucide-react'
 
 export const UserModule: AppModule = {

@@ -1,5 +1,5 @@
-import { PermissionCode } from '@/interfaces/enums/permissions'
-import { useSessionStore } from '@/store'
+import { PermissionCode } from '@frontend/interfaces/enums/permissions'
+import { useSessionStore } from '@frontend/store'
 
 interface Props {
   permissions: PermissionCode[] | PermissionCode

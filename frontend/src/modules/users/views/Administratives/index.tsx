@@ -1,8 +1,8 @@
 import MasiveAdministrativesDialog from './components/MasiveAdministrativesDialog'
 import SearchAdministrativeInput from './components/SearchAdministrativeInput'
 import AdministrativeTable from './components/AdministrativeTable'
-import Need from '@/components/Need'
-import { UserPermissionsDict } from '@/interfaces/enums/permissions/Users'
+import Need from '@frontend/components/Need'
+import { UserPermissionsDict } from '@frontend/interfaces/enums/permissions/Users'
 
 export default function AdministrativeManagement() {
   return (

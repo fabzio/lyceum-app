@@ -1,8 +1,13 @@
-import { Separator } from '@/components/ui/separator'
+import { Separator } from '@frontend/components/ui/separator'
 import ManageRoles from './ManageRoles'
 import { useState } from 'react'
 import AsingRoles from './AsingRoles'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@frontend/components/ui/tabs'
 
 const options = [
   {
@@ -40,10 +45,7 @@ export default function Roles() {
 
         <Separator orientation="vertical" />
         {options.map((option) => (
-          <TabsContent
-            value={option.value}
-            key={option.value}
-          >
+          <TabsContent value={option.value} key={option.value}>
             {option.component()}
           </TabsContent>
         ))}

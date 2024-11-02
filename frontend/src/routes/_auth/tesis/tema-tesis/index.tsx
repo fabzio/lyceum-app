@@ -1,7 +1,7 @@
-import { QueryKeys } from '@/constants/queryKeys'
-import ErrorPage from '@/layouts/ErrorPage'
-import ThesisThemeRequestService from '@/modules/thesis/services/ThesisThemeRequest.service'
-import ThesisTheme from '@/modules/thesis/views/ThesisTheme'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import ErrorPage from '@frontend/layouts/ErrorPage'
+import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisThemeRequest.service'
+import ThesisTheme from '@frontend/modules/thesis/views/ThesisTheme'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/tesis/tema-tesis/')({
@@ -13,7 +13,7 @@ export const Route = createFileRoute('/_auth/tesis/tema-tesis/')({
   },
   component: () => <ThesisTheme />,
   errorComponent: ({ error }) => (
-    <ErrorPage  
+    <ErrorPage
       description="Lo sentimos, no se pudo cargar las solicitudes de tesis"
       displayErrorMessage={error.message}
     />

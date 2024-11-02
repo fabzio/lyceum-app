@@ -1,8 +1,8 @@
-import { Input } from '@/components/ui/input'
+import { Input } from '@frontend/components/ui/input'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import PermissionService from '@/modules/security/services/permission.service'
-import { QueryKeys } from '@/constants/queryKeys'
-import PermissionAccordion from '@/modules/security/components/AcoordionPermissions'
+import PermissionService from '@frontend/modules/security/services/permission.service'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import PermissionAccordion from '@frontend/modules/security/components/AcoordionPermissions'
 
 export default function Permissions() {
   const { data: permissions } = useSuspenseQuery({

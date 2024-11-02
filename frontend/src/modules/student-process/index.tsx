@@ -1,4 +1,4 @@
-import PageLayout from '@/layouts/PageLayout'
+import PageLayout from '@frontend/layouts/PageLayout'
 import StudentProcessManagement from './components/StudentProcessManagement'
 
 export default function StudentProcess() {

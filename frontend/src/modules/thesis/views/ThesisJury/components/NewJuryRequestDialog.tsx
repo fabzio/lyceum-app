@@ -1,11 +1,11 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import {
   Card,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '@frontend/components/ui/card'
 import {
   Dialog,
   DialogContent,
@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from '@frontend/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -21,11 +21,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { useToast } from '@/hooks/use-toast'
-import ThesisJuryRequestService from '@/modules/thesis/services/thesisJuryRequest.service'
+} from '@frontend/components/ui/form'
+import { Input } from '@frontend/components/ui/input'
+import { Label } from '@frontend/components/ui/label'
+import { useToast } from '@frontend/hooks/use-toast'
+import ThesisJuryRequestService from '@frontend/modules/thesis/services/thesisJuryRequest.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'

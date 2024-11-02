@@ -1,6 +1,6 @@
-// import { Course } from '@/interfaces/models/Course'
-import { Filters } from '@/interfaces/types'
-import http from '@/lib/http'
+// import { Course } from '@frontend/interfaces/models/Course'
+import { Filters } from '@frontend/interfaces/types'
+import http from '@frontend/lib/http'
 import { Administrative } from '../interfaces/Administrative'
 import axios from 'axios'
 

@@ -1,8 +1,8 @@
-import ExpandibleAsidebar from '@/components/ExpandibleAsidebar'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { QueryKeys } from '@/constants/queryKeys'
-import EnrollmentService from '@/modules/enrollment/services/enrollment.service'
+import ExpandibleAsidebar from '@frontend/components/ExpandibleAsidebar'
+import { Button } from '@frontend/components/ui/button'
+import { Input } from '@frontend/components/ui/input'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import EnrollmentService from '@frontend/modules/enrollment/services/enrollment.service'
 import { useQuery } from '@tanstack/react-query'
 import { ListFilter } from 'lucide-react'
 

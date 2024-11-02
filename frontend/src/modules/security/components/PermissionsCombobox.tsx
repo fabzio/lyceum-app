@@ -1,5 +1,5 @@
-import { Combobox } from '@/components/Combobox'
-import { QueryKeys } from '@/constants/queryKeys'
+import { Combobox } from '@frontend/components/Combobox'
+import { QueryKeys } from '@frontend/constants/queryKeys'
 import { useQuery } from '@tanstack/react-query'
 import ModuleService from '../services/module.service'
 import { useState } from 'react'
@@ -20,7 +20,7 @@ export default function PermissionsCombobox({ index }: Props) {
   })
 
   const { data: permissions, isLoading: permissionsLoading } = useQuery({
-    queryKey: [QueryKeys.security.PERMISSIONS,moduleSelected],
+    queryKey: [QueryKeys.security.PERMISSIONS, moduleSelected],
     queryFn: () =>
       PermissionService.getPermissions(moduleSelected ?? undefined),
     enabled: !!moduleSelected,

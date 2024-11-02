@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Course } from '@/interfaces/models/Course'
+} from '@frontend/components/ui/dropdown-menu'
+import { Course } from '@frontend/interfaces/models/Course'
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
 import DisableConfirmationDialog from './DisableConfirmationDialog'

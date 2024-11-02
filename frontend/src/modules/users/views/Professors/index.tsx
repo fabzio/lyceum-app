@@ -1,8 +1,8 @@
 import MasiveProfessorsDialog from './components/MasiveProfessorsDialog'
 import SearchProfessorInput from './components/SearchProfessorInput'
 import ProfessorTable from './components/ProfessorTable'
-import Need from '@/components/Need'
-import { UserPermissionsDict } from '@/interfaces/enums/permissions/Users'
+import Need from '@frontend/components/Need'
+import { UserPermissionsDict } from '@frontend/interfaces/enums/permissions/Users'
 
 export default function ProfessorManagement() {
   return (

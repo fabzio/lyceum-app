@@ -1,4 +1,4 @@
-import { Input } from '@/components/ui/input'
+import { Input } from '@frontend/components/ui/input'
 
 export default function SearchUnit() {
   return (

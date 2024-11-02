@@ -1,9 +1,9 @@
 import { Outlet, useLocation } from '@tanstack/react-router'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ValidRoutes } from '@/constants/paths'
-import { useTabs } from '@/hooks/useTabs'
-import { useSessionStore } from '@/store'
-import { filterTabs, Tab } from '@/lib/utils'
+import { Tabs, TabsList, TabsTrigger } from '@frontend/components/ui/tabs'
+import { ValidRoutes } from '@frontend/constants/paths'
+import { useTabs } from '@frontend/hooks/useTabs'
+import { useSessionStore } from '@frontend/store'
+import { filterTabs, Tab } from '@frontend/lib/utils'
 import { useEffect } from 'react'
 
 interface Props {

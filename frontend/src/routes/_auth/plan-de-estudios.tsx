@@ -1,6 +1,6 @@
-import TransitionPage from '@/components/anim/TransitionPage'
-import StudyPlans from '@/modules/study-plans'
-import { StudyPlanModule } from '@/modules/study-plans/study-plan.module'
+import TransitionPage from '@frontend/components/anim/TransitionPage'
+import StudyPlans from '@frontend/modules/study-plans'
+import { StudyPlanModule } from '@frontend/modules/study-plans/study-plan.module'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/plan-de-estudios')({

@@ -1,10 +1,10 @@
-import { Input } from '@/components/ui/input'
+import { Input } from '@frontend/components/ui/input'
 import SelectFilter from './components/SelectFilter'
 import RolesAccordion from './components/RolesAccordion'
 import NewRole from './components/NewRole'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { QueryKeys } from '@/constants/queryKeys'
-import RolePermissionService from '@/modules/security/services/role-permission.service'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import RolePermissionService from '@frontend/modules/security/services/role-permission.service'
 
 export default function ManageRoles() {
   const { data: rolePermissions } = useSuspenseQuery({

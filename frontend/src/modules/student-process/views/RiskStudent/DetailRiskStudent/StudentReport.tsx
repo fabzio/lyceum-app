@@ -1,15 +1,15 @@
-import { Button } from '@/components/ui/button'
-import { QueryKeys } from '@/constants/queryKeys'
-import RiskStudentService from '@/modules/student-process/services/riskStudent.service'
+import { Button } from '@frontend/components/ui/button'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import RiskStudentService from '@frontend/modules/student-process/services/riskStudent.service'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { useParams, useSearch } from '@tanstack/react-router'
 import NewReportDialog from './components/NewReportDialog'
-import { Separator } from '@/components/ui/separator'
-import { Label } from '@/components/ui/label'
+import { Separator } from '@frontend/components/ui/separator'
+import { Label } from '@frontend/components/ui/label'
 import ReportDetail from './components/ReportDetail'
 import RiskStudentTrack from './components/RiskStudentTrack'
-import Need from '@/components/Need'
-import { StudentProcessPermissionsDict } from '@/interfaces/enums/permissions/StudentProcess'
+import Need from '@frontend/components/Need'
+import { StudentProcessPermissionsDict } from '@frontend/interfaces/enums/permissions/StudentProcess'
 
 export default function StudentReport() {
   const { code } = useParams({

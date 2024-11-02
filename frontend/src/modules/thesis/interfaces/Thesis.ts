@@ -1,4 +1,4 @@
-import { Account } from '@/interfaces/models/Account'
+import { Account } from '@frontend/interfaces/models/Account'
 
 export interface Thesis {
   id?: string

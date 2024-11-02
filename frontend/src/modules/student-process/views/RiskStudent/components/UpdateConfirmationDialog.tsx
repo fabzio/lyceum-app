@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@frontend/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -7,13 +7,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import RiskStudentService from '@/modules/student-process/services/riskStudent.service'
-import { useToast } from '@/hooks/use-toast'
+} from '@frontend/components/ui/dialog'
+import RiskStudentService from '@frontend/modules/student-process/services/riskStudent.service'
+import { useToast } from '@frontend/hooks/use-toast'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
-import { QueryKeys } from '@/constants/queryKeys'
+import { QueryKeys } from '@frontend/constants/queryKeys'
 
 export default function UpdateConfirmationDialog() {
   const queryCliente = useQueryClient()

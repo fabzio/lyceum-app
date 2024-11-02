@@ -4,7 +4,7 @@ import { useSearch } from '@tanstack/react-router'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import PersonalInformation from './PersonalInformation'
-import { Administrative } from '@/modules/users/interfaces/Administrative'
+import { Administrative } from '@frontend/modules/users/interfaces/Administrative'
 
 interface Props {
   administative: Administrative

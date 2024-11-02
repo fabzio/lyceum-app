@@ -3,10 +3,10 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion'
-import { Badge } from '@/components/ui/badge'
-import { Permission, RolePermission } from '@/interfaces/models'
-import { mapUnitType } from '@/lib/mapUnitType'
+} from '@frontend/components/ui/accordion'
+import { Badge } from '@frontend/components/ui/badge'
+import { Permission, RolePermission } from '@frontend/interfaces/models'
+import { mapUnitType } from '@frontend/lib/mapUnitType'
 
 import groupBy from 'just-group-by'
 

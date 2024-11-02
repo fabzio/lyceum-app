@@ -1,6 +1,6 @@
-import { Account } from '@/interfaces/models/Account'
-import { Course } from '@/interfaces/models/Course'
-import { Schedule } from '@/interfaces/models/Schedule'
+import { Account } from '@frontend/interfaces/models/Account'
+import { Course } from '@frontend/interfaces/models/Course'
+import { Schedule } from '@frontend/interfaces/models/Schedule'
 
 export interface RiskStudentGeneral {
   student: {

@@ -2,7 +2,7 @@ import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from '@/components/ui/resizable'
+} from '@frontend/components/ui/resizable'
 import ThesisThemeMain from './components/ThesisThemeMain'
 import ThesisThemeHistory from './components/ThesisThemeHistory'
 
