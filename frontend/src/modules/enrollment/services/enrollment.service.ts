@@ -1,31 +1,34 @@
 import http from '@frontend/lib/http'
 import { EnrollmentGeneral } from '../interfaces/EnrollmentGeneral'
-import { EnrollmentModification } from '../interfaces/EnrollmentModification';
-import axios from 'axios';
-import { Filters } from '@frontend/interfaces/types';
+import { EnrollmentModification } from '../interfaces/EnrollmentModification'
+import axios from 'axios'
+import { Filters } from '@frontend/interfaces/types'
 
 class EnrollmentService {
-
-  public static async insertEnroll(enrollment: EnrollmentModification): Promise<void> {
+  public static async createEnrollmentModification(
+    enrollment: Omit<EnrollmentModification, 'state'>
+  ): Promise<void> {
     try {
-        // Realizamos la petición POST al endpoint /enrollment
-        const res = await http.post('/enrollment/modifications', enrollment);
-        const response = res.data as ResponseAPI;
+      // Realizamos la petición POST al endpoint /enrollment
+      const res = await http.post('/enrollment/modifications', enrollment)
+      const response = res.data as ResponseAPI
 
-        // Verificamos si la respuesta indica éxito
-        if (!response.success) {
-            throw new Error(response.message);
-        }
+      // Verificamos si la respuesta indica éxito
+      if (!response.success) {
+        throw new Error(response.message)
+      }
     } catch (error) {
-        // Manejo de errores de Axios
-        if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data.message || error.message);
-        }
-        throw error; // Re-lanzamos el error si no es de Axios
+      // Manejo de errores de Axios
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error // Re-lanzamos el error si no es de Axios
     }
-}
+  }
 
-  public static async getAllEnrollments( filtersAndPagination: Filters): Promise<PaginatedData<EnrollmentGeneral>> {
+  public static async getAllEnrollments(
+    filtersAndPagination: Filters
+  ): Promise<PaginatedData<EnrollmentGeneral>> {
     try {
       const res = await http.get('/enrollment/modifications/paginated', {
         params: {
@@ -39,12 +42,12 @@ class EnrollmentService {
       if (!response.success) {
         throw new Error('Error')
       }
-      return response.data;
+      return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        throw new Error(error.response?.data.message || error.message);
+        throw new Error(error.response?.data.message || error.message)
       }
-      throw error;
+      throw error
     }
   }
 

@@ -3,5 +3,5 @@ export interface EnrollmentModification {
     scheduleId: number;
     state: 'requested' | 'approved' | 'denied';
     requestType: 'aditional' | 'withdrawal'; 
-    reason?: string;
+    reason: string;
 }

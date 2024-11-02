@@ -29,7 +29,7 @@ export default function CourseTable() {
     () =>
       courseTableColumns.filter(
         (_, idx) =>
-          !havePermission(StudyPlanPermissionsDict.MANAGE_COURSES) &&
+          havePermission(StudyPlanPermissionsDict.MANAGE_COURSES) &&
           idx !== courseTableColumns.length - 1
       ),
     [havePermission]

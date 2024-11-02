@@ -23,8 +23,8 @@ export const enrollmentModifications = schema.table(
     requestNumber: integer('request_number').unique(),
     state: enrollmentModifcationStatus('state').default('requested').notNull(),
     requestType: enrollmentRequestType('request_type').notNull(),
-    reason: varchar('reason', { length: 255 }),
-    date: timestamp('date').defaultNow(),
+    reason: varchar('reason', { length: 255 }).notNull(),
+    date: timestamp('date').defaultNow().notNull(),
   },
   (table) => ({
     studentFk: foreignKey({

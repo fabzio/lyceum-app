@@ -1,25 +1,16 @@
 import { EnrollmentModificationsSchema } from '@/database/schema/enrollmentModifications'
 import { Account } from '@/interfaces/models/Account'
-import { PaginatedData } from '@/interfaces/PaginatedData';
+import { PaginatedData } from '@/interfaces/PaginatedData'
 //import { Course } from '@/interfaces/models/Course'
 
 export interface EnrollmentModificationDAO {
-
-  createEnrollmentModification: (
-    studentId: string,
-    scheduleId: number,
-    state: 'requested' | 'approved' | 'denied',
-    requestType: 'aditional' | 'withdrawal',
-    reason?: string,
-  ) => Promise<void>;
-
   getAllEnrollments: (filters: {
     q?: string
     page: number
     limit: number
     sortBy?: string
-  }) => Promise<PaginatedData<
-    {
+  }) => Promise<
+    PaginatedData<{
       student: {
         name: Account['name']
         surname: string
@@ -32,8 +23,8 @@ export interface EnrollmentModificationDAO {
       requestType: string
       reason: string | null
       requestNumber: number
-    }
-  >>
+    }>
+  >
 
   getEnrollmentRequest: (params: { requestNumber: number }) => Promise<{
     student: {
@@ -58,4 +49,13 @@ export interface EnrollmentModificationDAO {
     EnrollmentModificationsSchema,
     'requestNumber' | 'state'
   >): Promise<void>
+  
+  createEnrollmentRequest({
+    reason,
+    requestType,
+    scheduleId,
+    studentId,
+  }: Omit<EnrollmentModificationsSchema, 'requestNumber' | ''>): Promise<
+    EnrollmentModificationsSchema['requestNumber']
+  >
 }

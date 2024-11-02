@@ -1,58 +1,16 @@
 import { Hono } from 'hono'
-import { EnrollmentModificationDAO } from '../dao/enrollmentModificationDAO'
+import { EnrollmentModificationDAO } from '../dao/EnrollmentModificationDAO'
 import { EnrollmentModificationsService } from '../services'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
-import { createEnrollmentModificationDTO } from '../dtos/createEnrollmentModificationDTO'
+import { enrollmentModificationsSchema } from '@/database/schema/enrollmentModifications'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
+import { createEnrollmentModificationDTO } from '../dtos'
 
 class EnrollmentModificationController {
   private router = new Hono()
   private enrollmentService: EnrollmentModificationDAO =
     new EnrollmentModificationsService()
-
-    public createEnrollment = this.router.post(
-      '/',
-      zValidator('json', createEnrollmentModificationDTO),
-      async (c) => {
-        const enrollmentModificationData = c.req.valid('json');
-    
-        // Desestructuramos los datos validados
-        const {
-          studentId,
-          scheduleId,
-          state,
-          requestType,
-          reason,
-        } = enrollmentModificationData;
-    
-        try {
-          await this.enrollmentService.createEnrollmentModification(
-            studentId,
-            scheduleId,
-            state,
-            requestType,
-            reason
-          );
-    
-          const response: ResponseAPI = {
-            data: null, // No hay datos específicos que retornar, ya que la operación es un 'void'
-            message: 'Enrollment modification created successfully',
-            success: true,
-          };
-          return c.json(response);
-        } catch (error) {
-          // Manejo de errores potenciales del servicio
-          console.error('Error creating enrollment modification:', error);
-          if (error instanceof LyceumError) {
-            c.status(error.code);
-          } else {
-            c.status(500); // Internal Server Error
-          }
-          return c.json({ success: false, message: 'Failed to create enrollment modification' });
-        }
-      }
-    );
 
     public getEnrollments = this.router.get(
       '/paginated',
@@ -120,6 +78,27 @@ class EnrollmentModificationController {
         data: null,
       }
       return c.json(response)
+    }
+  )
+
+  public createEnrollment = this.router.post(
+    '/',
+    zValidator('json', createEnrollmentModificationDTO),
+    async (c) => {
+      const newEnrollmentModify = c.req.valid('json')
+      try {
+        const response: ResponseAPI = {
+          data: await this.enrollmentService.createEnrollmentRequest(
+            newEnrollmentModify
+          ),
+          message: 'Request created',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) c.status(error.code)
+        throw error
+      }
     }
   )
 }

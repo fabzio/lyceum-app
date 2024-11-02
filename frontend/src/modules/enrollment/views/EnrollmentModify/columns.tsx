@@ -17,7 +17,7 @@ export const EnrollmentTableColumns: ColumnDef<EnrollmentGeneral>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div>{row.getValue('state')}</div>,
+    cell: ({ row }) => <div>{mapState[row.getValue('state') as keyof typeof mapState]}</div>,
   },
   {
     accessorKey: 'requestNumber',
@@ -35,7 +35,7 @@ export const EnrollmentTableColumns: ColumnDef<EnrollmentGeneral>[] = [
   {
     accessorKey: 'requestType',
     header: 'Tipo de Solicitud',
-    cell: ({ row }) => <div>{row.getValue('requestType')}</div>,
+    cell: ({ row }) => <div>{mapRequestType[row.getValue('requestType') as keyof typeof mapRequestType]}</div>,
   },
   {
     accessorFn: (row) => row.student.name,
@@ -53,3 +53,12 @@ export const EnrollmentTableColumns: ColumnDef<EnrollmentGeneral>[] = [
     cell: ({ row }) => <div>{row.original.schedule.code}</div>,
   },
 ]
+const mapRequestType = {
+  aditional: 'Matrícula adicional',
+  withdrawal: 'Retiro de matricula',
+}
+
+const mapState = {
+  approved: 'Aprobado',
+  denied: 'Denegado',
+}
