@@ -162,6 +162,7 @@ dist
 .vscode/*
 !.vscode/extensions.json
 
+.idea
 # yarn v2
 
 .yarn/cache
