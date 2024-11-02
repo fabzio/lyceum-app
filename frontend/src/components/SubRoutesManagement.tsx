@@ -11,15 +11,18 @@ interface Props {
 }
 export default function SubRoutesManagement({ tabs }: Props) {
   const { getAllPermissions } = useSessionStore()
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
   const { activeTab, handleChangeTab } = useTabs(pathname as ValidRoutes)
   const filteredTabs = filterTabs(tabs, getAllPermissions())
   useEffect(() => {
-    handleChangeTab(pathname as ValidRoutes)
-  }, [pathname, handleChangeTab])
+    handleChangeTab(pathname as ValidRoutes, search)
+  }, [pathname, handleChangeTab, search])
   return (
     <div className="w-full">
-      <Tabs value={activeTab} onValueChange={handleChangeTab}>
+      <Tabs
+        value={activeTab}
+        onValueChange={(value) => handleChangeTab(value, {})}
+      >
         <TabsList>
           {filteredTabs.map((tab) => (
             <TabsTrigger value={tab.path} key={tab.path}>
