@@ -8,6 +8,7 @@ import { EnrollmentProposalColumns } from './columns'
 import EnrollmentService from '@frontend/modules/enrollment/services/enrollment.service'
 import { useSessionStore } from '@frontend/store'
 import { EnrollmentPermissionsDict } from '@frontend/interfaces/enums/permissions/Enrollment'
+import { ColumnDef } from '@tanstack/react-table'
 
 export const DEFAULT_PAGE_INDEX = 0
 export const DEFAULT_PAGE_SIZE = 10
@@ -38,8 +39,8 @@ export default function EnrollmentProposalAccordion() {
   return (
     <>
       <DataAccordion
-        data={students?.result ?? []}
-        columns={columns}
+        data={students?.result.map((student) => ({ ...student })) ?? []}
+        columns={columns as ColumnDef<Record<string, unknown>>[]}
         pagination={paginationState}
         sorting={sortingState}
         onSortingChange={(updateOrValue) => {

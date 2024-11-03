@@ -6,7 +6,7 @@ import {
 } from '@frontend/components/ui/accordion'
 import { Assigment } from '@frontend/interfaces/models'
 import { RoleAssigment } from '@frontend/interfaces/models/RoleAssigment'
-import RevokeConfirmationDialog from './RevokeConfirmationDialog'
+// import RevokeConfirmationDialog from './RevokeConfirmationDialog'
 
 interface Props {
   assigments: Assigment[]
@@ -42,7 +42,7 @@ export default function AssigmentAccordion({ assigments = [] }: Props) {
 
 function AssigmentAccordionItem({
   roles,
-  accountId,
+  // accountId,
 }: {
   roles: RoleAssigment[]
   accountId: string
@@ -55,11 +55,11 @@ function AssigmentAccordionItem({
             <span className="font-">{role.name}</span> {role.unitName}
           </div>
           <div>
-            <RevokeConfirmationDialog
+            {/* <RevokeConfirmationDialog
               accountId={accountId}
               roleId={role.id}
               unitId={role.unitId}
-            />
+            /> */}
           </div>
         </li>
       ))}

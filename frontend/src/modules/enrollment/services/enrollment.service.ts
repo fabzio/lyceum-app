@@ -1,7 +1,6 @@
 import http from '@frontend/lib/http'
 import { EnrollmentGeneral } from '../interfaces/EnrollmentGeneral'
 import EnrollmentProposal from '../interfaces/EnrollmentProposal'
-import { CourseProposalVisibility } from '../interfaces/CourseProposal'
 import { EnrollmentModification } from '../interfaces/EnrollmentModification'
 import axios from 'axios'
 import { Filters } from '@frontend/interfaces/types'
@@ -92,11 +91,12 @@ class EnrollmentService {
 
   public static async getEnrollmentProposals({
     facultyId,
-    filters
+    filters,
   }: {
-    facultyId: number,
+    facultyId: number
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     filters: any
-  }): Promise<PaginatedData<EnrollmentProposal>>{
+  }): Promise<PaginatedData<EnrollmentProposal>> {
     try {
       // const res = await http.get(`/enrollment/scheduleProposal/${facultyId}`)
 
@@ -106,44 +106,48 @@ class EnrollmentService {
       a = filters
 
       const res = {
-        data:{
-          data:{
-            result:[{
-          courseId: 101,
-          courseName: "Advanced Business Studies",
-          schedules: [
-            {
-              code: "BUS101-M1",
-              courseId: "BUS101",
-              courseName: "Business Management I",
-              vacants: 25,
-              visibility: CourseProposalVisibility.visible
-            },
-            {
-              code: "FIN202-A1",
-              courseId: "FIN202",
-              courseName: "Financial Analysis II",
-              vacants: 30,
-              visibility: CourseProposalVisibility.hidden
-            },
-            {
-              code: "MKT303-E1",
-              courseId: "MKT303",
-              courseName: "Marketing Strategies",
-              vacants: 20,
-              visibility: CourseProposalVisibility.visible
-            }
-          ]
-          }],
-        rowCount: 50,
-        currentPage: 1,
-        totalPages: 1,
-        hasNext: false}
-  },
-        message:'Mock data',
-        success:true}
-      
-      const response = res.data as ResponseAPI<PaginatedData<EnrollmentProposal>>
+        data: {
+          data: {
+            result: [
+              {
+                courseId: 101,
+                courseName: 'Advanced Business Studies',
+                schedules: [
+                  {
+                    code: 'BUS101-M1',
+                    courseId: 'BUS101',
+                    courseName: 'Business Management I',
+                    vacants: 25,
+                    visibility: 'visible',
+                  },
+                  {
+                    code: 'FIN202-A1',
+                    courseId: 'FIN202',
+                    courseName: 'Financial Analysis II',
+                    vacants: 30,
+                    visibility: 'visible',
+                  },
+                  {
+                    code: 'MKT303-E1',
+                    courseId: 'MKT303',
+                    courseName: 'Marketing Strategies',
+                    vacants: 20,
+                    visibility: 'visible',
+                  },
+                ],
+              },
+            ],
+            rowCount: 50,
+            currentPage: 1,
+            totalPages: 1,
+            hasNext: false,
+          },
+          message: 'Mock data',
+          success: true,
+        } as ResponseAPI<PaginatedData<EnrollmentProposal>>,
+      }
+
+      const response = res.data
       // if (!response.success) {
       //   throw new Error('Error')
       // }
