@@ -1,3 +1,4 @@
+import { Proposal } from '@/interfaces/models/Proposal'
 export interface ScheduleProposalDAO {
   insertCourseToScheduleProposal(
     enrollmentProposalId: number,
@@ -25,6 +26,18 @@ export interface ScheduleProposalDAO {
       hiddenSchedules: number
     }[]
   ): Promise<void>
+
+  getProposal(specialityId: number, termId?: number): Promise<Proposal | null>
+
+  getCoursesProposal(proposalId: number) : Promise<{
+    id: number
+    enrollmentProposalId: number
+    courseId: number
+    vacanciesPerSchema: number
+    hiddenSchedules: number
+    visibleSchedules: number
+  }[]>
 }
+
 
 export default ScheduleProposalDAO

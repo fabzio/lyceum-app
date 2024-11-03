@@ -132,6 +132,63 @@ class ScheduleProposalController {
       }
     }
   )
+
+  public getProposal = this.router.get(
+    '/',
+    zValidator(
+      'query',
+      z.object({
+        specialityId: z.string(),
+        termId: z.string().optional(),
+      })),
+      async (c) => {
+        const {specialityId, termId} = c.req.valid('query')
+        try{
+          const response: ResponseAPI = {
+            data: await this.scheduleProposalService.getProposal(
+                  parseInt(specialityId),
+                  termId ? parseInt(termId) : undefined
+                ),
+            message: 'Proposal retrieved successfully',
+            success: true,
+          }
+          return c.json(response)
+        } catch (error) {
+          if (error instanceof LyceumError) {
+            c.status(error.code)
+          }
+          throw error
+        }
+      }
+  )
+
+  public getCoursesProposal = this.router.get(
+    '/:enrollmentProposalId',
+    zValidator(
+      'param',
+      z.object({
+        enrollmentProposalId: z.string(),
+      })
+    ),
+    async (c) => {
+      const { enrollmentProposalId } = c.req.valid('param')
+      try {
+        const response: ResponseAPI ={
+          data: await this.scheduleProposalService.getCoursesProposal(
+                parseInt(enrollmentProposalId),
+              ),
+          message: 'Courses retrieved successfully',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error){
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
 }
 
 export default ScheduleProposalController

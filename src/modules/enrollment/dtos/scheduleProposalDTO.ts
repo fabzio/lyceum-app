@@ -50,3 +50,12 @@ export type InsertScheduleProposalDTO = z.infer<
 export type UpdateCoursesOfASchPropDTO = z.infer<
   typeof updateCoursesOfASchPropDTO
 >
+
+export const getProposal = z.object({
+  specialityId: z.number().min(1),
+  termId: z.number().min(1).optional()
+})
+
+export const getCoursesProposal = z.object({
+  proposalId: z.number().min(1)
+})
