@@ -1,1 +1,2 @@
+bunx lint-staged
 bun run build:tsc && cd frontend && bun run build:tsc

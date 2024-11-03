@@ -3,6 +3,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import { EnrollmentGeneral } from '@frontend/modules/enrollment/interfaces/EnrollmentGeneral'
 import { Button } from '@frontend/components/ui/button'
 import { ArrowUpDown } from 'lucide-react'
+import { Badge } from '@frontend/components/ui/badge'
 
 // Definición de columnas para la tabla de inscripciones
 export const EnrollmentTableColumns: ColumnDef<EnrollmentGeneral>[] = [
@@ -17,7 +18,18 @@ export const EnrollmentTableColumns: ColumnDef<EnrollmentGeneral>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div>{mapState[row.getValue('state') as keyof typeof mapState]}</div>,
+    cell: ({ row }) => {
+      const state = row.getValue('state')
+      return (
+        <div>
+          <Badge
+            variant={mapVariant[state as keyof typeof mapVariant] ?? 'default'}
+          >
+            {mapState[state as keyof typeof mapState] ?? 'Pendiente'}
+          </Badge>
+        </div>
+      )
+    },
   },
   {
     accessorKey: 'requestNumber',
@@ -35,7 +47,15 @@ export const EnrollmentTableColumns: ColumnDef<EnrollmentGeneral>[] = [
   {
     accessorKey: 'requestType',
     header: 'Tipo de Solicitud',
-    cell: ({ row }) => <div>{mapRequestType[row.getValue('requestType') as keyof typeof mapRequestType]}</div>,
+    cell: ({ row }) => (
+      <div>
+        {
+          mapRequestType[
+            row.getValue('requestType') as keyof typeof mapRequestType
+          ]
+        }
+      </div>
+    ),
   },
   {
     accessorFn: (row) => row.student.name,
@@ -62,3 +82,9 @@ const mapState = {
   approved: 'Aprobado',
   denied: 'Denegado',
 }
+
+const mapVariant = {
+  approved: 'default',
+  denied: 'destructive',
+  requested: 'outline',
+} as const
