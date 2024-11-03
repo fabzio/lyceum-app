@@ -83,12 +83,13 @@ class ScheduleProposalController {
     '/',
     zValidator('json', insertScheduleProposalDTO),
     async (c) => {
-      const { facultyId, accountId } = c.req.valid('json')
+      const { facultyId, accountId, termId } = c.req.valid('json')
       try {
         const response: ResponseAPI = {
           data: await this.scheduleProposalService.insertScheduleProposal(
             facultyId,
-            accountId
+            accountId,
+            termId
           ),
           message: 'Schedule Proposal created successfully',
           success: true,
@@ -164,26 +165,27 @@ class ScheduleProposalController {
       z.object({
         specialityId: z.string(),
         termId: z.string().optional(),
-      })),
-      async (c) => {
-        const {specialityId, termId} = c.req.valid('query')
-        try{
-          const response: ResponseAPI = {
-            data: await this.scheduleProposalService.getProposal(
-                  parseInt(specialityId),
-                  termId ? parseInt(termId) : undefined
-                ),
-            message: 'Proposal retrieved successfully',
-            success: true,
-          }
-          return c.json(response)
-        } catch (error) {
-          if (error instanceof LyceumError) {
-            c.status(error.code)
-          }
-          throw error
+      })
+    ),
+    async (c) => {
+      const { specialityId, termId } = c.req.valid('query')
+      try {
+        const response: ResponseAPI = {
+          data: await this.scheduleProposalService.getProposal(
+            parseInt(specialityId),
+            termId ? parseInt(termId) : undefined
+          ),
+          message: 'Proposal retrieved successfully',
+          success: true,
         }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
       }
+    }
   )
 
   public getCoursesProposal = this.router.get(
@@ -197,15 +199,15 @@ class ScheduleProposalController {
     async (c) => {
       const { enrollmentProposalId } = c.req.valid('param')
       try {
-        const response: ResponseAPI ={
+        const response: ResponseAPI = {
           data: await this.scheduleProposalService.getCoursesProposal(
-                parseInt(enrollmentProposalId),
-              ),
+            parseInt(enrollmentProposalId)
+          ),
           message: 'Courses retrieved successfully',
           success: true,
         }
         return c.json(response)
-      } catch (error){
+      } catch (error) {
         if (error instanceof LyceumError) {
           c.status(error.code)
         }
