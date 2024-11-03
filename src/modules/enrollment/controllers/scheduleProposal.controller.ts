@@ -187,27 +187,6 @@ class ScheduleProposalController {
         throw error
       }
     }
-      })
-    ),
-    async (c) => {
-      const { specialityId, termId } = c.req.valid('query')
-      try {
-        const response: ResponseAPI = {
-          data: await this.scheduleProposalService.getProposal(
-            parseInt(specialityId),
-            termId ? parseInt(termId) : undefined
-          ),
-          message: 'Proposal retrieved successfully',
-          success: true,
-        }
-        return c.json(response)
-      } catch (error) {
-        if (error instanceof LyceumError) {
-          c.status(error.code)
-        }
-        throw error
-      }
-    }
   )
 
   public getCoursesProposal = this.router.get(
