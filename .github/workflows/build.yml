@@ -1,0 +1,49 @@
+name: Build
+
+on:
+  push:
+    branches-ignore: [main]
+
+jobs:
+  build-frontend:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: cd frontend && bun install
+
+      - name: Build project
+        run: cd frontend && bun run build
+
+      - name: Check types
+        run: cd frontend && bun run build:tsc
+  build-backend:
+    name: Build Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+        
+      - name: Check types
+        run: bun run build:tsc
+
+      - name: Build project
+        run: bun run build
