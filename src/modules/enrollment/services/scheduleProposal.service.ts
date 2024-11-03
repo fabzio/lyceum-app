@@ -5,7 +5,7 @@ import {
   terms,
   units,
 } from '@/database/schema'
-import { and, eq, inArray } from 'drizzle-orm'
+import { and, eq, inArray, desc } from 'drizzle-orm'
 import {
   RepeatedCoursesError,
   NoCoursesSendedError,
@@ -16,6 +16,8 @@ import {
 import Enrollment from '..'
 import { ScheduleProposalDAO } from '../dao'
 import { error } from 'console'
+import { any } from 'zod'
+import { Proposal } from '@/interfaces/models/Proposal'
 
 class ScheduleProposalService implements ScheduleProposalDAO {
   public async insertCourseToScheduleProposal(
@@ -218,6 +220,44 @@ class ScheduleProposalService implements ScheduleProposalDAO {
       // Esperar a que todas las promesas de actualización se completen
       await Promise.all(updatePromises)
     })
+  }
+
+  public async getProposal(
+    specialityId: number,
+    termId?: number,
+  ) : Promise<Proposal |  null>
+  {
+    let proposal: Proposal | null = null;
+    if(termId == undefined){
+      const latestProposalArray = await db.select().from(enrollmentProposal)
+      .where(eq(enrollmentProposal.specialityId,specialityId))
+      .orderBy(desc(enrollmentProposal.createdAt))
+      .limit(1)
+      proposal = latestProposalArray[0];
+    }
+    else{
+      const altProposal = await db.select().from(enrollmentProposal)
+      .where(and(eq(enrollmentProposal.specialityId, specialityId),
+                 eq(enrollmentProposal.termId, termId)))
+      proposal = altProposal[0]   
+    }
+    return proposal
+  }
+
+  public async getCoursesProposal(
+    proposalId: number,
+  ) : Promise<{
+    id: number
+    enrollmentProposalId: number
+    courseId: number
+    vacanciesPerSchema: number
+    hiddenSchedules: number
+    visibleSchedules: number
+  }[]>
+  {
+    const proposalCourses = await db.select().from(enrollmentProposalCourses)
+    .where(eq(enrollmentProposalCourses.enrollmentProposalId,proposalId))
+    return proposalCourses
   }
 }
 
