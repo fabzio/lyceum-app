@@ -1,61 +1,30 @@
-import { Tabs, TabsList, TabsTrigger } from '@frontend/components/ui/tabs'
-import { ValidRoutes } from '@frontend/constants/paths'
-import { useTabs } from '@frontend/hooks/useTabs'
-
-import { Outlet, useParams } from '@tanstack/react-router'
-import { useEffect } from 'react'
-
-type Tab = {
-  path: ValidRoutes
-  label: string
-}
+import SubRoutesManagement from '@frontend/components/SubRoutesManagement'
+import { Tab } from '@frontend/lib/utils'
 
 // this results in for examples/react/kitchen-sink/src/main.ts
+export default function UnitManagement() {
+  return <SubRoutesManagement tabs={tabs} />
+}
+
 const tabs: Tab[] = [
   {
     path: '/unidad/$name/',
     label: 'General',
+    permissions: ['TODO_PERMISSION']
   },
   {
     path: '/unidad/$name/subunidades',
     label: 'Subunidades',
+    permissions: ['TODO_PERMISSION']
   },
   {
     path: '/unidad/$name/roles',
     label: 'Roles',
+    permissions: ['TODO_PERMISSION']
   },
   {
     path: '/unidad/$name/usuarios',
     label: 'Usuarios',
+    permissions: ['TODO_PERMISSION']
   },
 ]
-export default function UnitManagement() {
-  const { name } = useParams({
-    from: '/_auth/unidad/$name',
-  })
-  const { activeTab, handleChangeTab } = useTabs(tabs[0].path)
-  useEffect(() => {
-    handleChangeTab(tabs[0].path)
-  }, [name])
-
-  return (
-    <div>
-      <Tabs
-        className="w-[700]"
-        value={activeTab}
-        onValueChange={handleChangeTab}
-      >
-        <TabsList className="grid grid-cols-4 w-full">
-          {tabs.map((tab) => (
-            <TabsTrigger value={tab.path} key={tab.path}>
-              {tab.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        <section className="mt-2">
-          <Outlet />
-        </section>
-      </Tabs>
-    </div>
-  )
-}

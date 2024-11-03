@@ -1,1 +1,1 @@
-bun run build:tsc
+bun run build:tsc && cd frontend && bun run build:tsc

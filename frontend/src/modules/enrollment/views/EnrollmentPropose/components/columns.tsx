@@ -49,7 +49,7 @@ export const EnrollmentProposalColumns: ColumnDef<EnrollmentProposal>[] = [
     header: 'Acciones',
     //TODO: Agregar funcionalidad para editar y deshabilitar estudiantes
     //cell: ({ row }) => {
-    cell: ({}) => {
+    cell: () => {
       // const { code } = row.original
       // const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
       // const [isDisableDialogOpen, setIsDisableDialogOpen] = useState(false)
