@@ -17,6 +17,16 @@ export interface ScheduleProposalDAO {
 
   insertScheduleProposal(facultyId: number, accountId: string): Promise<void>
 
+  getScheduleProposalsInUnit(unitId: number): Promise<
+    {
+      id: number
+      specialityId: number
+      termId: number
+      state: 'requested' | 'sended' | 'aproved' | 'assigned'
+      createdAt: Date | null
+    }[]
+  >
+
   updateCoursesInScheduleProposal(
     enrollmentProposalId: number,
     coursesList: {

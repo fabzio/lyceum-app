@@ -130,7 +130,7 @@ class ScheduleProposalService implements ScheduleProposalDAO {
     const existingFaculty = await db
       .select()
       .from(units)
-      .where(eq(units.id, facultyId))
+      .where(and(eq(units.id, facultyId), eq(units.type, 'faculty')))
     if (existingFaculty.length === 0) {
       throw new Error('La facultad no existe')
     }
@@ -165,6 +165,55 @@ class ScheduleProposalService implements ScheduleProposalDAO {
       }))
     )
   }
+
+  public async getScheduleProposalsInUnit(unitId: number): Promise<
+    {
+      id: number
+      specialityId: number
+      termId: number
+      state: 'requested' | 'sended' | 'aproved' | 'assigned'
+      createdAt: Date | null
+    }[]
+  > {
+    //Validación 1 - La unidad debe existir
+    const existingUnit = await db
+      .select({ type: units.type })
+      .from(units)
+      .where(eq(units.id, unitId))
+    if (existingUnit.length === 0) {
+      throw new Error('La unidad no existe')
+    }
+
+    if (existingUnit[0].type === 'faculty') {
+      //obtener las especialidades de la facultad
+      const specialities = await db
+        .select({ id: units.id })
+        .from(units)
+        .where(eq(units.parentId, unitId))
+
+      //Obtener las propuestas de horario de la facultad
+      const proposals = await db
+        .select()
+        .from(enrollmentProposal)
+        .where(
+          inArray(
+            enrollmentProposal.specialityId,
+            specialities.map((speciality) => speciality.id)
+          )
+        )
+      return proposals
+    } else if (existingUnit[0].type === 'speciality') {
+      //Obtener las propuestas de horario de la especialidad
+      const proposals = await db
+        .select()
+        .from(enrollmentProposal)
+        .where(eq(enrollmentProposal.specialityId, unitId))
+      return proposals
+    } else {
+      throw new Error('La unidad no es una facultad ni una especialidad')
+    }
+  }
+
   public async updateCoursesInScheduleProposal(
     enrollmentProposalId: number,
     coursesList: {

@@ -31,6 +31,15 @@ export type UpdateScheduleProposalStatusDTO = z.infer<
   typeof updateScheduleProposalStatusDTO
 >
 
+export const getScheduleProposalsInUnitDTO = z.object({
+  unitId: z.string().min(1),
+  termId: z.string().min(1).optional(),
+})
+
+export type getScheduleProposalsInUnitDTO = z.infer<
+  typeof getScheduleProposalsInUnitDTO
+>
+
 export const updateCoursesOfASchPropDTO = z.object({
   coursesList: z.array(
     z.object({

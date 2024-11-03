@@ -10,6 +10,7 @@ import {
 } from '../dtos'
 import { z, ZodObject } from 'zod'
 import { ScheduleProposalDAO } from '../dao'
+import { getScheduleProposalsInUnitDTO } from '../dtos/scheduleProposalDTO'
 
 class ScheduleProposalController {
   private router = new Hono()
@@ -90,6 +91,29 @@ class ScheduleProposalController {
             accountId
           ),
           message: 'Schedule Proposal created successfully',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public getScheduleProposalsInUnit = this.router.get(
+    '/',
+    zValidator('query', getScheduleProposalsInUnitDTO),
+    async (c) => {
+      const { unitId } = c.req.valid('query')
+      try {
+        const response: ResponseAPI = {
+          data: await this.scheduleProposalService.getScheduleProposalsInUnit(
+            +unitId
+          ),
+          message: 'Schedule Proposals obtained successfully',
           success: true,
         }
         return c.json(response)
