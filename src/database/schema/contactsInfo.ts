@@ -1,4 +1,4 @@
-import { serial, varchar, uuid } from 'drizzle-orm/pg-core'
+import { serial, varchar, integer } from 'drizzle-orm/pg-core'
 import { schema } from '..'
 import { accounts } from './accounts'
 import { relations } from 'drizzle-orm'
@@ -8,7 +8,7 @@ import { z } from 'zod'
 
 export const contactsInfo = schema.table('contacts_info', {
   id: serial('id').primaryKey(),
-  accountId: uuid('account_id').references(() => accounts.id),
+  accountId: integer('account_id').references(() => accounts.id),
   phone: varchar('phone', { length: 15 }),
   secondaryPhone: varchar('secondary_phone', { length: 15 }),
   identityType: identityType('identity_type'),

@@ -1,4 +1,4 @@
-import { serial, decimal, date, uuid } from 'drizzle-orm/pg-core'
+import { serial, decimal, date, uuid, integer } from 'drizzle-orm/pg-core'
 import { schema } from '..'
 import { jobRequests } from './jobRequests'
 import { accounts } from './accounts'
@@ -9,7 +9,7 @@ import { z } from 'zod'
 
 export const evaluations = schema.table('evaluations', {
   id: serial('id').primaryKey(),
-  jobRequestId: serial('job_request_id').references(() => jobRequests.id),
+  jobRequestId: integer('job_request_id').references(() => jobRequests.id),
   accountId: uuid('account_id').references(() => accounts.id),
   requirementPerCourseId: uuid('requirement_per_course_id').references(
     () => courseHiringRequirements.id

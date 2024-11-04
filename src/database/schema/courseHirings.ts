@@ -1,4 +1,4 @@
-import { uuid, serial, text } from 'drizzle-orm/pg-core'
+import { uuid, serial, text, integer } from 'drizzle-orm/pg-core'
 import { schema } from '..'
 import { courses } from './courses'
 import { hirings } from './hirings'
@@ -8,8 +8,8 @@ import { z } from 'zod'
 
 export const courseHirings = schema.table('course_hirings', {
   id: uuid('id').primaryKey().defaultRandom(),
-  courseId: serial('course_id').references(() => courses.id),
-  hiringId: serial('hiring_id').references(() => hirings.id),
+  courseId: integer('course_id').references(() => courses.id),
+  hiringId: integer('hiring_id').references(() => hirings.id),
   detail: text('detail'),
 })
 

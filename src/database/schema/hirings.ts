@@ -18,10 +18,10 @@ export const hirings = schema.table('hirings', {
   description: text('description').notNull(),
   accountId: uuid('account_id').references(() => accounts.id),
   status: hiringStatus('status').default('receiving').notNull(),
-  startDate: date('start_date'),
-  endReceivingDate: date('end_receiving_date'),
-  resultsPublicationDate: date('results_publication_date'),
-  endDate: date('end_date'),
+  startDate: date('start_date').notNull(),
+  endReceivingDate: date('end_receiving_date').notNull(),
+  resultsPublicationDate: date('results_publication_date').notNull(),
+  endDate: date('end_date').notNull(),
   createdIn: timestamp('created_in').defaultNow(),
 })
 
