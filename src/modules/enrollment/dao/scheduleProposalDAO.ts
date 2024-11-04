@@ -1,4 +1,5 @@
 import { Proposal } from '@/interfaces/models/Proposal'
+import { PaginatedData } from '@/interfaces/PaginatedData'
 export interface ScheduleProposalDAO {
   insertCourseToScheduleProposal(
     enrollmentProposalId: number,
@@ -21,14 +22,22 @@ export interface ScheduleProposalDAO {
     termId: number
   ): Promise<void>
 
-  getScheduleProposalsInUnit(unitId: number): Promise<
-    {
+  getScheduleProposalsInUnit(params: {
+    unitId: number
+    page: number
+    limit: number
+    sortBy?: string
+  }): Promise<
+    PaginatedData<{
       id: number
-      specialityId: number
+      speciality: {
+        id: number
+        name: string
+      }
       termId: number
       state: 'requested' | 'sended' | 'aproved' | 'assigned'
       createdAt: Date | null
-    }[]
+    }>
   >
 
   updateCoursesInScheduleProposal(
