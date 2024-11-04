@@ -50,6 +50,11 @@ export const updateCoursesOfASchPropDTO = z.object({
     })
   ),
 })
+
+export type UpdateCoursesOfASchPropDTO = z.infer<
+  typeof updateCoursesOfASchPropDTO
+>
+
 export const insertScheduleProposalDTO = z.object({
   facultyId: z.number().min(1),
   accountId: z.string().min(1),
@@ -59,6 +64,15 @@ export const insertScheduleProposalDTO = z.object({
 export type InsertScheduleProposalDTO = z.infer<
   typeof insertScheduleProposalDTO
 >
-export type UpdateCoursesOfASchPropDTO = z.infer<
-  typeof updateCoursesOfASchPropDTO
+
+export const deleteCoursesOfASchPropDTO = z.object({
+  coursesList: z.array(
+    z.object({
+      courseId: z.number().min(1),
+    })
+  ),
+})
+
+export type DeleteCoursesOfASchPropDTO = z.infer<
+  typeof deleteCoursesOfASchPropDTO
 >

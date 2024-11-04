@@ -7,6 +7,7 @@ import {
   insertScheduleProposalDTO,
   updateScheduleProposalStatusDTO,
   updateCoursesOfASchPropDTO,
+  deleteCoursesOfASchPropDTO,
 } from '../dtos'
 import { z, ZodObject } from 'zod'
 import { ScheduleProposalDAO } from '../dao'
@@ -204,6 +205,37 @@ class ScheduleProposalController {
             parseInt(enrollmentProposalId)
           ),
           message: 'Courses retrieved successfully',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public deleteCourseFromScheduleProposal = this.router.delete(
+    '/:enrollmentProposalId/courses',
+    zValidator(
+      'param',
+      z.object({
+        enrollmentProposalId: z.string(),
+      })
+    ),
+    zValidator('json', deleteCoursesOfASchPropDTO),
+    async (c) => {
+      const { coursesList } = c.req.valid('json')
+      const { enrollmentProposalId } = c.req.valid('param')
+      try {
+        const response: ResponseAPI = {
+          data: await this.scheduleProposalService.deleteCoursesInScheduleProposal(
+            +enrollmentProposalId,
+            coursesList
+          ),
+          message: 'Courses correctly deleted to an Schedule Proposal',
           success: true,
         }
         return c.json(response)

@@ -7,5 +7,6 @@ export { changeStateToApprovedDTO } from './enrollmentApprovalDTO'
 export {
   updateCoursesOfASchPropDTO,
   insertScheduleProposalDTO,
+  deleteCoursesOfASchPropDTO,
 } from './scheduleProposalDTO'
 export { createEnrollmentModificationDTO } from './enrollmentModificationDTO'

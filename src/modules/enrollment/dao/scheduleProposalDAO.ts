@@ -53,6 +53,13 @@ export interface ScheduleProposalDAO {
       visibleSchedules: number
     }[]
   >
+
+  deleteCoursesInScheduleProposal(
+    enrollmentProposalId: number,
+    coursesList: {
+      courseId: number
+    }[]
+  ): Promise<void>
 }
 
 export default ScheduleProposalDAO
