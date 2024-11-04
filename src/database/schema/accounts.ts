@@ -15,6 +15,7 @@ import { accountStatus } from './enums'
 import { relations } from 'drizzle-orm'
 import { scheduleAccounts } from './scheduleAccounts'
 import { riskStudents } from './riskStudents'
+import { contactsInfo } from './contactsInfo'
 import { units } from '.'
 
 export const accounts = schema.table(
@@ -49,6 +50,7 @@ export const accounts = schema.table(
 export const accountsRelations = relations(accounts, ({ many }) => ({
   scheduleAccounts: many(scheduleAccounts),
   riskStudents: many(riskStudents),
+  contactsInfo: many(contactsInfo),
 }))
 
 export const accountsSchema = createInsertSchema(accounts)
