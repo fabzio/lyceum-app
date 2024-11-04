@@ -34,6 +34,9 @@ export type UpdateScheduleProposalStatusDTO = z.infer<
 export const getScheduleProposalsInUnitDTO = z.object({
   unitId: z.string().min(1),
   termId: z.string().min(1).optional(),
+  page: z.string().min(1).default('0'),
+  limit: z.string().min(1).default('5'),
+  sortBy: z.string().optional(),
 })
 
 export type getScheduleProposalsInUnitDTO = z.infer<

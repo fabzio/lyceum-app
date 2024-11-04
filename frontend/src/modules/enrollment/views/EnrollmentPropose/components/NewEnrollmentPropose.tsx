@@ -11,24 +11,21 @@ import {
 } from '@frontend/components/ui/dialog'
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import { toast } from '@frontend/hooks/use-toast'
-import EnrollmentService from '@frontend/modules/enrollment/services/enrollment.service'
+import { EnrollmentPermissionsDict } from '@frontend/interfaces/enums/permissions/Enrollment'
+import EnrollmentProposalService from '@frontend/modules/enrollment/services/EnrollmentProposal.service'
 import { useSessionStore } from '@frontend/store'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
+
 export default function NewEnrollmentPropose() {
   const [isOpen, setIsOpen] = useState(false)
-  const { session } = useSessionStore()
+  const { session, getRoleWithPermission } = useSessionStore()
   const queryClient = useQueryClient()
-  //TODO: como manejar el caso de que accountId sea null
-  //TODO: le puse "GOG GOG GOG GOG" como valor por defecto, pero no se si es correcto
-  const accountId = session?.id ?? 'GOG GOG GOG GOG'
-  // TODO: Implementar servicio para obtener el facultyId dado el accountId
-  // TODO: Implementar el servicio para obtener el termId
-  const facultyId = 2
-  const termId = 2
+  const termId = 1
 
-  const { mutate } = useMutation({
-    mutationFn: EnrollmentService.newEnrollmentProposal,
+  const { mutate, isPending } = useMutation({
+    mutationFn: EnrollmentProposalService.newEnrollmentProposal,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.enrollment.ENROLLMENT_PROPOSALS],
@@ -36,7 +33,6 @@ export default function NewEnrollmentPropose() {
         toast({
           title: 'Solicitud enviada',
           description: 'Se inicio el proceso de propuesta de matricula',
-          variant: 'default',
         })
     },
     onError: ({ message }) => {
@@ -48,8 +44,13 @@ export default function NewEnrollmentPropose() {
     },
   })
   const handleClick = () => {
-    mutate({ facultyId, accountId, termId })
-    setIsOpen(false)
+    mutate({
+      facultyId: getRoleWithPermission(
+        EnrollmentPermissionsDict.REQUEST_SCHEDULE_PROPOSAL
+      )!.unitId,
+      accountId: session!.id,
+      termId,
+    })
   }
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -58,18 +59,23 @@ export default function NewEnrollmentPropose() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Solicitar propuesta de matricula</DialogTitle>
+          <DialogTitle>Solicitar propuesta de matricula prelimnar</DialogTitle>
           <DialogDescription>
             Inicia el proceso de propuesta de matricula para todas las
-            especialidades. Se solicita confirmación para comenzar la solicitud
-            propuesta de matricula.
+            especialidades de la facultad
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="secondary">Cancelar</Button>
           </DialogClose>
-          <Button onClick={handleClick}>Solicitar propuesta</Button>
+          <Button disabled={isPending} onClick={handleClick}>
+            {isPending ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              'Solicitar propuesta'
+            )}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

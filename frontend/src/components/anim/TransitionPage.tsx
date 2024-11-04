@@ -6,6 +6,7 @@ interface Props {
 export default function TransitionPage({ children }: Props) {
   return (
     <m.main
+      className="w-full"
       initial={{
         opacity: 0,
       }}

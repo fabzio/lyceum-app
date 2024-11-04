@@ -18,7 +18,7 @@ export default function SubRoutesManagement({ tabs }: Props) {
     handleChangeTab(pathname as ValidRoutes, search)
   }, [pathname, handleChangeTab, search])
   return (
-    <div className="w-full">
+    <div className="w-full px-5">
       <Tabs
         value={activeTab}
         onValueChange={(value) => handleChangeTab(value, {})}

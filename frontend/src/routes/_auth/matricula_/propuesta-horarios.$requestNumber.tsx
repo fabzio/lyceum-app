@@ -11,6 +11,7 @@ export const Route = createFileRoute(
     const { getAllPermissions } = sessionStore
     if (
       !haveSomePermission(getAllPermissions(), [
+        EnrollmentPermissionsDict.REQUEST_SCHEDULE_PROPOSAL,
         EnrollmentPermissionsDict.MANAGE_SCHEDULE_PROPOSAL,
       ])
     ) {

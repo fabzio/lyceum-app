@@ -109,12 +109,15 @@ class ScheduleProposalController {
     '/',
     zValidator('query', getScheduleProposalsInUnitDTO),
     async (c) => {
-      const { unitId } = c.req.valid('query')
+      const params = c.req.valid('query')
       try {
         const response: ResponseAPI = {
-          data: await this.scheduleProposalService.getScheduleProposalsInUnit(
-            +unitId
-          ),
+          data: await this.scheduleProposalService.getScheduleProposalsInUnit({
+            limit: +params.limit,
+            page: +params.page,
+            sortBy: params.sortBy,
+            unitId: +params.unitId,
+          }),
           message: 'Schedule Proposals obtained successfully',
           success: true,
         }

@@ -30,7 +30,7 @@ export default function AsideDesktop({ asideElements = [] }: Props) {
             <div key={element.moduleCode} className="relative">
               <MenubarMenu>
                 <MenubarTrigger>{element.icon}</MenubarTrigger>
-                <MenubarContent className="absolute left-16">
+                <MenubarContent className="absolute left-16 top-[-45px]">
                   <MenubarLabel>{element.label}</MenubarLabel>
                   {filteredSubmodules?.map((submodule) => {
                     return (

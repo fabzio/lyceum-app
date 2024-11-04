@@ -1,6 +1,6 @@
 import http from '@frontend/lib/http'
 import { EnrollmentGeneral } from '../interfaces/EnrollmentGeneral'
-import EnrollmentProposal from '../interfaces/EnrollmentProposal'
+import EnrollmentProposal from '../interfaces/EnrollmentProposalDetail'
 import { EnrollmentModification } from '../interfaces/EnrollmentModification'
 import axios from 'axios'
 import { Filters } from '@frontend/interfaces/types'
@@ -152,31 +152,6 @@ class EnrollmentService {
       //   throw new Error('Error')
       // }
       return response.data
-    } catch (error) {
-      console.error(error)
-      throw new Error('Failed to get enrollment request data')
-    }
-  }
-
-  public static async newEnrollmentProposal({
-    facultyId,
-    accountId,
-    termId,
-  }: {
-    facultyId: number
-    accountId: string
-    termId: number
-  }): Promise<void> {
-    try {
-      const res = await http.post(`/enrollment/schedule-proposal`, {
-        facultyId,
-        accountId,
-        termId,
-      })
-      const response = res.data as ResponseAPI
-      if (!response.success) {
-        throw new Error('Error')
-      }
     } catch (error) {
       console.error(error)
       throw new Error('Failed to get enrollment request data')

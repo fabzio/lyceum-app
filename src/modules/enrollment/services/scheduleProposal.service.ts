@@ -5,7 +5,7 @@ import {
   terms,
   units,
 } from '@/database/schema'
-import { and, eq, inArray, desc } from 'drizzle-orm'
+import { and, eq, inArray, desc, sql, asc } from 'drizzle-orm'
 import {
   RepeatedCoursesError,
   NoCoursesSendedError,
@@ -18,6 +18,7 @@ import { ScheduleProposalDAO } from '../dao'
 import { error } from 'console'
 import { any } from 'zod'
 import { Proposal } from '@/interfaces/models/Proposal'
+import { PaginatedData } from '@/interfaces/PaginatedData'
 
 class ScheduleProposalService implements ScheduleProposalDAO {
   public async insertCourseToScheduleProposal(
@@ -166,7 +167,10 @@ class ScheduleProposalService implements ScheduleProposalDAO {
       .from(enrollmentProposal)
       .where(
         and(
-          eq(enrollmentProposal.specialityId, existingSpecialties[0].id),
+          inArray(
+            enrollmentProposal.specialityId,
+            existingSpecialties.map((specialitie) => specialitie.id)
+          ),
           eq(enrollmentProposal.termId, termId)
         )
       )
@@ -175,7 +179,7 @@ class ScheduleProposalService implements ScheduleProposalDAO {
     }
 
     //insertamos la propuesta
-    const enrollmentProposalId = await db.insert(enrollmentProposal).values(
+    await db.insert(enrollmentProposal).values(
       existingSpecialties.map((specialitie) => ({
         specialityId: specialitie.id,
         accountId: accountId,
@@ -183,17 +187,27 @@ class ScheduleProposalService implements ScheduleProposalDAO {
       }))
     )
   }
-
-  public async getScheduleProposalsInUnit(unitId: number): Promise<
-    {
+  public async getScheduleProposalsInUnit(params: {
+    unitId: number
+    page: number
+    limit: number
+    sortBy?: string
+  }): Promise<
+    PaginatedData<{
       id: number
-      specialityId: number
+      speciality: {
+        id: number
+        name: string
+      }
       termId: number
       state: 'requested' | 'sended' | 'aproved' | 'assigned'
       createdAt: Date | null
-    }[]
+    }>
   > {
-    //Validación 1 - La unidad debe existir
+    const { unitId, page, limit, sortBy } = params
+    const [field, order] = sortBy?.split('.') || ['createdAt', 'asc']
+
+    // Validación 1 - La unidad debe existir
     const existingUnit = await db
       .select({ type: units.type })
       .from(units)
@@ -202,33 +216,67 @@ class ScheduleProposalService implements ScheduleProposalDAO {
       throw new Error('La unidad no existe')
     }
 
-    if (existingUnit[0].type === 'faculty') {
-      //obtener las especialidades de la facultad
-      const specialities = await db
-        .select({ id: units.id })
-        .from(units)
-        .where(eq(units.parentId, unitId))
+    // Configuración de campos de ordenamiento
+    const mappedFields = {
+      ['createdAt']: enrollmentProposal.createdAt,
+      ['state']: enrollmentProposal.state,
+    }
+    const mappedSortBy = {
+      ['asc']: asc,
+      ['desc']: desc,
+    }
 
-      //Obtener las propuestas de horario de la facultad
-      const proposals = await db
-        .select()
-        .from(enrollmentProposal)
-        .where(
-          inArray(
+    // Definir condiciones para facultad y especialidad
+    const condition =
+      existingUnit[0].type === 'faculty'
+        ? inArray(
             enrollmentProposal.specialityId,
-            specialities.map((speciality) => speciality.id)
+            (
+              await db
+                .select({ id: units.id })
+                .from(units)
+                .where(eq(units.parentId, unitId))
+            ).map((speciality) => speciality.id)
           )
+        : eq(enrollmentProposal.specialityId, unitId)
+
+    // Contar total de propuestas para paginación
+    const [{ total }] = await db
+      .select({
+        total: sql<string>`count(*)`,
+      })
+      .from(enrollmentProposal)
+      .where(condition)
+
+    // Obtener las propuestas de horario con paginación y ordenamiento
+    const proposals = await db
+      .select({
+        id: enrollmentProposal.id,
+        speciality: {
+          id: units.id,
+          name: units.name,
+        },
+        termId: enrollmentProposal.termId,
+        state: enrollmentProposal.state,
+        createdAt: enrollmentProposal.createdAt,
+      })
+      .from(enrollmentProposal)
+      .innerJoin(units, eq(enrollmentProposal.specialityId, units.id))
+      .where(condition)
+      .offset(page * limit)
+      .limit(limit)
+      .orderBy(
+        mappedSortBy[order as keyof typeof mappedSortBy](
+          mappedFields[field as keyof typeof mappedFields]
         )
-      return proposals
-    } else if (existingUnit[0].type === 'speciality') {
-      //Obtener las propuestas de horario de la especialidad
-      const proposals = await db
-        .select()
-        .from(enrollmentProposal)
-        .where(eq(enrollmentProposal.specialityId, unitId))
-      return proposals
-    } else {
-      throw new Error('La unidad no es una facultad ni una especialidad')
+      )
+
+    return {
+      result: proposals,
+      rowCount: +total,
+      currentPage: page,
+      totalPages: Math.ceil(+total / limit),
+      hasNext: +total > (page + 1) * limit,
     }
   }
 
