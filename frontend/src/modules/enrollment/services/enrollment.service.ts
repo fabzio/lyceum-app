@@ -157,6 +157,31 @@ class EnrollmentService {
       throw new Error('Failed to get enrollment request data')
     }
   }
+
+  public static async newEnrollmentProposal({
+    facultyId,
+    accountId,
+    termId,
+  }: {
+    facultyId: number
+    accountId: string
+    termId: number
+  }): Promise<void> {
+    try {
+      const res = await http.post(`/enrollment/schedule-proposal`, {
+        facultyId,
+        accountId,
+        termId,
+      })
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error('Error')
+      }
+    } catch (error) {
+      console.error(error)
+      throw new Error('Failed to get enrollment request data')
+    }
+  }
 }
 
 export default EnrollmentService
