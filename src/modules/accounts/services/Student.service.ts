@@ -15,10 +15,11 @@ class StudentService implements StudentDAO {
       name: string
       firstSurname: string
       secondSurname: string
-      email: string 
+      email: string
+      speciality: string
     }[]
   ) {
-    
+    // Verificar si hay estudiantes duplicados en la base de datos
     const existingStudents = await db
       .select()
       .from(accounts)
@@ -34,27 +35,63 @@ class StudentService implements StudentDAO {
           existingStudents.map((student) => student.code).join(', ')
       )
     }
+
+    const studentSpecialities = Array.from(
+      new Set(studentList.map((student) => student.speciality))
+    )
+
+    const mapSpecialities = await db
+      .select({
+        id: units.id,
+        name: units.name,
+      })
+      .from(units)
+      .where(
+        and(
+          eq(units.type, 'speciality'),
+          inArray(units.name, studentSpecialities)
+        )
+      )
+
+    studentSpecialities.forEach((speciality) => {
+      if (!mapSpecialities.some((unit) => unit.name === speciality)) {
+        throw new Error(`La especialidad ${speciality} no existe`)
+      }
+    })
+
+    const specialityMap = new Map<string, number>()
+    mapSpecialities.forEach((unit) => {
+      specialityMap.set(unit.name, unit.id)
+    })
+
     await db.transaction(async (tx) => {
-      const studentsId = await tx.insert(accounts).values(
-        studentList.map((student) => ({
-          name: student.name,
-          firstSurname: student.firstSurname,
-          secondSurname: student.secondSurname,
-          code: student.code,
-          email: student.email,
-          unitId: 1,
-        }))
-      ).returning({studentId: accounts.id})
+      const studentsId = await tx
+        .insert(accounts)
+        .values(
+          studentList.map((student) => ({
+            name: student.name,
+            firstSurname: student.firstSurname,
+            secondSurname: student.secondSurname,
+            code: student.code,
+            email: student.email,
+            unitId: specialityMap.get(student.speciality)!,
+          }))
+        )
+        .returning({ studentId: accounts.id, code: accounts.code })
+      const studentMap = new Map<string, string>()
+
+      studentsId.forEach((student) => {
+        studentMap.set(student.code, student.studentId)
+      })
+
       await tx.insert(accountRoles).values(
-        studentsId.map((student) => ({
-          accountId: student.studentId,
+        studentList.map((student) => ({
+          accountId: studentMap.get(student.code)!,
           roleId: BaseRoles.STUDENT,
-          unitId: 1,
+          unitId: specialityMap.get(student.speciality)!,
         }))
       )
-    }
-  )
-    
+    })
   }
 
   async getStudentDetail(params: { code: string }) {
@@ -88,16 +125,19 @@ class StudentService implements StudentDAO {
     page: number
     limit: number
     sortBy?: string
-  }): Promise<PaginatedData<{
-    code: string
-    name: string
-    firstSurname: string
-    secondSurname: string
-    email: string
-    // FIXME: Estaria listando solo los estudiantes activos, deberia listar todos? Tal vez para la vista del admin?
-    // state: 'active' | 'inactive' | 'deleted'
-    // speciallity: string
-  }>> {
+  }): Promise<
+    PaginatedData<{
+      code: string
+      name: string
+      firstSurname: string
+      secondSurname: string
+      email: string
+      speciality: string
+      // FIXME: Estaria listando solo los estudiantes activos, deberia listar todos? Tal vez para la vista del admin?
+      // state: 'active' | 'inactive' | 'deleted'
+      // speciallity: string
+    }>
+  > {
     const [field, order] = params.sortBy?.split('.') || ['name', 'asc']
 
     const [{ total }] = await db
@@ -136,17 +176,20 @@ class StudentService implements StudentDAO {
         firstSurname: accounts.firstSurname,
         secondSurname: accounts.secondSurname,
         email: accounts.email,
+        speciality: units.name,
       })
       .from(accounts)
       .leftJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
+      .innerJoin(units, eq(units.id, accountRoles.unitId))
       .where(
         and(
           or(
-            ilike(accounts.name, `%${params.q}%`),
+            sql`concat(${accounts.name}, ' ', ${accounts.firstSurname}, ' ', ${
+              accounts.secondSurname
+            }) ilike ${`%${params.q}%`}`,
             ilike(accounts.code, `%${params.q}%`)
           ),
           eq(accountRoles.roleId, BaseRoles.STUDENT),
-          //FIXME: Estaria listando solo los estudiantes activos, deberia listar todos? Tal vez para la vista del admin?
           eq(accounts.state, 'active')
         )
       )
@@ -157,16 +200,8 @@ class StudentService implements StudentDAO {
           mappedFields[field as keyof typeof mappedFields]
         )
       )
-
-    const result = StudentsResponse.map((student) => ({
-      code: student.code,
-      name: student.name,
-      firstSurname: student.firstSurname,
-      secondSurname: student.secondSurname,
-      email: student.email,
-    }))
     return {
-      result,
+      result: StudentsResponse,
       rowCount: +total,
       currentPage: params.page,
       totalPages: Math.ceil(+total / params.limit),

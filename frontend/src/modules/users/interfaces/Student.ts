@@ -6,5 +6,6 @@ export type Student = {
   firstSurname: string
   secondSurname: string
   email: string
+  speciality: string
   state: string
 }

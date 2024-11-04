@@ -17,6 +17,11 @@ import {
   FormLabel,
   FormMessage,
 } from '@frontend/components/ui/form'
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@frontend/components/ui/hover-card'
 import { Input } from '@frontend/components/ui/input'
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import { useToast } from '@frontend/hooks/use-toast'
@@ -25,7 +30,7 @@ import { Student } from '@frontend/modules/users/interfaces/Student'
 import StudentService from '@frontend/modules/users/services/Student.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Loader2, Upload } from 'lucide-react'
+import { Info, Loader2, Upload } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -58,7 +63,12 @@ export default function MasiveStudentsDialog() {
     const dataJson = await getCsvData<
       Pick<
         Student,
-        'code' | 'name' | 'firstSurname' | 'secondSurname' | 'email'
+        | 'code'
+        | 'name'
+        | 'firstSurname'
+        | 'secondSurname'
+        | 'email'
+        | 'speciality'
       >
     >(data.file)
     const dataParsed = dataJson.map((student) => ({
@@ -89,7 +99,19 @@ export default function MasiveStudentsDialog() {
               // eslint-disable-next-line
               render={({ field: { value, onChange, ...filedProps } }) => (
                 <FormItem>
-                  <FormLabel>Archivo</FormLabel>
+                  <HoverCard openDelay={100}>
+                    <HoverCardTrigger>
+                      <FormLabel className="inline-block hover:underline w-auto">
+                        <div className="flex">
+                          Archivo <Info className="h-4" />
+                        </div>
+                      </FormLabel>
+                    </HoverCardTrigger>
+                    <HoverCardContent>
+                      code | name | firstSurname | secondSurname | email |
+                      speciality
+                    </HoverCardContent>
+                  </HoverCard>
                   <FormControl>
                     <Input
                       {...filedProps}
