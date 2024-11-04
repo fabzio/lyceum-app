@@ -52,3 +52,30 @@ export const enrollmentProposalStatus = schema.enum(
   ['requested', 'sended', 'aproved', 'assigned']
 )
 
+// Nuevos enums
+export const identityType = schema.enum('identity_type', [
+  'national',
+  'foreign',
+])
+export const jobRequestState = schema.enum('job_request_state', [
+  'sent',
+  'rejected',
+  'to_evaluate',
+  'evaluated',
+  'selected',
+])
+
+export const hiringStatus = schema.enum('hiring_status', [
+  'receiving',
+  'evaluating',
+  'finished',
+])
+
+export const hiringType = schema.enum('hiring_type', [
+  'candidate',
+  'reviewer',
+  'evaluator',
+  'selector',
+])
+
+export const courseStep = schema.enum('course_step', ['phase1', 'phase2'])
