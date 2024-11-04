@@ -23,7 +23,10 @@ export default function NewEnrollmentPropose() {
   //TODO: le puse "GOG GOG GOG GOG" como valor por defecto, pero no se si es correcto
   const accountId = session?.id ?? 'GOG GOG GOG GOG'
   // TODO: Implementar servicio para obtener el facultyId dado el accountId
+  // TODO: Implementar el servicio para obtener el termId
   const facultyId = 2
+  const termId = 2
+
   const { mutate } = useMutation({
     mutationFn: EnrollmentService.newEnrollmentProposal,
     onSuccess: () => {
@@ -45,7 +48,7 @@ export default function NewEnrollmentPropose() {
     },
   })
   const handleClick = () => {
-    mutate({ facultyId, accountId })
+    mutate({ facultyId, accountId, termId })
     setIsOpen(false)
   }
   return (
