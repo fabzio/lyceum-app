@@ -125,21 +125,25 @@ class ScheduleProposalService implements ScheduleProposalDAO {
       .where(eq(enrollmentProposal.id, enrollmentProposalId))
   }
 
-  public async insertScheduleProposal(facultyId: number, accountId: string) {
+  public async insertScheduleProposal(
+    facultyId: number,
+    accountId: string,
+    termId: number
+  ) {
     //validacion 1: la facultad debe existir
     const existingFaculty = await db
       .select()
       .from(units)
-      .where(eq(units.id, facultyId))
+      .where(and(eq(units.id, facultyId), eq(units.type, 'faculty')))
     if (existingFaculty.length === 0) {
       throw new Error('La facultad no existe')
     }
 
-    //validacion 2: la fecha de creacion de la propuesta debe estar dentro del ciclo vigente
+    //validacion 2: el termId es valido
     const currentTerm = await db
       .select()
       .from(terms)
-      .where(eq(terms.current, true))
+      .where(eq(terms.id, termId))
     if (currentTerm.length === 0) {
       //TODO: Encontrar la forma de validar que la fecha de creacion de la propuesta esté dentro del ciclo vigente
       throw new Error(
@@ -147,7 +151,7 @@ class ScheduleProposalService implements ScheduleProposalDAO {
       )
     }
 
-    //validación 3: la facultad debe tener al menos una expecialidad
+    //validación 3: la facultad debe tener al menos una especialidad
     const existingSpecialties = await db
       .select()
       .from(units)
@@ -156,15 +160,78 @@ class ScheduleProposalService implements ScheduleProposalDAO {
       throw new Error('La facultad no tiene especialidades')
     }
 
+    //validación 4: la propuesta no debe existir
+    const existingProposal = await db
+      .select()
+      .from(enrollmentProposal)
+      .where(
+        and(
+          eq(enrollmentProposal.specialityId, existingSpecialties[0].id),
+          eq(enrollmentProposal.termId, termId)
+        )
+      )
+    if (existingProposal.length > 0) {
+      throw new Error('La propuesta ya existe')
+    }
+
     //insertamos la propuesta
     const enrollmentProposalId = await db.insert(enrollmentProposal).values(
       existingSpecialties.map((specialitie) => ({
         specialityId: specialitie.id,
         accountId: accountId,
-        termId: currentTerm[0].id,
+        termId: termId,
       }))
     )
   }
+
+  public async getScheduleProposalsInUnit(unitId: number): Promise<
+    {
+      id: number
+      specialityId: number
+      termId: number
+      state: 'requested' | 'sended' | 'aproved' | 'assigned'
+      createdAt: Date | null
+    }[]
+  > {
+    //Validación 1 - La unidad debe existir
+    const existingUnit = await db
+      .select({ type: units.type })
+      .from(units)
+      .where(eq(units.id, unitId))
+    if (existingUnit.length === 0) {
+      throw new Error('La unidad no existe')
+    }
+
+    if (existingUnit[0].type === 'faculty') {
+      //obtener las especialidades de la facultad
+      const specialities = await db
+        .select({ id: units.id })
+        .from(units)
+        .where(eq(units.parentId, unitId))
+
+      //Obtener las propuestas de horario de la facultad
+      const proposals = await db
+        .select()
+        .from(enrollmentProposal)
+        .where(
+          inArray(
+            enrollmentProposal.specialityId,
+            specialities.map((speciality) => speciality.id)
+          )
+        )
+      return proposals
+    } else if (existingUnit[0].type === 'speciality') {
+      //Obtener las propuestas de horario de la especialidad
+      const proposals = await db
+        .select()
+        .from(enrollmentProposal)
+        .where(eq(enrollmentProposal.specialityId, unitId))
+      return proposals
+    } else {
+      throw new Error('La unidad no es una facultad ni una especialidad')
+    }
+  }
+
   public async updateCoursesInScheduleProposal(
     enrollmentProposalId: number,
     coursesList: {
@@ -224,39 +291,46 @@ class ScheduleProposalService implements ScheduleProposalDAO {
 
   public async getProposal(
     specialityId: number,
-    termId?: number,
-  ) : Promise<Proposal |  null>
-  {
-    let proposal: Proposal | null = null;
-    if(termId == undefined){
-      const latestProposalArray = await db.select().from(enrollmentProposal)
-      .where(eq(enrollmentProposal.specialityId,specialityId))
-      .orderBy(desc(enrollmentProposal.createdAt))
-      .limit(1)
-      proposal = latestProposalArray[0];
-    }
-    else{
-      const altProposal = await db.select().from(enrollmentProposal)
-      .where(and(eq(enrollmentProposal.specialityId, specialityId),
-                 eq(enrollmentProposal.termId, termId)))
-      proposal = altProposal[0]   
+    termId?: number
+  ): Promise<Proposal | null> {
+    let proposal: Proposal | null = null
+    if (termId == undefined) {
+      const latestProposalArray = await db
+        .select()
+        .from(enrollmentProposal)
+        .where(eq(enrollmentProposal.specialityId, specialityId))
+        .orderBy(desc(enrollmentProposal.createdAt))
+        .limit(1)
+      proposal = latestProposalArray[0]
+    } else {
+      const altProposal = await db
+        .select()
+        .from(enrollmentProposal)
+        .where(
+          and(
+            eq(enrollmentProposal.specialityId, specialityId),
+            eq(enrollmentProposal.termId, termId)
+          )
+        )
+      proposal = altProposal[0]
     }
     return proposal
   }
 
-  public async getCoursesProposal(
-    proposalId: number,
-  ) : Promise<{
-    id: number
-    enrollmentProposalId: number
-    courseId: number
-    vacanciesPerSchema: number
-    hiddenSchedules: number
-    visibleSchedules: number
-  }[]>
-  {
-    const proposalCourses = await db.select().from(enrollmentProposalCourses)
-    .where(eq(enrollmentProposalCourses.enrollmentProposalId,proposalId))
+  public async getCoursesProposal(proposalId: number): Promise<
+    {
+      id: number
+      enrollmentProposalId: number
+      courseId: number
+      vacanciesPerSchema: number
+      hiddenSchedules: number
+      visibleSchedules: number
+    }[]
+  > {
+    const proposalCourses = await db
+      .select()
+      .from(enrollmentProposalCourses)
+      .where(eq(enrollmentProposalCourses.enrollmentProposalId, proposalId))
     return proposalCourses
   }
 }

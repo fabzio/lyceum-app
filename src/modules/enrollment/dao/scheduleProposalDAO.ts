@@ -15,7 +15,21 @@ export interface ScheduleProposalDAO {
     newStatus: 'requested' | 'sended' | 'aproved' | 'assigned'
   ): Promise<void>
 
-  insertScheduleProposal(facultyId: number, accountId: string): Promise<void>
+  insertScheduleProposal(
+    facultyId: number,
+    accountId: string,
+    termId: number
+  ): Promise<void>
+
+  getScheduleProposalsInUnit(unitId: number): Promise<
+    {
+      id: number
+      specialityId: number
+      termId: number
+      state: 'requested' | 'sended' | 'aproved' | 'assigned'
+      createdAt: Date | null
+    }[]
+  >
 
   updateCoursesInScheduleProposal(
     enrollmentProposalId: number,
@@ -29,15 +43,16 @@ export interface ScheduleProposalDAO {
 
   getProposal(specialityId: number, termId?: number): Promise<Proposal | null>
 
-  getCoursesProposal(proposalId: number) : Promise<{
-    id: number
-    enrollmentProposalId: number
-    courseId: number
-    vacanciesPerSchema: number
-    hiddenSchedules: number
-    visibleSchedules: number
-  }[]>
+  getCoursesProposal(proposalId: number): Promise<
+    {
+      id: number
+      enrollmentProposalId: number
+      courseId: number
+      vacanciesPerSchema: number
+      hiddenSchedules: number
+      visibleSchedules: number
+    }[]
+  >
 }
-
 
 export default ScheduleProposalDAO
