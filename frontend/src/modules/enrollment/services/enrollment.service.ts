@@ -52,6 +52,37 @@ class EnrollmentService {
     }
   }
 
+  public static async getEnrollmentsById(
+    filtersAndPagination: Filters & { userId: string }
+  ): Promise<PaginatedData<EnrollmentGeneral>> {
+    try {
+      const res = await http.get(
+        '/enrollment/modifications/paginatedByUserId',
+        {
+          params: {
+            q: filtersAndPagination.q || '',
+            page: filtersAndPagination.pageIndex || 0,
+            limit: filtersAndPagination.pageSize || 5,
+            sortBy: filtersAndPagination.sortBy || 'requestNumber.asc',
+            userId: filtersAndPagination.userId, // Agregar filtro de ID de estudiante
+          },
+        }
+      )
+
+      const response = res.data as ResponseAPI<PaginatedData<EnrollmentGeneral>>
+      if (!response.success) {
+        throw new Error('Error')
+      }
+
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+
   public static async getEnrollment({
     requestId,
   }: {

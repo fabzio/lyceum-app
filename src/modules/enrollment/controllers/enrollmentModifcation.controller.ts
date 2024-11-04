@@ -12,35 +12,67 @@ class EnrollmentModificationController {
   private enrollmentService: EnrollmentModificationDAO =
     new EnrollmentModificationsService()
 
-    public getEnrollments = this.router.get(
-      '/paginated',
-      zValidator(
-        'query',
-        z.object({
-          q: z.string().optional(),
-          page: z.string().transform((v) => parseInt(v)),
-          limit: z.string().transform((v) => parseInt(v)),
-          sortBy: z.string().optional(),
-        })
-      ),
-      async (c) => {
-        try {
-          const filters = c.req.valid('query');
-          const data = await this.enrollmentService.getAllEnrollments(filters);
-          const response: ResponseAPI = {
-            data: data,
-            success: true,
-            message: 'Enrollments retrieved',
-          };
-          return c.json(response);
-        } catch (error) {
-          if (error instanceof LyceumError) {
-            c.status(error.code);
-          }
-          throw error;
+  public getEnrollments = this.router.get(
+    '/paginated',
+    zValidator(
+      'query',
+      z.object({
+        q: z.string().optional(),
+        page: z.string().transform((v) => parseInt(v)),
+        limit: z.string().transform((v) => parseInt(v)),
+        sortBy: z.string().optional(),
+      })
+    ),
+    async (c) => {
+      try {
+        const filters = c.req.valid('query')
+        const data = await this.enrollmentService.getAllEnrollments(filters)
+        const response: ResponseAPI = {
+          data: data,
+          success: true,
+          message: 'Enrollments retrieved',
         }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
       }
-    );
+    }
+  )
+
+  public getEnrollmentsByUserId = this.router.get(
+    '/paginatedByUserId',
+    zValidator(
+      'query',
+      z.object({
+        q: z.string().optional(),
+        page: z.string().transform((v) => parseInt(v)),
+        limit: z.string().transform((v) => parseInt(v)),
+        sortBy: z.string().optional(),
+        userId: z.string(), // userId es requerido para este endpoint
+      })
+    ),
+    async (c) => {
+      try {
+        const filters = c.req.valid('query')
+        const data =
+          await this.enrollmentService.getEnrollmentsByUserId(filters)
+        const response: ResponseAPI = {
+          data: data,
+          success: true,
+          message: 'Enrollments retrieved by user ID',
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
 
   public getEnrollment = this.router.get('/:requestNumber', async (c) => {
     const { requestNumber } = c.req.param()

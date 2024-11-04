@@ -15,7 +15,8 @@ export const EnrollmentModule: AppModule = {
       path: '/matricula/modificacion-matricula',
       permissions: [
         EnrollmentPermissionsDict.REQUEST_ADITIONAL_ENROLLMENT,
-        EnrollmentPermissionsDict.REVIEW_ADDITIONAL_ENROLLMENT,
+        EnrollmentPermissionsDict.REVIEW_ADDITIONAL_ENROLLMENT_ALL,
+        EnrollmentPermissionsDict.REVIEW_ADDITIONAL_ENROLLMENT_MYSELF,
       ],
     },
     {

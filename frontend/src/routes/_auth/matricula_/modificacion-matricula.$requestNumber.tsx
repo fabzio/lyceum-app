@@ -10,7 +10,14 @@ export const Route = createFileRoute(
   beforeLoad: ({ context: { sessionStore } }) => {
     const { havePermission } = sessionStore
     if (
-      !havePermission(EnrollmentPermissionsDict.REVIEW_ADDITIONAL_ENROLLMENT)
+      !(
+        havePermission(
+          EnrollmentPermissionsDict.REVIEW_ADDITIONAL_ENROLLMENT_ALL
+        ) ||
+        havePermission(
+          EnrollmentPermissionsDict.REVIEW_ADDITIONAL_ENROLLMENT_MYSELF
+        )
+      )
     ) {
       throw redirect({
         to: '/',

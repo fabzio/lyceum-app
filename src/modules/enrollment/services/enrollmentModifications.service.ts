@@ -107,6 +107,104 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
     }
   }
 
+  public async getEnrollmentsByUserId(params: {
+    q?: string
+    page: number
+    limit: number
+    sortBy?: string
+    userId: string // userId requerido
+  }): Promise<
+    PaginatedData<{
+      student: {
+        name: Account['name']
+        surname: string
+      }
+      schedule: {
+        code: string
+        courseName: string
+      }
+      state: string
+      requestType: string
+      reason: string | null
+      requestNumber: number
+    }>
+  > {
+    const [field, order] = params.sortBy?.split('.') || ['requestNumber', 'asc']
+
+    const totalQuery = db
+      .select({
+        total: sql<string>`count(*)`,
+      })
+      .from(enrollmentModifications)
+      .innerJoin(accounts, eq(enrollmentModifications.studentId, accounts.id))
+      .where(
+        and(
+          eq(enrollmentModifications.studentId, params.userId), // Filtro por userId
+          params.q ? ilike(accounts.name, `%${params.q}%`) : sql<boolean>`true`
+        )
+      )
+
+    const [{ total }] = await totalQuery
+
+    const mappedFields = {
+      ['requestNumber']: enrollmentModifications.requestNumber,
+      ['name']: accounts.name,
+    }
+
+    const mappedSortBy = {
+      ['asc']: asc,
+      ['desc']: desc,
+    }
+
+    const enrollmentsResponse = await db
+      .select({
+        requestNumber: sql<number>`coalesce(${enrollmentModifications.requestNumber}, 0)`,
+        state: enrollmentModifications.state,
+        requestType: enrollmentModifications.requestType,
+        student: {
+          name: accounts.name,
+          surname: sql<string>`concat(${accounts.firstSurname}, ' ', ${accounts.secondSurname})`,
+        },
+        schedule: {
+          code: schedules.code,
+          courseName: courses.name,
+        },
+        reason: enrollmentModifications.reason,
+      })
+      .from(enrollmentModifications)
+      .innerJoin(accounts, eq(enrollmentModifications.studentId, accounts.id))
+      .innerJoin(
+        schedules,
+        eq(enrollmentModifications.scheduleId, schedules.id)
+      )
+      .innerJoin(courses, eq(schedules.courseId, courses.id))
+      .where(eq(enrollmentModifications.studentId, params.userId)) // Filtro por userId
+      .offset(params.page * params.limit)
+      .limit(params.limit)
+      .orderBy(
+        mappedSortBy[order as keyof typeof mappedSortBy](
+          mappedFields[field as keyof typeof mappedFields]
+        )
+      )
+
+    const result = enrollmentsResponse.map((enrollment) => ({
+      requestNumber: enrollment.requestNumber,
+      state: enrollment.state,
+      requestType: enrollment.requestType,
+      student: enrollment.student,
+      schedule: enrollment.schedule,
+      reason: enrollment.reason,
+    }))
+
+    return {
+      result,
+      rowCount: +total,
+      currentPage: params.page,
+      totalPages: Math.ceil(+total / params.limit),
+      hasNext: +total > (params.page + 1) * params.limit,
+    }
+  }
+
   public async getEnrollmentRequest({
     requestNumber,
   }: {
@@ -135,6 +233,7 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
       .from(enrollmentModifications)
       .innerJoin(student, eq(enrollmentModifications.studentId, student.id))
       .innerJoin(units, eq(student.unitId, units.id))
+      //FIXME: para el caso de PUCP da error porque no tiene parentId
       .innerJoin(faculty, eq(units.parentId, faculty.id))
       .innerJoin(
         schedules,
@@ -237,7 +336,6 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
 
     return newCode
   }
-
 }
 
 export default EnrollmentModificationService

@@ -21,6 +21,7 @@ export default function EnrollmentModifyMain() {
   const { data: enrollmentModifyRequest } = useSuspenseQuery({
     queryKey: [QueryKeys.enrollment.ENROLLMENTS_MODIFY_DETAIL, requestNumber],
     queryFn: () =>
+      //FIXME: si el usuario no está asociado a una facultad el servicio se muere
       EnrollmentService.getEnrollment({ requestId: +requestNumber }),
   })
   return (

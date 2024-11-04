@@ -26,6 +26,29 @@ export interface EnrollmentModificationDAO {
     }>
   >
 
+  getEnrollmentsByUserId: (filters: {
+    q?: string
+    page: number
+    limit: number
+    sortBy?: string
+    userId: string
+  }) => Promise<
+    PaginatedData<{
+      student: {
+        name: Account['name']
+        surname: string
+      }
+      schedule: {
+        code: string
+        courseName: string
+      }
+      state: string
+      requestType: string
+      reason: string | null
+      requestNumber: number
+    }>
+  >
+
   getEnrollmentRequest: (params: { requestNumber: number }) => Promise<{
     student: {
       name: Account['name']
@@ -49,7 +72,7 @@ export interface EnrollmentModificationDAO {
     EnrollmentModificationsSchema,
     'requestNumber' | 'state'
   >): Promise<void>
-  
+
   createEnrollmentRequest({
     reason,
     requestType,
