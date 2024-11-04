@@ -98,7 +98,9 @@ class ProfessorService implements ProfessorDAO {
       .where(
         and(
           or(
-            ilike(accounts.name, `%${params.q}%`),
+            sql`concat(${accounts.name}, ' ', ${accounts.firstSurname}, ' ', ${
+              accounts.secondSurname
+            }) ilike ${`%${params.q}%`}`,
             ilike(accounts.code, `%${params.q}%`)
           ),
           eq(accountRoles.roleId, BaseRoles.PROFESSOR)

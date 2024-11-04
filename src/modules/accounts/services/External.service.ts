@@ -6,21 +6,22 @@ import { ExternalNotFoundError } from '../errors'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { PaginatedData } from '@/interfaces/PaginatedData'
 class ExternalService implements ExternalDAO {
-  
   public async getAllExternals(params: {
     q?: string
     page: number
     limit: number
     sortBy?: string
-  }): Promise<PaginatedData<{
-    code: string
-    name: string
-    firstSurname: string
-    secondSurname: string
-    email: string
-    state: 'active' | 'inactive' | 'deleted'
-    speciallity: string
-  }>> {
+  }): Promise<
+    PaginatedData<{
+      code: string
+      name: string
+      firstSurname: string
+      secondSurname: string
+      email: string
+      state: 'active' | 'inactive' | 'deleted'
+      speciallity: string
+    }>
+  > {
     const [field, order] = params.sortBy?.split('.') || ['name', 'asc']
 
     const [{ total }] = await db
@@ -30,11 +31,17 @@ class ExternalService implements ExternalDAO {
       .from(accounts)
       .innerJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
       .innerJoin(units, eq(units.id, accounts.unitId))
-      .where(and(
-        or(ilike(accounts.name, `%${params.q}%`),
-          ilike(accounts.code, `%${params.q}%`)),
-        eq(accountRoles.roleId, BaseRoles.EXTERNAL)
-      ))
+      .where(
+        and(
+          or(
+            sql`concat(${accounts.name}, ' ', ${accounts.firstSurname}, ' ', ${
+              accounts.secondSurname
+            }) ilike ${`%${params.q}%`}`,
+            ilike(accounts.code, `%${params.q}%`)
+          ),
+          eq(accountRoles.roleId, BaseRoles.EXTERNAL)
+        )
+      )
     const mappedFields = {
       ['name']: accounts.name,
       ['code']: accounts.code,
@@ -47,23 +54,27 @@ class ExternalService implements ExternalDAO {
       ['desc']: desc,
     }
     const ExternalsResponse = await db
-    .select({
-      code: accounts.code,
-      name: accounts.name,
-      firstSurname: accounts.firstSurname,
-      secondSurname: accounts.secondSurname,
-      email: accounts.email,
-      state: accounts.state,
-      speciallity: units.name,
-    })
-    .from(accounts)
-    .innerJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
-    .innerJoin(units, eq(units.id, accounts.unitId))
-    .where(and(
-      or(ilike(accounts.name, `%${params.q}%`),
-        ilike(accounts.code, `%${params.q}%`)),
-      eq(accountRoles.roleId, BaseRoles.EXTERNAL)
-    ))
+      .select({
+        code: accounts.code,
+        name: accounts.name,
+        firstSurname: accounts.firstSurname,
+        secondSurname: accounts.secondSurname,
+        email: accounts.email,
+        state: accounts.state,
+        speciallity: units.name,
+      })
+      .from(accounts)
+      .innerJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
+      .innerJoin(units, eq(units.id, accounts.unitId))
+      .where(
+        and(
+          or(
+            ilike(accounts.name, `%${params.q}%`),
+            ilike(accounts.code, `%${params.q}%`)
+          ),
+          eq(accountRoles.roleId, BaseRoles.EXTERNAL)
+        )
+      )
       .offset(params.page * params.limit)
       .limit(params.limit)
       .orderBy(
@@ -89,6 +100,5 @@ class ExternalService implements ExternalDAO {
     }
   }
 }
-
 
 export default ExternalService

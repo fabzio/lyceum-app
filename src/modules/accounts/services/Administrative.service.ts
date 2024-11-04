@@ -5,7 +5,6 @@ import { AdministrativeNotFound } from '../errors'
 import { AdministrativeDAO } from '../daos'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { PaginatedData } from '@/interfaces/PaginatedData'
-import { uuid } from 'drizzle-orm/pg-core'
 import { DuplicateAdministrativeCode } from '../errors/Administrative.error'
 
 class AdministrativeService implements AdministrativeDAO {
@@ -40,16 +39,18 @@ class AdministrativeService implements AdministrativeDAO {
     page: number
     limit: number
     sortBy?: string
-  }): Promise<PaginatedData<{
-    code: string
-    name: string
-    firstSurname: string
-    secondSurname: string
-    email: string
-    //TODO: Decidir si se debe listar solo los profesores activos o todos
-    state: 'active' | 'inactive' | 'deleted'
-    speciallity: string
-  }>> {
+  }): Promise<
+    PaginatedData<{
+      code: string
+      name: string
+      firstSurname: string
+      secondSurname: string
+      email: string
+      //TODO: Decidir si se debe listar solo los profesores activos o todos
+      state: 'active' | 'inactive' | 'deleted'
+      speciallity: string
+    }>
+  > {
     const [field, order] = params.sortBy?.split('.') || ['name', 'asc']
 
     const [{ total }] = await db
@@ -61,10 +62,15 @@ class AdministrativeService implements AdministrativeDAO {
       .innerJoin(units, eq(units.id, accounts.unitId))
       .where(
         and(
-        or(ilike(accounts.name, `%${params.q}%`),
-          ilike(accounts.code, `%${params.q}%`)),
-        eq(accountRoles.roleId, BaseRoles.ADMIN)
-      ))
+          or(
+            sql`concat(${accounts.name}, ' ', ${accounts.firstSurname}, ' ', ${
+              accounts.secondSurname
+            }) ilike ${`%${params.q}%`}`,
+            ilike(accounts.code, `%${params.q}%`)
+          ),
+          eq(accountRoles.roleId, BaseRoles.ADMIN)
+        )
+      )
     const mappedFields = {
       ['name']: accounts.name,
       ['code']: accounts.code,
@@ -77,24 +83,27 @@ class AdministrativeService implements AdministrativeDAO {
       ['desc']: desc,
     }
     const AdministrativesResponse = await db
-    .select({
-      code: accounts.code,
-      name: accounts.name,
-      firstSurname: accounts.firstSurname,
-      secondSurname: accounts.secondSurname,
-      email: accounts.email,
-      state: accounts.state,
-      speciallity: units.name,
-    })
-    .from(accounts)
-    .innerJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
-    .innerJoin(units, eq(units.id, accounts.unitId))
-    .where(
-      and(
-      or(ilike(accounts.name, `%${params.q}%`),
-        ilike(accounts.code, `%${params.q}%`)),
-      eq(accountRoles.roleId, BaseRoles.ADMIN)
-    ))
+      .select({
+        code: accounts.code,
+        name: accounts.name,
+        firstSurname: accounts.firstSurname,
+        secondSurname: accounts.secondSurname,
+        email: accounts.email,
+        state: accounts.state,
+        speciallity: units.name,
+      })
+      .from(accounts)
+      .innerJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
+      .innerJoin(units, eq(units.id, accounts.unitId))
+      .where(
+        and(
+          or(
+            ilike(accounts.name, `%${params.q}%`),
+            ilike(accounts.code, `%${params.q}%`)
+          ),
+          eq(accountRoles.roleId, BaseRoles.ADMIN)
+        )
+      )
       .offset(params.page * params.limit)
       .limit(params.limit)
       .orderBy(
@@ -121,14 +130,15 @@ class AdministrativeService implements AdministrativeDAO {
   }
   //TODO Add methods here
 
-  public async uploadAdministrativeList(administrativeList: {
-    name: string
-    firstSurname: string
-    secondSurname: string 
-    code: string
-    email: string
+  public async uploadAdministrativeList(
+    administrativeList: {
+      name: string
+      firstSurname: string
+      secondSurname: string
+      code: string
+      email: string
     }[]
-  ){
+  ) {
     const existingAdministratives = await db
       .select()
       .from(accounts)
@@ -141,32 +151,35 @@ class AdministrativeService implements AdministrativeDAO {
     if (existingAdministratives.length > 0) {
       throw new DuplicateAdministrativeCode(
         'Los siguientes códigos de personal administrativo ya existen: ' +
-        existingAdministratives.map((administrative) => administrative.code).join(', ')
+          existingAdministratives
+            .map((administrative) => administrative.code)
+            .join(', ')
       )
     }
 
     await db.transaction(async (tx) => {
-      const newAccounts = await tx.insert(accounts).values(
-        administrativeList.map((newUser) => ({
-          name: newUser.name,
-          firstSurname: newUser.firstSurname,
-          secondSurname: newUser.secondSurname,
-          code: newUser.code,
-          email: newUser.email,
-          unitId: 1,
-        }))
-      ).returning({ uuid: accounts.id });
-  
+      const newAccounts = await tx
+        .insert(accounts)
+        .values(
+          administrativeList.map((newUser) => ({
+            name: newUser.name,
+            firstSurname: newUser.firstSurname,
+            secondSurname: newUser.secondSurname,
+            code: newUser.code,
+            email: newUser.email,
+            unitId: 1,
+          }))
+        )
+        .returning({ uuid: accounts.id })
+
       await tx.insert(accountRoles).values(
         newAccounts.map((account) => ({
           accountId: account.uuid,
           roleId: BaseRoles.ADMIN,
           unitId: 1,
         }))
-      );
-    }
-  )
-
+      )
+    })
   }
 }
 
