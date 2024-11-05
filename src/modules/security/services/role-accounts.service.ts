@@ -1,9 +1,10 @@
 import db from '@/database'
-import { accounts } from '@/database/schema'
+import { accounts, permissions, rolePermissions } from '@/database/schema'
 import { accountRoles } from '@/database/schema/accountRoles'
 import { roles } from '@/database/schema/roles'
 import { units, UnitsInsertSchema } from '@/database/schema/units'
-import { and, eq, sql } from 'drizzle-orm'
+import { and, eq, inArray, sql } from 'drizzle-orm'
+import { ExistingPermissionError } from '../errors/RoleAccounts.error'
 
 class RoleAccountsService {
   async getAllAccountRoles() {
@@ -29,48 +30,27 @@ class RoleAccountsService {
       .innerJoin(units, eq(accountRoles.unitId, units.id))
       .where(eq(roles.editable, true))
 
-    const formattedResponse = accountRolesResponse.reduce(
-      (
-        acc: {
-          id: string
-          name: string
-          code: string
-          roles: {
-            id: number
-            name: string
-            unitId: number
-            unitName: string
-          }[]
-        }[],
-        curr
-      ) => {
-        const accountIndex = acc.findIndex(
-          (account) => account.id === curr.account.id
-        )
-        const role = {
-          id: curr.role.id,
-          name: curr.role.name,
-          unitId: curr.unit.id,
-          unitName: curr.unit.name,
-        }
+    const accountsMap = new Map()
 
-        if (accountIndex === -1) {
-          acc.push({
-            id: curr.account.id,
-            name: curr.account.name,
-            code: curr.account.code,
-            roles: [role],
-          })
-        } else {
-          acc[accountIndex].roles.push(role)
-        }
+    accountRolesResponse.forEach(({ account, role, unit }) => {
+      if (!accountsMap.has(account.id)) {
+        accountsMap.set(account.id, {
+          id: account.id,
+          name: account.name,
+          code: account.code,
+          roles: [],
+        })
+      }
 
-        return acc
-      },
-      []
-    )
+      accountsMap.get(account.id).roles.push({
+        id: role.id,
+        name: role.name,
+        unitId: unit.id,
+        unitName: unit.name,
+      })
+    })
 
-    return formattedResponse
+    return Array.from(accountsMap.values())
   }
 
   async insertAccountRole(accountRole: {
@@ -78,6 +58,39 @@ class RoleAccountsService {
     roleId: number
     unitId: number
   }): Promise<void> {
+    const existingPermissions = await db
+      .select({
+        permissions: permissions.description,
+      })
+      .from(accountRoles)
+      .innerJoin(roles, eq(accountRoles.roleId, roles.id))
+      .innerJoin(rolePermissions, eq(roles.id, rolePermissions.roleId))
+      .innerJoin(permissions, eq(rolePermissions.permissionId, permissions.id))
+      .where(
+        and(
+          eq(accountRoles.accountId, accountRole.accountId),
+          inArray(
+            rolePermissions.permissionId,
+            db
+              .select({
+                permissionId: rolePermissions.permissionId,
+              })
+              .from(rolePermissions)
+              .where(eq(rolePermissions.roleId, accountRole.roleId))
+          )
+        )
+      )
+
+    if (existingPermissions.length) {
+      const existingPermissionsString = existingPermissions
+        .map((permission) => permission.permissions)
+        .join(', ')
+      throw new ExistingPermissionError(
+        'No se puede asignar el rol a esta cuenta porque ya tiene los permisos: ' +
+          existingPermissionsString
+      )
+    }
+
     await db.insert(accountRoles).values({
       accountId: accountRole.accountId,
       roleId: accountRole.roleId,
