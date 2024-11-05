@@ -50,8 +50,10 @@ class RolePermissionService {
       }
       return response.data as RolePermission
     } catch (err) {
-      console.error(err)
-      return null
+      if (axios.isAxiosError(err)) {
+        throw new Error(err.response?.data || err.message)
+      }
+      throw err
     }
   }
 

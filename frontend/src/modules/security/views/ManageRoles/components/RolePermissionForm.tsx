@@ -1,5 +1,4 @@
 import { Button } from '@frontend/components/ui/button'
-import { DialogFooter } from '@frontend/components/ui/dialog'
 import {
   FormControl,
   FormField,
@@ -25,18 +24,13 @@ import { mapUnitType } from '@frontend/lib/mapUnitType'
 import PermissionsCombobox from '@frontend/modules/security/components/PermissionsCombobox'
 import RolePermissionService from '@frontend/modules/security/services/role-permission.service'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { DialogClose } from '@radix-ui/react-dialog'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { PlusIcon, X } from 'lucide-react'
-import { useEffect } from 'react'
+import { useNavigate } from '@tanstack/react-router'
+import { Loader2, PlusIcon, X } from 'lucide-react'
 import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 
-interface Props {
-  handleClose: () => void
-}
-
-export default function RolePermissionForm({ handleClose }: Props) {
+export default function RolePermissionForm() {
   const { toast } = useToast()
   const form = useForm<z.infer<typeof newRoleSchema>>({
     resolver: zodResolver(newRoleSchema),
@@ -55,18 +49,28 @@ export default function RolePermissionForm({ handleClose }: Props) {
     name: 'permissions',
   })
   const queryClient = useQueryClient()
-  const { mutate } = useMutation({
+  const navigate = useNavigate({
+    from: '/seguridad/roles/nuevo',
+  })
+  const { mutate, isPending } = useMutation({
     mutationFn: RolePermissionService.createRolePermission,
-    onSettled: () => handleClose(),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.security.ROLE_PERMISSIONS],
+      })
+      toast({
+        title: 'Rol creado',
+        description: 'El rol ha sido creado con éxito',
+      })
+      navigate({
+        to: '/seguridad/roles',
       })
     },
     onError: (error) => {
       toast({
         title: 'Error',
         description: error.message,
+        variant: 'destructive',
       })
     },
   })
@@ -83,9 +87,6 @@ export default function RolePermissionForm({ handleClose }: Props) {
     }
     mutate(rolePermission)
   }
-  useEffect(() => {
-    console.log(fields)
-  }, [fields])
 
   return (
     <FormProvider {...form}>
@@ -113,7 +114,7 @@ export default function RolePermissionForm({ handleClose }: Props) {
               control={control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tipo de Unidad</FormLabel>
+                  <FormLabel>Tipo de unidad de alcance</FormLabel>
                   <FormControl>
                     <Select onValueChange={field.onChange}>
                       <SelectTrigger>
@@ -138,7 +139,7 @@ export default function RolePermissionForm({ handleClose }: Props) {
           </div>
 
           <div>
-            <section className="flex flex-col gap-2">
+            <section className="mt-2 flex flex-col gap-2">
               <Label>Permisos</Label>
               <div>
                 {fields.map((fieldItem, index) => (
@@ -177,17 +178,11 @@ export default function RolePermissionForm({ handleClose }: Props) {
             </section>
           </div>
         </section>
-
-        <DialogFooter className="mt-2">
-          <div className="flex w-full justify-between">
-            <DialogClose asChild>
-              <Button variant="outline" type="button">
-                Cancelar
-              </Button>
-            </DialogClose>
-            <Button type="submit">Guardar</Button>
-          </div>
-        </DialogFooter>
+        <div className="mt-2 flex w-full justify-end">
+          <Button type="submit" disabled={isPending}>
+            {isPending ? <Loader2 className="animate-spin" /> : 'Guardar'}
+          </Button>
+        </div>
       </form>
     </FormProvider>
   )

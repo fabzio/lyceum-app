@@ -1,4 +1,4 @@
-import { Context, Hono } from 'hono'
+import { Hono } from 'hono'
 import { ModuleDAO } from '../dao/ModuleDAO'
 import { ModuleService } from '../services'
 

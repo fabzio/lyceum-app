@@ -7,6 +7,7 @@ import { useState } from 'react'
 import PermissionService from '../services/permission.service'
 import PermissionAccordion from './AcoordionPermissions'
 import { useFormContext } from 'react-hook-form'
+import { Loader2 } from 'lucide-react'
 
 interface Props {
   index: number
@@ -35,7 +36,7 @@ export default function PermissionsCombobox({ index }: Props) {
     setValue(`permissions[${index}].moduleId`, Number(value))
   }
 
-  if (!optionModules) return <div>Loading...</div>
+  if (!optionModules) return <Loader2 className="animate-spin" />
   return (
     <div className="flex-grow">
       {moduleSelected ? (
@@ -47,6 +48,7 @@ export default function PermissionsCombobox({ index }: Props) {
       ) : (
         <Combobox
           onChange={handleComboboxChange}
+          value={moduleSelected?.toString()}
           className="w-full"
           options={optionModules}
           placeholder="Elija un módulo"

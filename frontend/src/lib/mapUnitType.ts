@@ -6,4 +6,5 @@ export const mapUnitType = {
   [UnitType.DEPARTMENT]: 'Departamento',
   [UnitType.SPECIALTY]: 'Especialidad',
   [UnitType.SECTION]: 'Sección',
+  [UnitType.AREA]: 'Área',
 }

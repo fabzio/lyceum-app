@@ -1,3 +1,4 @@
+import { Combobox } from '@frontend/components/Combobox'
 import QuickSearchInput from '@frontend/components/QuickSearchInput.tsx/QuickSearchInput'
 import { Button } from '@frontend/components/ui/button'
 import { DialogClose, DialogFooter } from '@frontend/components/ui/dialog'
@@ -9,19 +10,12 @@ import {
   FormLabel,
   FormMessage,
 } from '@frontend/components/ui/form'
-import {
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@frontend/components/ui/select'
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import { useToast } from '@frontend/hooks/use-toast'
 import RolePermissionService from '@frontend/modules/security/services/role-permission.service'
 import RoleAccountsService from '@frontend/modules/security/services/RoleAccounts.service'
 import AccountsService from '@frontend/service/Accounts.service'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Select } from '@radix-ui/react-select'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
@@ -35,7 +29,7 @@ export default function AssigmentForm({ handleClose }: Props) {
   const [unitType, setUnitType] = useState<string | null>(null)
   const queryClient = useQueryClient()
   const { toast } = useToast()
-  const { data: units, isLoading } = useQuery({
+  const { data: units } = useQuery({
     queryKey: [QueryKeys.unit.UNITS, unitType],
     queryFn: () => RoleAccountsService.getUnitScopes(unitType!),
     enabled: !!unitType,
@@ -131,40 +125,31 @@ export default function AssigmentForm({ handleClose }: Props) {
               <FormItem>
                 <FormLabel>Unidad</FormLabel>
                 <FormControl>
-                  <Select disabled={!unitType} onValueChange={field.onChange}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Elija la unidad de alcance" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {isLoading ? (
-                        <SelectItem value="0" disabled>
-                          <Loader2 className="animate-spin" />
-                        </SelectItem>
-                      ) : (
-                        units?.map((item) => (
-                          <SelectItem key={item.id} value={item.id.toString()}>
-                            {item.name}
-                          </SelectItem>
-                        ))
-                      )}
-                    </SelectContent>
-                  </Select>
+                  <Combobox
+                    options={
+                      units?.map((item) => ({
+                        value: item.id.toString(),
+                        label: item.name,
+                      })) || []
+                    }
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="Elija la unidad de alcance"
+                    disabled={!unitType}
+                    className="w-full"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           <DialogFooter className="mt-2">
-            <div className="flex w-full justify-between">
-              <DialogClose asChild>
-                <Button variant="outline">Cancelar</Button>
-              </DialogClose>
-              <Button disabled={isPending}>
-                {isPending ? <Loader2 className="animate-spin" /> : 'Guardar'}
-              </Button>
-            </div>
+            <DialogClose asChild>
+              <Button variant="outline">Cancelar</Button>
+            </DialogClose>
+            <Button disabled={isPending}>
+              {isPending ? <Loader2 className="animate-spin" /> : 'Guardar'}
+            </Button>
           </DialogFooter>
         </form>
       </Form>
