@@ -1,10 +1,11 @@
 import { Input } from '@frontend/components/ui/input'
 import SelectFilter from './components/SelectFilter'
 import RolesAccordion from './components/RolesAccordion'
-import NewRole from './components/NewRole'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import RolePermissionService from '@frontend/modules/security/services/role-permission.service'
+import { Link } from '@tanstack/react-router'
+import { Button } from '@frontend/components/ui/button'
 
 export default function ManageRoles() {
   const { data: rolePermissions } = useSuspenseQuery({
@@ -19,7 +20,9 @@ export default function ManageRoles() {
         </div>
         <div className="flex gap-2">
           <SelectFilter />
-          <NewRole />
+          <Link to="/seguridad/roles/nuevo">
+            <Button>Nuevo Rol</Button>
+          </Link>
         </div>
       </div>
       <div>

@@ -1,6 +1,12 @@
 import db from '@/database'
 
-import { modules, permissions, rolePermissions, roles } from '@/database/schema'
+import {
+  accountRoles,
+  modules,
+  permissions,
+  rolePermissions,
+  roles,
+} from '@/database/schema'
 
 import { RolePermissionDAO } from '../dao/RolePermissionsDAO'
 import { RolePermission } from '@/interfaces/models/RolePermission'
@@ -42,6 +48,7 @@ class RolePermissionService implements RolePermissionDAO {
       .innerJoin(roles, eq(rolePermissions.roleId, roles.id))
       .innerJoin(permissions, eq(rolePermissions.permissionId, permissions.id))
       .innerJoin(modules, eq(permissions.moduleId, modules.id))
+      .where(eq(roles.editable, true))
 
     return rolePermissionsResponse as RolePermission[]
   }
@@ -64,6 +71,14 @@ class RolePermissionService implements RolePermissionDAO {
           permissionId,
         }))
       )
+    })
+  }
+
+  async removeRolePermission(roleId: number): Promise<void> {
+    await db.transaction(async (tx) => {
+      await tx.delete(accountRoles).where(eq(accountRoles.roleId, roleId))
+      await tx.delete(rolePermissions).where(eq(rolePermissions.roleId, roleId))
+      await tx.delete(roles).where(eq(roles.id, roleId))
     })
   }
 }

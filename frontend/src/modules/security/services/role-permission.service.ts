@@ -29,7 +29,7 @@ class RolePermissionService {
       const res = await http.get(`/security/role-permissions`)
       const response = res.data as ResponseAPI
       if (!response.success) {
-        throw new Error('Error')
+        throw new Error(response.message)
       }
       return response.data as RolePermission[]
     } catch (err) {
@@ -46,12 +46,32 @@ class RolePermissionService {
       const res = await http.post(`/security/role-permissions`, rolePermission)
       const response = res.data as ResponseAPI
       if (!response.success) {
-        throw new Error('Error')
+        throw new Error(response.message)
       }
       return response.data as RolePermission
     } catch (err) {
-      console.error(err)
-      return null
+      if (axios.isAxiosError(err)) {
+        throw new Error(err.response?.data || err.message)
+      }
+      throw err
+    }
+  }
+
+  public static async deleteRolePermission(rolePermissionId: number) {
+    try {
+      const res = await http.delete(
+        `/security/role-permissions/${rolePermissionId}`
+      )
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data as RolePermission
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        throw new Error(err.response?.data || err.message)
+      }
+      throw err
     }
   }
 }

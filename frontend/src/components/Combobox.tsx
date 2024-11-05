@@ -25,6 +25,7 @@ interface ComboboxProps {
   options: { value: string; label: string }[]
   placeholder?: string
   className?: string
+  disabled?: boolean
 }
 
 export function Combobox({
@@ -32,17 +33,19 @@ export function Combobox({
   onChange,
   options,
   placeholder = 'Elija una opción...',
+  disabled = false,
+  className,
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false)
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild disabled={disabled}>
         <Button
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className={`w-[200px] justify-between ${className}`}
         >
           {value
             ? options.find((option) => option.value === value)?.label
@@ -59,9 +62,9 @@ export function Combobox({
               {options.map((option) => (
                 <CommandItem
                   key={option.value}
-                  value={option.value}
-                  onSelect={(currentValue) => {
-                    onChange(currentValue === value ? '' : currentValue)
+                  value={option.label}
+                  onSelect={() => {
+                    onChange(option.value)
                     setOpen(false)
                   }}
                 >
