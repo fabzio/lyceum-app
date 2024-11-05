@@ -7,8 +7,8 @@ import {
 import { Badge } from '@frontend/components/ui/badge'
 import { Permission, RolePermission } from '@frontend/interfaces/models'
 import { mapUnitType } from '@frontend/lib/mapUnitType'
-
 import groupBy from 'just-group-by'
+import RemoveConfirmationDialog from './RemoveConfirmationDialog'
 
 interface Props {
   rolePermissions: RolePermission[]
@@ -19,7 +19,7 @@ export default function RolesAccordion({ rolePermissions = [] }: Props) {
   const permissionsGroupedByRole = groupBy(
     rolePermissions,
     (rolePermission) =>
-      `${rolePermission.role.name}-${rolePermission.role.unitType}`
+      `${rolePermission.role.id}.${rolePermission.role.name}-${rolePermission.role.unitType}`
   )
 
   if (rolePermissions.length === 0) {
@@ -31,39 +31,52 @@ export default function RolesAccordion({ rolePermissions = [] }: Props) {
   }
 
   return (
-    <Accordion type="single" collapsible>
-      {Object.entries(permissionsGroupedByRole).map(
-        ([roleKey, rolePermissions], idx) => {
-          // Extraemos nombre del rol y tipo de unidad desde la clave
-          const [roleName, unitType] = roleKey.split('-')
+    <section>
+      <Accordion type="single" collapsible>
+        {Object.entries(permissionsGroupedByRole).map(
+          ([roleKey, rolePermissions], idx) => {
+            const [role, unitType] = roleKey.split('-')
+            const [roleId, roleName] = role.split('.')
+            return (
+              <div key={idx} className="flex items-start">
+                <AccordionItem
+                  className="flex-grow"
+                  value={`item-${idx}`}
+                  key={roleKey}
+                >
+                  <AccordionTrigger>
+                    <section className="flex justify-between w-full px-2">
+                      <div className="flex flex-col items-start">
+                        <span>{roleName}</span>
+                        <span>
+                          <Badge variant="secondary">
+                            {mapUnitType[unitType]}
+                          </Badge>
+                        </span>
+                      </div>
+                      <div>
+                        <span className="font-normal no-underline">{`${rolePermissions.length} permiso${
+                          rolePermissions.length > 1 ? 's' : ''
+                        }`}</span>
+                      </div>
+                    </section>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div>
+                      <RoleItem
+                        permissions={rolePermissions.map((rp) => rp.permission)}
+                      />
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
 
-          return (
-            <AccordionItem value={`item-${idx}`} key={roleKey}>
-              <AccordionTrigger>
-                <section className="flex justify-between w-full px-2">
-                  <div className="flex flex-col items-start">
-                    <span>{roleName}</span>
-                    <span>
-                      <Badge variant="secondary">{mapUnitType[unitType]}</Badge>
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-normal no-underline">{`${rolePermissions.length} permiso${
-                      rolePermissions.length > 1 ? 's' : ''
-                    }`}</span>
-                  </div>
-                </section>
-              </AccordionTrigger>
-              <AccordionContent>
-                <RoleItem
-                  permissions={rolePermissions.map((rp) => rp.permission)}
-                />
-              </AccordionContent>
-            </AccordionItem>
-          )
-        }
-      )}
-    </Accordion>
+                <RemoveConfirmationDialog roleId={+roleId} />
+              </div>
+            )
+          }
+        )}
+      </Accordion>
+    </section>
   )
 }
 

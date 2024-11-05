@@ -4,6 +4,7 @@ import RolePermissionService from '../services/role-permissions.service'
 import { rolesSchema } from '@/database/schema/roles'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
+import { LyceumError } from '@/middlewares/errorMiddlewares'
 
 class RolePermissionsController {
   private router = new Hono()
@@ -52,9 +53,35 @@ class RolePermissionsController {
     (c) => {
       const rolePermission = c.req.valid('json')
 
+      try {
+        const response: ResponseAPI = {
+          data: this.permissionService.insertRolePermission(rolePermission),
+          message: 'Role permission inserted',
+          success: true,
+        }
+
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) c.status(error.code)
+        throw error
+      }
+    }
+  )
+
+  public deleteRolePermission = this.router.delete(
+    '/:roleId',
+    zValidator(
+      'param',
+      z.object({
+        roleId: z.string(),
+      })
+    ),
+    async (c) => {
+      const { roleId } = c.req.valid('param')
+
       const response: ResponseAPI = {
-        data: this.permissionService.insertRolePermission(rolePermission),
-        message: 'Role permission inserted',
+        data: await this.permissionService.removeRolePermission(+roleId),
+        message: 'Role permission deleted',
         success: true,
       }
 

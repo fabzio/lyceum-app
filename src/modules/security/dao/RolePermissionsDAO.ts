@@ -11,4 +11,5 @@ export interface RolePermissionDAO {
     role: RolesSchema
     permissions: Permission['id'][]
   }) => Promise<RolePermission>
+  removeRolePermission: (rolePermission: number) => Promise<void>
 }
