@@ -7,6 +7,7 @@ import {
   ThesisPermissions,
   UsersPermissions,
 } from '../permissions'
+import { HiringPermissions } from '../permissions/Hiring'
 
 export const BaseModulesDict = {
   THESIS: 'THESIS',
@@ -55,6 +56,11 @@ const BaseModules = [
     name: 'Preguntas frecuentes',
     code: BaseModulesDict.FAQ,
     permissions: FAQPermissions,
+  },
+  {
+    name: 'Contratación',
+    code: 'HIRING',
+    permissions: HiringPermissions,
   },
 ] as const
 

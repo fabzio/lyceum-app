@@ -1,4 +1,5 @@
 import { EnrollmentPermissionsDict } from './Enrollment'
+import { HiringPermissionsDict } from './Hiring'
 import { SecurityPermissionsDict } from './Security'
 import { StudentProcessPermissionsDict } from './StudentProcess'
 import { StudyPlanPermissions } from './StudyPlan'
@@ -12,4 +13,5 @@ export type PermissionCode =
   | StudyPlanPermissions
   | StudentProcessPermissionsDict
   | EnrollmentPermissionsDict
+  | HiringPermissionsDict
   | 'TODO_PERMISSION'

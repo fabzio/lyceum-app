@@ -8,6 +8,7 @@ export const ModulesDict = {
   SECURITY: 'SECURITY',
   FAQ: 'FAQ',
   UNITS: 'UNITS',
+  HIRING: 'HIRING',
 } as const
 
 export type ModulesDict = keyof typeof ModulesDict
