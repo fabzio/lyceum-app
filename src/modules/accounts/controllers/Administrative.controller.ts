@@ -8,7 +8,7 @@ import { LyceumError } from '@/middlewares/errorMiddlewares'
 
 class AdministrativeController {
   private router = new Hono()
-  private administrativeService = new AdministrativeService()
+  private administrativeService: AdministrativeDAO = new AdministrativeService()
 
   public getAdministrativeDetail = this.router.get(
     '/:code',
@@ -55,9 +55,8 @@ class AdministrativeController {
     async (c) => {
       try {
         const filters = c.req.valid('query')
-        const data = await this.administrativeService.getAllAdministratives(
-          filters
-        )
+        const data =
+          await this.administrativeService.getAllAdministratives(filters)
         const response: ResponseAPI = {
           data: data,
           success: true,
