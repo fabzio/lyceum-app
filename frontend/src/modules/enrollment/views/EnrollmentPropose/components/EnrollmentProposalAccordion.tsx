@@ -14,7 +14,9 @@ export const DEFAULT_PAGE_INDEX = 0
 export const DEFAULT_PAGE_SIZE = 10
 
 export default function EnrollmentProposalAccordion() {
-  const { filters, setFilters } = useFilters('/_auth/matricula/distribucion')
+  const { filters, setFilters } = useFilters(
+    '/_auth/matricula/propuesta-horarios/$requestNumber'
+  )
   const { getRoleWithPermission } = useSessionStore()
   const { data: students } = useQuery({
     queryKey: [QueryKeys.enrollment.ENROLLMENT_PROPOSALS, filters],

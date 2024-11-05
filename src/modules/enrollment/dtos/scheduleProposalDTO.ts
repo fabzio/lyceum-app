@@ -43,6 +43,17 @@ export type getScheduleProposalsInUnitDTO = z.infer<
   typeof getScheduleProposalsInUnitDTO
 >
 
+export const getScheduleProposaCoursesDTO = z.object({
+  proposalID: z.string().min(1),
+  page: z.string().min(1).default('0'),
+  limit: z.string().min(1).default('5'),
+  sortBy: z.string().optional(),
+})
+
+export type getScheduleProposaCoursesDTO = z.infer<
+  typeof getScheduleProposalsInUnitDTO
+>
+
 export const updateCoursesOfASchPropDTO = z.object({
   coursesList: z.array(
     z.object({

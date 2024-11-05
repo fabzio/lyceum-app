@@ -3,6 +3,9 @@ import { EnrollmentPermissionsDict } from '@frontend/interfaces/enums/permission
 import { haveSomePermission } from '@frontend/lib/utils'
 import EnrollmentProposeRequest from '@frontend/modules/enrollment/views/EnrollmentPropose/EnrollmentProposeRequest'
 import { createFileRoute, redirect } from '@tanstack/react-router'
+import { CourseProposalFilters } from '@frontend/modules/enrollment/views/EnrollmentDistribution/interfaces/CourseProposalFilters'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import CourseProposalService from '@frontend/modules/enrollment/views/EnrollmentDistribution/services/CourseProposal.service'
 
 export const Route = createFileRoute(
   '/_auth/matricula/propuesta-horarios/$requestNumber'
@@ -19,6 +22,13 @@ export const Route = createFileRoute(
         to: '/',
       })
     }
+  },
+  validateSearch: () => ({}) as CourseProposalFilters,
+  loader: async ({ context: { queryClient } }) => {
+    return queryClient.ensureQueryData({
+      queryKey: [QueryKeys.enrollment.COURSE_PROPOSALS, {}],
+      queryFn: () => CourseProposalService.fetchCourseProposals({}),
+    })
   },
   component: () => <SceduleProposalRequestPage />,
 })
