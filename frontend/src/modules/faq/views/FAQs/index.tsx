@@ -6,6 +6,8 @@ import CategorizedFAQList from './CategorizedFAQList'
 import FAQCategoriesList from './ManageCategories/FAQCategoriesList'
 import NewFAQDialog from './NewFAQDialog'
 import { Separator } from '@frontend/components/ui/separator'
+import Need from '@frontend/components/Need'
+import { FAQPermissionsDict } from '@frontend/interfaces/enums/permissions/FAQ'
 
 export default function FAQs() {
   const { data: faqsList } = useSuspenseQuery({
@@ -20,9 +22,11 @@ export default function FAQs() {
       </section>
       <Separator orientation="vertical" className="h-[700px]" />
       <section className="flex-1">
-        <div className="w-full flex justify-end">
-          <NewFAQDialog />
-        </div>
+        <Need permissions={FAQPermissionsDict.MAGANE_FAQ}>
+          <div className="w-full flex justify-end">
+            <NewFAQDialog />
+          </div>
+        </Need>
         <div>
           {faqsList.length ? (
             <CategorizedFAQList categorizedFAQs={groupedFAQs} />

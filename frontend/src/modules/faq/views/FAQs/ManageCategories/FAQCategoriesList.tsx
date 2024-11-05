@@ -2,6 +2,8 @@ import FAQCategoryService from '@frontend/modules/faq/services/faqCategory.servi
 import NewCategoryDialog from './NewCategoryDialog'
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import { useQuery } from '@tanstack/react-query'
+import Need from '@frontend/components/Need'
+import { FAQPermissionsDict } from '@frontend/interfaces/enums/permissions/FAQ'
 
 export default function FAQCategoriesList() {
   const { data: categories } = useQuery({
@@ -11,7 +13,9 @@ export default function FAQCategoriesList() {
   if (!categories) return <p>No hay categorías de preguntas frecuentes</p>
   return (
     <div className="px-4">
-      <NewCategoryDialog />
+      <Need permissions={FAQPermissionsDict.MAGANE_FAQ}>
+        <NewCategoryDialog />
+      </Need>
       {categories.length ? (
         categories.map((category, idx) => (
           <div key={idx} className="p-4">
