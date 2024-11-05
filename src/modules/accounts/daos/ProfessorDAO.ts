@@ -8,7 +8,7 @@ export interface ProfessorDAO {
     secondSurname: string
     email: string
     state: 'active' | 'inactive' | 'deleted'
-    speciallity: string
+    unit: string
   }>
   getAllProfessors(filters: {
     q?: string
@@ -23,7 +23,7 @@ export interface ProfessorDAO {
       secondSurname: string
       email: string
       state: 'active' | 'inactive' | 'deleted'
-      speciallity: string
+      unit: string
     }>
   >
   createProfessor: (
@@ -33,6 +33,7 @@ export interface ProfessorDAO {
       firstSurname: string
       secondSurname: string
       email: string
+      unitName: string
     }[]
   ) => Promise<void>
 }

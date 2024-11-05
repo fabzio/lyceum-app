@@ -1,8 +1,18 @@
 import db from '@/database'
-import { accountRoles, accounts, units } from '@/database/schema'
+import { accountRoles, accounts, units, unitType } from '@/database/schema'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { PaginatedData } from '@/interfaces/PaginatedData'
-import { and, asc, desc, eq, ilike, inArray, or, sql } from 'drizzle-orm'
+import {
+  aliasedTable,
+  and,
+  asc,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  or,
+  sql,
+} from 'drizzle-orm'
 import { ProfessorDAO } from '../daos/ProfessorDAO'
 import {
   DuplicatedProfessorCode,
@@ -11,6 +21,7 @@ import {
 
 class ProfessorService implements ProfessorDAO {
   async getProfessorDetail(params: { code: string }) {
+    const parentUnit = aliasedTable(units, 'parentUnit')
     const professor = await db
       .select({
         code: accounts.code,
@@ -19,22 +30,31 @@ class ProfessorService implements ProfessorDAO {
         secondSurname: accounts.secondSurname,
         email: accounts.email,
         state: accounts.state,
-        speciallity: units.name,
+        unit: units.name,
+        unitType: units.type,
+        parent: parentUnit.name,
       })
       .from(accounts)
-      .innerJoin(units, eq(units.id, accounts.unitId))
       .innerJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
+      .innerJoin(units, eq(units.id, accountRoles.unitId))
+      .innerJoin(parentUnit, eq(parentUnit.id, units.parentId))
       .where(
         and(
           eq(accounts.code, params.code),
           eq(accountRoles.roleId, BaseRoles.PROFESSOR)
         )
       )
+
     if (professor.length === 0) {
       throw new ProfessorNotFoundError('El profesor no fue encontrado')
     }
+
     const [professorDetail] = professor
-    return professorDetail
+    return {
+      ...professorDetail,
+      parent:
+        professorDetail.unitType === 'section' ? professorDetail.parent : null,
+    }
   }
   public async getAllProfessors(params: {
     q?: string
@@ -48,9 +68,8 @@ class ProfessorService implements ProfessorDAO {
       firstSurname: string
       secondSurname: string
       email: string
-      //TODO: Decidir si se debe listar solo los profesores activos o todos
       state: 'active' | 'inactive' | 'deleted'
-      speciallity: string
+      unit: string
     }>
   > {
     const [field, order] = params.sortBy?.split('.') || ['name', 'asc']
@@ -61,7 +80,7 @@ class ProfessorService implements ProfessorDAO {
       })
       .from(accounts)
       .innerJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
-      .innerJoin(units, eq(units.id, accounts.unitId))
+      .innerJoin(units, eq(units.id, accountRoles.unitId))
       .where(
         and(
           or(
@@ -90,11 +109,12 @@ class ProfessorService implements ProfessorDAO {
         secondSurname: accounts.secondSurname,
         email: accounts.email,
         state: accounts.state,
-        speciallity: units.name,
+        unit: units.name,
+        unitType: units.type,
       })
       .from(accounts)
       .innerJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
-      .innerJoin(units, eq(units.id, accounts.unitId))
+      .innerJoin(units, eq(units.id, accountRoles.unitId))
       .where(
         and(
           or(
@@ -113,17 +133,8 @@ class ProfessorService implements ProfessorDAO {
           mappedFields[field as keyof typeof mappedFields]
         )
       )
-    const result = ProfessorsResponse.map((Professor) => ({
-      code: Professor.code,
-      name: Professor.name,
-      firstSurname: Professor.firstSurname,
-      secondSurname: Professor.secondSurname,
-      email: Professor.email,
-      state: Professor.state,
-      speciallity: Professor.speciallity,
-    }))
     return {
-      result,
+      result: ProfessorsResponse,
       rowCount: +total,
       currentPage: params.page,
       totalPages: Math.ceil(+total / params.limit),
@@ -138,6 +149,7 @@ class ProfessorService implements ProfessorDAO {
       firstSurname: string
       secondSurname: string
       email: string
+      unitName: string
     }[]
   ) {
     const existingProfessors = await db
@@ -156,7 +168,35 @@ class ProfessorService implements ProfessorDAO {
       )
     }
     await db.transaction(async (tx) => {
-      const studentsId = await tx
+      const professorsUnits = Array.from(
+        new Set(professorList.map((professor) => professor.unitName))
+      )
+
+      const unitList = await tx
+        .select({
+          id: units.id,
+          name: units.name,
+        })
+        .from(units)
+        .where(
+          and(
+            inArray(units.name, professorsUnits),
+            or(eq(units.type, 'department'), eq(units.type, 'section'))
+          )
+        )
+      const unitMap = new Map()
+
+      professorsUnits.forEach((unitName) => {
+        if (!unitList.some((unit) => unit.name === unitName)) {
+          throw new Error(`El departamento o sección ${unitName} no existe`)
+        }
+      })
+
+      unitList.forEach((unit) => {
+        unitMap.set(unit.name, unit.id)
+      })
+
+      const professorId = await tx
         .insert(accounts)
         .values(
           professorList.map((professor) => ({
@@ -166,15 +206,22 @@ class ProfessorService implements ProfessorDAO {
             code: professor.code,
             email: professor.email,
             googleId: null,
-            unitId: 1, //no deberia tener unitId porque es de muchos a muchos
+            unitId: unitMap.get(professor.unitName),
           }))
         )
-        .returning({ professorId: accounts.id })
+        .returning({ professorId: accounts.id, code: accounts.code })
+
+      const professorMap = new Map()
+
+      professorId.forEach((professor) => {
+        professorMap.set(professor.code, professor.professorId)
+      })
+
       await tx.insert(accountRoles).values(
-        studentsId.map((professor) => ({
-          accountId: professor.professorId,
+        professorList.map((professor) => ({
+          accountId: professorMap.get(professor.code),
           roleId: BaseRoles.PROFESSOR,
-          unitId: 1,
+          unitId: unitMap.get(professor.unitName),
         }))
       )
     })
