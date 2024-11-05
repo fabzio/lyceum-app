@@ -4,7 +4,7 @@ export const FAQPermissionsDict = {
   SUGGEST_FAQ: 'SUGGEST_FAQ',
   VIEW_FAQ_SUGGESTIONS: 'VIEW_FAQ_SUGGESTIONS',
 } as const
-export type FAQPermissions = keyof typeof FAQPermissionsDict
+export type FAQPermissionsDict = keyof typeof FAQPermissionsDict
 
 const FAQPermissions = [
   {

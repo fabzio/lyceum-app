@@ -2,7 +2,7 @@ import { ValidRoutes } from '@frontend/constants/paths'
 import { ModulesDict } from '@frontend/interfaces/enums/modules'
 import { StudyPlanModule } from '@frontend/modules/study-plans/study-plan.module'
 import { useSessionStore } from '@frontend/store'
-import { Building2, Home, MessageCircleQuestion } from 'lucide-react'
+import { Building2, Home } from 'lucide-react'
 import AsideDesktop from './AsideDesktop'
 import { ThesisModule } from '@frontend/modules/thesis/thesis.module'
 import { PermissionCode } from '@frontend/interfaces/enums/permissions'
@@ -10,6 +10,7 @@ import { SecurityModule } from '@frontend/modules/security/security.module'
 import { UserModule } from '@frontend/modules/users/users.module'
 import { StudentProcessModule } from '@frontend/modules/student-process/student-process.module'
 import { EnrollmentModule } from '@frontend/modules/enrollment/enrollment.module'
+import { FAQModule } from '@frontend/modules/faq/faq.module'
 
 export default function Aside() {
   const { getAllowedModules } = useSessionStore()
@@ -65,11 +66,11 @@ const asideElements: AsideElement[] = [
     submodules: [],
   },
   {
-    icon: <MessageCircleQuestion />,
-    path: '/preguntas-frecuentes',
-    label: 'Preguntas frecuentes',
-    moduleCode: ModulesDict.FAQ,
-    submodules: [],
+    icon: FAQModule.icon,
+    path: FAQModule.path,
+    label: FAQModule.label,
+    moduleCode: FAQModule.code,
+    submodules: FAQModule.submodules,
   },
   {
     icon: StudentProcessModule.icon,
