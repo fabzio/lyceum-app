@@ -93,8 +93,8 @@ class ProfessorService implements ProfessorDAO {
     const mappedFields = {
       ['name']: accounts.name,
       ['code']: accounts.code,
-      ['firstSurname']: accounts.email,
-      ['secondSurname']: accounts.email,
+      ['firstSurname']: accounts.firstSurname,
+      ['secondSurname']: accounts.secondSurname,
       ['email']: accounts.email,
     }
     const mappedSortBy = {
