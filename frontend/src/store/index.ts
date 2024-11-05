@@ -19,6 +19,10 @@ export type Session = {
       module: ModulesDict
     }[]
   }[]
+  term: {
+    id: number
+    name: string
+  }
 }
 export type SessionStore = {
   session: Session | null

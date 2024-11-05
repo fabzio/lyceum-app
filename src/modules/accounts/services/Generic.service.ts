@@ -6,6 +6,7 @@ import {
   permissions,
   rolePermissions,
   scheduleAccounts,
+  terms,
 } from '@/database/schema'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { PaginatedData } from '@/interfaces/PaginatedData'
@@ -73,14 +74,16 @@ class GenericService {
     limit: number
     sortBy?: string
     scheduleId?: string // Parámetro `scheduleId`
-  }): Promise<PaginatedData<{
-    code: string
-    name: string
-    firstSurname: string
-    secondSurname: string
-    email: string
-    roles: number[]
-  }>> {
+  }): Promise<
+    PaginatedData<{
+      code: string
+      name: string
+      firstSurname: string
+      secondSurname: string
+      email: string
+      roles: number[]
+    }>
+  > {
     const [field, order] = params.sortBy?.split('.') || ['name', 'asc']
     // Obtener el total de registros con el filtro `scheduleId`
     const [{ total }] = await db
@@ -97,7 +100,9 @@ class GenericService {
             ilike(accounts.code, `%${params.q}%`)
           ),
           eq(accounts.state, 'active'),
-          params.scheduleId ? eq(scheduleAccounts.scheduleId, Number(params.scheduleId)) : sql`1=1` // Filtro opcional `scheduleId`
+          params.scheduleId
+            ? eq(scheduleAccounts.scheduleId, Number(params.scheduleId))
+            : sql`1=1` // Filtro opcional `scheduleId`
         )
       )
     const mappedFields = {
@@ -133,7 +138,9 @@ class GenericService {
             ilike(accounts.code, `%${params.q}%`)
           ),
           eq(accounts.state, 'active'),
-          params.scheduleId ? eq(scheduleAccounts.scheduleId, Number(params.scheduleId)) : sql`1=1` // Filtro opcional `scheduleId`
+          params.scheduleId
+            ? eq(scheduleAccounts.scheduleId, Number(params.scheduleId))
+            : sql`1=1` // Filtro opcional `scheduleId`
         )
       )
       .groupBy(accounts.id)
@@ -220,13 +227,25 @@ class GenericService {
     const allowedModules = Array.from(
       new Set(allowedRolePemissions.map((permissions) => permissions.module))
     )
+    const currentTerm = await db
+      .select({
+        id: terms.id,
+        name: terms.name,
+      })
+      .from(terms)
+      .where(eq(terms.current, true))
     if (!account.googleId) {
       await db
         .update(accounts)
         .set({ googleId })
         .where(eq(accounts.code, account.code))
     }
-    return { ...account, allowedModules, roles: rolesWithPermissions }
+    return {
+      ...account,
+      allowedModules,
+      roles: rolesWithPermissions,
+      term: currentTerm,
+    }
   }
 }
 
