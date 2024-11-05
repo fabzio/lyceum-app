@@ -46,6 +46,7 @@
     "date-fns": "^4.1.0",
     "debounce": "2.2.0",
     "framer-motion": "11.11.11",
+    "i": "^0.3.7",
     "jotai": "2.10.0",
     "just-group-by": "2.2.0",
     "lucide-react": "^0.454.0",
