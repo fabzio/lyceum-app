@@ -76,7 +76,7 @@ await db.transaction(async (tx) => {
                   name: speciality,
                   type: 'speciality',
                   parentId: faculty.facultyId,
-                } as UnitsInsertSchema)
+                }) as UnitsInsertSchema
             )
           )
           .returning({
@@ -99,7 +99,7 @@ await db.transaction(async (tx) => {
                   name: area,
                   type: 'area',
                   parentId: speciality.specialityId,
-                } as UnitsInsertSchema)
+                }) as UnitsInsertSchema
             )
           )
           .returning({
@@ -132,7 +132,7 @@ await db.transaction(async (tx) => {
             name: section,
             type: 'section',
             parentId: department.departmentId,
-          } as UnitsInsertSchema)
+          }) as UnitsInsertSchema
       )
     })
     .flat()
@@ -318,6 +318,14 @@ await db.transaction(async (tx) => {
         secondSurname: 'Espettia',
         code: '20181395',
         email: 'paul.espettia@pucp.edu.pe',
+        unitId: universityId,
+      },
+      {
+        name: 'Alvaro Espinoza',
+        firstSurname: 'Esparza',
+        secondSurname: 'Larranaga',
+        code: '20195925',
+        email: 'aesparzal@pucp.edu.pe',
         unitId: universityId,
       },
     ])

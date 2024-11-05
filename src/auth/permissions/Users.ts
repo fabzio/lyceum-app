@@ -6,6 +6,7 @@ export const UserPermissionsDict = {
   READ_ADMINISTRIVES: 'READ_ADMINISTRIVES',
   WRITE_ADMINISTRIVES: 'WRITE_ADMINISTRIVES',
   READ_EXTERNALS: 'READ_EXTERNALS',
+  WRITE_EXTERNALS: 'WRITE_EXTERNALS',
 } as const
 export type UserPermissionsKey = keyof typeof UserPermissionsDict
 
@@ -37,6 +38,10 @@ const UserPermissions = [
   {
     name: UserPermissionsDict.READ_EXTERNALS,
     description: 'Ver externos',
+  },
+  {
+    name: UserPermissionsDict.WRITE_EXTERNALS,
+    description: 'Crear externos',
   },
 ] as const
 
