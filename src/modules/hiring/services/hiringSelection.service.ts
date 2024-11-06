@@ -1,9 +1,21 @@
 import db from '@/database'
-import { jobRequests, evaluations } from '@/database/schema'
+import {
+  jobRequests,
+  evaluations,
+  accounts,
+  courseHiringRequirements,
+  courseHirings,
+} from '@/database/schema'
 import { and, eq, inArray, desc, sql, asc } from 'drizzle-orm'
 
 import { HiringSelectionDAO } from '../dao'
-import { JobRequestNotFoundError, InvalidStatusChangeError } from '../errors'
+import {
+  JobRequestNotFoundError,
+  InvalidStatusChangeError,
+  CourseHiringNotFoundError,
+} from '../errors'
+import { JobRequestsSchema } from '@/database/schema/jobRequests'
+import { AccountsSchema } from '@/database/schema/accounts'
 class HiringSelectionService implements HiringSelectionDAO {
   public async updateHiringSelectionStatus(
     jobRequestId: number,
@@ -64,6 +76,65 @@ class HiringSelectionService implements HiringSelectionDAO {
         )
       )
     }
+  }
+
+  public async getCandidateHiringList(
+    courseHiringId: string,
+    step: 'first' | 'second' | 'selected'
+  ): Promise<
+    (Pick<AccountsSchema, 'id' | 'name' | 'email'> & {
+      jobRequestStatus: JobRequestsSchema['state']
+    })[]
+  > {
+    // 1. Obtener si existe el course Hiring
+    const [existingCourseHiring] = await db
+      .select()
+      .from(courseHirings)
+      .where(eq(courseHirings.id, courseHiringId))
+
+    if (!existingCourseHiring) {
+      throw new CourseHiringNotFoundError('La convocatoria del curso no existe')
+    }
+
+    let statusFilter: NonNullable<JobRequestsSchema['state']>[]
+
+    if (step === 'first') {
+      statusFilter = ['sent', 'rejected']
+    } else if (step === 'second') {
+      statusFilter = ['to_evaluate', 'evaluated']
+    } else {
+      statusFilter = ['selected']
+    }
+    const candidateListQuery = await db
+      .select({
+        id: accounts.id,
+        name: accounts.name,
+        firstSurname: accounts.firstSurname,
+        secondSurname: accounts.secondSurname,
+        email: accounts.email,
+        jobRequestStatus: jobRequests.state,
+      })
+      .from(accounts)
+      .innerJoin(jobRequests, eq(jobRequests.accountId, accounts.id))
+      .innerJoin(
+        courseHirings,
+        eq(jobRequests.courseHiringId, courseHirings.id)
+      )
+      .where(
+        and(
+          eq(courseHirings.id, courseHiringId),
+          inArray(jobRequests.state, statusFilter)
+        )
+      )
+    //TODO falta reflejar los cambios a la bd, aun no puede diferenciar entre distintos cursos
+    const candidateList = candidateListQuery.map((candidate) => ({
+      accountId: candidate.id,
+      name: `${candidate.name} ${candidate.firstSurname} ${candidate.secondSurname}`,
+      email: candidate.email,
+      jobRequestStatus: candidate.jobRequestStatus,
+    }))
+
+    return candidateList
   }
 }
 
