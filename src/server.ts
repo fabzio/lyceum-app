@@ -8,7 +8,7 @@ import Schedule from './modules/schedule'
 import Security from './modules/security'
 import StudyPlan from './modules/study-plans'
 import Thesis from './modules/thesis'
-
+import Hiring from './modules/hiring'
 const app = new App([
   new Security(),
   new FAQ(),
@@ -18,8 +18,8 @@ const app = new App([
   new Enrollment(),
   new Accounts(),
   new Schedule(),
+  new Hiring(),
 ])
-
 
 export default {
   port: app.port,
