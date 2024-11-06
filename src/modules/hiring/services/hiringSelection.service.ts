@@ -53,15 +53,15 @@ class HiringSelectionService implements HiringSelectionDAO {
       const currentDate = new Date() // fecha actual
 
       await Promise.all(
-        evaluationList.map(async (evaluation) => {
-          await db
+        evaluationList.map((evaluation) =>
+          db
             .update(evaluations)
             .set({
               score: evaluation.score.toFixed(2), // redondea a 2 decimales
               evaluationDate: currentDate.toISOString(), // usa la fecha actual
             })
             .where(eq(evaluations.id, Number(evaluation.evaluationId)))
-        })
+        )
       )
     }
   }

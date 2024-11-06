@@ -15,7 +15,7 @@ export const evaluations = schema.table('evaluations', {
     () => courseHiringRequirements.id
   ),
   score: decimal('score'),
-  evaluationDate: date('evaluation_date'),
+  evaluationDate: date('evaluation_date').defaultNow(),
 })
 
 export const evaluationsRelations = relations(evaluations, ({ one }) => ({
