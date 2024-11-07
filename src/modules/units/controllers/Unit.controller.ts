@@ -56,6 +56,24 @@ class UnitController {
       }
     }
   )
+
+  public createUnits = this.router.post(
+    '/',
+    zValidator('json', z.array(unitsSchema)),
+    async (c) => {
+      const unitList = c.req.valid('json')
+      try {
+        await this.unitService.createUnits(unitList)
+        return c.json({
+          message: 'Units created',
+          success: true,
+        })
+      } catch (error) {
+        if (error instanceof LyceumError) c.status(error.code)
+        throw error
+      }
+    }
+  )
 }
 
 export default UnitController
