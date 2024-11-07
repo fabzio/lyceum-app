@@ -10,7 +10,7 @@ class UnitRoute implements Route {
     this.initializeRoutes()
   }
   private initializeRoutes() {
-    this.router.route('/', this.unitController.getUnits)
+    this.router.route('/', this.unitController.getUnitsByType)
   }
 }
 export default UnitRoute

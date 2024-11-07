@@ -12,6 +12,16 @@ class UnitService {
       .from(units)
       .where(eq(units.type, type))
   }
+
+  public async getChildrenUnits(unitId: NonNullable<UnitsInsertSchema['id']>) {
+    return await db
+      .select({
+        id: units.id,
+        name: units.name,
+      })
+      .from(units)
+      .where(eq(units.parentId, unitId))
+  }
 }
 
 export default UnitService

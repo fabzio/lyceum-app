@@ -9,7 +9,7 @@ class UnitController {
   private router = new Hono()
   private unitService: UnitService = new UnitService()
 
-  public getUnits = this.router.get(
+  public getUnitsByType = this.router.get(
     '/',
     zValidator(
       'query',
@@ -24,6 +24,30 @@ class UnitController {
         return c.json({
           data: response,
           message: 'Units retrieved',
+          success: true,
+        })
+      } catch (error) {
+        if (error instanceof LyceumError) c.status(error.code)
+        throw error
+      }
+    }
+  )
+
+  public getChildUnits = this.router.get(
+    '/:unitId/children',
+    zValidator(
+      'param',
+      z.object({
+        unitId: unitsSchema.shape.id,
+      })
+    ),
+    async (c) => {
+      const { unitId } = c.req.valid('param')
+      try {
+        const response = await this.unitService.getChildrenUnits(+unitId!)
+        return c.json({
+          data: response,
+          message: 'Children units retrieved',
           success: true,
         })
       } catch (error) {
