@@ -10,7 +10,7 @@ import { z } from 'zod'
 export const evaluations = schema.table('evaluations', {
   id: serial('id').primaryKey(),
   jobRequestId: integer('job_request_id').references(() => jobRequests.id),
-  accountId: uuid('account_id').references(() => accounts.id),
+  evaluatorId: uuid('evaluator_id').references(() => accounts.id),
   requirementPerCourseId: uuid('requirement_per_course_id').references(
     () => courseHiringRequirements.id
   ),
@@ -24,7 +24,7 @@ export const evaluationsRelations = relations(evaluations, ({ one }) => ({
     references: [jobRequests.id],
   }),
   account: one(accounts, {
-    fields: [evaluations.accountId],
+    fields: [evaluations.evaluatorId],
     references: [accounts.id],
   }),
   requirement: one(courseHiringRequirements, {

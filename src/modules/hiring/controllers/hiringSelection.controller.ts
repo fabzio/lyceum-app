@@ -3,7 +3,10 @@ import { HiringSelectionService } from '../services'
 import { zValidator } from '@hono/zod-validator'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
 import { HiringSelectionDAO } from '../dao'
-import { updateHiringSelectionStatusDTO } from '../dtos'
+import {
+  updateHiringSelectionStatusDTO,
+  getCandidateHiringListDTO,
+} from '../dtos'
 import { z, ZodObject } from 'zod'
 class HiringSelectioncontroller {
   private router = new Hono()
@@ -32,6 +35,42 @@ class HiringSelectioncontroller {
             evaluationList
           ),
           message: 'JobRequest Status correctly changed',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public getHiringCandidates = this.router.get(
+    '/:courseHiringId',
+    zValidator(
+      'param',
+      z.object({
+        courseHiringId: z.string(),
+      })
+    ),
+    zValidator(
+      'query',
+      z.object({
+        step: z.enum(['first', 'second', 'selected']),
+      })
+    ),
+    async (c) => {
+      const { courseHiringId } = c.req.valid('param')
+      const { step } = c.req.valid('query')
+      try {
+        const response: ResponseAPI = {
+          data: await this.hiringSelectionService.getCandidateHiringList(
+            courseHiringId,
+            step
+          ),
+          message: 'CandidateList Status correctly get',
           success: true,
         }
         return c.json(response)

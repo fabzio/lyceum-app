@@ -7,3 +7,8 @@ export const InvalidStatusChangeError = createErrorFactory(
   'InvalidStatusChangeError',
   409
 )
+
+export const CourseHiringNotFoundError = createErrorFactory(
+  'CourseHiringNotFoundError',
+  404
+)

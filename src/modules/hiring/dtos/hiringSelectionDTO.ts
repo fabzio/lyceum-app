@@ -24,3 +24,12 @@ export const updateHiringSelectionStatusDTO = z.object({
 export type updateHiringSelectionStatusPropDTO = z.infer<
   typeof updateHiringSelectionStatusDTO
 >
+
+export const getCandidateHiringListDTO = z.object({
+  courseHiringId: z.string().min(1),
+  step: z.enum(['first', 'second', 'selected']),
+})
+
+export type getCandidateHiringLisPropDTO = z.infer<
+  typeof getCandidateHiringListDTO
+>
