@@ -1,6 +1,7 @@
 import { Route } from '@/interfaces/route'
 import { Hono } from 'hono'
 import { authMiddleware } from '@/auth/authMiddleware'
+import { UnitRoute } from './routes'
 
 class Units implements Route {
   public path = '/unit'
@@ -9,7 +10,7 @@ class Units implements Route {
   private routes: Route[]
 
   constructor() {
-    this.routes = []
+    this.routes = [new UnitRoute()]
     this.initializeMiddlewares()
     this.initializeRoutes()
   }

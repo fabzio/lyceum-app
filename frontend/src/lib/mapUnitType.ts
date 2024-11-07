@@ -7,4 +7,4 @@ export const mapUnitType = {
   [UnitType.SPECIALTY]: 'Especialidad',
   [UnitType.SECTION]: 'Sección',
   [UnitType.AREA]: 'Área',
-}
+} as const

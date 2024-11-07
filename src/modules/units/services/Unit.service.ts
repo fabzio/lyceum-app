@@ -6,7 +6,7 @@ class UnitService {
   public async getUnitsByType(type: UnitsInsertSchema['type']) {
     return await db
       .select({
-        unitId: units.id,
+        id: units.id,
         name: units.name,
       })
       .from(units)

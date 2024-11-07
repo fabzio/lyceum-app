@@ -1,4 +1,3 @@
-import { Hono } from 'hono'
 import App from './app'
 import Accounts from './modules/accounts'
 import Course from './modules/courses'

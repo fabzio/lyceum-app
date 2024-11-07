@@ -5,7 +5,11 @@ import {
   AccordionTrigger,
 } from '@frontend/components/ui/accordion'
 import { Badge } from '@frontend/components/ui/badge'
-import { Permission, RolePermission } from '@frontend/interfaces/models'
+import {
+  Permission,
+  RolePermission,
+  UnitType,
+} from '@frontend/interfaces/models'
 import { mapUnitType } from '@frontend/lib/mapUnitType'
 import groupBy from 'just-group-by'
 import RemoveConfirmationDialog from './RemoveConfirmationDialog'
@@ -35,7 +39,7 @@ export default function RolesAccordion({ rolePermissions = [] }: Props) {
       <Accordion type="single" collapsible>
         {Object.entries(permissionsGroupedByRole).map(
           ([roleKey, rolePermissions], idx) => {
-            const [role, unitType] = roleKey.split('-')
+            const [role, unitType] = roleKey.split('-') as [string, UnitType]
             const [roleId, roleName] = role.split('.')
             return (
               <div key={idx} className="flex items-start">
