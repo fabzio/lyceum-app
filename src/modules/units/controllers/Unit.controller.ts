@@ -74,6 +74,46 @@ class UnitController {
       }
     }
   )
+
+  public getAccountsInUnit = this.router.get(
+    '/:unitId/accounts',
+    zValidator(
+      'param',
+      z.object({
+        unitId: unitsSchema.shape.id,
+      })
+    ),
+    zValidator(
+      'query',
+      z.object({
+        q: z.string().optional(),
+        page: z.number(),
+        limit: z.number(),
+        sortBy: z.string().optional(),
+      })
+    ),
+    async (c) => {
+      const { unitId } = c.req.valid('param')
+      const { q, page, limit, sortBy } = c.req.valid('query')
+      try {
+        const response = await this.unitService.getAccountsInUnit({
+          unitId: +unitId!,
+          q,
+          page,
+          limit,
+          sortBy,
+        })
+        return c.json({
+          data: response,
+          message: 'Accounts retrieved',
+          success: true,
+        })
+      } catch (error) {
+        if (error instanceof LyceumError) c.status(error.code)
+        throw error
+      }
+    }
+  )
 }
 
 export default UnitController
