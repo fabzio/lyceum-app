@@ -15,7 +15,7 @@ class HiringSelectioncontroller {
     new HiringSelectionService()
 
   public updateJobRequestStatus = this.router.put(
-    '/:jobRequestId',
+    '/:jobRequestId/status',
     zValidator(
       'param',
       z.object({
@@ -71,6 +71,38 @@ class HiringSelectioncontroller {
             step
           ),
           message: 'CandidateList Status correctly get',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public getJobRequestDetail = this.router.get(
+    '/:hiringId/:courseHiringId/:accountId',
+    zValidator(
+      'param',
+      z.object({
+        hiringId: z.string(),
+        courseHiringId: z.string(),
+        accountId: z.string(),
+      })
+    ),
+    async (c) => {
+      const { courseHiringId } = c.req.valid('param')
+      const { accountId } = c.req.valid('param')
+      try {
+        const response: ResponseAPI = {
+          data: await this.hiringSelectionService.getJobRequestDetail(
+            courseHiringId,
+            accountId
+          ),
+          message: 'Job request detail retrieved successfully',
           success: true,
         }
         return c.json(response)
