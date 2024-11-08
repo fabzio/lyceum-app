@@ -114,7 +114,8 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
   }) {
     const student = aliasedTable(accounts, 'student')
     const faculty = aliasedTable(units, 'faculty')
-    const [enrollmentsResponse] = await db
+    //FIXME: Se rompe si el unitId no es de una especialidad
+    const response = await db
       .select({
         requestNumber: sql<number>`coalesce(${enrollmentModifications.requestNumber}, 0)`,
         state: enrollmentModifications.state,
@@ -141,8 +142,12 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
         eq(enrollmentModifications.scheduleId, schedules.id)
       )
       .innerJoin(courses, eq(schedules.courseId, courses.id))
-      .where(eq(enrollmentModifications.requestNumber, requestNumber ?? 0))
-    return enrollmentsResponse
+      .where(eq(enrollmentModifications.requestNumber, requestNumber))
+    //TODO: Agregar error personalizado
+    if (response.length === 0) {
+      throw new Error('No se encontró la solicitud')
+    }
+    return response[0]
   }
 
   public async updateEnrollmentRequestResponse({
@@ -202,6 +207,30 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
     scheduleId,
     studentId,
   }: Omit<EnrollmentModificationsSchema, 'requestNumber'>) {
+    const unitTypeOfStudent = await db
+      .select({
+        unitType: units.type,
+      })
+      .from(units)
+      .innerJoin(accounts, eq(accounts.unitId, units.id))
+      .where(eq(accounts.id, studentId))
+    if (unitTypeOfStudent[0].unitType !== 'speciality') {
+      throw new Error('El estudiante no pertenece a una especialidad')
+    }
+
+    const existingStudentInSchedule = await db
+      .select()
+      .from(scheduleAccounts)
+      .where(
+        and(
+          eq(scheduleAccounts.accountId, studentId),
+          eq(scheduleAccounts.scheduleId, scheduleId)
+        )
+      )
+    //TODO: Crear error personalizado
+    if (requestType === 'aditional' && existingStudentInSchedule.length > 0) {
+      throw new Error('El estudiante ya está inscrito en el horario')
+    }
     const currentTerm = await db
       .select({
         termId: terms.name,
@@ -237,7 +266,6 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
 
     return newCode
   }
-
 }
 
 export default EnrollmentModificationService

@@ -78,6 +78,14 @@ export default function NewEnrollmentModification() {
     },
   })
   const onSubmit = (data: z.infer<typeof formSchema>) => {
+    if (!data.scheduleId || data.scheduleId === '0') {
+      toast({
+        title: 'Error',
+        description: 'Debe seleccionar un horario',
+        variant: 'destructive',
+      })
+      return
+    }
     mutate({ ...data, scheduleId: +data.scheduleId, studentId: session!.id })
   }
   return (
@@ -216,14 +224,18 @@ export default function NewEnrollmentModification() {
 }
 
 const formSchema = z.object({
-  scheduleId: z.string({
-    required_error: 'Horario requerido',
-  }),
+  scheduleId: z
+    .string({
+      required_error: 'Horario requerido',
+    })
+    .min(1, 'Horario requerido'),
   courseId: z.number().optional(),
   requestType: z.enum(['aditional', 'withdrawal'], {
     required_error: 'Tipo de solicitud requerido',
   }),
-  reason: z.string({
-    required_error: 'Justificación requerida',
-  }),
+  reason: z
+    .string({
+      required_error: 'Justificación requerida',
+    })
+    .min(1, 'Justificación requerida'),
 })
