@@ -16,6 +16,7 @@ import {
 } from '../errors'
 import { JobRequestsSchema } from '@/database/schema/jobRequests'
 import { AccountsSchema } from '@/database/schema/accounts'
+import { courseStep, jobRequestState } from '@/database/schema/enums'
 class HiringSelectionService implements HiringSelectionDAO {
   public async updateHiringSelectionStatus(
     jobRequestId: number,
@@ -135,6 +136,84 @@ class HiringSelectionService implements HiringSelectionDAO {
     }))
 
     return candidateList
+  }
+
+  public async getJobRequestDetail(
+    courseHiringId: string,
+    accountId: string
+  ): Promise<{
+    candidateName: string
+    candidateLastname: string
+    candidateEmail: string
+    jrUrl: string
+    jrMotivation: string
+    jrState: typeof jobRequestState
+    jrObservation: string
+    requirementAndHisEvaluationList: {
+      requirementDetail: string
+      requirementStep: typeof courseStep
+      score: number
+      evaluationDate: Date
+      evaluatorName: string
+      evaluatorLastname: string
+    }[]
+  }> {
+    const result = await db
+      .select({
+        candidateName: accounts.name,
+        candidateEmail: accounts.email,
+        candidateLastname: sql`${accounts.firstSurname} || ' ' || ${accounts.secondSurname}`,
+        jrUrl: jobRequests.requirementUrl,
+        jrMotivation: jobRequests.motivation,
+        jrState: jobRequests.state,
+        jrObservation: jobRequests.observation,
+        jrId: jobRequests.id,
+      })
+      .from(accounts)
+      .innerJoin(jobRequests, eq(accounts.id, jobRequests.accountId))
+      .where(
+        and(
+          eq(accounts.id, accountId),
+          eq(jobRequests.courseHiringId, courseHiringId)
+        )
+      )
+
+    const result2 = await db
+      .select({
+        requirementDetail: courseHiringRequirements.detail,
+        requirementStep: courseHiringRequirements.step,
+        score: evaluations.score,
+        evaluationDate: evaluations.evaluationDate,
+        evaluatorName: accounts.name,
+        evaluatorLastname: sql`${accounts.firstSurname} || ' ' || ${accounts.secondSurname}`,
+      })
+      .from(evaluations)
+      .innerJoin(
+        courseHiringRequirements,
+        eq(evaluations.requirementPerCourseId, courseHiringRequirements.id)
+      )
+      .innerJoin(accounts, eq(accounts.id, evaluations.evaluatorId))
+      .where(eq(evaluations.jobRequestId, result[0].jrId))
+
+    return {
+      candidateName: result[0].candidateName,
+      candidateLastname: result[0].candidateLastname as string,
+      candidateEmail: result[0].candidateEmail,
+      jrUrl: result[0].jrUrl ?? '',
+      jrMotivation: result[0].jrMotivation ?? '',
+      jrState: result[0].jrState as unknown as typeof jobRequestState,
+      jrObservation: result[0].jrObservation ?? '',
+      requirementAndHisEvaluationList: result2.map((item) => ({
+        requirementDetail: item.requirementDetail ?? '',
+        requirementStep: item.requirementStep as unknown as typeof courseStep,
+        score: item.score ? parseFloat(item.score) : 0,
+        evaluationDate: item.evaluationDate
+          ? new Date(item.evaluationDate)
+          : new Date(),
+        evaluatorName: item.evaluatorName,
+        evaluatorLastname: item.evaluatorLastname as string,
+      })),
+    }
   }
 }
 
