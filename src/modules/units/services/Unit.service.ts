@@ -1,5 +1,5 @@
 import db from '@/database'
-import { accountRoles, accounts } from '@/database/schema'
+import { accountRoles, accounts, roles } from '@/database/schema'
 import { units, UnitsInsertSchema } from '@/database/schema/units'
 import withPagination from '@/utils/withPagination'
 import { and, asc, desc, eq, ilike, or, sql } from 'drizzle-orm'
@@ -26,7 +26,7 @@ class UnitService {
   }
 
   public async getUnitDetail(unitId: NonNullable<UnitsInsertSchema['id']>) {
-    return await db
+    const unitFound = await db
       .select({
         id: units.id,
         name: units.name,
@@ -35,7 +35,14 @@ class UnitService {
         type: units.type,
         parentId: units.parentId,
       })
-      .from(units).where
+      .from(units)
+      .where(eq(units.id, unitId))
+
+    if (unitFound.length === 0) {
+      throw new Error('Unit not found')
+    }
+
+    return unitFound[0]
   }
 
   public async createUnits(unitList: UnitsInsertSchema[]) {
@@ -88,6 +95,16 @@ class UnitService {
       params.page,
       params.limit
     )
+  }
+
+  public async getRolesOfUnitType(unitType: UnitsInsertSchema['type']) {
+    return await db
+      .select({
+        id: roles.id,
+        name: roles.name,
+      })
+      .from(roles)
+      .where(and(eq(roles.unitType, unitType), eq(roles.editable, true)))
   }
 }
 

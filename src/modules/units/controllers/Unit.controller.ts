@@ -114,6 +114,30 @@ class UnitController {
       }
     }
   )
+
+  public getRolesOfUnitType = this.router.get(
+    '/roles',
+    zValidator(
+      'query',
+      z.object({
+        type: unitsSchema.shape.type,
+      })
+    ),
+    async (c) => {
+      const { type } = c.req.valid('query')
+      try {
+        const response = await this.unitService.getRolesOfUnitType(type)
+        return c.json({
+          data: response,
+          message: 'Roles retrieved',
+          success: true,
+        })
+      } catch (error) {
+        if (error instanceof LyceumError) c.status(error.code)
+        throw error
+      }
+    }
+  )
 }
 
 export default UnitController
