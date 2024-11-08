@@ -13,25 +13,15 @@ import { Input } from '@frontend/components/ui/input'
 import { getCsvData } from '@frontend/lib/utils'
 import { z } from 'zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Upload } from 'lucide-react'
+import { Info, Upload } from 'lucide-react'
 import RiskStudentService from '@frontend/modules/student-process/services/riskStudent.service'
 import { QueryKeys } from '@frontend/constants/queryKeys'
-
-const csvSchema = z.object({
-  alumno: z
-    .string({})
-    .trim()
-    .regex(/^[0-9]{8}$/, 'El código del estudiante debe tener 8 dígitos'),
-  curso: z.string().trim(),
-  horario: z.string(),
-  motivo: z.preprocess((val) => parseInt(val as string, 10), z.number()),
-  puntaje: z
-    .preprocess((val) => parseFloat(val as string), z.number())
-    .refine((val) => val >= 1 && val <= 5, {
-      message: 'El puntaje debe ser un número entre 1 y 5',
-    }),
-})
-type CSVRow = z.infer<typeof csvSchema>
+import { Label } from '@frontend/components/ui/label'
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@frontend/components/ui/hover-card'
 
 export default function UploadCSVDialog() {
   const queryClient = useQueryClient()
@@ -101,6 +91,18 @@ export default function UploadCSVDialog() {
             riesgo.
           </DialogDescription>
         </DialogHeader>
+        <HoverCard openDelay={100}>
+          <HoverCardTrigger>
+            <Label className="inline-block hover:underline w-auto">
+              <div className="flex">
+                Archivo <Info className="h-4" />
+              </div>
+            </Label>
+          </HoverCardTrigger>
+          <HoverCardContent>
+            alumno | curso | horario | motivo | puntaje
+          </HoverCardContent>
+        </HoverCard>
         <Input type="file" accept=".csv" onChange={handleFileUpload} />
         <DialogDescription className="flex flex-col">
           <span>
@@ -121,3 +123,19 @@ export default function UploadCSVDialog() {
     </Dialog>
   )
 }
+
+const csvSchema = z.object({
+  alumno: z
+    .string({})
+    .trim()
+    .regex(/^[0-9]{8}$/, 'El código del estudiante debe tener 8 dígitos'),
+  curso: z.string().trim(),
+  horario: z.string(),
+  motivo: z.number(),
+  puntaje: z
+    .preprocess((val) => parseFloat(val as string), z.number())
+    .refine((val) => val >= 1 && val <= 5, {
+      message: 'El puntaje debe ser un número entre 1 y 5',
+    }),
+})
+type CSVRow = z.infer<typeof csvSchema>
