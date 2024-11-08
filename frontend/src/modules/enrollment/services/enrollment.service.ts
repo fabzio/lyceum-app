@@ -5,6 +5,7 @@ import { EnrollmentModification } from '../interfaces/EnrollmentModification'
 import axios from 'axios'
 import { Filters } from '@frontend/interfaces/types'
 import { Account } from '@frontend/interfaces/models/Account'
+import { Unit } from '@frontend/interfaces/models/Unit'
 
 class EnrollmentService {
   public static async getStudentEnrollments({
@@ -60,12 +61,17 @@ class EnrollmentService {
     }
   }
 
-  public static async getAllEnrollments(
+  public static async getAllEnrollmentsOfFaculty({
+    filtersAndPagination,
+    facultyId,
+  }: {
+    facultyId: Unit['id']
     filtersAndPagination: Filters
-  ): Promise<PaginatedData<EnrollmentGeneral>> {
+  }): Promise<PaginatedData<EnrollmentGeneral>> {
     try {
       const res = await http.get('/enrollment/modifications/paginated', {
         params: {
+          facultyId,
           q: filtersAndPagination.q || '',
           page: filtersAndPagination.pageIndex || 0,
           limit: filtersAndPagination.pageSize || 5,

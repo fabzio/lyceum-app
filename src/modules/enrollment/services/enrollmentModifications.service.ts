@@ -13,13 +13,15 @@ import { EnrollmentModificationDAO } from '../dao/EnrollmentModificationDAO'
 import { EnrollmentModificationsSchema } from '@/database/schema/enrollmentModifications'
 import { PaginatedData } from '@/interfaces/PaginatedData'
 import { Account } from '@/interfaces/models/Account'
+import { Unit } from '@/interfaces/models/Unit'
 
 class EnrollmentModificationService implements EnrollmentModificationDAO {
-  public async getAllEnrollments(params: {
+  public async getAllEnrollmentsOfFaculty(params: {
     q?: string
     page: number
     limit: number
     sortBy?: string
+    facultyId: Unit['id']
   }): Promise<
     PaginatedData<{
       student: {
@@ -38,6 +40,13 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
   > {
     const [field, order] = params.sortBy?.split('.') || ['requestNumber', 'asc']
 
+    const isFaculty = await db
+      .select({ unitType: units.type })
+      .from(units)
+      .where(eq(units.id, params.facultyId))
+    if (isFaculty[0].unitType !== 'faculty') {
+      throw new Error('No pertece a una facultad')
+    }
     // Obtener el total de registros según el filtro
     const [{ total }] = await db
       .select({
@@ -46,7 +55,10 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
       .from(enrollmentModifications)
       .innerJoin(accounts, eq(enrollmentModifications.studentId, accounts.id))
       .where(
-        params.q ? ilike(accounts.name, `%${params.q}%`) : sql<boolean>`true` // Condición siempre verdadera si no hay búsqueda
+        and(
+          params.q ? ilike(accounts.name, `%${params.q}%`) : sql<boolean>`true`,
+          eq(accounts.unitId, params.facultyId)
+        )
       )
 
     // Mapeo de campos para ordenación
@@ -216,6 +228,22 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
       .where(eq(accounts.id, studentId))
     if (unitTypeOfStudent[0].unitType !== 'speciality') {
       throw new Error('El estudiante no pertenece a una especialidad')
+    }
+
+    const pendingEnrollment = await db
+      .select({
+        count: sql<string>`count(*)`,
+      })
+      .from(enrollmentModifications)
+      .where(
+        and(
+          eq(enrollmentModifications.studentId, studentId),
+          eq(enrollmentModifications.scheduleId, scheduleId),
+          eq(enrollmentModifications.state, 'requested')
+        )
+      )
+    if (+pendingEnrollment[0].count > 0) {
+      throw new Error('Ya existe una solicitud pendiente para este horario')
     }
 
     const existingStudentInSchedule = await db

@@ -1,14 +1,16 @@
 import { EnrollmentModificationsSchema } from '@/database/schema/enrollmentModifications'
 import { Account } from '@/interfaces/models/Account'
+import { Unit } from '@/interfaces/models/Unit'
 import { PaginatedData } from '@/interfaces/PaginatedData'
 //import { Course } from '@/interfaces/models/Course'
 
 export interface EnrollmentModificationDAO {
-  getAllEnrollments: (filters: {
+  getAllEnrollmentsOfFaculty: (filters: {
     q?: string
     page: number
     limit: number
     sortBy?: string
+    facultyId: Unit['id']
   }) => Promise<
     PaginatedData<{
       student: {

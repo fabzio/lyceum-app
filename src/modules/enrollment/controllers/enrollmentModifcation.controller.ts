@@ -20,12 +20,14 @@ class EnrollmentModificationController {
         page: z.string().transform((v) => parseInt(v)),
         limit: z.string().transform((v) => parseInt(v)),
         sortBy: z.string().optional(),
+        facultyId: z.number(),
       })
     ),
     async (c) => {
       try {
         const filters = c.req.valid('query')
-        const data = await this.enrollmentService.getAllEnrollments(filters)
+        const data =
+          await this.enrollmentService.getAllEnrollmentsOfFaculty(filters)
         const response: ResponseAPI = {
           data: data,
           success: true,
