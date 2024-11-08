@@ -3,7 +3,7 @@ import { Hono } from 'hono'
 import { HiringSelectioncontroller } from '../controllers'
 
 class HiringSelectionRoute implements Route {
-  public path = '/hiring-selection'
+  public path = '/'
   public router = new Hono()
 
   private HiringSelectionController = new HiringSelectioncontroller()
