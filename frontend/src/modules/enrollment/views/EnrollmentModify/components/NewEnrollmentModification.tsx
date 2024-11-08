@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from '@frontend/components/ui/select'
 import { Textarea } from '@frontend/components/ui/textarea'
+import { QueryKeys } from '@frontend/constants/queryKeys'
 import { useToast } from '@frontend/hooks/use-toast'
 import EnrollmentService from '@frontend/modules/enrollment/services/enrollment.service'
 import CourseService from '@frontend/modules/study-plans/services/course.service'
@@ -31,13 +32,14 @@ import ScheduleService from '@frontend/service/Schedules.service'
 import { useSessionStore } from '@frontend/store'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { DialogClose, DialogTitle } from '@radix-ui/react-dialog'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 
 export default function NewEnrollmentModification() {
+  const queryClient = useQueryClient()
   const [isOpen, setIsOpen] = useState(false)
   const { session } = useSessionStore()
   const { toast } = useToast()
@@ -69,6 +71,9 @@ export default function NewEnrollmentModification() {
       })
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.enrollment.ENROLLMENTS_MODIFY],
+      })
       toast({
         title: 'Solicitud enviada',
         description: 'Tu solicitud ha sido enviada correctamente',

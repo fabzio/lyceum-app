@@ -266,6 +266,98 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
 
     return newCode
   }
+
+  public async getStudentEnrollments({
+    studentId,
+    page,
+    limit,
+    sortBy,
+  }: {
+    studentId: Account['id']
+    page: number
+    limit: number
+    sortBy?: string
+  }): Promise<
+    PaginatedData<{
+      student: {
+        name: Account['name']
+        surname: string
+      }
+      schedule: {
+        code: string
+        courseName: string
+      }
+      state: string
+      requestType: string
+      reason: string | null
+      requestNumber: number
+    }>
+  > {
+    const [field, order] = sortBy?.split('.') || ['requestNumber', 'asc']
+
+    // Obtener el total de registros según el filtro
+    const [{ total }] = await db
+      .select({
+        total: sql<string>`count(*)`,
+      })
+      .from(enrollmentModifications)
+      .innerJoin(
+        schedules,
+        eq(enrollmentModifications.scheduleId, schedules.id)
+      )
+      .innerJoin(courses, eq(schedules.courseId, courses.id))
+      .where(eq(enrollmentModifications.studentId, studentId))
+
+    // Mapeo de campos para ordenación
+    const mappedFields = {
+      ['requestNumber']: enrollmentModifications.requestNumber,
+      ['name']: courses.name,
+    }
+
+    const mappedSortBy = {
+      ['asc']: asc,
+      ['desc']: desc,
+    }
+
+    const enrollmentsResponse = await db
+      .select({
+        requestNumber: sql<number>`coalesce(${enrollmentModifications.requestNumber}, 0)`,
+        state: enrollmentModifications.state,
+        requestType: enrollmentModifications.requestType,
+        student: {
+          name: accounts.name,
+          surname: sql<string>`concat(${accounts.firstSurname}, ' ', ${accounts.secondSurname})`,
+        },
+        schedule: {
+          code: schedules.code,
+          courseName: courses.name,
+        },
+        reason: enrollmentModifications.reason,
+      })
+      .from(enrollmentModifications)
+      .innerJoin(accounts, eq(enrollmentModifications.studentId, accounts.id))
+      .innerJoin(
+        schedules,
+        eq(enrollmentModifications.scheduleId, schedules.id)
+      )
+      .innerJoin(courses, eq(schedules.courseId, courses.id))
+      .where(eq(enrollmentModifications.studentId, studentId))
+      .offset(page * limit)
+      .limit(limit)
+      .orderBy(
+        mappedSortBy[order as keyof typeof mappedSortBy](
+          mappedFields[field as keyof typeof mappedFields]
+        )
+      )
+
+    return {
+      result: enrollmentsResponse,
+      rowCount: +total,
+      currentPage: page,
+      totalPages: Math.ceil(+total / limit),
+      hasNext: +total > page + 1 * limit,
+    }
+  }
 }
 
 export default EnrollmentModificationService

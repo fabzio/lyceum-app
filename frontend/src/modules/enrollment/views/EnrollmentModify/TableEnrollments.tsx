@@ -14,13 +14,21 @@ export const DEFAULT_PAGE_INDEX = 0
 export const DEFAULT_PAGE_SIZE = 10
 
 export default function TableEnrollments() {
-  const { havePermission } = useSessionStore()
+  const { session, havePermission } = useSessionStore()
   const { filters, setFilters } = useFilters(
     '/_auth/matricula/modificacion-matricula'
   )
   const { data: enrollments } = useQuery({
     queryKey: [QueryKeys.enrollment.ENROLLMENTS_MODIFY, filters],
-    queryFn: () => EnrollmentService.getAllEnrollments(filters),
+    queryFn: havePermission(
+      EnrollmentPermissionsDict.REVIEW_ADDITIONAL_ENROLLMENT
+    )
+      ? () => EnrollmentService.getAllEnrollments(filters)
+      : () =>
+          EnrollmentService.getStudentEnrollments({
+            studentId: session!.id,
+            filters,
+          }),
     placeholderData: keepPreviousData,
   })
   const navigate = useNavigate({

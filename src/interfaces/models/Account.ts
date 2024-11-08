@@ -1,5 +1,5 @@
 export interface Account {
-  id: number
+  id: string
   code: string
   name: string
   firstSurname: string

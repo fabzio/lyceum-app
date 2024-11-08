@@ -49,7 +49,7 @@ export interface EnrollmentModificationDAO {
     EnrollmentModificationsSchema,
     'requestNumber' | 'state'
   >): Promise<void>
-  
+
   createEnrollmentRequest({
     reason,
     requestType,
@@ -57,5 +57,27 @@ export interface EnrollmentModificationDAO {
     studentId,
   }: Omit<EnrollmentModificationsSchema, 'requestNumber' | ''>): Promise<
     EnrollmentModificationsSchema['requestNumber']
+  >
+  getStudentEnrollments: ({
+    studentId,
+    page,
+    limit,
+    sortBy,
+  }: {
+    studentId: Account['id']
+    page: number
+    limit: number
+    sortBy?: string
+  }) => Promise<
+    PaginatedData<{
+      requestNumber: number
+      state: string
+      requestType: string
+      schedule: {
+        code: string
+        courseName: string
+      }
+      reason: string | null
+    }>
   >
 }
