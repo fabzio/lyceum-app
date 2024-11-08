@@ -1,4 +1,3 @@
-import { Hono } from 'hono'
 import App from './app'
 import Accounts from './modules/accounts'
 import Course from './modules/courses'
@@ -8,6 +7,7 @@ import Schedule from './modules/schedule'
 import Security from './modules/security'
 import StudyPlan from './modules/study-plans'
 import Thesis from './modules/thesis'
+import Units from './modules/units'
 import Hiring from './modules/hiring'
 const app = new App([
   new Security(),
@@ -18,6 +18,7 @@ const app = new App([
   new Enrollment(),
   new Accounts(),
   new Schedule(),
+  new Units(),
   new Hiring(),
 ])
 

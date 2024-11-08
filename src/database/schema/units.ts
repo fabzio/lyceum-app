@@ -10,6 +10,8 @@ export const units = schema.table(
   {
     id: serial('id').primaryKey(),
     name: varchar('name', { length: 100 }).notNull(),
+    description: varchar('description', { length: 500 }),
+    details: varchar('details', { length: 1000 }),
     parentId: integer('parent_id'),
     type: unitType('type').notNull(),
   },

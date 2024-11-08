@@ -127,8 +127,10 @@ export default function MasiveStudentsDialog() {
               )}
             />
             <DialogFooter className="mt-2">
-              <DialogClose>
-                <Button variant="secondary">Cancelar</Button>
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  Cancelar
+                </Button>
               </DialogClose>
               <Button type="submit" disabled={isPending}>
                 {isPending ? <Loader2 className="animate-spin" /> : 'Importar'}

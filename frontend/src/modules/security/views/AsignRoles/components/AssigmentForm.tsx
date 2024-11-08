@@ -12,6 +12,7 @@ import {
 } from '@frontend/components/ui/form'
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import { useToast } from '@frontend/hooks/use-toast'
+import { UnitType } from '@frontend/interfaces/enums'
 import RolePermissionService from '@frontend/modules/security/services/role-permission.service'
 import RoleAccountsService from '@frontend/modules/security/services/RoleAccounts.service'
 import AccountsService from '@frontend/service/Accounts.service'
@@ -26,7 +27,7 @@ interface Props {
   handleClose: () => void
 }
 export default function AssigmentForm({ handleClose }: Props) {
-  const [unitType, setUnitType] = useState<string | null>(null)
+  const [unitType, setUnitType] = useState<UnitType | null>(null)
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { data: units } = useQuery({

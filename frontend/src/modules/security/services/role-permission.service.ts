@@ -1,4 +1,4 @@
-import { RolePermission } from '@frontend/interfaces/models'
+import { RolePermission, UnitType } from '@frontend/interfaces/models'
 import http from '@frontend/lib/http'
 import axios from 'axios'
 
@@ -15,7 +15,7 @@ class RolePermissionService {
       return response.data as {
         id: number
         name: string
-        unitType: string
+        unitType: UnitType
       }[]
     } catch (error) {
       if (axios.isAxiosError(error)) {
