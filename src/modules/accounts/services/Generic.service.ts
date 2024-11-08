@@ -151,17 +151,9 @@ class GenericService {
           mappedFields[field as keyof typeof mappedFields]
         )
       )
-    // Mapear los resultados y devolverlos en el formato esperado
-    const result = AccountsResponse.map((account) => ({
-      code: account.code,
-      name: account.name,
-      firstSurname: account.firstSurname,
-      secondSurname: account.secondSurname,
-      email: account.email,
-      roles: account.roles,
-    }))
+
     return {
-      result,
+      result: AccountsResponse,
       rowCount: +total,
       currentPage: params.page,
       totalPages: Math.ceil(+total / params.limit),
@@ -242,6 +234,101 @@ class GenericService {
     }
     return {
       ...account,
+      allowedModules,
+      roles: rolesWithPermissions,
+      term: currentTerm,
+    }
+  }
+
+  public static async setAccountPassword({
+    code,
+    password,
+  }: {
+    code: string
+    password: string
+  }) {
+    await db
+      .update(accounts)
+      .set({ password: await Bun.password.hash(password) })
+      .where(eq(accounts.code, code))
+  }
+
+  public static async lyceumLogin({
+    email,
+    password,
+  }: {
+    email: string
+    password: string
+  }) {
+    const accountResponse = await db
+      .select({
+        id: accounts.id,
+        name: accounts.name,
+        surname: sql<string>`concat(${accounts.firstSurname} || ' ' || ${accounts.secondSurname})`,
+        code: accounts.code,
+        email: accounts.email,
+        password: accounts.password,
+      })
+      .from(accounts)
+      .where(or(eq(accounts.email, email), eq(accounts.code, email)))
+    if (accountResponse.length === 0) {
+      throw new Error('Su cuenta no está registrada en el sistema')
+    }
+    const [account] = accountResponse
+    if (account.password === null) {
+      throw new Error('Su cuenta no tiene contraseña')
+    }
+    try {
+      if (!(await Bun.password.verify(password, account.password)))
+        throw new Error('Contraseña incorrecta')
+    } catch (error) {
+      throw error
+    }
+    const allowedRoles = await db
+      .select({
+        roleId: accountRoles.roleId,
+        unitId: accountRoles.unitId,
+      })
+      .from(accountRoles)
+      .where(eq(accountRoles.accountId, account.id))
+    const allowedRolePemissions = await db
+      .select({
+        roleId: rolePermissions.roleId,
+        permission: permissions.name,
+        module: modules.code,
+      })
+      .from(rolePermissions)
+      .innerJoin(permissions, eq(rolePermissions.permissionId, permissions.id))
+      .innerJoin(modules, eq(permissions.moduleId, modules.id))
+      .where(
+        inArray(
+          rolePermissions.roleId,
+          allowedRoles.map((role) => role.roleId)
+        )
+      )
+    const rolesWithPermissions = allowedRoles.map((role) => ({
+      ...role,
+      permissions: allowedRolePemissions
+        .filter((permission) => permission.roleId === role.roleId)
+        .map((permission) => ({
+          permission: permission.permission,
+          module: permission.module,
+        })),
+    }))
+
+    const allowedModules = Array.from(
+      new Set(allowedRolePemissions.map((permissions) => permissions.module))
+    )
+    const currentTerm = await db
+      .select({
+        id: terms.id,
+        name: terms.name,
+      })
+      .from(terms)
+      .where(eq(terms.current, true))
+    return {
+      ...account,
+      password: null,
       allowedModules,
       roles: rolesWithPermissions,
       term: currentTerm,

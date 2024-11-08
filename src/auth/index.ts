@@ -1,4 +1,4 @@
-import {  SECRET_KEY } from '@/config'
+import { SECRET_KEY } from '@/config'
 import GenericService from '@/modules/accounts/services/Generic.service'
 import { revokeToken } from '@hono/oauth-providers/google'
 import { Hono } from 'hono'
@@ -6,6 +6,8 @@ import { deleteCookie, setCookie } from 'hono/cookie'
 import { sign } from 'hono/jwt'
 import { authMiddleware } from './authMiddleware'
 import { CookieOptions } from 'hono/utils/cookie'
+import { zValidator } from '@hono/zod-validator'
+import { z } from 'zod'
 
 const cookieOptions: CookieOptions = {
   sameSite: 'strict',
@@ -51,10 +53,59 @@ export const oauthRoute = new Hono()
     return c.redirect('/login')
   })
 
-export const authRoute = new Hono().get(
-  '/verify',
-  authMiddleware,
-  async (c) => {
+export const authRoute = new Hono()
+  .post(
+    '/signin',
+    zValidator(
+      'json',
+      z.object({
+        code: z.string(),
+        password: z.string(),
+      })
+    ),
+    async (c) => {
+      const data = c.req.valid('json')
+      try {
+        const response = await GenericService.lyceumLogin({
+          email: data.code,
+          password: data.password,
+        })
+        setCookie(
+          c,
+          'lyceum-tkn',
+          await sign(
+            {
+              ...response,
+              exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
+              iat: Math.floor(Date.now() / 1000),
+            },
+            SECRET_KEY!
+          ),
+          cookieOptions
+        )
+        c.status(200)
+        return c.json({ data: response, message: 'Authorized', success: true })
+      } catch (error) {
+        c.status(401)
+      }
+    }
+  )
+  .post(
+    '/signup',
+    zValidator(
+      'json',
+      z.object({
+        code: z.string(),
+        password: z.string(),
+      })
+    ),
+    async (c) => {
+      const data = c.req.valid('json')
+      await GenericService.setAccountPassword(data)
+      return c.json({ message: 'Password set', success: true })
+    }
+  )
+  .get('/verify', authMiddleware, async (c) => {
     const token = c.get('jwtPayload')
     if (!token) {
       c.status(401)
@@ -62,7 +113,7 @@ export const authRoute = new Hono().get(
     }
     const updatedData = await GenericService.googleLogin({
       email: token.email,
-      googleId: token.googleId,
+      googleId: token.googleId ?? '',
     })
     setCookie(
       c,
@@ -78,5 +129,4 @@ export const authRoute = new Hono().get(
       cookieOptions
     )
     return c.json({ data: updatedData, message: 'Authorized', success: true })
-  }
-)
+  })
