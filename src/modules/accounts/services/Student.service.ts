@@ -21,7 +21,9 @@ class StudentService implements StudentDAO {
   ) {
     // Verificar si hay estudiantes duplicados en la base de datos
     const existingStudents = await db
-      .select()
+      .select({
+        code: accounts.code,
+      })
       .from(accounts)
       .where(
         inArray(

@@ -142,7 +142,9 @@ class AdministrativeService implements AdministrativeDAO {
     }[]
   ) {
     const existingAdministratives = await db
-      .select()
+      .select({
+        code: accounts.code,
+      })
       .from(accounts)
       .where(
         inArray(

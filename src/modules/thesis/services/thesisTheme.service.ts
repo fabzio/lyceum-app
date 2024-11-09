@@ -118,7 +118,7 @@ class ThesisThemeService implements ThesisThemeDAO {
         content: thesisActions.content,
       })
       .from(thesisActions)
-      .innerJoin(thesis, eq(thesis.lastActionId, thesisActions.id))
+      .innerJoin(thesis, eq(thesis.id, thesisActions.requestId))
       .where(
         and(
           eq(thesis.requestCode, requestCode),
