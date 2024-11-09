@@ -7,6 +7,7 @@ import { Course } from '@frontend/interfaces/models/Course'
 import axios from 'axios'
 import { getRiskStudentDetail } from '../interfaces/RiskStudentDetail'
 import { Filters, PaginatedData } from '@frontend/interfaces/types'
+import { Unit } from '@frontend/interfaces/models/Unit'
 
 class RiskStudentService {
   public static async getRiskStudents(
@@ -109,15 +110,24 @@ class RiskStudentService {
     }
   }
 
-  public static async updateRiskStudentReport(): Promise<void> {
+  public static async updateRiskStudentReport({
+    facultyId,
+  }: {
+    facultyId: Unit['id']
+  }): Promise<void> {
     try {
-      const res = await http.put('/courses/risk-students')
+      const res = await http.put('/courses/risk-students', {
+        facultyId,
+      })
       const response = res.data as ResponseAPI
       if (!response.success) {
-        throw new Error('Error')
+        throw new Error(response.message)
       }
     } catch (error) {
-      console.error(error)
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
     }
   }
 }

@@ -1,9 +1,9 @@
 import { Account } from '@/interfaces/models/Account'
 import { Course } from '@/interfaces/models/Course'
-import { RiskStudent } from '@/interfaces/models/RiskStudent'
 import { Schedule } from '@/interfaces/models/Schedule'
 import { InsertRiskStudentsDTO } from '../dto/riskStudentDTO'
 import { PaginatedData } from '@/interfaces/PaginatedData'
+import { Unit } from '@/interfaces/models/Unit'
 
 export interface RiskStudentDAO {
   getAllRiskStudent: () => Promise<
@@ -58,5 +58,9 @@ export interface RiskStudentDAO {
   >
 
   insertRiskStudents(list: InsertRiskStudentsDTO['studentList']): Promise<void>
-  updateRiskStudents(): Promise<void>
+  updateRiskStudentsOfFaculty({
+    facultyId,
+  }: {
+    facultyId: Unit['id']
+  }): Promise<void>
 }

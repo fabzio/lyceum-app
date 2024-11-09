@@ -8,12 +8,14 @@ import {
   scheduleAccounts,
   schedules,
   terms,
+  units,
 } from '@/database/schema'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { aliasedTable, and, desc, eq, inArray, sql } from 'drizzle-orm'
 import { RiskStudentDAO } from '../dao/RiskStudentDAO'
 import { InsertRiskStudentsDTO } from '../dto/riskStudentDTO'
 import { RiskStudentNotFoundError } from '../errors/RiskStudent.error'
+import { Unit } from '@/interfaces/models/Unit'
 class RiskStudentService implements RiskStudentDAO {
   public async getAllRiskStudent() {
     const professor = aliasedTable(accounts, 'professor')
@@ -191,7 +193,7 @@ class RiskStudentService implements RiskStudentDAO {
     )
 
     const riskStudentData = list.map((item, idx) => ({
-      studentId: studentsMap.get(item.studentCode),
+      studentId: studentsMap.get(item.studentCode)!,
       scheduleId: scheduleIds[idx],
       score: item.score,
       reasonId: item.reasonId,
@@ -199,10 +201,48 @@ class RiskStudentService implements RiskStudentDAO {
 
     await db.insert(riskStudents).values(riskStudentData)
   }
-  public async updateRiskStudents(): Promise<void> {
-    await db.update(riskStudents).set({
-      updated: false,
-    })
+  public async updateRiskStudentsOfFaculty({
+    facultyId,
+  }: {
+    facultyId: Unit['id']
+  }): Promise<void> {
+    const isFaculty = await db
+      .select({
+        count: sql<string>`count(*)`,
+      })
+      .from(units)
+      .where(and(eq(units.id, facultyId), eq(units.type, 'faculty')))
+
+    if (+isFaculty[0].count === 0) {
+      throw new Error('Su unidad no es una facultad')
+    }
+
+    const listStudents = await db
+      .select({
+        studentId: riskStudents.studentId,
+      })
+      .from(accounts)
+      .innerJoin(riskStudents, eq(accounts.id, riskStudents.studentId))
+      .where(
+        and(
+          eq(accounts.id, riskStudents.studentId),
+          eq(accounts.unitId, facultyId)
+        )
+      )
+    if (listStudents.length === 0) {
+      throw new Error('No hay alumnos en riesgo en su facultad')
+    }
+    await db
+      .update(riskStudents)
+      .set({
+        updated: false,
+      })
+      .where(
+        inArray(
+          riskStudents.studentId,
+          listStudents.map((item) => item.studentId)
+        )
+      )
   }
 }
 
