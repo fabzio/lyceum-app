@@ -27,7 +27,11 @@ export const getCsvData = <T>(csv: File): Promise<T[]> => {
       dynamicTyping: true,
       complete: (result) => {
         if (result.errors.length) {
-          reject(new Error('Error parsing CSV'))
+          reject(
+            new Error(
+              `Error al parsear el archivo .csv: ${result.errors[0].message}`
+            )
+          )
         } else {
           resolve(result.data)
         }

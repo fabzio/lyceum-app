@@ -16,7 +16,7 @@ const DEFAULT_PAGE_SIZE = 10
 
 export default function StudyPlanTable() {
   const navigate = useNavigate()
-  const { getRoleWithPermission } = useSessionStore()
+  const { getRoleWithPermission, havePermission } = useSessionStore()
   const { filters, setFilters } = useFilters(
     '/_auth/plan-de-estudios/gestionar'
   )
@@ -35,12 +35,16 @@ export default function StudyPlanTable() {
   const sortingState = sortByToState(filters.sortBy)
   const columns = useMemo(() => studyPlanTableColumns, [])
 
-  const handleRowClick = (studyPlan: StudyPlan) => {
-    navigate({
-      to: '/plan-de-estudios/gestionar/$planId',
-      params: { planId: studyPlan.id.toString() },
-    })
-  }
+  const handleRowClick = havePermission(
+    StudyPlanPermissionsDict.MANAGE_STUDY_PLAN
+  )
+    ? (studyPlan: StudyPlan) => {
+        navigate({
+          to: '/plan-de-estudios/gestionar/$planId',
+          params: { planId: studyPlan.id.toString() },
+        })
+      }
+    : () => {}
   return (
     <DataTable
       columns={columns}

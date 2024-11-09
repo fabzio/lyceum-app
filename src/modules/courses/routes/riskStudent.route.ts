@@ -13,7 +13,10 @@ class RiskStudentRoute implements Route {
   }
 
   private initializeRoutes() {
-    this.router.route('/', this.riskStudentController.getRiskStudents)
+    this.router.route(
+      '/',
+      this.riskStudentController.getRiskStudentsOfSpecility
+    )
     this.router.route('/', this.riskStudentController.getRiskStudentReports)
   }
 }

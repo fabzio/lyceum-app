@@ -12,7 +12,7 @@ export default function RiskStudents() {
 
   return (
     <div className="flex flex-col my-6 p-4  rounded-lg shadow-md">
-      <div className="w-full flex flex-col md:flex-row justify-between gap-4">
+      <div className="w-full flex flex-col md:flex-row justify-between gap-4 mb-2">
         <div className="flex gap-2">
           <SearchRiskStudentInput />
           <SelectFilter filterType="ReasonFilter" />
@@ -31,7 +31,13 @@ export default function RiskStudents() {
           </Need>
         </div>
       </div>
-      <Need permissions={StudentProcessPermissionsDict.READ_RISK_STUDENTS}>
+      <Need
+        some
+        permissions={[
+          StudentProcessPermissionsDict.LOAD_RISK_STUDENTS,
+          StudentProcessPermissionsDict.UPDATE_RISK_STUDENT_REPORT,
+        ]}
+      >
         <RiskStudentTable />
       </Need>
     </div>

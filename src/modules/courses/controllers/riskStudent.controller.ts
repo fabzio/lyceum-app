@@ -10,14 +10,62 @@ class RiskStudentController {
   private router = new Hono()
   private riskStudentService: RiskStudentDAO = new RiskStudentService()
 
-  public getRiskStudents = this.router.get('/', async (c) => {
-    const response: ResponseAPI = {
-      data: await this.riskStudentService.getAllRiskStudent(),
-      message: 'RiskStudent retrieved',
-      success: true,
+  public getRiskStudentsOfSpecility = this.router.get(
+    '/',
+    zValidator(
+      'query',
+      z.object({
+        q: z.string().optional(),
+        page: z.string().transform((v) => parseInt(v)),
+        limit: z.string().transform((v) => parseInt(v)),
+        sortBy: z.string().optional(),
+        specialityId: z.string().transform((v) => parseInt(v)),
+      })
+    ),
+    async (c) => {
+      const params = c.req.valid('query')
+      const response: ResponseAPI = {
+        data: await this.riskStudentService.getAllRiskStudentOfSpeciality(
+          params
+        ),
+        message: 'RiskStudent retrieved',
+        success: true,
+      }
+      return c.json(response)
     }
-    return c.json(response)
-  })
+  )
+
+  public getRiskStudentsOfProfessor = this.router.get(
+    '/professor/:professorId',
+    zValidator(
+      'param',
+      z.object({
+        professorId: z.string(),
+      })
+    ),
+    zValidator(
+      'query',
+      z.object({
+        q: z.string().optional(),
+        page: z.string().transform((v) => parseInt(v)),
+        limit: z.string().transform((v) => parseInt(v)),
+        sortBy: z.string().optional(),
+      })
+    ),
+    async (c) => {
+      const { professorId } = c.req.valid('param')
+      const params = c.req.valid('query')
+      const response: ResponseAPI = {
+        data: await this.riskStudentService.getAllRiskStudentOfProfessor({
+          professorId,
+          ...params,
+        }),
+        message: 'RiskStudent retrieved',
+        success: true,
+      }
+      return c.json(response)
+    }
+  )
 
   public getRiskStudentDetail = this.router.get(
     '/:code',
@@ -89,13 +137,32 @@ class RiskStudentController {
     }
   )
 
-  public updateRiskStudent = this.router.put('/', async (c) => {
-    const response: ResponseAPI = {
-      data: await this.riskStudentService.updateRiskStudents(),
-      message: 'RiskStudent updated',
-      success: true,
+  public updateRiskStudent = this.router.put(
+    '/',
+    zValidator(
+      'json',
+      z.object({
+        specialityId: z.number(),
+      })
+    ),
+    async (c) => {
+      const { specialityId } = c.req.valid('json')
+      try {
+        const response: ResponseAPI = {
+          data: await this.riskStudentService.updateRiskStudentsOfFaculty({
+            specialityId,
+          }),
+          message: 'RiskStudent updated',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
     }
-    return c.json(response)
-  })
+  )
 }
 export default RiskStudentController

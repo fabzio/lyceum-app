@@ -20,10 +20,23 @@ export const Route = createFileRoute('/_auth/matricula/modificacion-matricula')(
         })
       }
     },
-    loader: async ({ context: { queryClient } }) => {
+    loader: async ({ context: { queryClient, sessionStore } }) => {
+      const { getRoleWithPermission, havePermission } = sessionStore
+      const facultyId = getRoleWithPermission(
+        EnrollmentPermissionsDict.REVIEW_ADDITIONAL_ENROLLMENT
+      )?.unitId
       return queryClient.ensureQueryData({
         queryKey: [QueryKeys.enrollment.ENROLLMENTS_MODIFY, {}],
-        queryFn: () => EnrollmentService.getAllEnrollments({}),
+        queryFn: () =>
+          havePermission(EnrollmentPermissionsDict.REVIEW_ADDITIONAL_ENROLLMENT)
+            ? EnrollmentService.getAllEnrollmentsOfFaculty({
+                facultyId: facultyId!,
+                filtersAndPagination: {},
+              })
+            : EnrollmentService.getStudentEnrollments({
+                studentId: sessionStore.session!.id,
+                filters: {},
+              }),
       })
     },
     validateSearch: () => ({}) as EnrollmentFilters,

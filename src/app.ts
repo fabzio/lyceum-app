@@ -41,7 +41,7 @@ class App {
         scope: ['email', 'profile', 'openid'],
       })
     )
-    this.app.use('/api/v1/auth/*', authMiddleware)
+    this.app.use('/api/v1/auth/verify', authMiddleware)
   }
 
   private initializeRoutes(routes: Route[]) {

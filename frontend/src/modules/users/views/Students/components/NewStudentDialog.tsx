@@ -31,7 +31,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-export default function NewCourseDialog() {
+export default function NewStudentDialog() {
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
   const { toast } = useToast()

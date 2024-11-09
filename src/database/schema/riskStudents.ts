@@ -14,8 +14,8 @@ import { accounts } from './accounts'
 export const riskStudents = schema.table(
   'risk_students',
   {
-    studentId: uuid('student_id'),
-    scheduleId: integer('schedule_id'),
+    studentId: uuid('student_id').notNull(),
+    scheduleId: integer('schedule_id').notNull(),
     reasonId: integer('reason_id').notNull(),
     score: smallint('score'),
     updated: boolean('updated').notNull().default(true),

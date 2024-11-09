@@ -17,16 +17,41 @@ import moment from 'moment'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import GoogleButton from './components/GoogleButton'
+import { useMutation } from '@tanstack/react-query'
+import http from '@frontend/lib/http'
+import { useToast } from '@frontend/hooks/use-toast'
+import { Loader2 } from 'lucide-react'
+import { Session } from '@frontend/store'
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const form = useForm({
+  const { toast } = useToast()
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
-  const handleLogin = () => {
-    navigate({
-      to: '/',
-    })
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data: { code: string; password: string }) => {
+      try {
+        const res = await http.post('/auth/signin', data)
+        const respose = res.data as ResponseAPI<NonNullable<Session>>
+        if (!respose.success) throw new Error(respose.message)
+        return respose.data
+      } catch (error) {
+        toast({
+          title: 'Error al iniciar sesión',
+          description: (error as Error).message,
+          variant: 'destructive',
+        })
+      }
+    },
+    onSuccess: () => {
+      navigate({
+        to: '/',
+      })
+    },
+  })
+  const handleLogin = (data: z.infer<typeof formSchema>) => {
+    mutate(data)
   }
   return (
     <div>
@@ -55,7 +80,8 @@ export default function LoginPage() {
                 onSubmit={form.handleSubmit(handleLogin)}
               >
                 <FormField
-                  name="email"
+                  control={form.control}
+                  name="code"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Correo</FormLabel>
@@ -67,6 +93,7 @@ export default function LoginPage() {
                   )}
                 />
                 <FormField
+                  control={form.control}
                   name="password"
                   render={({ field }) => (
                     <FormItem>
@@ -100,8 +127,12 @@ export default function LoginPage() {
                   )}
                 />
                 <div className="flex flex-col gap-1">
-                  <Button type="submit" className="w-full">
-                    Ingresar
+                  <Button type="submit" className="w-full" disabled={isPending}>
+                    {isPending ? (
+                      <Loader2 className="animate-spin" />
+                    ) : (
+                      'Iniciar sesión'
+                    )}
                   </Button>
                   <GoogleButton />
                 </div>
@@ -127,11 +158,11 @@ export default function LoginPage() {
 }
 
 const formSchema = z.object({
-  email: z
+  code: z
     .string({
-      required_error: 'Ingrese su correo',
+      required_error: 'Ingrese su código',
     })
-    .email('Ingrese un correo válido'),
+    .length(8, 'El código debe tener 8 caracteres'),
   password: z
     .string({
       required_error: 'Ingrese su contraseña',

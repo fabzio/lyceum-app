@@ -3,7 +3,6 @@ import { EnrollmentModificationDAO } from '../dao/EnrollmentModificationDAO'
 import { EnrollmentModificationsService } from '../services'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
-import { enrollmentModificationsSchema } from '@/database/schema/enrollmentModifications'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
 import { createEnrollmentModificationDTO } from '../dtos'
 
@@ -12,35 +11,37 @@ class EnrollmentModificationController {
   private enrollmentService: EnrollmentModificationDAO =
     new EnrollmentModificationsService()
 
-    public getEnrollments = this.router.get(
-      '/paginated',
-      zValidator(
-        'query',
-        z.object({
-          q: z.string().optional(),
-          page: z.string().transform((v) => parseInt(v)),
-          limit: z.string().transform((v) => parseInt(v)),
-          sortBy: z.string().optional(),
-        })
-      ),
-      async (c) => {
-        try {
-          const filters = c.req.valid('query');
-          const data = await this.enrollmentService.getAllEnrollments(filters);
-          const response: ResponseAPI = {
-            data: data,
-            success: true,
-            message: 'Enrollments retrieved',
-          };
-          return c.json(response);
-        } catch (error) {
-          if (error instanceof LyceumError) {
-            c.status(error.code);
-          }
-          throw error;
+  public getEnrollments = this.router.get(
+    '/paginated',
+    zValidator(
+      'query',
+      z.object({
+        q: z.string().optional(),
+        page: z.string().transform((v) => parseInt(v)),
+        limit: z.string().transform((v) => parseInt(v)),
+        sortBy: z.string().optional(),
+        facultyId: z.number(),
+      })
+    ),
+    async (c) => {
+      try {
+        const filters = c.req.valid('query')
+        const data =
+          await this.enrollmentService.getAllEnrollmentsOfFaculty(filters)
+        const response: ResponseAPI = {
+          data: data,
+          success: true,
+          message: 'Enrollments retrieved',
         }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
       }
-    );
+    }
+  )
 
   public getEnrollment = this.router.get('/:requestNumber', async (c) => {
     const { requestNumber } = c.req.param()
@@ -93,6 +94,37 @@ class EnrollmentModificationController {
           ),
           message: 'Request created',
           success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) c.status(error.code)
+        throw error
+      }
+    }
+  )
+
+  public getStudentEnrollments = this.router.get(
+    '/student/:studentId',
+    zValidator(
+      'query',
+      z.object({
+        page: z.string().transform((v) => parseInt(v)),
+        limit: z.string().transform((v) => parseInt(v)),
+        sortBy: z.string().optional(),
+      })
+    ),
+    async (c) => {
+      const { studentId } = c.req.param()
+      const filters = c.req.valid('query')
+      try {
+        const data = await this.enrollmentService.getStudentEnrollments({
+          studentId,
+          ...filters,
+        })
+        const response: ResponseAPI = {
+          data: data,
+          success: true,
+          message: 'Student enrollments retrieved',
         }
         return c.json(response)
       } catch (error) {

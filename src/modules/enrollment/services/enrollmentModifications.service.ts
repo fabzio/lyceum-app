@@ -13,13 +13,15 @@ import { EnrollmentModificationDAO } from '../dao/EnrollmentModificationDAO'
 import { EnrollmentModificationsSchema } from '@/database/schema/enrollmentModifications'
 import { PaginatedData } from '@/interfaces/PaginatedData'
 import { Account } from '@/interfaces/models/Account'
+import { Unit } from '@/interfaces/models/Unit'
 
 class EnrollmentModificationService implements EnrollmentModificationDAO {
-  public async getAllEnrollments(params: {
+  public async getAllEnrollmentsOfFaculty(params: {
     q?: string
     page: number
     limit: number
     sortBy?: string
+    facultyId: Unit['id']
   }): Promise<
     PaginatedData<{
       student: {
@@ -38,6 +40,13 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
   > {
     const [field, order] = params.sortBy?.split('.') || ['requestNumber', 'asc']
 
+    const isFaculty = await db
+      .select({ unitType: units.type })
+      .from(units)
+      .where(eq(units.id, params.facultyId))
+    if (isFaculty[0].unitType !== 'faculty') {
+      throw new Error('No pertece a una facultad')
+    }
     // Obtener el total de registros según el filtro
     const [{ total }] = await db
       .select({
@@ -46,7 +55,10 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
       .from(enrollmentModifications)
       .innerJoin(accounts, eq(enrollmentModifications.studentId, accounts.id))
       .where(
-        params.q ? ilike(accounts.name, `%${params.q}%`) : sql<boolean>`true` // Condición siempre verdadera si no hay búsqueda
+        and(
+          params.q ? ilike(accounts.name, `%${params.q}%`) : sql<boolean>`true`,
+          eq(accounts.unitId, params.facultyId)
+        )
       )
 
     // Mapeo de campos para ordenación
@@ -114,7 +126,8 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
   }) {
     const student = aliasedTable(accounts, 'student')
     const faculty = aliasedTable(units, 'faculty')
-    const [enrollmentsResponse] = await db
+    //FIXME: Se rompe si el unitId no es de una especialidad
+    const response = await db
       .select({
         requestNumber: sql<number>`coalesce(${enrollmentModifications.requestNumber}, 0)`,
         state: enrollmentModifications.state,
@@ -141,8 +154,12 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
         eq(enrollmentModifications.scheduleId, schedules.id)
       )
       .innerJoin(courses, eq(schedules.courseId, courses.id))
-      .where(eq(enrollmentModifications.requestNumber, requestNumber ?? 0))
-    return enrollmentsResponse
+      .where(eq(enrollmentModifications.requestNumber, requestNumber))
+    //TODO: Agregar error personalizado
+    if (response.length === 0) {
+      throw new Error('No se encontró la solicitud')
+    }
+    return response[0]
   }
 
   public async updateEnrollmentRequestResponse({
@@ -202,6 +219,46 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
     scheduleId,
     studentId,
   }: Omit<EnrollmentModificationsSchema, 'requestNumber'>) {
+    const unitTypeOfStudent = await db
+      .select({
+        unitType: units.type,
+      })
+      .from(units)
+      .innerJoin(accounts, eq(accounts.unitId, units.id))
+      .where(eq(accounts.id, studentId))
+    if (unitTypeOfStudent[0].unitType !== 'speciality') {
+      throw new Error('El estudiante no pertenece a una especialidad')
+    }
+
+    const pendingEnrollment = await db
+      .select({
+        count: sql<string>`count(*)`,
+      })
+      .from(enrollmentModifications)
+      .where(
+        and(
+          eq(enrollmentModifications.studentId, studentId),
+          eq(enrollmentModifications.scheduleId, scheduleId),
+          eq(enrollmentModifications.state, 'requested')
+        )
+      )
+    if (+pendingEnrollment[0].count > 0) {
+      throw new Error('Ya existe una solicitud pendiente para este horario')
+    }
+
+    const existingStudentInSchedule = await db
+      .select()
+      .from(scheduleAccounts)
+      .where(
+        and(
+          eq(scheduleAccounts.accountId, studentId),
+          eq(scheduleAccounts.scheduleId, scheduleId)
+        )
+      )
+    //TODO: Crear error personalizado
+    if (requestType === 'aditional' && existingStudentInSchedule.length > 0) {
+      throw new Error('El estudiante ya está inscrito en el horario')
+    }
     const currentTerm = await db
       .select({
         termId: terms.name,
@@ -238,6 +295,97 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
     return newCode
   }
 
+  public async getStudentEnrollments({
+    studentId,
+    page,
+    limit,
+    sortBy,
+  }: {
+    studentId: Account['id']
+    page: number
+    limit: number
+    sortBy?: string
+  }): Promise<
+    PaginatedData<{
+      student: {
+        name: Account['name']
+        surname: string
+      }
+      schedule: {
+        code: string
+        courseName: string
+      }
+      state: string
+      requestType: string
+      reason: string | null
+      requestNumber: number
+    }>
+  > {
+    const [field, order] = sortBy?.split('.') || ['requestNumber', 'asc']
+
+    // Obtener el total de registros según el filtro
+    const [{ total }] = await db
+      .select({
+        total: sql<string>`count(*)`,
+      })
+      .from(enrollmentModifications)
+      .innerJoin(
+        schedules,
+        eq(enrollmentModifications.scheduleId, schedules.id)
+      )
+      .innerJoin(courses, eq(schedules.courseId, courses.id))
+      .where(eq(enrollmentModifications.studentId, studentId))
+
+    // Mapeo de campos para ordenación
+    const mappedFields = {
+      ['requestNumber']: enrollmentModifications.requestNumber,
+      ['name']: courses.name,
+    }
+
+    const mappedSortBy = {
+      ['asc']: asc,
+      ['desc']: desc,
+    }
+
+    const enrollmentsResponse = await db
+      .select({
+        requestNumber: sql<number>`coalesce(${enrollmentModifications.requestNumber}, 0)`,
+        state: enrollmentModifications.state,
+        requestType: enrollmentModifications.requestType,
+        student: {
+          name: accounts.name,
+          surname: sql<string>`concat(${accounts.firstSurname}, ' ', ${accounts.secondSurname})`,
+        },
+        schedule: {
+          code: schedules.code,
+          courseName: courses.name,
+        },
+        reason: enrollmentModifications.reason,
+      })
+      .from(enrollmentModifications)
+      .innerJoin(accounts, eq(enrollmentModifications.studentId, accounts.id))
+      .innerJoin(
+        schedules,
+        eq(enrollmentModifications.scheduleId, schedules.id)
+      )
+      .innerJoin(courses, eq(schedules.courseId, courses.id))
+      .where(eq(enrollmentModifications.studentId, studentId))
+      .offset(page * limit)
+      .limit(limit)
+      .orderBy(
+        mappedSortBy[order as keyof typeof mappedSortBy](
+          mappedFields[field as keyof typeof mappedFields]
+        )
+      )
+
+    return {
+      result: enrollmentsResponse,
+      rowCount: +total,
+      currentPage: page,
+      totalPages: Math.ceil(+total / limit),
+      hasNext: +total > page + 1 * limit,
+    }
+  }
 }
 
 export default EnrollmentModificationService

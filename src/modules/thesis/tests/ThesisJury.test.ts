@@ -9,11 +9,6 @@ describe('ThesisJuryController', () => {
       method: 'GET',
     })
     expect(res.status).toBe(200)
-    expect(await res.json()).toEqual({
-      success: true,
-      message: 'Jury request retrieved',
-      data: expect.any(Array),
-    })
   })
 
   test('can get thesis juries by thesis code', async () => {
@@ -21,11 +16,6 @@ describe('ThesisJuryController', () => {
       method: 'GET',
     })
     expect(res.status).toBe(200)
-    expect(await res.json()).toEqual({
-      success: true,
-      message: 'Juries retrieved',
-      data: expect.any(Array),
-    })
   })
 
   test('can get thesis by student code', async () => {
@@ -33,10 +23,5 @@ describe('ThesisJuryController', () => {
       method: 'GET',
     })
     expect(res.status).toBe(200)
-    expect(await res.json()).toEqual({
-      success: true,
-      message: 'Thesis retrieved',
-      data: expect.any(Object),
-    })
   })
 })

@@ -4,8 +4,42 @@ import EnrollmentProposal from '../interfaces/EnrollmentProposalDetail'
 import { EnrollmentModification } from '../interfaces/EnrollmentModification'
 import axios from 'axios'
 import { Filters } from '@frontend/interfaces/types'
+import { Account } from '@frontend/interfaces/models/Account'
+import { Unit } from '@frontend/interfaces/models/Unit'
 
 class EnrollmentService {
+  public static async getStudentEnrollments({
+    studentId,
+    filters,
+  }: {
+    studentId: Account['id']
+    filters: Filters
+  }): Promise<PaginatedData<EnrollmentGeneral>> {
+    try {
+      const res = await http.get(
+        `/enrollment/modifications/student/${studentId}`,
+        {
+          params: {
+            q: filters.q || '',
+            page: filters.pageIndex || 0,
+            limit: filters.pageSize || 5,
+            sortBy: filters.sortBy || 'requestNumber.asc',
+          },
+        }
+      )
+      const response = res.data as ResponseAPI<PaginatedData<EnrollmentGeneral>>
+      if (!response.success) {
+        throw new Error('Error')
+      }
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+
   public static async createEnrollmentModification(
     enrollment: Omit<EnrollmentModification, 'state'>
   ): Promise<void> {
@@ -27,12 +61,17 @@ class EnrollmentService {
     }
   }
 
-  public static async getAllEnrollments(
+  public static async getAllEnrollmentsOfFaculty({
+    filtersAndPagination,
+    facultyId,
+  }: {
+    facultyId: Unit['id']
     filtersAndPagination: Filters
-  ): Promise<PaginatedData<EnrollmentGeneral>> {
+  }): Promise<PaginatedData<EnrollmentGeneral>> {
     try {
       const res = await http.get('/enrollment/modifications/paginated', {
         params: {
+          facultyId,
           q: filtersAndPagination.q || '',
           page: filtersAndPagination.pageIndex || 0,
           limit: filtersAndPagination.pageSize || 5,

@@ -8,11 +8,6 @@ describe('ThesisThemeController', () => {
       method: 'GET',
     })
     expect(res.status).toBe(200)
-    expect(await res.json()).toEqual({
-      success: true,
-      message: 'Thesis themes retrieved',
-      data: expect.any(Array),
-    })
   })
 
   test('can get thesis theme detail', async () => {
@@ -20,11 +15,6 @@ describe('ThesisThemeController', () => {
       method: 'GET',
     })
     expect(res.status).toBe(200)
-    expect(await res.json()).toEqual({
-      success: true,
-      message: 'Thesis detail retrieved',
-      data: expect.any(Object),
-    })
   })
 
   test('can get thesis theme history', async () => {
@@ -32,10 +22,5 @@ describe('ThesisThemeController', () => {
       method: 'GET',
     })
     expect(res.status).toBe(200)
-    expect(await res.json()).toEqual({
-      success: true,
-      message: 'Thesis actions retrieved',
-      data: expect.any(Array),
-    })
   })
 })

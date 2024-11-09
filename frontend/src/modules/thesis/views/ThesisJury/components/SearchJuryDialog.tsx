@@ -110,12 +110,12 @@ export default function SearchJuryDialog() {
                     control={form.control}
                     render={({ field }) => (
                       <FormItem className="w-full">
-                        <FormLabel>Asesor</FormLabel>
+                        <FormLabel>Jurado</FormLabel>
                         <div className="flex gap-2">
                           <div className="flex-grow">
                             <FormControl>
                               <QuickSearchInput
-                                placeholder="Buscar asesor por código o nombre"
+                                placeholder="Buscar profesor por código o nombre"
                                 searchFn={(q) =>
                                   AccountsService.getAccount({
                                     q,

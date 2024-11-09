@@ -17,6 +17,7 @@ import { scheduleAccounts } from './scheduleAccounts'
 import { riskStudents } from './riskStudents'
 import { contactsInfo } from './contactsInfo'
 import { units } from '.'
+import { password } from 'bun'
 
 export const accounts = schema.table(
   'accounts',
@@ -28,6 +29,7 @@ export const accounts = schema.table(
     code: char('code', { length: 8 }).notNull(),
     googleId: varchar('google_id', { length: 60 }),
     email: varchar('email', { length: 60 }).notNull(),
+    password: varchar('password', { length: 200 }),
     state: accountStatus('state').notNull().default('active'),
     unitId: integer('unit_id').notNull(),
   },

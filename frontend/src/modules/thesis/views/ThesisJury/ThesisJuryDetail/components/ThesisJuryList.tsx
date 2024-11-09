@@ -14,14 +14,6 @@ import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisT
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
 import SearchJuryDialog from '../../components/SearchJuryDialog'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@frontend/components/ui/dropdown-menu'
-import { Button } from '@frontend/components/ui/button'
-import { MoreHorizontal, Save, X } from 'lucide-react'
 import Need from '@frontend/components/Need'
 import { ThesisPermissionsDict } from '@frontend/interfaces/enums/permissions/Thesis'
 
@@ -60,7 +52,6 @@ export default function ThesisJuryList() {
             <TableRow>
               <TableHead>Código</TableHead>
               <TableHead>Nombre</TableHead>
-              <TableHead>Acciones</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -93,26 +84,6 @@ function JuryRow({
     <TableRow>
       <TableCell>{code}</TableCell>
       <TableCell>{name}</TableCell>
-      <TableCell>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>
-              <Save className="mr-2 h-4 w-4" />
-              Guardar
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <X className="mr-2 h-4 w-4" />
-              Cancelar
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </TableCell>
     </TableRow>
   )
 }

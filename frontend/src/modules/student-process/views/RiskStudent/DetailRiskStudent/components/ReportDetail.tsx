@@ -26,7 +26,7 @@ export default function ReportDetail() {
   })
   let reportDetail: RiskStudentReport | null = null
   if (!isLoading) {
-    if (!reportsDetail) return null
+    if (!reportsDetail?.[0]) return null
     reportDetail = reportsDetail[0]
   }
   const getColorForFace = (faceScore: number) =>
@@ -53,15 +53,11 @@ export default function ReportDetail() {
         )}
       </div>
       <div className="mt-4">
-        <h3 className="text-2xl font-semibold">Comentarios</h3>
+        <h3 className="text-2xl font-semibold mb-2">Comentarios</h3>
         {isLoading ? (
           <Skeleton className="h-20" />
         ) : (
-          <Textarea
-            placeholder="Escribe tus comentarios aquí..."
-            value={reportDetail!.observation}
-            disabled
-          />
+          <Textarea value={reportDetail?.observation} disabled />
         )}
       </div>
     </>
