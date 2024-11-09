@@ -1,6 +1,6 @@
 import { ThesisActionsSchema } from '@/database/schema/thesisActions'
 import { ThesisDetail } from '../interfaces/ThesisDetail'
-import { CreateThesisDTO } from '../dto/ThesisThemeDTO'
+import { Account } from '@/interfaces/models/Account'
 
 export interface ThesisThemeDAO {
   getThesisThemeRequest(): Promise<
@@ -40,7 +40,12 @@ export interface ThesisThemeDAO {
       requestCode: string
     }
   ): Promise<void>
-  createThesisThemeRequest(
-    params: CreateThesisDTO
-  ): Promise<{ thesisCode: string; historyId: number }>
+  createThesisThemeRequest(params: {
+    title: string
+    areaId: number
+    applicantCode: string
+    advisors: Account['code'][]
+    students: Account['code'][]
+    justification: string
+  }): Promise<{ thesisCode: string; historyId: number }>
 }

@@ -7,12 +7,43 @@ import axios from 'axios'
 import { Thesis } from '../interfaces/Thesis'
 
 class ThesisThemeRequestService {
+  public static async getThesisThemeDocuments(docId: string) {
+    try {
+      const res = await http.get(`/thesis/theme/document/${docId}`, {
+        responseType: 'blob',
+      })
+      return {
+        file: res.data,
+        type: res.headers['content-type'],
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+
   public static async createThesis(thesis: Omit<Thesis, 'id'>): Promise<{
     thesisCode: string
     historyId: number
   }> {
     try {
-      const res = await http.post(`/thesis/theme`, thesis)
+      // Crear un FormData para los datos del formulario
+      const formData = new FormData()
+      formData.append('title', thesis.title)
+      formData.append('areaId', thesis.areaId.toString())
+      formData.append('applicantCode', thesis.applicantCode)
+      formData.append('advisors', JSON.stringify(thesis.advisors))
+      formData.append('students', JSON.stringify(thesis.students))
+      formData.append('justification', thesis.justification)
+
+      const res = await http.post(`/thesis/theme`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+
       const response = res.data as ResponseAPI
       if (!response.success) {
         throw new Error(response.message)

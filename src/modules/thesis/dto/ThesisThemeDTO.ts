@@ -3,13 +3,12 @@ import { z } from 'zod'
 
 export const createThesisDTO = z.object({
   title: z.string(),
-  areaId: z.number(),
+  areaId: z.string(),
   applicantCode: z.string(),
-  advisors: z.array(z.string()),
-  students: z.array(z.string()),
+  advisors: z.string(),
+  students: z.string(),
+  justification: z.instanceof(File),
 })
-
-export type CreateThesisDTO = z.infer<typeof createThesisDTO>
 
 type schema = Omit<ThesisActionsSchema, 'requestId'> & {
   requestCode: string

@@ -14,9 +14,9 @@ import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { and, asc, eq, sql } from 'drizzle-orm'
 import { ThesisThemeDAO } from '../dao/thesisThemeDAO'
 import { ThesisActionsSchema } from '@/database/schema/thesisActions'
-import { CreateThesisDTO } from '../dto/ThesisThemeDTO'
 import { ThesisThemeRequestNotFound } from '../errors'
 import { generateThesisCode, getAccountsIds } from './utils'
+import { Account } from '@/interfaces/models/Account'
 
 class ThesisThemeService implements ThesisThemeDAO {
   async getThesisThemeRequest() {
@@ -113,9 +113,27 @@ class ThesisThemeService implements ThesisThemeDAO {
       .where(eq(thesis.requestCode, requestCode))
     if (!advisors.length)
       throw new ThesisThemeRequestNotFound('Asesores no encontrados')
+    const lastSendedThesis = await db
+      .select({
+        content: thesisActions.content,
+      })
+      .from(thesisActions)
+      .innerJoin(thesis, eq(thesis.lastActionId, thesisActions.id))
+      .where(
+        and(
+          eq(thesis.requestCode, requestCode),
+          eq(thesisActions.action, 'sended')
+        )
+      )
+      .orderBy(asc(thesisActions.date))
+      .limit(1)
+    if (!lastSendedThesis.length)
+      throw new ThesisThemeRequestNotFound('Tesis no encontrada')
+    const [{ content }] = lastSendedThesis
 
     const [parsedData] = generalRequestData.map((request) => ({
       ...request,
+      justification: content,
       students,
       advisors,
     }))
@@ -198,18 +216,27 @@ class ThesisThemeService implements ThesisThemeDAO {
     })
   }
 
-  async createThesisThemeRequest(newThesisTheme: CreateThesisDTO) {
+  async createThesisThemeRequest(newThesisTheme: {
+    title: string
+    areaId: number
+    applicantCode: string
+    advisors: Account['code'][]
+    students: Account['code'][]
+    justification: string
+  }) {
     return await db.transaction(async (tx) => {
       const { students, advisors, ...newThesis } = newThesisTheme
 
       const applicantId = await getAccountsIds(newThesis.applicantCode)
       if (!applicantId)
         throw new ThesisThemeRequestNotFound('Solicitante no encontrado')
+
       const studentsIds = await Promise.all(
         students.map((student) => getAccountsIds(student))
       )
       if (studentsIds.length !== students.length)
         throw new ThesisThemeRequestNotFound('Coautores no encontrados')
+
       const advisorsIds = await Promise.all(
         advisors.map((advisor) => getAccountsIds(advisor))
       )
@@ -258,7 +285,8 @@ class ThesisThemeService implements ThesisThemeDAO {
           accountId: applicantId,
           roleId: BaseRoles.STUDENT,
           action: 'sended',
-          content: 'Solicitud enviada',
+          isFile: true,
+          content: newThesis.justification,
         })
         .returning({
           historyId: thesisActions.id,
