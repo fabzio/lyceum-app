@@ -1,3 +1,4 @@
+import QuickSearchInput from '@frontend/components/QuickSearchInput.tsx/QuickSearchInput'
 import { Button } from '@frontend/components/ui/button'
 import {
   Form,
@@ -16,7 +17,10 @@ import {
   SelectValue,
 } from '@frontend/components/ui/select'
 import { Textarea } from '@frontend/components/ui/textarea'
+import { useToast } from '@frontend/hooks/use-toast'
+import { BaseRoles } from '@frontend/interfaces/enums/BaseRoles'
 import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisThemeRequest.service'
+import AccountsService from '@frontend/service/Accounts.service'
 import { useSessionStore } from '@frontend/store'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
@@ -26,6 +30,7 @@ import { useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 export default function NewThesisForm() {
+  const { toast } = useToast()
   const { session } = useSessionStore()
   const navigate = useNavigate({
     from: '/tesis/nueva-solicitud',
@@ -55,6 +60,10 @@ export default function NewThesisForm() {
   const { mutate, isPending } = useMutation({
     mutationFn: ThesisThemeRequestService.createThesis,
     onSuccess: ({ historyId, thesisCode }) => {
+      toast({
+        title: 'Solicitud enviada',
+        description: 'La solicitud de tesis ha sido enviada correctamente',
+      })
       navigate({
         to: '/tesis/tema-tesis/$requestCode',
         params: {
@@ -63,6 +72,13 @@ export default function NewThesisForm() {
         search: {
           historyId,
         },
+      })
+    },
+    onError: ({ message }) => {
+      toast({
+        title: 'Error',
+        description: message,
+        variant: 'destructive',
       })
     },
   })
@@ -84,6 +100,7 @@ export default function NewThesisForm() {
         className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full md:w-[700px]"
       >
         <FormField
+          control={form.control}
           name="title"
           render={({ field }) => (
             <FormItem className="col-span-1 md:col-span-2">
@@ -100,6 +117,7 @@ export default function NewThesisForm() {
         />
 
         <FormField
+          control={form.control}
           name="areaId"
           render={({ field }) => (
             <FormItem className="col-span-1 md:col-span-2">
@@ -140,13 +158,38 @@ export default function NewThesisForm() {
           <div className="flex flex-col gap-2 col-span-1 ">
             {advisorFields.map((advisor, index) => (
               <FormField
+                control={form.control}
                 key={advisor.id}
                 name={`advisors.${index}.code`}
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex items-center space-x-2">
                       <FormControl>
-                        <Input {...field} placeholder="Código del asesor" />
+                        <QuickSearchInput
+                          className="w-full"
+                          placeholder="Buscar asesor por código o nombre"
+                          searchFn={(q) =>
+                            AccountsService.getAccount({
+                              q,
+                              userType: BaseRoles.TEACHER,
+                            })
+                          }
+                          handleSelect={(item) => field.onChange(item?.code)}
+                          renderOption={(item) => (
+                            <div className="hover:bg-muted px-1 text-sm flex justify-between">
+                              <span>{`${item.name} ${item.firstSurname} ${item.secondSurname} `}</span>
+                              <span>{item.code}</span>
+                            </div>
+                          )}
+                          renderSelected={(item) => (
+                            <article>
+                              <h5 className="font-semibold">
+                                {`${item.name} ${item.firstSurname} ${item.secondSurname}`}
+                              </h5>
+                              <p className="text-xs">{item.code}</p>
+                            </article>
+                          )}
+                        />
                       </FormControl>
                       <Button
                         type="button"
@@ -184,13 +227,38 @@ export default function NewThesisForm() {
           </div>
           {studentFields.map((student, index) => (
             <FormField
+              control={form.control}
               key={student.id}
               name={`students.${index}.code`}
               render={({ field }) => (
                 <FormItem>
                   <div className="flex items-center space-x-2">
                     <FormControl>
-                      <Input {...field} placeholder="Código del estudiante" />
+                      <QuickSearchInput
+                        className="w-full"
+                        placeholder="Buscar estudiante por código o nombre"
+                        searchFn={(q) =>
+                          AccountsService.getAccount({
+                            q,
+                            userType: BaseRoles.STUDENT,
+                          })
+                        }
+                        handleSelect={(item) => field.onChange(item?.code)}
+                        renderOption={(item) => (
+                          <div className="hover:bg-muted px-1 text-sm flex justify-between">
+                            <span>{`${item.name} ${item.firstSurname} ${item.secondSurname} `}</span>
+                            <span>{item.code}</span>
+                          </div>
+                        )}
+                        renderSelected={(item) => (
+                          <article>
+                            <h5 className="font-semibold">
+                              {`${item.name} ${item.firstSurname} ${item.secondSurname}`}
+                            </h5>
+                            <p className="text-xs">{item.code}</p>
+                          </article>
+                        )}
+                      />
                     </FormControl>
                     <Button
                       type="button"
@@ -209,15 +277,23 @@ export default function NewThesisForm() {
         </div>
 
         <FormField
+          control={form.control}
           name="justification"
-          render={() => (
+          // eslint-disable-next-line
+          render={({ field: { value, onChange, ...filedProps } }) => (
             <FormItem className="col-span-1 md:col-span-2">
-              <FormLabel>Justificación</FormLabel>
+              <FormLabel className="inline-block hover:underline w-auto">
+                Justificación
+              </FormLabel>
               <FormControl>
                 <Input
+                  className="w-full"
+                  {...filedProps}
                   type="file"
-                  placeholder="Sube un archivo con la justificación"
-                  {...form.register('justification')}
+                  accept=".doc,.docx,.pdf"
+                  onChange={(e) =>
+                    onChange(e.target.files && e.target.files[0])
+                  }
                 />
               </FormControl>
               <FormMessage />
@@ -258,10 +334,5 @@ const formSchema = z.object({
         .min(1, 'El código del estudiante es requerido'),
     })
   ),
-  justification:
-    typeof window !== 'undefined'
-      ? z.any()
-      : z.instanceof(FileList, {
-          message: 'La justificación es requerida',
-        }),
+  justification: z.instanceof(File, { message: 'Debe seleccionar un archivo' }),
 })

@@ -8,5 +8,6 @@ export interface Thesis {
   type?: 'individual' | 'group'
   students: Account['code'][]
   aprovalDate?: string
+  justification: File
   advisors: Account['code'][]
 }

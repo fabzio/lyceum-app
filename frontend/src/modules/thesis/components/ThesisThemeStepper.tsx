@@ -1,10 +1,11 @@
-import { CheckCircle2, CircleX, Download } from 'lucide-react'
-import { Button } from '@frontend/components/ui/button'
+import { CheckCircle2, CircleX } from 'lucide-react'
 import { ThesisThemeRequestAction } from '../interfaces/ThesisThemeRequestAction'
 import { mapStatus } from '../utils'
 import { Link } from '@tanstack/react-router'
 import { Skeleton } from '@frontend/components/ui/skeleton'
 import { ValidRoutes } from '@frontend/constants/paths'
+import DownloadThesisDoc from './DownloadThesisDoc'
+import moment from 'moment'
 
 interface Props {
   history?: ThesisThemeRequestAction[]
@@ -62,9 +63,12 @@ export default function ThesisThemeStepper({ history = [], from }: Props) {
               <p className="text-sm text-gray-500">{step.actor}</p>
             </div>
             {step.isFile && (
-              <Button variant="ghost" size="sm" className="ml-2">
-                <Download size={16} />
-              </Button>
+              <DownloadThesisDoc
+                icon
+                docId={step?.content}
+                docName={`Revisión-${moment(step?.date).format('DD-MM-YYYY HH:mm:ss')}`}
+                message="Descargar archivo"
+              />
             )}
           </Link>
         </li>
