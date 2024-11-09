@@ -65,6 +65,7 @@ class ThesisJuryService implements ThesisJuryDAO {
     thesisCode: string
     listAccountCode: Account['code'][]
   }) {
+    const uniqueAccounts = Array.from(new Set(listAccountCode))
     const [{ thesisId }] = await db
       .select({ thesisId: thesis.id })
       .from(thesis)
@@ -79,9 +80,9 @@ class ThesisJuryService implements ThesisJuryDAO {
     }
 
     const accountIds = await Promise.all(
-      listAccountCode.map((accountCode) => getAccountId(accountCode))
+      uniqueAccounts.map((accountCode) => getAccountId(accountCode))
     )
-    
+
     const thesisJuriesData = accountIds.map((accountId) => ({
       thesisId,
       accountId,
