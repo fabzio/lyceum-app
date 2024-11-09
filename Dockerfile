@@ -34,7 +34,7 @@ WORKDIR /app
 # Copiar el binario del backend y los assets del frontend
 COPY --from=build /app/cli /app/cli
 COPY --from=build /app/frontend/dist /app/frontend/dist
-
+ENV TZ=America/Lima
 # Exponer el puerto adecuado
 EXPOSE 8080
 
