@@ -11,16 +11,77 @@ import {
   units,
 } from '@/database/schema'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
-import { aliasedTable, and, desc, eq, inArray, sql } from 'drizzle-orm'
+import {
+  aliasedTable,
+  and,
+  asc,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  or,
+  sql,
+} from 'drizzle-orm'
 import { RiskStudentDAO } from '../dao/RiskStudentDAO'
 import { InsertRiskStudentsDTO } from '../dto/riskStudentDTO'
 import { RiskStudentNotFoundError } from '../errors/RiskStudent.error'
 import { Unit } from '@/interfaces/models/Unit'
+import withPagination from '@/utils/withPagination'
 class RiskStudentService implements RiskStudentDAO {
-  public async getAllRiskStudent() {
+  public async getAllRiskStudentOfSpeciality({
+    specialityId,
+    q,
+    page,
+    limit,
+    sortBy,
+  }: {
+    specialityId: Unit['id']
+    q?: string
+    page: number
+    limit: number
+    sortBy?: string
+  }) {
     const professor = aliasedTable(accounts, 'professor')
     const student = aliasedTable(accounts, 'student')
-    const riskStudentsResponse = await db
+    const [field, order] = sortBy?.split('.') || ['score', 'asc']
+    const [{ total }] = await db
+      .select({ total: sql<string>`count(*)` })
+      .from(riskStudents)
+      .innerJoin(student, eq(riskStudents.studentId, student.id))
+      .innerJoin(schedules, eq(riskStudents.scheduleId, schedules.id))
+      .innerJoin(courses, eq(schedules.courseId, courses.id))
+      .innerJoin(riskReasons, eq(riskStudents.reasonId, riskReasons.id))
+      .innerJoin(
+        scheduleAccounts,
+        and(
+          eq(schedules.id, scheduleAccounts.scheduleId),
+          eq(scheduleAccounts.roleId, BaseRoles.PROFESSOR),
+          eq(scheduleAccounts.lead, true)
+        )
+      )
+      .innerJoin(professor, eq(scheduleAccounts.accountId, professor.id))
+      .innerJoin(terms, eq(terms.id, schedules.termId))
+      .where(
+        and(
+          eq(terms.current, true),
+          eq(student.unitId, specialityId),
+          or(
+            ilike(student.code, `%${q}%`),
+            sql`concat(${student.name}, ' ', ${student.firstSurname}, ' ', ${student.secondSurname}) ilike ${`%${q}%`}`
+          )
+        )
+      )
+    const mappedFields = {
+      ['score']: riskStudents.score,
+      ['name']: student.name,
+      ['surname']: sql<string>`concat(${student.firstSurname}, ' ', ${student.secondSurname})`,
+      ['code']: student.code,
+    }
+    const mappedSortBy = {
+      ['asc']: asc,
+      ['desc']: desc,
+    }
+    const riskStudentsResponseQuery = db
       .select({
         student: {
           code: student.code,
@@ -54,14 +115,148 @@ class RiskStudentService implements RiskStudentDAO {
       )
       .innerJoin(professor, eq(scheduleAccounts.accountId, professor.id))
       .innerJoin(terms, eq(terms.id, schedules.termId))
-      .where(eq(terms.current, true))
+      .where(
+        and(
+          eq(terms.current, true),
+          eq(student.unitId, specialityId),
+          or(
+            ilike(student.code, `%${q}%`),
+            sql`concat(${student.name}, ' ', ${student.firstSurname}, ' ', ${student.secondSurname}) ilike ${`%${q}%`}`
+          )
+        )
+      )
+      .$dynamic()
 
+    const riskStudentsResponse = await withPagination(
+      riskStudentsResponseQuery,
+      mappedSortBy[order as keyof typeof mappedSortBy](
+        mappedFields[field as keyof typeof mappedFields]
+      ),
+      page,
+      limit
+    )
     return {
       result: riskStudentsResponse,
-      rowCount: riskStudentsResponse.length,
-      currentPage: 1,
-      totalPages: 1,
-      hasNext: false,
+      rowCount: +total,
+      currentPage: page,
+      totalPages: Math.ceil(+total / limit),
+      hasNext: +total > (page + 1) * limit,
+    }
+  }
+
+  public async getAllRiskStudentOfProfessor({
+    professorId,
+    q,
+    page,
+    limit,
+    sortBy,
+  }: {
+    professorId: string
+    q?: string
+    page: number
+    limit: number
+    sortBy?: string
+  }) {
+    const professor = aliasedTable(accounts, 'professor')
+    const student = aliasedTable(accounts, 'student')
+    const [field, order] = sortBy?.split('.') || ['score', 'asc']
+    const [{ total }] = await db
+      .select({ total: sql<string>`count(*)` })
+      .from(riskStudents)
+      .innerJoin(student, eq(riskStudents.studentId, student.id))
+      .innerJoin(schedules, eq(riskStudents.scheduleId, schedules.id))
+      .innerJoin(courses, eq(schedules.courseId, courses.id))
+      .innerJoin(riskReasons, eq(riskStudents.reasonId, riskReasons.id))
+      .innerJoin(
+        scheduleAccounts,
+        and(
+          eq(schedules.id, scheduleAccounts.scheduleId),
+          eq(scheduleAccounts.roleId, BaseRoles.PROFESSOR),
+          eq(scheduleAccounts.lead, true)
+        )
+      )
+      .innerJoin(professor, eq(scheduleAccounts.accountId, professor.id))
+      .innerJoin(terms, eq(terms.id, schedules.termId))
+      .where(
+        and(
+          eq(terms.current, true),
+          eq(professor.id, professorId),
+          or(
+            ilike(student.code, `%${q}%`),
+            sql`concat(${student.name}, ' ', ${student.firstSurname}, ' ', ${student.secondSurname}) ilike ${`%${q}%`}`
+          )
+        )
+      )
+    const mappedFields = {
+      ['score']: riskStudents.score,
+      ['name']: student.name,
+      ['surname']: sql<string>`concat(${student.firstSurname}, ' ', ${student.secondSurname})`,
+      ['code']: student.code,
+    }
+    const mappedSortBy = {
+      ['asc']: asc,
+      ['desc']: desc,
+    }
+    const riskStudentsResponseQuery = db
+      .select({
+        student: {
+          code: student.code,
+          name: student.name,
+          surname: sql<string>`concat(${student.firstSurname}, ' ', ${student.secondSurname})`,
+        },
+        course: {
+          code: courses.code,
+          name: courses.name,
+        },
+        schedule: {
+          id: schedules.id,
+          code: schedules.code,
+        },
+        score: riskStudents.score,
+        reason: riskReasons.description,
+        state: riskStudents.updated,
+      })
+      .from(riskStudents)
+      .innerJoin(student, eq(riskStudents.studentId, student.id))
+      .innerJoin(schedules, eq(riskStudents.scheduleId, schedules.id))
+      .innerJoin(courses, eq(schedules.courseId, courses.id))
+      .innerJoin(riskReasons, eq(riskStudents.reasonId, riskReasons.id))
+      .innerJoin(
+        scheduleAccounts,
+        and(
+          eq(schedules.id, scheduleAccounts.scheduleId),
+          eq(scheduleAccounts.roleId, BaseRoles.PROFESSOR),
+          eq(scheduleAccounts.lead, true)
+        )
+      )
+      .innerJoin(professor, eq(scheduleAccounts.accountId, professor.id))
+      .innerJoin(terms, eq(terms.id, schedules.termId))
+      .where(
+        and(
+          eq(terms.current, true),
+          eq(professor.id, professorId),
+          or(
+            ilike(student.code, `%${q}%`),
+            sql`concat(${student.name}, ' ', ${student.firstSurname}, ' ', ${student.secondSurname}) ilike ${`%${q}%`}`
+          )
+        )
+      )
+      .$dynamic()
+
+    const riskStudentsResponse = await withPagination(
+      riskStudentsResponseQuery,
+      mappedSortBy[order as keyof typeof mappedSortBy](
+        mappedFields[field as keyof typeof mappedFields]
+      ),
+      page,
+      limit
+    )
+    return {
+      result: riskStudentsResponse,
+      rowCount: +total,
+      currentPage: page,
+      totalPages: Math.ceil(+total / limit),
+      hasNext: +total > (page + 1) * limit,
     }
   }
 
@@ -153,7 +348,13 @@ class RiskStudentService implements RiskStudentDAO {
   }
 
   public async insertRiskStudents(list: InsertRiskStudentsDTO['studentList']) {
-    const schedulesCoursesData = await db
+    const scheduleCodes = Array.from(
+      new Set(list.map((item) => item.scheduleCode))
+    )
+    const coursesCodes = Array.from(
+      new Set(list.map((item) => item.courseCode))
+    )
+    const scheduleData = await db
       .select({
         scheduleId: schedules.id,
         scheduleCode: schedules.code,
@@ -161,60 +362,94 @@ class RiskStudentService implements RiskStudentDAO {
       })
       .from(schedules)
       .innerJoin(courses, eq(schedules.courseId, courses.id))
-      .innerJoin(terms, eq(terms.id, schedules.termId))
-      .where(eq(terms.current, true))
-
-    const scheduleIds = list.map((item) => {
-      const schedule = schedulesCoursesData.find(
-        (data) =>
-          data.courseCode === item.courseCode &&
-          data.scheduleCode === item.scheduleCode
+      .innerJoin(terms, eq(schedules.termId, terms.id))
+      .where(
+        and(
+          inArray(schedules.code, scheduleCodes),
+          inArray(courses.code, coursesCodes),
+          eq(terms.current, true)
+        )
       )
-      if (!schedule) {
-        throw new Error('Schedule not found')
-      }
-      return schedule.scheduleId
-    })
+    const mapCourseSchedule = new Map(
+      scheduleData.map((item) => [
+        `${item.courseCode}-${item.scheduleCode}`,
+        item.scheduleId,
+      ])
+    )
 
+    list.forEach((item) => {
+      const key = `${item.courseCode}-${item.scheduleCode}`
+      if (!mapCourseSchedule.has(key)) {
+        throw new Error(
+          `No se encontró el horario ${item.scheduleCode} del curso ${item.courseCode}`
+        )
+      }
+    })
+    const studentCodes = Array.from(
+      new Set(list.map((item) => item.studentCode))
+    )
     const studentsData = await db
       .select({
         studentId: accounts.id,
         studentCode: accounts.code,
       })
       .from(accounts)
-      .where(
-        inArray(
-          accounts.code,
-          list.map((item) => item.studentCode)
-        )
-      )
+      .where(inArray(accounts.code, studentCodes))
+
     const studentsMap = new Map(
       studentsData.map((item) => [item.studentCode, item.studentId])
     )
 
-    const riskStudentData = list.map((item, idx) => ({
+    const riskStudentData = list.map((item) => ({
       studentId: studentsMap.get(item.studentCode)!,
-      scheduleId: scheduleIds[idx],
-      score: item.score,
+      scheduleId: mapCourseSchedule.get(
+        `${item.courseCode}-${item.scheduleCode}`
+      )!,
       reasonId: item.reasonId,
     }))
 
+    const existingRiskStudents = await db
+      .select({
+        studentCode: accounts.code,
+      })
+      .from(riskStudents)
+      .innerJoin(accounts, eq(riskStudents.studentId, accounts.id))
+      .where(
+        and(
+          inArray(
+            riskStudents.studentId,
+            studentsData.map((item) => item.studentId)
+          ),
+          inArray(
+            riskStudents.scheduleId,
+            scheduleData.map((item) => item.scheduleId)
+          )
+        )
+      )
+    if (existingRiskStudents.length > 0) {
+      throw new Error(
+        `Los siguientes alumnos ya están en riesgo: ` +
+          existingRiskStudents.map((item) => item.studentCode).join(', ')
+      )
+    }
+
     await db.insert(riskStudents).values(riskStudentData)
   }
+
   public async updateRiskStudentsOfFaculty({
-    facultyId,
+    specialityId,
   }: {
-    facultyId: Unit['id']
+    specialityId: Unit['id']
   }): Promise<void> {
-    const isFaculty = await db
+    const isSpeciality = await db
       .select({
         count: sql<string>`count(*)`,
       })
       .from(units)
-      .where(and(eq(units.id, facultyId), eq(units.type, 'faculty')))
+      .where(and(eq(units.id, specialityId), eq(units.type, 'speciality')))
 
-    if (+isFaculty[0].count === 0) {
-      throw new Error('Su unidad no es una facultad')
+    if (+isSpeciality[0].count === 0) {
+      throw new Error('Su unidad no es una espcialidad')
     }
 
     const listStudents = await db
@@ -226,7 +461,7 @@ class RiskStudentService implements RiskStudentDAO {
       .where(
         and(
           eq(accounts.id, riskStudents.studentId),
-          eq(accounts.unitId, facultyId)
+          eq(accounts.unitId, specialityId)
         )
       )
     if (listStudents.length === 0) {

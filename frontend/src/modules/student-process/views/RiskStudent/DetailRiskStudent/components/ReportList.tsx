@@ -46,16 +46,22 @@ export default function ReportList() {
     <ExpandibleAsidebar defaultOpen>
       <ScrollArea className="h-svh w-full">
         <div className="flex flex-col gap-2 flex-grow">
-          {reports?.map((report, idx) => (
-            <ReportsCard
-              key={report.id}
-              id={report.id}
-              date={moment(report.date).calendar()}
-              score={report.score}
-              selectReport={setSelectedReport}
-              selected={reportId ? reportId === report.id : idx === 0}
-            />
-          ))}
+          {(reports?.length ?? 0 > 0) ? (
+            reports?.map((report, idx) => (
+              <ReportsCard
+                key={report.id}
+                id={report.id}
+                date={moment(report.date).calendar()}
+                score={report.score}
+                selectReport={setSelectedReport}
+                selected={reportId ? reportId === report.id : idx === 0}
+              />
+            ))
+          ) : (
+            <p className="text-muted-foreground">
+              No se han solicitado actualizaciones de reporte de seguimiento
+            </p>
+          )}
         </div>
       </ScrollArea>
     </ExpandibleAsidebar>

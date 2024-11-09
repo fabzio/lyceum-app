@@ -6,7 +6,50 @@ import { PaginatedData } from '@/interfaces/PaginatedData'
 import { Unit } from '@/interfaces/models/Unit'
 
 export interface RiskStudentDAO {
-  getAllRiskStudent: () => Promise<
+  getAllRiskStudentOfSpeciality: ({
+    specialityId,
+    q,
+    page,
+    limit,
+    sortBy,
+  }: {
+    specialityId: Unit['id']
+    q?: string
+    page: number
+    limit: number
+    sortBy?: string
+  }) => Promise<
+    PaginatedData<{
+      student: {
+        code: Account['code']
+        name: Account['name']
+        surname: string
+      }
+      course: {
+        code: Course['code']
+        name: Course['name']
+      }
+      schedule: {
+        id: Schedule['id']
+        code: Schedule['code']
+      }
+      score: number | null
+      reason: string
+    }>
+  >
+  getAllRiskStudentOfProfessor({
+    professorId,
+    q,
+    page,
+    limit,
+    sortBy,
+  }: {
+    professorId: string
+    q?: string
+    page: number
+    limit: number
+    sortBy?: string
+  }): Promise<
     PaginatedData<{
       student: {
         code: Account['code']
@@ -59,8 +102,8 @@ export interface RiskStudentDAO {
 
   insertRiskStudents(list: InsertRiskStudentsDTO['studentList']): Promise<void>
   updateRiskStudentsOfFaculty({
-    facultyId,
+    specialityId,
   }: {
-    facultyId: Unit['id']
+    specialityId: Unit['id']
   }): Promise<void>
 }

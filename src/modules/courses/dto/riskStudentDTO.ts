@@ -7,7 +7,6 @@ export const insertRiskStudentsDTO = z.object({
       scheduleCode: z.string(),
       courseCode: z.string(),
       reasonId: z.number(),
-      score: z.number(),
     })
   ),
 })

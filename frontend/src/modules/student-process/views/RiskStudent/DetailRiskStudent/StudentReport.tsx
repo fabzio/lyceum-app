@@ -10,6 +10,8 @@ import ReportDetail from './components/ReportDetail'
 import RiskStudentTrack from './components/RiskStudentTrack'
 import Need from '@frontend/components/Need'
 import { StudentProcessPermissionsDict } from '@frontend/interfaces/enums/permissions/StudentProcess'
+import RiskStudentData from './components/RiskStudentData'
+import RiskStudentsProfessorData from './components/RiskStudentsProfessorData'
 
 export default function StudentReport() {
   const { code } = useParams({
@@ -31,7 +33,7 @@ export default function StudentReport() {
     <div className="flex w-full h-full flex-col">
       <div className="flex items-center p-2">
         <div className="flex items-center gap-2 h-10 w-full p-2 justify-between">
-          <h1 className="text-3xl font-bold">Reporte de estado</h1>
+          <h2 className="text-3xl font-bold">Reporte de estado</h2>
           {selectedRiskStudent.state ? (
             <Button variant="secondary" disabled>
               No se ha solicitado un nuevo reporte
@@ -52,40 +54,16 @@ export default function StudentReport() {
       <Separator />
 
       <section className="space-y-4">
-        <ReportDetail />
-
-        <div className="flex flex-col w-full items-center">
-          <h2 className="font-semibold text-xl">Rendimiento histórico</h2>
-          <RiskStudentTrack />
-        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="flex flex-col gap-1">
-            <Label className="text-xl font-semibold">Alumno</Label>
-            <Label className="text-muted-foreground">Nombre</Label>
-            <p>
-              {selectedRiskStudent.student.name +
-                ' ' +
-                selectedRiskStudent.student.surname}
-            </p>
-
-            <Label className="text-muted-foreground">Código</Label>
-            <p>{selectedRiskStudent.student.code}</p>
-            <Label className="text-muted-foreground">Correo</Label>
-            <p>{selectedRiskStudent.student.email}</p>
-          </div>
-          <div className="flex flex-col gap-1">
-            <Label className="text-xl font-semibold">Docente</Label>
-            <Label className="text-muted-foreground">Nombre</Label>
-            <p>
-              {selectedRiskStudent.schedule.professorName +
-                ' ' +
-                selectedRiskStudent.schedule.professorSurname}
-            </p>
-            <Label className="text-muted-foreground">Código</Label>
-            <p>{selectedRiskStudent.schedule.professorCode}</p>
-            <Label className="text-muted-foreground">Correo</Label>
-            <p>{selectedRiskStudent.schedule.professorEmail}</p>
-          </div>
+          <RiskStudentData selectedRiskStudent={selectedRiskStudent} />
+          <RiskStudentsProfessorData
+            selectedRiskStudent={selectedRiskStudent}
+          />
+        </div>
+        <Separator className="my-4" />
+        <div>
+          <Label className="text-xl font-semibold">Motivo de riesgo</Label>
+          <p>{selectedRiskStudent.reason}</p>
         </div>
         <Separator className="my-4" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -101,6 +79,11 @@ export default function StudentReport() {
             <Label className="text-xl font-semibold">Horario</Label>
             <p>{selectedRiskStudent.schedule.code}</p>
           </div>
+        </div>
+        <Separator className="my-4" />
+        <ReportDetail />
+        <div className="flex flex-col w-full items-center">
+          <RiskStudentTrack />
         </div>
       </section>
     </div>

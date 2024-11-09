@@ -10,8 +10,10 @@ import { Filters, PaginatedData } from '@frontend/interfaces/types'
 import { Unit } from '@frontend/interfaces/models/Unit'
 
 class RiskStudentService {
-  public static async getRiskStudents(
-    filters: Filters
+  public static async getRiskStudentsOfSpeciality(
+    filters: Filters & {
+      specialityId: Unit['id']
+    }
   ): Promise<PaginatedData<RiskStudentGeneral>> {
     try {
       const res = await http.get('/courses/risk-students', {
@@ -20,8 +22,38 @@ class RiskStudentService {
           page: filters.pageIndex || 0,
           limit: filters.pageSize || 5,
           sortBy: filters.sortBy || 'code.asc',
+          specialityId: filters.specialityId,
         },
       })
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data as PaginatedData<RiskStudentGeneral>
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+  public static async getRiskStudentsOfProfessor(
+    filters: Filters & {
+      professorId: Account['id']
+    }
+  ): Promise<PaginatedData<RiskStudentGeneral>> {
+    try {
+      const res = await http.get(
+        `/courses/risk-students/professor/${filters.professorId}`,
+        {
+          params: {
+            q: filters.q || '',
+            page: filters.pageIndex || 0,
+            limit: filters.pageSize || 5,
+            sortBy: filters.sortBy || 'code.asc',
+          },
+        }
+      )
       const response = res.data as ResponseAPI
       if (!response.success) {
         throw new Error(response.message)
@@ -94,7 +126,6 @@ class RiskStudentService {
       scheduleCode: Schedule['code']
       courseCode: Course['code']
       reasonId: number
-      score: number
     }[]
   ): Promise<void> {
     try {
@@ -103,21 +134,24 @@ class RiskStudentService {
       })
       const response = res.data as ResponseAPI
       if (!response.success) {
-        throw new Error('Error')
+        throw new Error(response.message)
       }
     } catch (error) {
-      console.error(error)
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
     }
   }
 
   public static async updateRiskStudentReport({
-    facultyId,
+    specialityId,
   }: {
-    facultyId: Unit['id']
+    specialityId: Unit['id']
   }): Promise<void> {
     try {
       const res = await http.put('/courses/risk-students', {
-        facultyId,
+        specialityId,
       })
       const response = res.data as ResponseAPI
       if (!response.success) {

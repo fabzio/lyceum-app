@@ -58,6 +58,16 @@ export default function MasiveCoursesDialog() {
     const dataJson = await getCsvData<
       Pick<Course, 'code' | 'credits' | 'name'>
     >(data.file)
+    dataJson.forEach((course) => {
+      if (!csvSchema.safeParse(course).success) {
+        toast({
+          title: 'Error',
+          variant: 'destructive',
+          description: `Error en curso ${course.code}, ${csvSchema.safeParse(course).error?.message}`,
+        })
+        return
+      }
+    })
     mutate(dataJson)
   }
   return (
@@ -109,6 +119,11 @@ export default function MasiveCoursesDialog() {
     </Dialog>
   )
 }
+const csvSchema = z.object({
+  code: z.string().length(6),
+  name: z.string(),
+  credits: z.number(),
+})
 
 const formSchema = z.object({
   file: z.instanceof(File, { message: 'Debe seleccionar un archivo' }),

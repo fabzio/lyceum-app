@@ -8,6 +8,8 @@ import RiskStudentService from '@frontend/modules/student-process/services/riskS
 import { sortByToState, stateToSortBy } from '@frontend/lib/table'
 import { useNavigate } from '@tanstack/react-router'
 import { RiskStudentGeneral } from '@frontend/modules/student-process/interfaces/RIskStudentGeneral'
+import { useSessionStore } from '@frontend/store'
+import { StudentProcessPermissionsDict } from '@frontend/interfaces/enums/permissions/StudentProcess'
 
 const DEFAULT_PAGE_INDEX = 0
 const DEFAULT_PAGE_SIZE = 5
@@ -16,10 +18,24 @@ export default function RiskStudentTable() {
   const navigate = useNavigate({
     from: '/cursos/alumnos-riesgo',
   })
+  const { session, getRoleWithPermission } = useSessionStore()
+  const role = getRoleWithPermission(
+    StudentProcessPermissionsDict.LOAD_RISK_STUDENTS
+  )
   const { filters, setFilters } = useFilters('/_auth/cursos/alumnos-riesgo')
   const { data } = useQuery({
     queryKey: [QueryKeys.courses.RISK_STUDENTS, filters],
-    queryFn: () => RiskStudentService.getRiskStudents(filters),
+    queryFn: role?.unitId
+      ? () =>
+          RiskStudentService.getRiskStudentsOfSpeciality({
+            ...filters,
+            specialityId: role.unitId,
+          })
+      : () =>
+          RiskStudentService.getRiskStudentsOfProfessor({
+            ...filters,
+            professorId: session!.id,
+          }),
     placeholderData: keepPreviousData,
   })
   const paginationState = {

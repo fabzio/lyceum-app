@@ -27,7 +27,15 @@ export default function RiskStudentTrack() {
         studentCode: code,
       }),
   })
-  if (isLoading || !reports || reports.length === 0) return null
+  if (isLoading || !reports || reports.length === 0)
+    return (
+      <>
+        <h2 className="font-semibold text-xl">Rendimiento histórico</h2>
+        <p className="text-muted-foreground">
+          No se han solicitado reportes de seguimiento
+        </p>
+      </>
+    )
   const data = reports
     .map((report) => ({
       score: report.score,
@@ -35,32 +43,29 @@ export default function RiskStudentTrack() {
     }))
     .reverse()
   return (
-    <ChartContainer
-      className="h-[300px] w-4/5 min-h-[200px]"
-      config={chartConfig}
-    >
-      <LineChart
-        data={data}
-        accessibilityLayer
-        margin={{
-          left: 12,
-          right: 12,
-        }}
+    <>
+      <ChartContainer
+        className="h-[300px] w-4/5 min-h-[200px] pt-5"
+        config={chartConfig}
       >
-        <Line
-          dataKey="score"
-          type="natural"
-          stroke="var(--color-score)"
-          strokeWidth={2}
-        />
-        <XAxis dataKey="date" tickMargin={8} />
-        <CartesianGrid vertical={false} />
-        <ChartTooltip
-          cursor={false}
-          content={<ChartTooltipContent hideLabel />}
-        />
-      </LineChart>
-    </ChartContainer>
+        <LineChart
+          data={data}
+          accessibilityLayer
+          margin={{
+            left: 12,
+            right: 12,
+          }}
+        >
+          <Line dataKey="score" stroke="var(--color-score)" strokeWidth={2} />
+          <XAxis dataKey="date" tickMargin={8} />
+          <CartesianGrid vertical={false} />
+          <ChartTooltip
+            cursor={false}
+            content={<ChartTooltipContent hideLabel />}
+          />
+        </LineChart>
+      </ChartContainer>
+    </>
   )
 }
 

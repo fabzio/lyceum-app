@@ -32,7 +32,7 @@ export default function UpdateConfirmationDialog() {
       toast({
         title: 'Solicitud enviada',
         description:
-          'Se ha enviado la solicitud de actualización a todos los docentes',
+          'Se ha enviado la solicitud de actualización de los reportes de los estudiantes en riesgo de su especialidad',
       })
     },
     onError: (error) => {
@@ -45,7 +45,7 @@ export default function UpdateConfirmationDialog() {
   })
   const handleConfirm = () => {
     mutate({
-      facultyId: getRoleWithPermission(
+      specialityId: getRoleWithPermission(
         StudentProcessPermissionsDict.REQUEST_RISK_STUDENT_REPORT
       )!.unitId,
     })
