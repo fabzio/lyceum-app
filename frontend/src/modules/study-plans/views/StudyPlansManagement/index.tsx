@@ -11,7 +11,13 @@ export default function StudyPlanManagement() {
           <NewStudyPlan />
         </Need>
       </div>
-      <Need permissions={StudyPlanPermissionsDict.READ_STUDY_PLAN}>
+      <Need
+        some
+        permissions={[
+          StudyPlanPermissionsDict.READ_STUDY_PLAN,
+          StudyPlanPermissionsDict.MANAGE_STUDY_PLAN,
+        ]}
+      >
         <div>
           <StudyPlanTable />
         </div>

@@ -18,7 +18,13 @@ export default function CourseManagement() {
           </div>
         </Need>
       </div>
-      <Need permissions={StudyPlanPermissionsDict.READ_COURSES}>
+      <Need
+        some
+        permissions={[
+          StudyPlanPermissionsDict.READ_COURSES,
+          StudyPlanPermissionsDict.MANAGE_COURSES,
+        ]}
+      >
         <CourseTable />
       </Need>
     </div>
