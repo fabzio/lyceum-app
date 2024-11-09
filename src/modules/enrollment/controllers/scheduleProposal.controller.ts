@@ -11,7 +11,10 @@ import {
 } from '../dtos'
 import { z, ZodObject } from 'zod'
 import { ScheduleProposalDAO } from '../dao'
-import { getScheduleProposalsInUnitDTO } from '../dtos/scheduleProposalDTO'
+import {
+  getScheduleProposalCoursesDTO,
+  getScheduleProposalsInUnitDTO,
+} from '../dtos/scheduleProposalDTO'
 
 class ScheduleProposalController {
   private router = new Hono()
@@ -194,6 +197,7 @@ class ScheduleProposalController {
 
   public getCoursesProposal = this.router.get(
     '/:enrollmentProposalId',
+    zValidator('query', getScheduleProposalCoursesDTO),
     zValidator(
       'param',
       z.object({
@@ -201,12 +205,16 @@ class ScheduleProposalController {
       })
     ),
     async (c) => {
+      const params = c.req.valid('query')
       const { enrollmentProposalId } = c.req.valid('param')
       try {
         const response: ResponseAPI = {
-          data: await this.scheduleProposalService.getCoursesProposal(
-            parseInt(enrollmentProposalId)
-          ),
+          data: await this.scheduleProposalService.getCoursesProposal({
+            limit: +params.limit,
+            page: +params.page,
+            sortBy: params.sortBy,
+            proposalID: +parseInt(enrollmentProposalId),
+          }),
           message: 'Courses retrieved successfully',
           success: true,
         }

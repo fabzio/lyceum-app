@@ -1,7 +1,5 @@
-import AsingProfessorsToCoursesDialog from '../components/AsingProfessorsToCoursesDialog'
 import CourseProposalTable from '../../EnrollmentDistribution/components/CourseProposalTable'
 import { SearchCourseProposalInput } from '../../EnrollmentDistribution/components/SearchCourseProposalInput'
-import EnrollmentProposalAccordion from '../components/EnrollmentProposalAccordion'
 import Need from '@frontend/components/Need'
 import { UserPermissionsDict } from '@frontend/interfaces/enums/permissions/Users'
 
@@ -14,11 +12,11 @@ export default function EnrollmentProposeRequest() {
       {/* TODO: Agregar permisos */}
       <Need permissions={[UserPermissionsDict.READ_STUDENTS]}>
         <CourseProposalTable />
-        <EnrollmentProposalAccordion />
+        {/* <EnrollmentProposalAccordion /> */}
       </Need>
-      <div>
+      {/*       <div>
         <AsingProfessorsToCoursesDialog />
-      </div>
+      </div> */}
     </div>
   )
 }

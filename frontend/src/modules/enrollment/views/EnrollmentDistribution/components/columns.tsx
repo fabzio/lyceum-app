@@ -1,10 +1,12 @@
 import { Button } from '@frontend/components/ui/button'
-import { CourseProposal } from '@frontend/modules/enrollment/interfaces/CourseProposal'
+import { CourseProposition } from '@frontend/modules/enrollment/interfaces/CourseProposition'
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown } from 'lucide-react'
-export const CourseProposalTableColumns: ColumnDef<CourseProposal>[] = [
+import { CourseActionCell } from '../../EnrollmentPropose/components/CourseActionButton.tsx'
+
+export const CourseProposalTableColumns: ColumnDef<CourseProposition>[] = [
   {
-    accessorKey: 'courseId',
+    accessorKey: 'courseCode',
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -15,7 +17,7 @@ export const CourseProposalTableColumns: ColumnDef<CourseProposal>[] = [
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue('courseId')}</div>
+      <div className="capitalize">{row.getValue('courseCode')}</div>
     ),
   },
   {
@@ -47,7 +49,7 @@ export const CourseProposalTableColumns: ColumnDef<CourseProposal>[] = [
     cell: ({ row }) => <div>{row.getValue('vacants')}</div>,
   },
   {
-    accessorKey: 'visible',
+    accessorKey: 'numberVisible',
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -57,10 +59,10 @@ export const CourseProposalTableColumns: ColumnDef<CourseProposal>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div>{row.getValue('visible')}</div>,
+    cell: ({ row }) => <div>{row.getValue('numberVisible')}</div>,
   },
   {
-    accessorKey: 'hidden',
+    accessorKey: 'numberHidden',
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -70,12 +72,17 @@ export const CourseProposalTableColumns: ColumnDef<CourseProposal>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div>{row.getValue('hidden')}</div>,
+    cell: ({ row }) => <div>{row.getValue('numberHidden')}</div>,
   },
   {
     accessorKey: 'actions',
     header: 'Acciones',
-    //TODO: Modificar funcionalidad para agregar
-    //cell: ({ row }) => {
+    cell: ({ row }) => (
+      <CourseActionCell
+        courseName={row.getValue('courseName')}
+        courseCode={row.getValue('courseCode')}
+        courseId={row.original.id}
+      />
+    ),
   },
 ]

@@ -1,5 +1,6 @@
 import db from '@/database'
 import {
+  courses,
   enrollmentProposal,
   enrollmentProposalCourses,
   terms,
@@ -365,21 +366,52 @@ class ScheduleProposalService implements ScheduleProposalDAO {
     return proposal
   }
 
-  public async getCoursesProposal(proposalId: number): Promise<
-    {
-      id: number
-      enrollmentProposalId: number
-      courseId: number
-      vacanciesPerSchema: number
-      hiddenSchedules: number
-      visibleSchedules: number
-    }[]
-  > {
-    const proposalCourses = await db
-      .select()
+  public async getCoursesProposal(params: {
+    proposalID: number
+    page: number
+    limit: number
+    sortBy?: string
+  }): Promise<PaginatedData<{
+    proposalID: number
+    courseId: number
+    courseCode: string
+    courseName: string
+    vacants: number
+    numberVisible: number
+    numberHidden: number
+  }> | null> {
+    const { proposalID, page, limit, sortBy } = params
+
+    const [{ total }] = await db
+      .select({
+        total: sql<string>`count(*)`,
+      })
       .from(enrollmentProposalCourses)
-      .where(eq(enrollmentProposalCourses.enrollmentProposalId, proposalId))
-    return proposalCourses
+      .where(eq(enrollmentProposalCourses.enrollmentProposalId, proposalID))
+
+    const proposalCourses = await db
+      .select({
+        proposalID: enrollmentProposalCourses.enrollmentProposalId,
+        courseId: enrollmentProposalCourses.courseId,
+        courseCode: courses.code,
+        courseName: courses.name,
+        vacants: enrollmentProposalCourses.vacanciesPerSchema,
+        numberVisible: enrollmentProposalCourses.visibleSchedules,
+        numberHidden: enrollmentProposalCourses.hiddenSchedules,
+      })
+      .from(enrollmentProposalCourses)
+      .innerJoin(courses, eq(enrollmentProposalCourses.courseId, courses.id))
+      .where(eq(enrollmentProposalCourses.enrollmentProposalId, proposalID))
+      .offset(page * limit)
+      .limit(limit)
+
+    return {
+      result: proposalCourses,
+      rowCount: +total,
+      currentPage: page,
+      totalPages: Math.ceil(+total / limit),
+      hasNext: +total > (page + 1) * limit,
+    }
   }
 
   public async deleteCoursesInScheduleProposal(

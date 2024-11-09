@@ -14,6 +14,7 @@ export default function CourseProposalTable() {
   const { filters, setFilters } = useFilters(
     '/_auth/matricula/propuesta-horarios/$requestNumber'
   )
+
   const { data: students } = useQuery({
     queryKey: [QueryKeys.users.STUDENTS, filters],
     queryFn: () => CourseProposalService.fetchCourseProposals(filters),
