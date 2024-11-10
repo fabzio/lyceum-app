@@ -192,21 +192,32 @@ export default function NewStudentDialog() {
 }
 
 const formSchema = z.object({
-  name: z.string({
-    required_error: 'El nombre es requerido',
-  }),
-  firstSurname: z.string({
-    required_error: 'El apellido paterno es requerido',
-  }),
+  name: z
+    .string({
+      required_error: 'El nombre es requerido',
+    })
+    .min(1, { message: 'El nombre es requerido' }),
+  firstSurname: z
+    .string({
+      required_error: 'El apellido paterno es requerido',
+    })
+    .min(1, { message: 'El apellido paterno es requerido' }),
   secondSurname: z.string({
     required_error: 'El apellido materno es requerido',
   }),
-  email: z.string({
-    required_error: 'El email es requerido',
-  }),
-  code: z.string({
-    required_error: 'El código es requerido',
-  }),
+  email: z
+    .string({
+      required_error: 'El email es requerido',
+    })
+    .email({ message: 'El email no es válido' })
+    .refine((value) => value.endsWith('@pucp.edu.pe'), {
+      message: 'El email debe ser institucional',
+    }),
+  code: z
+    .string({
+      required_error: 'El código es requerido',
+    })
+    .length(8, { message: 'El código debe tener 8 caracteres' }),
   speciality: z.string({
     required_error: 'La especialidad es requerida',
   }),
