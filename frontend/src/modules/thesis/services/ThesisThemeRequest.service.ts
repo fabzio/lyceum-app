@@ -5,6 +5,7 @@ import { ThesisThemeRequestAction } from '../interfaces/ThesisThemeRequestAction
 import { notFound } from '@tanstack/react-router'
 import axios from 'axios'
 import { Thesis } from '../interfaces/Thesis'
+import { Account } from '@frontend/interfaces/models/Account'
 
 class ThesisThemeRequestService {
   public static async getThesisThemeDocuments(docId: string) {
@@ -59,9 +60,85 @@ class ThesisThemeRequestService {
       throw error
     }
   }
-  public static async getThesisThemeRequest() {
+  public static async getStudentThesisThemeRequest({
+    studentCode,
+  }: {
+    studentCode: Account['code']
+  }) {
     try {
-      const res = await http.get('/thesis/theme')
+      const res = await http.get(`/thesis/theme/student/${studentCode}`)
+      const response = res.data as ResponseAPI
+
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data as ThesisThemeRequest[]
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const errorResponse = error.response?.data as ResponseAPI
+        if (errorResponse) {
+          throw new Error(errorResponse.message)
+        }
+      }
+      throw error
+    }
+  }
+
+  public static async getAdvisorThesisThemeRequest({
+    advisorCode,
+  }: {
+    advisorCode: Account['code']
+  }) {
+    try {
+      const res = await http.get(`/thesis/theme/advisor/${advisorCode}`)
+      const response = res.data as ResponseAPI
+
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data as ThesisThemeRequest[]
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const errorResponse = error.response?.data as ResponseAPI
+        if (errorResponse) {
+          throw new Error(errorResponse.message)
+        }
+      }
+      throw error
+    }
+  }
+
+  public static async getAreaThesisThemeRequest({
+    areaId,
+  }: {
+    areaId: number
+  }) {
+    try {
+      const res = await http.get(`/thesis/theme/area/${areaId}`)
+      const response = res.data as ResponseAPI
+
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data as ThesisThemeRequest[]
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const errorResponse = error.response?.data as ResponseAPI
+        if (errorResponse) {
+          throw new Error(errorResponse.message)
+        }
+      }
+      throw error
+    }
+  }
+
+  public static async getSpecialtyThesisThemeRequest({
+    specialtiyId,
+  }: {
+    specialtiyId: number
+  }) {
+    try {
+      const res = await http.get(`/thesis/theme/speciality/${specialtiyId}`)
       const response = res.data as ResponseAPI
 
       if (!response.success) {

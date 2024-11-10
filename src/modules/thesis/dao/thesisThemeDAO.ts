@@ -3,7 +3,64 @@ import { ThesisDetail } from '../interfaces/ThesisDetail'
 import { Account } from '@/interfaces/models/Account'
 
 export interface ThesisThemeDAO {
-  getThesisThemeRequest(): Promise<
+  getStudentThesisRequests({ studentCode }: { studentCode: string }): Promise<
+    {
+      code: string
+      title: string
+      date: Date
+      lastAction: {
+        id: number
+        action: string
+        role: string
+      }
+      applicant: {
+        name: string
+        code: string
+      }
+    }[]
+  >
+  getProfessorThesisRequests({
+    professorCode,
+  }: {
+    professorCode: string
+  }): Promise<
+    {
+      code: string
+      title: string
+      date: Date
+      lastAction: {
+        id: number
+        action: string
+        role: string
+      }
+      applicant: {
+        name: string
+        code: string
+      }
+    }[]
+  >
+
+  getAreaThesisRequests({ areaId }: { areaId: number }): Promise<
+    {
+      code: string
+      title: string
+      date: Date
+      lastAction: {
+        id: number
+        action: string
+        role: string
+      }
+      applicant: {
+        name: string
+        code: string
+      }
+    }[]
+  >
+  getSpecialityThesisThemeRequest({
+    specialityId,
+  }: {
+    specialityId: number
+  }): Promise<
     {
       code: string
       title: string

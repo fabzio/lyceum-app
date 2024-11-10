@@ -10,7 +10,7 @@ class ThesisThemeRoute implements Route {
     this.initializeRoutes()
   }
   private initializeRoutes() {
-    this.router.route('/', this.thesisThemeController.getThesisThemes)
+    this.router.route('/', this.thesisThemeController.getStudentThesisThemes)
   }
 }
 export default ThesisThemeRoute
