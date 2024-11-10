@@ -15,7 +15,7 @@ export default function ActionButton({ refSubmitButtom }: Props) {
     from: '/_auth/usuarios/docentes/$code',
   })
   return (
-    <div>
+    <div className="flex justify-end w-full py-2">
       {mode !== 'view' && (
         <ConfirmationDialog refSubmitButtom={refSubmitButtom} />
       )}

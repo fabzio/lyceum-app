@@ -25,9 +25,12 @@ export default function GeneralInfo({ refSubmitButtom, professor }: Props) {
   return (
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <fieldset disabled={mode === 'view'}>
-          <AcademicInformation />
+        <fieldset
+          disabled={mode === 'view'}
+          className="px-2 flex flex-col gap-2"
+        >
           <Personalnformation />
+          <AcademicInformation />
           <ContactInfomation />
         </fieldset>
         <button hidden={true} type={'submit'} ref={refSubmitButtom} />
