@@ -6,6 +6,7 @@ import { StudentProcessPermissionsDict } from './StudentProcess'
 import { StudyPlanPermissions } from './StudyPlan'
 import { ThesisPermissionsDict } from './Thesis'
 import { UserPermissionsDict } from './Users'
+import { UnitPermissionsDict } from './Units'
 
 export type PermissionCode =
   | SecurityPermissionsDict
@@ -16,4 +17,5 @@ export type PermissionCode =
   | EnrollmentPermissionsDict
   | HiringPermissionsDict
   | FAQPermissionsDict
+  | UnitPermissionsDict
   | 'TODO_PERMISSION'

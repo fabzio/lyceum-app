@@ -26,8 +26,8 @@ export default function AsideDesktop({ asideElements = [] }: Props) {
             element.submodules,
             getAllPermissions()
           )
-          return element.moduleCode !== 'HOME' ? (
-            <div key={element.moduleCode} className="relative">
+          return element.code !== 'HOME' ? (
+            <div key={element.code} className="relative">
               <MenubarMenu>
                 <MenubarTrigger>{element.icon}</MenubarTrigger>
                 <MenubarContent className="absolute left-16 top-[-45px]">
@@ -50,7 +50,7 @@ export default function AsideDesktop({ asideElements = [] }: Props) {
               </MenubarMenu>
             </div>
           ) : (
-            <Link key={element.moduleCode} to={element.path}>
+            <Link key={element.code} to={element.path}>
               <Button
                 className="flex items-center justify-center w-full h-12"
                 variant="ghost"

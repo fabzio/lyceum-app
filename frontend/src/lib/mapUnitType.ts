@@ -8,3 +8,12 @@ export const mapUnitType = {
   [UnitType.SECTION]: 'Sección',
   [UnitType.AREA]: 'Área',
 } as const
+
+export const mapParentUnitType = {
+  [UnitType.UNIVERSITY]: null,
+  [UnitType.FACULTY]: UnitType.UNIVERSITY,
+  [UnitType.SPECIALTY]: UnitType.FACULTY,
+  [UnitType.AREA]: UnitType.SPECIALTY,
+  [UnitType.DEPARTMENT]: UnitType.UNIVERSITY,
+  [UnitType.SECTION]: UnitType.DEPARTMENT,
+} as const

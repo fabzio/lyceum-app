@@ -4,24 +4,58 @@ import { zValidator } from '@hono/zod-validator'
 import { UnitsInsertSchema, unitsSchema } from '@/database/schema/units'
 import { z } from 'zod'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
+import { insertUnitDTO } from '../dto/UnitDTO'
 
 class UnitController {
   private router = new Hono()
   private unitService: UnitService = new UnitService()
-
+  public getUnitsByTypePaginated = this.router.get(
+    '/paginated',
+    zValidator(
+      'query',
+      z.object({
+        q: z.string().optional(),
+        page: z.coerce.number(),
+        limit: z.coerce.number(),
+        sortBy: z.string().optional(),
+        unitType: z.string(),
+      })
+    ),
+    async (c) => {
+      const { q, page, limit, sortBy, unitType } = c.req.valid('query')
+      try {
+        const response = await this.unitService.getUnitsByTypePaginated({
+          q,
+          page,
+          limit,
+          sortBy,
+          type: unitType as UnitsInsertSchema['type'],
+        })
+        return c.json({
+          data: response,
+          message: 'Units retrieved',
+          success: true,
+        })
+      } catch (error) {
+        if (error instanceof LyceumError) c.status(error.code)
+        throw error
+      }
+    }
+  )
   public getUnitsByType = this.router.get(
     '/',
     zValidator(
       'query',
       z.object({
         type: z.string(),
+        q: z.string().optional(),
       })
     ),
     async (c) => {
-      const { type } = c.req.valid('query')
+      const { q, type } = c.req.valid('query')
       const types = type.split(',') as UnitsInsertSchema['type'][]
       try {
-        const response = await this.unitService.getUnitsByType(types)
+        const response = await this.unitService.getUnitsByType({ q, types })
         return c.json({
           data: response,
           message: 'Units retrieved',
@@ -60,7 +94,7 @@ class UnitController {
 
   public createUnits = this.router.post(
     '/',
-    zValidator('json', z.array(unitsSchema)),
+    zValidator('json', z.array(insertUnitDTO)),
     async (c) => {
       const unitList = c.req.valid('json')
       try {

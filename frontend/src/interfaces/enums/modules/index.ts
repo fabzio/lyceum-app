@@ -11,4 +11,4 @@ export const ModulesDict = {
   HIRING: 'HIRING',
 } as const
 
-export type ModulesDict = keyof typeof ModulesDict
+export type ModulesDict = (typeof ModulesDict)[keyof typeof ModulesDict]

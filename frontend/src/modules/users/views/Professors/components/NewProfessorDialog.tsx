@@ -41,7 +41,9 @@ export default function NewProfessorDialog() {
   const { data } = useQuery({
     queryKey: [QueryKeys.unit.UNITS],
     queryFn: () =>
-      UnitService.getUnitsByType(`${UnitType.DEPARTMENT},${UnitType.SECTION}`),
+      UnitService.getUnitsByType({
+        type: `${UnitType.DEPARTMENT},${UnitType.SECTION}`,
+      }),
   })
   const { mutate, isPending } = useMutation({
     mutationFn: ProfessorService.addProfessor,

@@ -86,6 +86,9 @@ export default function UploadCSVDialog() {
         return
       }
     })
+    if (preparedData.some((register) => register === undefined)) {
+      return
+    }
     mutate(
       preparedData.map((register) => ({
         courseCode: register!['Código de curso'],

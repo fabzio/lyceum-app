@@ -35,7 +35,9 @@ export default function AcademicInformation() {
   const { data: units } = useQuery({
     queryKey: [QueryKeys.unit.UNITS],
     queryFn: () =>
-      UnitService.getUnitsByType(`${UnitType.DEPARTMENT},${UnitType.SECTION}`),
+      UnitService.getUnitsByType({
+        type: `${UnitType.DEPARTMENT},${UnitType.SECTION}`,
+      }),
   })
   return (
     <Card>

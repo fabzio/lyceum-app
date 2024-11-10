@@ -34,7 +34,7 @@ export default function AcademicInformation() {
   const form = useFormContext()
   const { data: specialityList } = useQuery({
     queryKey: [QueryKeys.unit.UNITS],
-    queryFn: () => UnitService.getUnitsByType(UnitType.SPECIALTY),
+    queryFn: () => UnitService.getUnitsByType({ type: UnitType.SPECIALTY }),
   })
   return (
     <Card>

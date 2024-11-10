@@ -1,13 +1,14 @@
 import {
   EnrollmentPermissions,
   FAQPermissions,
+  HiringPermissions,
   SecurityPermissions,
   StudentProcessPermissions,
   StudyPlanPermissions,
   ThesisPermissions,
+  UnitPermissions,
   UsersPermissions,
 } from '../permissions'
-import { HiringPermissions } from '../permissions/Hiring'
 
 export const BaseModulesDict = {
   THESIS: 'THESIS',
@@ -17,6 +18,7 @@ export const BaseModulesDict = {
   USERS: 'USERS',
   SECURITY: 'SECURITY',
   FAQ: 'FAQ',
+  UNITS: 'UNITS',
 } as const
 
 export type BaseModulesDict = keyof typeof BaseModulesDict
@@ -61,6 +63,12 @@ const BaseModules = [
     name: 'Contratación',
     code: 'HIRING',
     permissions: HiringPermissions,
+  },
+  {
+    name: 'Unidades',
+    code: BaseModulesDict.UNITS,
+
+    permissions: UnitPermissions,
   },
 ] as const
 
