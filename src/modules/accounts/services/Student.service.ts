@@ -105,7 +105,7 @@ class StudentService implements StudentDAO {
         secondSurname: accounts.secondSurname,
         email: accounts.email,
         state: accounts.state,
-        speciallity: units.name,
+        speciality: units.id,
       })
       .from(accounts)
       .innerJoin(units, eq(units.id, accounts.unitId))

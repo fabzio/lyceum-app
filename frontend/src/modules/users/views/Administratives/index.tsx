@@ -3,6 +3,7 @@ import SearchAdministrativeInput from './components/SearchAdministrativeInput'
 import AdministrativeTable from './components/AdministrativeTable'
 import Need from '@frontend/components/Need'
 import { UserPermissionsDict } from '@frontend/interfaces/enums/permissions/Users'
+import NewAdministrativeDialog from './components/NewAdministrativeDialog'
 
 export default function AdministrativeManagement() {
   return (
@@ -12,6 +13,7 @@ export default function AdministrativeManagement() {
         <Need permissions={UserPermissionsDict.WRITE_ADMINISTRIVES}>
           <div className="flex gap-2">
             <MasiveAdministrativesDialog />
+            <NewAdministrativeDialog />
           </div>
         </Need>
       </div>

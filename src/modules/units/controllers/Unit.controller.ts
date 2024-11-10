@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { UnitService } from '../services'
 import { zValidator } from '@hono/zod-validator'
-import { unitsSchema } from '@/database/schema/units'
+import { UnitsInsertSchema, unitsSchema } from '@/database/schema/units'
 import { z } from 'zod'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
 
@@ -14,13 +14,14 @@ class UnitController {
     zValidator(
       'query',
       z.object({
-        type: unitsSchema.shape.type,
+        type: z.string(),
       })
     ),
     async (c) => {
       const { type } = c.req.valid('query')
+      const types = type.split(',') as UnitsInsertSchema['type'][]
       try {
-        const response = await this.unitService.getUnitsByType(type)
+        const response = await this.unitService.getUnitsByType(types)
         return c.json({
           data: response,
           message: 'Units retrieved',

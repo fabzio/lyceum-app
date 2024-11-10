@@ -27,7 +27,10 @@ export default function GeneralInfo({ administative, refSubmitButtom }: Props) {
   return (
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)}>
-        <fieldset disabled={mode === 'view'}>
+        <fieldset
+          disabled={mode === 'view'}
+          className="px-2 flex flex-col gap-2"
+        >
           <PersonalInformation />
           <ContacInformation />
         </fieldset>

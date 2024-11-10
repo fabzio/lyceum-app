@@ -3,7 +3,7 @@ import http from '@frontend/lib/http'
 import axios from 'axios'
 
 class UnitService {
-  public static async getUnitsByType(type: Unit['unitType']) {
+  public static async getUnitsByType(type: string) {
     try {
       const res = await http.get('/unit/units', {
         params: {

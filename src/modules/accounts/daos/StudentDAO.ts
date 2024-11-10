@@ -9,7 +9,7 @@ export interface StudentDAO {
     secondSurname: string
     email: string
     state: 'active' | 'inactive' | 'deleted'
-    speciallity: string
+    speciality: number
   }>
   createStudent: (
     studentList: {

@@ -20,6 +20,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@frontend/components/ui/select'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import { UnitType } from '@frontend/interfaces/enums'
+import UnitService from '@frontend/modules/unit/services/Unit.service'
+import { useQuery } from '@tanstack/react-query'
 import { useSearch } from '@tanstack/react-router'
 import { useFormContext } from 'react-hook-form'
 
@@ -28,6 +32,10 @@ export default function AcademicInformation() {
     from: '/_auth/usuarios/estudiantes/$code',
   })
   const form = useFormContext()
+  const { data: specialityList } = useQuery({
+    queryKey: [QueryKeys.unit.UNITS],
+    queryFn: () => UnitService.getUnitsByType(UnitType.SPECIALTY),
+  })
   return (
     <Card>
       <CardHeader>
@@ -43,7 +51,7 @@ export default function AcademicInformation() {
                   <FormLabel>Especialidad</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={field.value.toString()}
                   >
                     <FormControl>
                       <SelectTrigger disabled={mode === 'view'}>
@@ -51,9 +59,14 @@ export default function AcademicInformation() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      //información en duro: debería ser dinámica
-                      <SelectItem value="1">Ingeniería Informática</SelectItem>
-                      <SelectItem value="2">Ingeniería Industrial</SelectItem>
+                      {specialityList?.map((speciality) => (
+                        <SelectItem
+                          key={speciality.id}
+                          value={speciality.id.toString()}
+                        >
+                          {speciality.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />

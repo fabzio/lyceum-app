@@ -30,7 +30,7 @@ class ProfessorService implements ProfessorDAO {
         secondSurname: accounts.secondSurname,
         email: accounts.email,
         state: accounts.state,
-        unit: units.name,
+        unit: units.id,
         unitType: units.type,
         parent: parentUnit.name,
       })

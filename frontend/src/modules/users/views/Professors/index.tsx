@@ -3,6 +3,7 @@ import SearchProfessorInput from './components/SearchProfessorInput'
 import ProfessorTable from './components/ProfessorTable'
 import Need from '@frontend/components/Need'
 import { UserPermissionsDict } from '@frontend/interfaces/enums/permissions/Users'
+import NewProfessorDialog from './components/NewProfessorDialog'
 
 export default function ProfessorManagement() {
   return (
@@ -12,6 +13,7 @@ export default function ProfessorManagement() {
         <Need permissions={[UserPermissionsDict.WRITE_PROFESSORS]}>
           <div className="flex gap-2">
             <MasiveProfessorsDialog />
+            <NewProfessorDialog />
           </div>
         </Need>
       </div>

@@ -8,7 +8,7 @@ export interface ProfessorDAO {
     secondSurname: string
     email: string
     state: 'active' | 'inactive' | 'deleted'
-    unit: string
+    unit: number
   }>
   getAllProfessors(filters: {
     q?: string
