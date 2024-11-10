@@ -1,6 +1,6 @@
-import { useParams } from '@tanstack/react-router'
 import UnitManagement from './components/UnitManagement'
 import { ReactNode } from 'react'
+import PageLayout from '@frontend/layouts/PageLayout'
 
 interface Unit {
   name: string
@@ -10,17 +10,9 @@ interface Unit {
 }
 
 export default function Unit() {
-  const { name } = useParams({
-    from: '/_auth/unidad/$name',
-  })
   return (
-    <div className="flex justify-center items-center">
-      <div>
-        <h2 className="text-2xl font-bold">{name}</h2>
-      </div>
-      <section>
-        <UnitManagement />
-      </section>
-    </div>
+    <PageLayout name="Unidades">
+      <UnitManagement />
+    </PageLayout>
   )
 }

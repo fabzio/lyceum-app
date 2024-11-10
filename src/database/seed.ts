@@ -39,7 +39,7 @@ const queryClient = postgres({
   max: 1,
   ssl: 'allow',
 })
-const db = drizzle(queryClient, { logger: true })
+const db = drizzle(queryClient)
 
 console.log('Seed start')
 await db.transaction(async (tx) => {
@@ -138,6 +138,7 @@ await db.transaction(async (tx) => {
     .flat()
 
   await tx.insert(units).values(sectionsToInsert)
+  console.info('Units inserted')
   //Base roles
   await tx.insert(roles).values([
     {
@@ -161,6 +162,7 @@ await db.transaction(async (tx) => {
       editable: false,
     },
   ])
+  console.info('Roles inserted')
   //Terms
   await tx.insert(terms).values([
     {
@@ -244,6 +246,7 @@ await db.transaction(async (tx) => {
       current: false,
     },
   ])
+  console.info('Terms inserted')
   //Base account
   const accountsId = await tx
     .insert(accounts)
@@ -330,7 +333,7 @@ await db.transaction(async (tx) => {
       },
     ])
     .returning({ accountId: accounts.id })
-
+  console.info('Accounts inserted')
   await tx.insert(accountRoles).values(
     accountsId.map(({ accountId }) => ({
       accountId,

@@ -32,7 +32,7 @@ export const HiringPermissionsDict = {
 
 export type HiringPermissionsDict = keyof typeof HiringPermissionsDict
 
-export const HiringPermissions = [
+const HiringPermissions = [
   {
     name: HiringPermissionsDict.CREATE_ACCOUNT,
     description: 'Crear cuenta',
@@ -152,3 +152,4 @@ export const HiringPermissions = [
       'Asignar revisor, selector y evaluador para un proceso de contratación de curso a nivel de curso',
   },
 ] as const
+export default HiringPermissions

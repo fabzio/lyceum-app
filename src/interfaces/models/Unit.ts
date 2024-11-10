@@ -1,6 +1,7 @@
+import { UnitType } from '../enums/UnitType'
+
 export type Unit = {
-  id: number,
-  name: string,
-  initTerm: string,
-  endTerm: string,
+  id: number
+  name: string
+  unitType: UnitType
 }

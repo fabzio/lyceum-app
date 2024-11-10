@@ -40,7 +40,7 @@ export default function NewStudentDialog() {
   })
   const { data } = useQuery({
     queryKey: [QueryKeys.unit.UNITS],
-    queryFn: () => UnitService.getUnitsByType(UnitType.SPECIALTY),
+    queryFn: () => UnitService.getUnitsByType({ type: UnitType.SPECIALTY }),
   })
   const { mutate, isPending } = useMutation({
     mutationFn: StudentService.addStudent,

@@ -71,7 +71,11 @@ export default function QuickSearchInput<T>({
           )}
           {isSuccess &&
             data?.map((item: T, idx) => (
-              <li key={idx} className="w-full" onClick={() => onSelect(item)}>
+              <li
+                key={idx}
+                className="w-full px-1"
+                onClick={() => onSelect(item)}
+              >
                 {renderOption(item)}
               </li>
             ))}
