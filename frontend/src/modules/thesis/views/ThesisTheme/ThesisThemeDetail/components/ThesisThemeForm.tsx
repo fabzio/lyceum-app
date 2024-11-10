@@ -57,6 +57,13 @@ export default function ThesisThemeForm() {
       })
       refetch()
     },
+    onError: ({ message }) => {
+      toast({
+        title: 'Error',
+        variant: 'destructive',
+        description: message,
+      })
+    },
   })
   const {
     data: thesisDetail,
@@ -96,7 +103,7 @@ export default function ThesisThemeForm() {
       code: requestCode,
       isFile: data.isFile,
       roleId: getRoleWithPermission(permissionRequeriment)!.roleId,
-      content: data.isFile ? 'file-url' : data.content,
+      content: data.content,
     })
   }
   return (
@@ -143,28 +150,39 @@ export default function ThesisThemeForm() {
             <FormField
               name="content"
               control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Comentario</FormLabel>
-                  <FormControl>
-                    {form.watch('isFile') ? (
+              render={({ field: { value, onChange, ...fieldProps } }) =>
+                form.watch('isFile') ? (
+                  <FormItem className="col-span-1 md:col-span-2">
+                    <FormLabel className="inline-block hover:underline w-auto">
+                      Revisión
+                    </FormLabel>
+                    <FormControl>
                       <Input
+                        className="w-full"
+                        {...fieldProps}
                         type="file"
-                        onChange={field.onChange}
-                        onBlur={field.onBlur}
-                        ref={field.ref}
-                        placeholder="Subir archivo"
+                        accept=".doc,.docx,.pdf,.zip"
+                        onChange={(e) =>
+                          onChange(e.target.files && e.target.files[0])
+                        }
                       />
-                    ) : (
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                ) : (
+                  <FormItem>
+                    <FormLabel>Comentario</FormLabel>
+                    <FormControl>
                       <Textarea
-                        value={field.value as string}
-                        onChange={field.onChange}
+                        value={value as string}
+                        onChange={onChange}
+                        {...fieldProps}
                       />
-                    )}
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )
+              }
             />
             <FormField
               name="isFile"
@@ -210,9 +228,8 @@ const formSchema = z.object({
       })
       .min(1)
       .max(255),
-    z.instanceof(Blob),
+    z.instanceof(File, { message: 'Debe seleccionar un archivo' }),
   ]),
-  file: z.instanceof(FileList).optional(),
 })
 
 const mapPermissionPhase: Record<0 | 1 | 2 | 3, ThesisPermissionsDict> = {

@@ -54,22 +54,20 @@ export default function ThesisUploadCorrections() {
       })
     },
   })
-  const form = useForm({
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
   const canUploadCorrections =
     thesisDetail.phase === 0 &&
     havePermission(ThesisPermissionsDict.CREATE_THESIS)
 
-  const handleSubmit = () => {
-    const formData = new FormData()
-    formData.append('file', form.getValues('file'))
+  const handleSubmit = (data: z.infer<typeof formSchema>) => {
     mutate({
       accountId: session!.id,
       action: 'sended',
       code: requestCode,
       isFile: true,
-      content: 'Correcciones de tesis',
+      content: data.file,
       roleId: getRoleWithPermission(ThesisPermissionsDict.CREATE_THESIS)!
         .roleId,
     })
@@ -80,16 +78,20 @@ export default function ThesisUploadCorrections() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <FormField
+              control={form.control}
               name="file"
               // eslint-disable-next-line
               render={({ field: { value, onChange, ...filedProps } }) => (
-                <FormItem>
-                  <FormLabel>Subir correcciones</FormLabel>
+                <FormItem className="col-span-1 md:col-span-2">
+                  <FormLabel className="inline-block hover:underline w-auto">
+                    Justificación
+                  </FormLabel>
                   <FormControl>
                     <Input
+                      className="w-full"
                       {...filedProps}
                       type="file"
-                      accept=".doc,.docx,.pdf,.csv"
+                      accept=".doc,.docx,.pdf"
                       onChange={(e) =>
                         onChange(e.target.files && e.target.files[0])
                       }

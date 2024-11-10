@@ -180,17 +180,23 @@ class ThesisThemeController {
 
   public insertThesisThemeAction = this.router.post(
     '/:code/history',
-    zValidator('json', insertThesisActionDTO),
+    zValidator('form', insertThesisActionDTO),
     //TODO: obtener permiso del usuario
     //TODO obtener permiso de la ultima accion
     async (c) => {
       const { code } = c.req.param()
-      const { content, isFile, action, accountId, roleId } = c.req.valid('json')
+      const { content, isFile, action, accountId, roleId } = c.req.valid('form')
 
       try {
         const response: ResponseAPI = {
           data: await this.thesisThemeService.insertThemeRequestAction({
-            content,
+            content:
+              content instanceof File
+                ? await insertDocument({
+                    bucketName: '',
+                    file: content as File,
+                  })
+                : (content as string),
             isFile,
             action,
             accountId,

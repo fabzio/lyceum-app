@@ -16,9 +16,9 @@ type schema = Omit<ThesisActionsSchema, 'requestId'> & {
 
 export const insertThesisActionDTO = z.object({
   accountId: z.string(),
-  roleId: z.number(),
-  content: z.string(),
-  isFile: z.boolean(),
+  roleId: z.coerce.number(),
+  content: z.union([z.string(), z.instanceof(File)]),
+  isFile: z.string().transform((value) => value === 'true'),
   action: z.enum(['sended', 'approved', 'denied']),
 })
 

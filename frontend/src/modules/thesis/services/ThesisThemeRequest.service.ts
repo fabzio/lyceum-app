@@ -30,7 +30,6 @@ class ThesisThemeRequestService {
     historyId: number
   }> {
     try {
-      // Crear un FormData para los datos del formulario
       const formData = new FormData()
       formData.append('title', thesis.title)
       formData.append('areaId', thesis.areaId.toString())
@@ -208,19 +207,24 @@ class ThesisThemeRequestService {
     roleId,
   }: {
     code: string
-    content: string | Blob
+    content: string | File
     isFile: boolean
     action: 'sended' | 'approved' | 'denied'
     accountId: string
     roleId: number
   }) {
+    const formData = new FormData()
+    formData.append('content', content)
+    formData.append('isFile', isFile.toString())
+    formData.append('action', action)
+    formData.append('accountId', accountId)
+    formData.append('roleId', roleId.toString())
+
     try {
-      const res = await http.post(`/thesis/theme/${code}/history`, {
-        content,
-        isFile,
-        action,
-        accountId,
-        roleId,
+      const res = await http.post(`/thesis/theme/${code}/history`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       })
       const response = res.data as ResponseAPI
       if (!response.success) {

@@ -17,7 +17,17 @@ export const createErrorFactory = function (name: string, code: StatusCode) {
 }
 
 // Error Handler
-export const errorHandler = (c: Context) => {
+export const errorHandler = async (c: Context) => {
+  const date = new Date()
+  const logFileName = `./logs/${date.toISOString().split('T')[0]}.log`
+  const newLog = `${date.toISOString()} - [${c.req.method}] ${c.req.url} - ${c.error?.name}:${c.error?.message}`
+  try {
+    const logs = await Bun.file(logFileName).text()
+    await Bun.write(logFileName, logs.concat(`\n${newLog}`))
+  } catch (error) {
+    await Bun.write(logFileName, ''.concat(`${newLog}`))
+  }
+
   return c.json({
     success: false,
     message: c.error?.message || 'Internal Server Error',
