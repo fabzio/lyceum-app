@@ -4,7 +4,6 @@ import { zValidator } from '@hono/zod-validator'
 import { ThesisThemeDAO } from '../dao/thesisThemeDAO'
 import { createThesisDTO, insertThesisActionDTO } from '../dto/ThesisThemeDTO'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
-import { createDocument, readDocument } from '@/aws'
 import { z } from 'zod'
 import { getDocument, insertDocument } from '@/aws/services'
 import { stream } from 'hono/streaming'
@@ -13,20 +12,97 @@ class ThesisThemeController {
   private router = new Hono()
   private thesisThemeService: ThesisThemeDAO = new ThesisThemeService()
 
-  public getThesisThemes = this.router.get('/', async (c) => {
-    try {
-      const response: ResponseAPI = {
-        data: await this.thesisThemeService.getThesisThemeRequest(),
-        message: 'Thesis themes retrieved',
-        success: true,
-      }
-      return c.json(response)
-    } catch (error) {
-      if (error instanceof LyceumError) {
-        c.status(error.code)
+  public getStudentThesisThemes = this.router.get(
+    '/student/:studentCode',
+    zValidator('param', z.object({ studentCode: z.string() })),
+    async (c) => {
+      const { studentCode } = c.req.valid('param')
+      try {
+        const response: ResponseAPI = {
+          data: await this.thesisThemeService.getStudentThesisRequests({
+            studentCode,
+          }),
+          message: 'Thesis themes retrieved',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
       }
     }
-  })
+  )
+
+  public getAdvisorThesisThemes = this.router.get(
+    '/advisor/:advisorCode',
+    zValidator('param', z.object({ advisorCode: z.string() })),
+    async (c) => {
+      const { advisorCode } = c.req.valid('param')
+      try {
+        const response: ResponseAPI = {
+          data: await this.thesisThemeService.getProfessorThesisRequests({
+            professorCode: advisorCode,
+          }),
+          message: 'Thesis themes retrieved',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public getAreaThesisThemes = this.router.get(
+    '/area/:areaId',
+    zValidator('param', z.object({ areaId: z.string() })),
+    async (c) => {
+      const { areaId } = c.req.valid('param')
+      try {
+        const response: ResponseAPI = {
+          data: await this.thesisThemeService.getAreaThesisRequests({
+            areaId: Number(areaId),
+          }),
+          message: 'Thesis themes retrieved',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public getSpecialityThesisThemes = this.router.get(
+    '/speciality/:specialityId',
+    zValidator('param', z.object({ specialityId: z.string() })),
+    async (c) => {
+      const { specialityId } = c.req.valid('param')
+      try {
+        const response: ResponseAPI = {
+          data: await this.thesisThemeService.getSpecialityThesisThemeRequest({
+            specialityId: Number(specialityId),
+          }),
+          message: 'Thesis themes retrieved',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
 
   public getThesisThemeDetail = this.router.get('/:code', async (c) => {
     const { code } = c.req.param()

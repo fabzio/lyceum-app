@@ -11,7 +11,16 @@ import {
   ThesisAccountsSchema,
 } from '@/database/schema/thesisAccounts'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
-import { and, asc, eq, sql } from 'drizzle-orm'
+import {
+  aliasedTable,
+  and,
+  asc,
+  eq,
+  exists,
+  inArray,
+  or,
+  sql,
+} from 'drizzle-orm'
 import { ThesisThemeDAO } from '../dao/thesisThemeDAO'
 import { ThesisActionsSchema } from '@/database/schema/thesisActions'
 import { ThesisThemeRequestNotFound } from '../errors'
@@ -19,7 +28,155 @@ import { generateThesisCode, getAccountsIds } from './utils'
 import { Account } from '@/interfaces/models/Account'
 
 class ThesisThemeService implements ThesisThemeDAO {
-  async getThesisThemeRequest() {
+  async getStudentThesisRequests({ studentCode }: { studentCode: string }) {
+    const studentId = await getAccountsIds(studentCode)
+    if (!studentId)
+      throw new ThesisThemeRequestNotFound('Estudiante no encontrado')
+    return db
+      .select({
+        code: thesis.requestCode,
+        title: thesis.title,
+        date: thesis.date,
+        lastAction: {
+          id: thesisActions.id,
+          account: thesisActions.accountId,
+          action: thesisActions.action,
+          role: roles.name,
+        },
+        applicant: {
+          name: sql<string>`concat(${accounts.name}, ' ', ${accounts.firstSurname}, ' ', ${accounts.secondSurname})`,
+          code: accounts.code,
+        },
+        aproved: thesis.aproved,
+      })
+      .from(thesis)
+      .innerJoin(accounts, eq(thesis.applicantId, accounts.id))
+      .innerJoin(
+        thesisAccounts,
+        eq(thesisAccounts.thesisThemeRequestId, thesis.id)
+      )
+      .innerJoin(thesisActions, eq(thesis.lastActionId, thesisActions.id))
+      .innerJoin(roles, eq(thesisActions.roleId, roles.id))
+      .innerJoin(units, eq(thesis.areaId, units.id))
+      .where(
+        or(
+          eq(thesis.applicantId, studentId),
+          exists(
+            db
+              .select({ id: thesisAccounts.accountId })
+              .from(thesisAccounts)
+              .where(
+                and(
+                  eq(thesisAccounts.thesisThemeRequestId, thesis.id),
+                  eq(thesisAccounts.accountId, studentId),
+                  eq(thesisAccounts.roleId, BaseRoles.STUDENT)
+                )
+              )
+          )
+        )
+      )
+  }
+  async getProfessorThesisRequests({
+    professorCode,
+  }: {
+    professorCode: string
+  }) {
+    const professorId = await getAccountsIds(professorCode)
+    if (!professorId)
+      throw new ThesisThemeRequestNotFound('Profesor no encontrado')
+    return db
+      .select({
+        code: thesis.requestCode,
+        title: thesis.title,
+        date: thesis.date,
+        lastAction: {
+          id: thesisActions.id,
+          account: thesisActions.accountId,
+          action: thesisActions.action,
+          role: roles.name,
+        },
+        applicant: {
+          name: sql<string>`concat(${accounts.name}, ' ', ${accounts.firstSurname}, ' ', ${accounts.secondSurname})`,
+          code: accounts.code,
+        },
+        aproved: thesis.aproved,
+      })
+      .from(thesis)
+      .innerJoin(accounts, eq(thesis.applicantId, accounts.id))
+      .innerJoin(
+        thesisAccounts,
+        eq(thesisAccounts.thesisThemeRequestId, thesis.id)
+      )
+      .innerJoin(thesisActions, eq(thesis.lastActionId, thesisActions.id))
+      .innerJoin(roles, eq(thesisActions.roleId, roles.id))
+      .innerJoin(units, eq(thesis.areaId, units.id))
+      .where(
+        exists(
+          db
+            .select({ id: thesisAccounts.accountId })
+            .from(thesisAccounts)
+            .where(
+              and(
+                eq(thesisAccounts.thesisThemeRequestId, thesis.id),
+                eq(thesisAccounts.accountId, professorId),
+                eq(thesisAccounts.roleId, BaseRoles.PROFESSOR)
+              )
+            )
+        )
+      )
+  }
+
+  async getAreaThesisRequests({ areaId }: { areaId: number }) {
+    const isArea = await db
+      .select({
+        id: units.id,
+      })
+      .from(units)
+      .where(and(eq(units.id, areaId), eq(units.type, 'area')))
+    if (!isArea.length)
+      throw new ThesisThemeRequestNotFound('Área no encontrada')
+    return db
+      .select({
+        code: thesis.requestCode,
+        title: thesis.title,
+        date: thesis.date,
+        lastAction: {
+          id: thesisActions.id,
+          account: thesisActions.accountId,
+          action: thesisActions.action,
+          role: roles.name,
+        },
+        applicant: {
+          name: sql<string>`concat(${accounts.name}, ' ', ${accounts.firstSurname}, ' ', ${accounts.secondSurname})`,
+          code: accounts.code,
+        },
+        aproved: thesis.aproved,
+      })
+      .from(thesis)
+      .innerJoin(accounts, eq(thesis.applicantId, accounts.id))
+      .innerJoin(
+        thesisAccounts,
+        eq(thesisAccounts.thesisThemeRequestId, thesis.id)
+      )
+      .innerJoin(thesisActions, eq(thesis.lastActionId, thesisActions.id))
+      .innerJoin(roles, eq(thesisActions.roleId, roles.id))
+      .innerJoin(units, eq(thesis.areaId, units.id))
+      .where(eq(thesis.areaId, areaId))
+  }
+
+  async getSpecialityThesisThemeRequest({
+    specialityId,
+  }: {
+    specialityId: number
+  }) {
+    const isSpeciality = await db
+      .select({
+        id: units.id,
+      })
+      .from(units)
+      .where(and(eq(units.id, specialityId), eq(units.type, 'speciality')))
+    if (!isSpeciality.length)
+      throw new ThesisThemeRequestNotFound('Especialidad no encontrada')
     const themeRequestResponse = await db
       .select({
         code: thesis.requestCode,
@@ -41,6 +198,8 @@ class ThesisThemeService implements ThesisThemeDAO {
       .innerJoin(accounts, eq(thesis.applicantId, accounts.id))
       .innerJoin(thesisActions, eq(thesisActions.id, thesis.lastActionId))
       .innerJoin(roles, eq(thesisActions.roleId, roles.id))
+      .where(eq(accounts.unitId, specialityId))
+
     return themeRequestResponse
   }
 

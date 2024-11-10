@@ -3,17 +3,47 @@ import { Badge } from '@frontend/components/ui/badge'
 import { Button } from '@frontend/components/ui/button'
 import { Input } from '@frontend/components/ui/input'
 import { QueryKeys } from '@frontend/constants/queryKeys'
+import { ThesisPermissionsDict } from '@frontend/interfaces/enums/permissions/Thesis'
 import { cn } from '@frontend/lib/utils'
 import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisThemeRequest.service'
 import { mapStatus } from '@frontend/modules/thesis/utils'
+import { useSessionStore } from '@frontend/store'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { ListFilter } from 'lucide-react'
 
 export default function ThesisThemeAside() {
+  const { session, getRoleWithPermission, havePermission } = useSessionStore()
+
+  const specialtiyId = getRoleWithPermission(
+    ThesisPermissionsDict.APROVE_THESIS_PHASE_3
+  )?.unitId
+  const areaId = getRoleWithPermission(
+    ThesisPermissionsDict.APROVE_THESIS_PHASE_2
+  )?.unitId
+
+  const accountCode = session!.code
   const { data: thesisThemeRequests } = useQuery({
     queryKey: [QueryKeys.thesis.THESIS_REQUESTS],
-    queryFn: () => ThesisThemeRequestService.getThesisThemeRequest(),
+    queryFn: specialtiyId
+      ? () =>
+          ThesisThemeRequestService.getSpecialtyThesisThemeRequest({
+            specialtiyId,
+          })
+      : areaId
+        ? () =>
+            ThesisThemeRequestService.getAreaThesisThemeRequest({
+              areaId: areaId,
+            })
+        : havePermission(ThesisPermissionsDict.APROVE_THESIS_PHASE_1)
+          ? () =>
+              ThesisThemeRequestService.getAdvisorThesisThemeRequest({
+                advisorCode: accountCode,
+              })
+          : () =>
+              ThesisThemeRequestService.getStudentThesisThemeRequest({
+                studentCode: accountCode,
+              }),
   })
   const navigate = useNavigate()
   const { requestCode } = useParams({
