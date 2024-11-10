@@ -16,12 +16,12 @@ import { Account } from '@/interfaces/models/Account'
 import { Unit } from '@/interfaces/models/Unit'
 
 class EnrollmentModificationService implements EnrollmentModificationDAO {
-  public async getAllEnrollmentsOfFaculty(params: {
+  public async getAllEnrollmentsOfSpeciality(params: {
     q?: string
     page: number
     limit: number
     sortBy?: string
-    facultyId: Unit['id']
+    specialityId: Unit['id']
   }): Promise<
     PaginatedData<{
       student: {
@@ -40,12 +40,12 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
   > {
     const [field, order] = params.sortBy?.split('.') || ['requestNumber', 'asc']
 
-    const isFaculty = await db
+    const isSpeciality = await db
       .select({ unitType: units.type })
       .from(units)
-      .where(eq(units.id, params.facultyId))
-    if (isFaculty[0].unitType !== 'faculty') {
-      throw new Error('No pertece a una facultad')
+      .where(eq(units.id, params.specialityId))
+    if (isSpeciality[0].unitType !== 'speciality') {
+      throw new Error('No pertece a una especialidad')
     }
     // Obtener el total de registros según el filtro
     const [{ total }] = await db
@@ -57,7 +57,7 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
       .where(
         and(
           params.q ? ilike(accounts.name, `%${params.q}%`) : sql<boolean>`true`,
-          eq(accounts.unitId, params.facultyId)
+          eq(accounts.unitId, params.specialityId)
         )
       )
 

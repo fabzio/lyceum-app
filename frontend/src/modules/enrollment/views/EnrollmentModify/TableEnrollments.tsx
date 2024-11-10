@@ -24,8 +24,8 @@ export default function TableEnrollments() {
       EnrollmentPermissionsDict.REVIEW_ADDITIONAL_ENROLLMENT
     )
       ? () =>
-          EnrollmentService.getAllEnrollmentsOfFaculty({
-            facultyId: getRoleWithPermission(
+          EnrollmentService.getAllEnrollmentsOfSpeciality({
+            specialityId: getRoleWithPermission(
               EnrollmentPermissionsDict.REVIEW_ADDITIONAL_ENROLLMENT
             )!.unitId,
             filtersAndPagination: filters,

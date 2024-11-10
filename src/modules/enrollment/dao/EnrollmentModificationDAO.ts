@@ -5,12 +5,12 @@ import { PaginatedData } from '@/interfaces/PaginatedData'
 //import { Course } from '@/interfaces/models/Course'
 
 export interface EnrollmentModificationDAO {
-  getAllEnrollmentsOfFaculty: (filters: {
+  getAllEnrollmentsOfSpeciality: (filters: {
     q?: string
     page: number
     limit: number
     sortBy?: string
-    facultyId: Unit['id']
+    specialityId: Unit['id']
   }) => Promise<
     PaginatedData<{
       student: {

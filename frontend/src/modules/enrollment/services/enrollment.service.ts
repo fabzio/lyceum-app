@@ -61,17 +61,17 @@ class EnrollmentService {
     }
   }
 
-  public static async getAllEnrollmentsOfFaculty({
+  public static async getAllEnrollmentsOfSpeciality({
     filtersAndPagination,
-    facultyId,
+    specialityId,
   }: {
-    facultyId: Unit['id']
+    specialityId: Unit['id']
     filtersAndPagination: Filters
   }): Promise<PaginatedData<EnrollmentGeneral>> {
     try {
       const res = await http.get('/enrollment/modifications/paginated', {
         params: {
-          facultyId,
+          specialityId,
           q: filtersAndPagination.q || '',
           page: filtersAndPagination.pageIndex || 0,
           limit: filtersAndPagination.pageSize || 5,
