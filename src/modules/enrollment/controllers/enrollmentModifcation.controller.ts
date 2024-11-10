@@ -20,7 +20,7 @@ class EnrollmentModificationController {
         page: z.string().transform((v) => parseInt(v)),
         limit: z.string().transform((v) => parseInt(v)),
         sortBy: z.string().optional(),
-        facultyId: z.number(),
+        facultyId: z.string().transform((v) => parseInt(v)),
       })
     ),
     async (c) => {
