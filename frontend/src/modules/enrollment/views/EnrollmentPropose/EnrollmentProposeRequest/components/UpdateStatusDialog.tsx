@@ -39,8 +39,8 @@ export default function UpdateStatusDialog() {
     mutationFn: EnrollmentProposalService.updateScheduleProposalStatus,
     onSuccess: () => {
       toast({
-        title: 'Propuesta enviada',
-        description: 'La propuesta se ha enviado correctamente',
+        title: 'Propuesta actualizada',
+        description: 'La propuesta se actualizó correctamente',
       })
       refetch()
       setIsOpen(false)
@@ -68,7 +68,7 @@ export default function UpdateStatusDialog() {
     return null
   if (
     proposalData?.state === 'sended' &&
-    !havePermission(EnrollmentPermissionsDict.REQUEST_ADITIONAL_ENROLLMENT)
+    !havePermission(EnrollmentPermissionsDict.REQUEST_SCHEDULE_PROPOSAL)
   )
     return null
   return (

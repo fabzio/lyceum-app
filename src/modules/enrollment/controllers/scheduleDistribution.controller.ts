@@ -4,6 +4,7 @@ import { zValidator } from '@hono/zod-validator'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
 import { ScheduleDistributionDAO } from '../dao'
 import { insertProfesorToSchDTO } from '../dtos/scheduleDistributionDTO'
+import { z } from 'zod'
 
 class ScheduleDistributioncontroller {
   private router = new Hono()

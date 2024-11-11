@@ -3,6 +3,7 @@ import {
   courses,
   enrollmentProposal,
   enrollmentProposalCourses,
+  schedules,
   terms,
   units,
 } from '@/database/schema'
@@ -20,8 +21,11 @@ import { error } from 'console'
 import { any } from 'zod'
 import { Proposal } from '@/interfaces/models/Proposal'
 import { PaginatedData } from '@/interfaces/PaginatedData'
+import ScheduleDistributionService from './scheduleDistribution.service'
+import { ScheduleSchema } from '@/database/schema/schedules'
 
 class ScheduleProposalService implements ScheduleProposalDAO {
+  private scheduleDistributionService = new ScheduleDistributionService()
   public async insertCourseToScheduleProposal(
     enrollmentProposalId: number,
     coursesList: {
@@ -121,10 +125,64 @@ class ScheduleProposalService implements ScheduleProposalDAO {
     }
 
     // 3. Actualizar el estado si es válido
-    await db
-      .update(enrollmentProposal)
-      .set({ state: newStatus })
-      .where(eq(enrollmentProposal.id, enrollmentProposalId))
+    await db.transaction(async (tx) => {
+      await tx
+        .update(enrollmentProposal)
+        .set({ state: newStatus })
+        .where(eq(enrollmentProposal.id, enrollmentProposalId))
+      if (newStatus === 'aproved') {
+        const proposalDataresponse = await tx
+          .select({
+            termId: enrollmentProposal.termId,
+          })
+          .from(enrollmentProposal)
+          .where(eq(enrollmentProposal.id, enrollmentProposalId))
+        if (proposalDataresponse.length === 0) {
+          throw new Error('No se encontró la propuesta de matrícula')
+        }
+        const [proposaldata] = proposalDataresponse
+        const coursesProposal = await tx
+          .select({
+            courseId: enrollmentProposalCourses.courseId,
+            visibleSchedules: enrollmentProposalCourses.visibleSchedules,
+            hiddenSchedules: enrollmentProposalCourses.hiddenSchedules,
+            vacanciesPerSchema: enrollmentProposalCourses.vacanciesPerSchema,
+          })
+          .from(enrollmentProposalCourses)
+          .where(
+            eq(
+              enrollmentProposalCourses.enrollmentProposalId,
+              enrollmentProposalId
+            )
+          )
+
+        const shcedulesToInsert: ScheduleSchema[] = []
+        coursesProposal.forEach((course) => {
+          const numVisible = course.visibleSchedules
+          const numHidden = course.hiddenSchedules
+          for (let i = 0; i < numVisible; i++) {
+            shcedulesToInsert.push({
+              code: `H10${i + 1}`,
+              courseId: course.courseId,
+              termId: proposaldata.termId,
+              vacancies: course.vacanciesPerSchema,
+              visibility: true,
+            })
+          }
+          for (let i = 0; i < numHidden; i++) {
+            shcedulesToInsert.push({
+              code: `H20${i + 1}`,
+              courseId: course.courseId,
+              termId: proposaldata.termId,
+              vacancies: course.vacanciesPerSchema,
+              visibility: false,
+            })
+          }
+        })
+
+        await tx.insert(schedules).values(shcedulesToInsert)
+      }
+    })
   }
 
   public async insertScheduleProposal(

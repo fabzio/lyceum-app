@@ -1,5 +1,14 @@
 import db from '@/database'
-import { scheduleAccounts, roles, schedules } from '@/database/schema'
+import {
+  scheduleAccounts,
+  roles,
+  schedules,
+  enrollmentProposalCourses,
+  enrollmentProposal,
+  studyPlanCourses,
+  studyPlans,
+  specialityStudyPlans,
+} from '@/database/schema'
 import { eq, inArray, and } from 'drizzle-orm'
 import {
   NoProfessorsSendedError,
@@ -11,6 +20,7 @@ import {
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { ScheduleDistributionDAO } from '../dao'
 import { error } from 'console'
+import { ScheduleSchema } from '@/database/schema/schedules'
 
 class ScheduleDistributionService implements ScheduleDistributionDAO {
   public async insertProfessorsToSchedule(

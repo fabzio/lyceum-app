@@ -39,10 +39,10 @@ export default function CourseProposalTable() {
   const sortingState = sortByToState(filters.sortBy)
   const columns = useMemo(
     () =>
-      CourseProposalTableColumns.filter(
-        (_, idx) =>
-          proposalData?.state === 'aproved' &&
-          idx !== CourseProposalTableColumns.length - 1
+      CourseProposalTableColumns.filter((_, idx) =>
+        idx === CourseProposalTableColumns.length - 1
+          ? proposalData?.state !== 'aproved'
+          : true
       ),
     [proposalData]
   )
