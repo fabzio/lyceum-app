@@ -56,7 +56,7 @@ export default function DisableConfirmationDialog({
         <DialogHeader>
           <DialogTitle>Deshabilitar curso</DialogTitle>
           <DialogDescription>
-            ¿Estás seguro que deseas dehabilitar este curso?
+            Se deshabilitará el curso, ¿Desea continuar?
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

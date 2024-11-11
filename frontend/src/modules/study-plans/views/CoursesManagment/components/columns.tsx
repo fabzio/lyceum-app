@@ -59,10 +59,14 @@ export const courseTableColumns: ColumnDef<Course>[] = [
     ),
   },
   {
-    accessorKey: 'specialty',
-    header: 'Especialidad',
+    accessorKey: 'unit',
+    header: 'Unidad gestora',
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue('specialty')}</div>
+      <div>{`${
+        row.original.unitType === 'department'
+          ? 'Departamento de'
+          : 'Sección de'
+      } ${row.getValue('unit')}`}</div>
     ),
   },
   {

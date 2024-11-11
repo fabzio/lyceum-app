@@ -13,6 +13,7 @@ interface Props<T> {
   renderOption: (item: T) => React.ReactNode
   renderSelected: (item: T) => React.ReactNode
   className?: string
+  defaultValue?: keyof T
 }
 
 export default function QuickSearchInput<T>({

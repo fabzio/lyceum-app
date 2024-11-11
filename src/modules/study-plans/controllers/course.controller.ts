@@ -88,6 +88,7 @@ class CourseController {
         name: z.string(),
         code: z.string(),
         credits: z.number(),
+        unitId: z.number(),
       })
     ),
     async (c) => {

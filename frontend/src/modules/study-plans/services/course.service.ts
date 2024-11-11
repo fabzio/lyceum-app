@@ -67,7 +67,7 @@ class CourseService {
   }
   */
   static async addCourse(
-    courses: Pick<Course, 'code' | 'credits' | 'name'>[]
+    courses: Pick<Course, 'code' | 'credits' | 'name' | 'unitName'>[]
   ): Promise<void> {
     try {
       const res = await http.post('/study-plan/course-management', {
@@ -87,7 +87,7 @@ class CourseService {
 
   static async updateCourse(args: {
     code: string
-    course: Pick<Course, 'code' | 'credits' | 'name'>
+    course: Pick<Course, 'code' | 'credits' | 'name' | 'unitId'>
   }): Promise<void> {
     try {
       const res = await http.put(

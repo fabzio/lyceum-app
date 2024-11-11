@@ -1,12 +1,13 @@
 import {
   boolean,
   char,
+  integer,
   numeric,
   serial,
   uniqueIndex,
   varchar,
 } from 'drizzle-orm/pg-core'
-import { studyPlanCourses } from '@/database/schema'
+import { studyPlanCourses, units } from '@/database/schema'
 import { relations } from 'drizzle-orm'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
@@ -19,6 +20,9 @@ export const courses = schema.table(
     code: char('code', { length: 6 }).notNull(),
     name: varchar('name', { length: 100 }).notNull(),
     credits: numeric('credits', { precision: 3, scale: 2 }).notNull(),
+    unitId: integer('unit_id')
+      .notNull()
+      .references(() => units.id),
     state: boolean('state').default(true).notNull(),
   },
   (table) => {
