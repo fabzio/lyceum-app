@@ -166,22 +166,18 @@ class ScheduleProposalController {
   )
 
   public getProposal = this.router.get(
-    '/',
+    '/:requestId',
     zValidator(
-      'query',
+      'param',
       z.object({
-        specialityId: z.string(),
-        termId: z.string().optional(),
+        requestId: z.string(),
       })
     ),
     async (c) => {
-      const { specialityId, termId } = c.req.valid('query')
+      const { requestId } = c.req.valid('param')
       try {
         const response: ResponseAPI = {
-          data: await this.scheduleProposalService.getProposal(
-            parseInt(specialityId),
-            termId ? parseInt(termId) : undefined
-          ),
+          data: await this.scheduleProposalService.getProposal(+requestId),
           message: 'Proposal retrieved successfully',
           success: true,
         }
@@ -196,7 +192,7 @@ class ScheduleProposalController {
   )
 
   public getCoursesProposal = this.router.get(
-    '/:enrollmentProposalId',
+    '/:enrollmentProposalId/courses',
     zValidator('query', getScheduleProposalCoursesDTO),
     zValidator(
       'param',

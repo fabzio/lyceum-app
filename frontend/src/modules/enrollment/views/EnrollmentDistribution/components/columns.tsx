@@ -2,7 +2,7 @@ import { Button } from '@frontend/components/ui/button'
 import { CourseProposition } from '@frontend/modules/enrollment/interfaces/CourseProposition'
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown } from 'lucide-react'
-import { CourseActionCell } from '../../EnrollmentPropose/components/CourseActionButton.tsx'
+import { CourseActionCell } from '../../EnrollmentPropose/EnrollmentProposeRequest/components/CourseActionButton'
 
 export const CourseProposalTableColumns: ColumnDef<CourseProposition>[] = [
   {
@@ -17,7 +17,7 @@ export const CourseProposalTableColumns: ColumnDef<CourseProposition>[] = [
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue('courseCode')}</div>
+      <div className="capitalize">{row.original.courseCode}</div>
     ),
   },
   {
@@ -32,7 +32,7 @@ export const CourseProposalTableColumns: ColumnDef<CourseProposition>[] = [
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue('courseName')}</div>
+      <div className="capitalize">{row.original.courseName}</div>
     ),
   },
   {
@@ -46,7 +46,7 @@ export const CourseProposalTableColumns: ColumnDef<CourseProposition>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div>{row.getValue('vacants')}</div>,
+    cell: ({ row }) => <div>{row.original.vacants}</div>,
   },
   {
     accessorKey: 'numberVisible',
@@ -59,7 +59,7 @@ export const CourseProposalTableColumns: ColumnDef<CourseProposition>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div>{row.getValue('numberVisible')}</div>,
+    cell: ({ row }) => <div>{row.original.numberVisible}</div>,
   },
   {
     accessorKey: 'numberHidden',
@@ -72,17 +72,11 @@ export const CourseProposalTableColumns: ColumnDef<CourseProposition>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div>{row.getValue('numberHidden')}</div>,
+    cell: ({ row }) => <div>{row.original.numberHidden}</div>,
   },
   {
     accessorKey: 'actions',
     header: 'Acciones',
-    cell: ({ row }) => (
-      <CourseActionCell
-        courseName={row.getValue('courseName')}
-        courseCode={row.getValue('courseCode')}
-        courseId={row.original.id}
-      />
-    ),
+    cell: ({ row }) => <CourseActionCell {...row.original} />,
   },
 ]

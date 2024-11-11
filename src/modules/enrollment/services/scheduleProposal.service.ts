@@ -338,31 +338,17 @@ class ScheduleProposalService implements ScheduleProposalDAO {
     })
   }
 
-  public async getProposal(
-    specialityId: number,
-    termId?: number
-  ): Promise<Proposal | null> {
-    let proposal: Proposal | null = null
-    if (termId == undefined) {
-      const latestProposalArray = await db
-        .select()
-        .from(enrollmentProposal)
-        .where(eq(enrollmentProposal.specialityId, specialityId))
-        .orderBy(desc(enrollmentProposal.createdAt))
-        .limit(1)
-      proposal = latestProposalArray[0]
-    } else {
-      const altProposal = await db
-        .select()
-        .from(enrollmentProposal)
-        .where(
-          and(
-            eq(enrollmentProposal.specialityId, specialityId),
-            eq(enrollmentProposal.termId, termId)
-          )
-        )
-      proposal = altProposal[0]
+  public async getProposal(requestId: number): Promise<Partial<Proposal>> {
+    const response = await db
+      .select({
+        state: enrollmentProposal.state,
+      })
+      .from(enrollmentProposal)
+      .where(eq(enrollmentProposal.id, requestId))
+    if (response.length === 0) {
+      throw new Error('La propuesta no existe')
     }
+    const [proposal] = response
     return proposal
   }
 
@@ -416,12 +402,7 @@ class ScheduleProposalService implements ScheduleProposalDAO {
 
   public async deleteCoursesInScheduleProposal(
     enrollmentProposalId: number,
-    coursesList: {
-      courseId: number
-      vacanciesPerSchema: number
-      visibleSchedules: number
-      hiddenSchedules: number
-    }[]
+    coursesList: number[]
   ) {
     //Validación 1 - La propuesta de horarios debe existir
     const existingEnrollmentProposal = await db
@@ -437,12 +418,12 @@ class ScheduleProposalService implements ScheduleProposalDAO {
     //Validación 2 - Los cursos en la lista no se deben repetir
     const courseIdSet = new Set<number>()
     for (const course of coursesList) {
-      if (courseIdSet.has(course.courseId)) {
+      if (courseIdSet.has(course)) {
         throw new RepeatedCoursesError(
-          `El curso con ID ${course.courseId} está duplicado en la lista de cursos`
+          `El curso con ID ${course} está duplicado en la lista de cursos`
         )
       }
-      courseIdSet.add(course.courseId)
+      courseIdSet.add(course)
     }
 
     //Ahora sí eliminamos los cursos en la tabla :)
@@ -455,7 +436,7 @@ class ScheduleProposalService implements ScheduleProposalDAO {
               enrollmentProposalCourses.enrollmentProposalId,
               enrollmentProposalId
             ),
-            eq(enrollmentProposalCourses.courseId, course.courseId)
+            eq(enrollmentProposalCourses.courseId, course)
           )
         )
     }

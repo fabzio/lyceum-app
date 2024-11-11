@@ -5,26 +5,13 @@ import {
   DialogTrigger,
 } from '@frontend/components/ui/dialog'
 import { Settings } from 'lucide-react'
-import ProposedCourseDetailForm from '../components/ProposalCourseDetail'
 import { useState } from 'react'
 import { DialogTitle } from '@radix-ui/react-dialog'
+import { CourseProposition } from '@frontend/modules/enrollment/interfaces/CourseProposition'
+import ProposedCourseDetailForm from './ProposalCourseDetail'
 
-export function CourseActionCell(params: {
-  courseName: string
-  courseCode: string
-  courseId: number
-}) {
+export function CourseActionCell(params: CourseProposition) {
   const [open, setOpen] = useState(false)
-
-  const handleSubmit = (data: any) => {
-    console.log('Form submitted:', data)
-    setOpen(false)
-  }
-
-  const handleDelete = () => {
-    console.log('Deleted course:', params.courseCode)
-    setOpen(false)
-  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -36,10 +23,8 @@ export function CourseActionCell(params: {
       <DialogTitle />
       <DialogContent className="sm:max-w-[425px]">
         <ProposedCourseDetailForm
-          courseName={params.courseName}
-          onClose={() => setOpen(false)}
-          onSubmit={handleSubmit}
-          onDelete={handleDelete}
+          course={params}
+          handleClose={() => setOpen(false)}
         />
       </DialogContent>
     </Dialog>

@@ -79,11 +79,7 @@ export type InsertScheduleProposalDTO = z.infer<
 >
 
 export const deleteCoursesOfASchPropDTO = z.object({
-  coursesList: z.array(
-    z.object({
-      courseId: z.number().min(1),
-    })
-  ),
+  coursesList: z.array(z.number()),
 })
 
 export type DeleteCoursesOfASchPropDTO = z.infer<

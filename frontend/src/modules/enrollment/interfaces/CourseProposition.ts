@@ -1,7 +1,8 @@
-import { Course } from '@frontend/interfaces/models/Course'
-
-export type CourseProposition = Course & {
+export type CourseProposition = {
   proposalID: number
+  courseId: number
+  courseCode: string
+  courseName: string
   vacants: number
   numberVisible: number
   numberHidden: number

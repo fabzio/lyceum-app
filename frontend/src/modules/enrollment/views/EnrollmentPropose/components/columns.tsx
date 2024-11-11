@@ -1,3 +1,4 @@
+import { Badge } from '@frontend/components/ui/badge'
 import { Button } from '@frontend/components/ui/button'
 import { EnrollmentProposal } from '@frontend/modules/enrollment/interfaces/EnrollmentProposal'
 import { ColumnDef } from '@tanstack/react-table'
@@ -54,9 +55,13 @@ export const enrollmentProposalTableColumns: ColumnDef<EnrollmentProposal>[] = [
     cell: ({ row }) => {
       const state = row.getValue('state')
       return (
-        <div className="capitalize">
+        <Badge
+          variant={
+            mapStateToBadge[state as keyof typeof mapStateToBadge] as any
+          }
+        >
           {mapStateToLabel[state as keyof typeof mapStateToLabel] ?? 'N/A'}
-        </div>
+        </Badge>
       )
     },
   },
@@ -64,7 +69,15 @@ export const enrollmentProposalTableColumns: ColumnDef<EnrollmentProposal>[] = [
 
 const mapStateToLabel = {
   requested: 'Solicitado',
-  approved: 'Aprobado',
+  sended: 'Enviado',
+  aproved: 'Aprobado',
   rejected: 'Rechazado',
   canceled: 'Cancelado',
+}
+
+const mapStateToBadge = {
+  requested: 'outline',
+  sended: 'secondary',
+  aproved: 'default',
+  rejected: 'destructive',
 }

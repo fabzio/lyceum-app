@@ -4,5 +4,5 @@ export interface EnrollmentProposal {
     id: number
     name: string
   }
-  state: string
+  state: 'requested' | 'sended' | 'aproved' | 'assigned'
 }

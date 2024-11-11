@@ -51,7 +51,7 @@ export interface ScheduleProposalDAO {
     }[]
   ): Promise<void>
 
-  getProposal(specialityId: number, termId?: number): Promise<Proposal | null>
+  getProposal(reqeustId: number): Promise<Partial<Proposal>>
 
   getCoursesProposal(params: {
     proposalID: number
@@ -70,9 +70,7 @@ export interface ScheduleProposalDAO {
 
   deleteCoursesInScheduleProposal(
     enrollmentProposalId: number,
-    coursesList: {
-      courseId: number
-    }[]
+    coursesList: number[]
   ): Promise<void>
 }
 

@@ -17,6 +17,27 @@ import { Course } from '@/interfaces/models/Course'
 import { DuplicatedCourseCode } from '../errors'
 
 class CourseService implements CourseDAO {
+  public async searchCourses(q: string) {
+    const result = await db
+      .select({
+        id: courses.id,
+        code: courses.code,
+        name: courses.name,
+      })
+      .from(courses)
+      .where(
+        and(
+          or(ilike(courses.name, `%${q}%`), ilike(courses.code, `%${q}%`)),
+          eq(courses.state, true)
+        )
+      )
+      .limit(5)
+    return result.map((course) => ({
+      id: course.id,
+      code: course.code,
+      name: course.name,
+    }))
+  }
   public async getAllCourses(params: {
     q?: string
     page: number

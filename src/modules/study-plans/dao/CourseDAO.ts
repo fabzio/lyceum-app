@@ -1,6 +1,7 @@
 import { Course } from '@/interfaces/models/Course'
 import { PaginatedData } from '@/interfaces/PaginatedData'
 export interface CourseDAO {
+  searchCourses: (q: string) => Promise<Omit<Course, 'credits'>[]>
   getAllCourses: (filters: {
     q?: string
     page: number

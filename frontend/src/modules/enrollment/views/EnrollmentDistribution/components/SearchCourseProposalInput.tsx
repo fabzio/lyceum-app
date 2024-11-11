@@ -20,20 +20,3 @@ export function SearchCourseProposalInput() {
     />
   )
 }
-
-export function SearchCourseDistributionInput() {
-  const { setFilters } = useFilters('/_auth/matricula/distribucion')
-
-  const onChangeFilter = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilters({ q: e.target.value })
-  }, 300)
-
-  return (
-    <Input
-      type="search"
-      placeholder="🔎 Buscar curso por nombre o codigo"
-      className="w-full md:w-2/4"
-      onChange={onChangeFilter}
-    />
-  )
-}

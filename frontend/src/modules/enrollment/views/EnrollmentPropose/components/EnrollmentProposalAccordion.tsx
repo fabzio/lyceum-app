@@ -4,11 +4,11 @@ import { useMemo } from 'react'
 import { sortByToState, stateToSortBy } from '@frontend/lib/table'
 import { useFilters } from '@frontend/hooks/useFilters'
 import DataAccordion from '../EnrollmentProposeRequest/components/DataAccordion'
-import { EnrollmentProposalColumns } from '../EnrollmentProposeRequest/components/columns'
 import { useSessionStore } from '@frontend/store'
 import { EnrollmentPermissionsDict } from '@frontend/interfaces/enums/permissions/Enrollment'
 import { ColumnDef } from '@tanstack/react-table'
 import EnrollmentProposalService from '@frontend/modules/enrollment/services/EnrollmentProposal.service'
+import { EnrollmentProposalColumns } from '../EnrollmentProposeRequest/components/enrcolumns'
 
 export const DEFAULT_PAGE_INDEX = 0
 export const DEFAULT_PAGE_SIZE = 10

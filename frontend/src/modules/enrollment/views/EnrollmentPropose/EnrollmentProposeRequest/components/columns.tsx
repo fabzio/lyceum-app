@@ -1,25 +1,12 @@
 import { Button } from '@frontend/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@frontend/components/ui/dropdown-menu'
-import EnrollmentProposal from '@frontend/modules/enrollment/interfaces/EnrollmentProposalDetail'
+import { CourseProposition } from '@frontend/modules/enrollment/interfaces/CourseProposition'
 import { ColumnDef } from '@tanstack/react-table'
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
-// TODO: Agregar funcionalidad para eliminar horarios
-// import DisableConfirmationDialog from './DisableConfirmationDialog'
-// import { useState } from 'react'
-// import EditStudentDialog from './EditStudentDialog'
-// import StudentForm from './StudentForm'
-export const EnrollmentProposalColumns: ColumnDef<EnrollmentProposal>[] = [
+import { ArrowUpDown } from 'lucide-react'
+import { CourseActionCell } from './CourseActionButton'
+
+export const CourseProposalTableColumns: ColumnDef<CourseProposition>[] = [
   {
-    accessorKey: 'code',
-    cell: ({ row }) => <div className="capitalize">{row.getValue('code')}</div>,
-  },
-  {
-    accessorKey: 'code',
+    accessorKey: 'courseCode',
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -29,62 +16,67 @@ export const EnrollmentProposalColumns: ColumnDef<EnrollmentProposal>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div className="capitalize">{row.getValue('code')}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">{row.original.courseCode}</div>
+    ),
   },
   {
-    accessorKey: 'code',
+    accessorKey: 'courseName',
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
-        Código
+        Nombre
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div className="capitalize">{row.getValue('code')}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">{row.original.courseName}</div>
+    ),
+  },
+  {
+    accessorKey: 'vacants',
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        Vacantes
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => <div>{row.original.vacants}</div>,
+  },
+  {
+    accessorKey: 'numberVisible',
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        Visibles
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => <div>{row.original.numberVisible}</div>,
+  },
+  {
+    accessorKey: 'numberHidden',
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        Ocultos
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => <div>{row.original.numberHidden}</div>,
   },
   {
     accessorKey: 'actions',
     header: 'Acciones',
-    //TODO: Agregar funcionalidad para editar y deshabilitar estudiantes
-    //cell: ({ row }) => {
-    cell: () => {
-      // const { code } = row.original
-      // const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-      // const [isDisableDialogOpen, setIsDisableDialogOpen] = useState(false)
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <span className="sr-only">Abrir acciones</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {/* <DropdownMenuItem onClick={() => setIsEditDialogOpen(true)}> */}
-            <DropdownMenuItem>Editar</DropdownMenuItem>
-            {/* <DropdownMenuItem onClick={() => setIsDisableDialogOpen(true)}> */}
-            <DropdownMenuItem>Deshabilitar</DropdownMenuItem>
-          </DropdownMenuContent>
-          {/* <EditStudentDialog
-            isOpen={isEditDialogOpen}
-            setIsOpen={setIsEditDialogOpen}
-          >
-            <StudentForm
-              mode="edit"
-              Student={row.original}
-              handleClose={() => setIsEditDialogOpen(false)}
-            />
-          </EditStudentDialog>
-          <DisableConfirmationDialog
-            isOpen={isDisableDialogOpen}
-            setIsOpen={setIsDisableDialogOpen}
-            code={code}
-          /> */}
-        </DropdownMenu>
-      )
-    },
+    cell: ({ row }) => <CourseActionCell {...row.original} />,
   },
 ]

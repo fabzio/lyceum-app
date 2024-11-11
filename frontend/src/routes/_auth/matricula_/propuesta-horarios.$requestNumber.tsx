@@ -24,10 +24,13 @@ export const Route = createFileRoute(
     }
   },
   validateSearch: () => ({}) as CourseProposalFilters,
-  loader: async ({ context: { queryClient } }) => {
+  loader: async ({ context: { queryClient }, params: { requestNumber } }) => {
     return queryClient.ensureQueryData({
-      queryKey: [QueryKeys.enrollment.COURSE_PROPOSALS, {}],
-      queryFn: () => CourseProposalService.fetchCourseProposals({}),
+      queryKey: [QueryKeys.enrollment.COURSE_PROPOSALS, +requestNumber],
+      queryFn: () =>
+        CourseProposalService.fetchCourseProposals({
+          requestNumber: +requestNumber,
+        }),
     })
   },
   component: () => <SceduleProposalRequestPage />,
