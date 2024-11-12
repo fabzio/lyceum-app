@@ -1,6 +1,6 @@
-import SubRoutesManagement from "@frontend/components/SubRoutesManagement";
-import { HiringModule } from "../hiring.module";
-import { Tab } from "@frontend/lib/utils";
+import SubRoutesManagement from '@frontend/components/SubRoutesManagement'
+import { HiringModule } from '../hiring.module'
+import { Tab } from '@frontend/lib/utils'
 
 export default function HiringManagement() {
   return <SubRoutesManagement tabs={tabs} />
