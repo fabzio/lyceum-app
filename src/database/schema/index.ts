@@ -13,6 +13,8 @@ export {
   hiringStatus,
   hiringType,
   courseStep,
+  surveyQuestionType,
+  surveyType,
 } from '@/database/schema/enums'
 export { accountRoles } from '@/database/schema/accountRoles'
 export { accounts } from '@/database/schema/accounts'
@@ -48,3 +50,7 @@ export { evaluations } from '@/database/schema/evaluations'
 export { hirings } from '@/database/schema/hirings'
 export { jobRequests } from '@/database/schema/jobRequests'
 export { accountsPerHiring } from '@/database/schema/accountsPerHiring'
+export { surveys } from '@/database/schema/surveys'
+export { accountSurveys } from '@/database/schema/accountSurveys'
+export { surveyQuestions } from '@/database/schema/surveyQuestions'
+export { surveyAnswers } from '@/database/schema/surveyAnswers'
