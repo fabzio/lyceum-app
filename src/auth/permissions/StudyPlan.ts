@@ -1,8 +1,8 @@
 export const StudyPlanPermissionsDict = {
-  READ_STUDY_PLAN: 'Ver planes de estudio',
-  MANAGE_STUDY_PLAN: 'Administrar planes de estudio',
-  MANAGE_COURSES: 'Administrar cursos',
-  READ_COURSES: 'Ver cursos',
+  READ_STUDY_PLAN: 'READ_STUDY_PLAN',
+  MANAGE_STUDY_PLAN: 'MANAGE_STUDY_PLAN',
+  MANAGE_COURSES: 'MANAGE_COURSES',
+  READ_COURSES: 'READ_COURSES',
 } as const
 
 const StudyPlanPermissions = [
