@@ -10,7 +10,6 @@ import postgres from 'postgres'
 import {
   accountRoles,
   accounts,
-  courses,
   modules,
   permissions,
   rolePermissions,
@@ -18,14 +17,6 @@ import {
   terms,
   units,
 } from './schema'
-import {
-  areasMap,
-  departmentsMock,
-  facultiesMock,
-  sectionsMap,
-  specialitiesMap,
-} from './mock/units'
-import { UnitsInsertSchema } from './schema/units'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import BaseModules, { BaseModulesDict } from '@/auth/modules'
 import {
@@ -35,6 +26,9 @@ import {
 } from '@/auth/permissions'
 import { EnrollmentPermissionsDict } from '@/auth/permissions/Enrollment'
 import { FAQPermissionsDict } from '@/auth/permissions/FAQ'
+import { ThesisPermissionsDict } from '@/auth/permissions/Thesis'
+import { StudyPlanPermissionsDict } from '@/auth/permissions/StudyPlan'
+import { StudentProcessPermissionsDict } from '@/auth/permissions/StudentProcess'
 
 const queryClient = postgres({
   db: DB_DATABASE,
@@ -226,6 +220,13 @@ await db.transaction(async (tx) => {
     )
   ).flat()
 
+  const mapPermissions = new Map(
+    permissionsInserted.map((permission) => [
+      permission.permissionName,
+      permission.permissionId,
+    ])
+  )
+
   const [{ roleId }] = await tx
     .insert(roles)
     .values({
@@ -317,6 +318,96 @@ await db.transaction(async (tx) => {
       roleId: BaseRoles.STUDENT,
     },
   ])
+
+  const [carreerDirectorRole] = await tx
+    .insert(roles)
+    .values({
+      name: 'Director de carrera',
+      unitType: 'speciality',
+      editable: true,
+    })
+    .returning({ roleId: roles.id })
+  const carreerDirectorPermissions = [
+    ThesisPermissionsDict.APROVE_THESIS_PHASE_3,
+    ThesisPermissionsDict.ASSIGN_THESIS_JURY,
+    StudyPlanPermissionsDict.READ_COURSES,
+    StudyPlanPermissionsDict.READ_STUDY_PLAN,
+    StudyPlanPermissionsDict.MANAGE_COURSES,
+    StudyPlanPermissionsDict.MANAGE_STUDY_PLAN,
+    EnrollmentPermissionsDict.REVIEW_ADDITIONAL_ENROLLMENT,
+    EnrollmentPermissionsDict.MANAGE_SCHEDULE_PROPOSAL,
+    EnrollmentPermissionsDict.READ_SCHEDULE_PROFESORS,
+    FAQPermissionsDict.MAGANE_FAQ,
+    FAQPermissionsDict.READ_FAQ,
+    FAQPermissionsDict.VIEW_FAQ_SUGGESTIONS,
+    StudentProcessPermissionsDict.READ_RISK_STUDENTS,
+    StudentProcessPermissionsDict.LOAD_RISK_STUDENTS,
+    StudentProcessPermissionsDict.REQUEST_RISK_STUDENT_REPORT,
+  ]
+  await tx.insert(rolePermissions).values(
+    carreerDirectorPermissions.map((permission) => ({
+      roleId: carreerDirectorRole.roleId,
+      permissionId: mapPermissions.get(permission)!,
+    }))
+  )
+  const [academicSecretaryRole] = await tx
+    .insert(roles)
+    .values({
+      name: 'Secretario académico',
+      unitType: 'speciality',
+      editable: true,
+    })
+    .returning({ roleId: roles.id })
+
+  const academicSecretaryPermissions = [
+    ThesisPermissionsDict.REQUEST_THESIS_JURY,
+    EnrollmentPermissionsDict.REQUEST_SCHEDULE_PROPOSAL,
+    EnrollmentPermissionsDict.REVIEW_SCHEDULE_PROPOSAL,
+  ]
+
+  await tx.insert(rolePermissions).values(
+    academicSecretaryPermissions.map((permission) => ({
+      roleId: academicSecretaryRole.roleId,
+      permissionId: mapPermissions.get(permission)!,
+    }))
+  )
+
+  const [sectionCoordinatorRole] = await tx
+    .insert(roles)
+    .values({
+      name: 'Coordinador de sección',
+      unitType: 'section',
+      editable: true,
+    })
+    .returning({ roleId: roles.id })
+
+  const sectionCoordinatorPermissions = [
+    EnrollmentPermissionsDict.ASSIGN_SCHEDULE_PROFESORS,
+  ]
+  await tx.insert(rolePermissions).values(
+    sectionCoordinatorPermissions.map((permission) => ({
+      roleId: sectionCoordinatorRole.roleId,
+      permissionId: mapPermissions.get(permission)!,
+    }))
+  )
+  const [areaCoordinatorRole] = await tx
+    .insert(roles)
+    .values({
+      name: 'Coordinador de área',
+      unitType: 'area',
+      editable: true,
+    })
+    .returning({ roleId: roles.id })
+
+  const areaCoordinatorPermissions = [
+    ThesisPermissionsDict.APROVE_THESIS_PHASE_2,
+  ]
+  await tx.insert(rolePermissions).values(
+    areaCoordinatorPermissions.map((permission) => ({
+      roleId: areaCoordinatorRole.roleId,
+      permissionId: mapPermissions.get(permission)!,
+    }))
+  )
 
   await tx.insert(accountRoles).values(
     accountsId.map(({ accountId }) => ({
