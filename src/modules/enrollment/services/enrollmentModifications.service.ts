@@ -267,7 +267,9 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
           inArray(
             schedules.courseId,
             db
-              .select()
+              .select({
+                courseId: nestedSchedule.courseId,
+              })
               .from(nestedSchedule)
               .where(eq(nestedSchedule.id, scheduleId))
           )

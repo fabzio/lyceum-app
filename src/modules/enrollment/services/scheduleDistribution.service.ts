@@ -69,9 +69,12 @@ class ScheduleDistributionService implements ScheduleDistributionDAO {
       .select()
       .from(scheduleAccounts)
       .where(
-        inArray(
-          scheduleAccounts.accountId,
-          professorsList.map((profesor) => profesor.professorId.toString())
+        and(
+          eq(scheduleAccounts.scheduleId, scheduleId),
+          inArray(
+            scheduleAccounts.accountId,
+            professorsList.map((profesor) => profesor.professorId)
+          )
         )
       )
     if (existingScheduleProfessor.length > 0) {

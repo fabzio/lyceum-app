@@ -219,7 +219,7 @@ class GenericService {
     const allowedModules = Array.from(
       new Set(allowedRolePemissions.map((permissions) => permissions.module))
     )
-    const currentTerm = await db
+    const [currentTerm] = await db
       .select({
         id: terms.id,
         name: terms.name,
