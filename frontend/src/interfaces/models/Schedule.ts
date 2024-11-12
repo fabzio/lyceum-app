@@ -3,4 +3,7 @@ export interface Schedule {
   code: string
   courseId: number
   termId: number
+  visibility: boolean
+  vacancies: number
+  state: 'saved' | 'editing'
 }

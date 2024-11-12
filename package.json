@@ -32,6 +32,7 @@
     "drizzle-orm": "0.35.1",
     "drizzle-zod": "0.5.1",
     "hono": "4.6.5",
+    "just-group-by": "2.2.0",
     "postgres": "3.4.4",
     "uuid": "11.0.2",
     "zod": "3.23.8"

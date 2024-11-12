@@ -13,7 +13,7 @@ import ThesisJuryRequestService from '@frontend/modules/thesis/services/thesisJu
 import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisThemeRequest.service'
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
-import SearchJuryDialog from '../../components/SearchJuryDialog'
+import SearchJuryDialog from './SearchJuryDialog'
 import Need from '@frontend/components/Need'
 import { ThesisPermissionsDict } from '@frontend/interfaces/enums/permissions/Thesis'
 
