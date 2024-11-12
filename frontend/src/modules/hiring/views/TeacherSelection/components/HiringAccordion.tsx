@@ -15,13 +15,14 @@ export default function HiringAccordion({ hirings = [] }: Props) {
   return (
     <Accordion type="single" collapsible>
       {hirings.length > 0 ? (
-        hirings.map(({ id, description, courses }) => (
+        hirings.map(({ id, name, endDate, courses }) => (
           <AccordionItem key={id} value={id}>
             <AccordionTrigger>
               <div className="w-full px-2 flex justify-between">
-                <h3>{description}</h3>
+                <h3>{name}</h3>
+                <p>{endDate}</p>
                 <p>
-                  {courses.length} {courses.length === 1 ? 'rol' : 'roles'}
+                  {courses.length} {courses.length === 1 ? 'curso' : 'cursos'}
                 </p>
               </div>
             </AccordionTrigger>
