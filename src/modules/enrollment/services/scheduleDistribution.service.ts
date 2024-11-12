@@ -1,6 +1,17 @@
 import db from '@/database'
-import { scheduleAccounts, roles, schedules } from '@/database/schema'
-import { eq, inArray, and } from 'drizzle-orm'
+import {
+  scheduleAccounts,
+  roles,
+  schedules,
+  enrollmentProposalCourses,
+  enrollmentProposal,
+  studyPlanCourses,
+  studyPlans,
+  specialityStudyPlans,
+  units,
+  courses,
+} from '@/database/schema'
+import { eq, inArray, and, desc, or } from 'drizzle-orm'
 import {
   NoProfessorsSendedError,
   RepeatedProfessorError,
@@ -11,18 +22,22 @@ import {
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { ScheduleDistributionDAO } from '../dao'
 import { error } from 'console'
+import { ScheduleSchema } from '@/database/schema/schedules'
+import { Unit } from '@/interfaces/models/Unit'
+import { CourseSchedule } from '../dao/scheduleDistributionDAO'
+import groupBy from 'just-group-by'
 
 class ScheduleDistributionService implements ScheduleDistributionDAO {
   public async insertProfessorsToSchedule(
     scheduleId: number,
-    ProfessorsList: {
+    professorsList: {
       professorId: string
-      islead: boolean
+      isLead: boolean
     }[]
   ) {
     //Validación 1 - Los AccountId no pueden repetirse ya que no puede registrarse 2 profesores en el mismo horario
     const AccountIdSet = new Set<string>()
-    for (const professor of ProfessorsList) {
+    for (const professor of professorsList) {
       if (AccountIdSet.has(professor.professorId)) {
         throw new RepeatedProfessorError(
           `El profesor con ID ${professor.professorId} está duplicado en la lista del profesores del horario`
@@ -41,7 +56,7 @@ class ScheduleDistributionService implements ScheduleDistributionDAO {
     }
 
     //Validación 3 - Los cursos a agregar a la propuesta no deben ser cero
-    if (ProfessorsList.length === 0) {
+    if (professorsList.length === 0) {
       throw new NoProfessorsSendedError(
         'Se envió una lista de profesores vacía'
       )
@@ -55,7 +70,7 @@ class ScheduleDistributionService implements ScheduleDistributionDAO {
       .where(
         inArray(
           scheduleAccounts.accountId,
-          ProfessorsList.map((profesor) => profesor.professorId.toString())
+          professorsList.map((profesor) => profesor.professorId.toString())
         )
       )
     if (existingScheduleProfessor.length > 0) {
@@ -82,14 +97,152 @@ class ScheduleDistributionService implements ScheduleDistributionDAO {
     }
 
     // Insertamos los profesores en la tabla scheduleAccount
-    await db.insert(scheduleAccounts).values(
-      ProfessorsList.map((professor) => ({
-        accountId: professor.professorId.toString(),
-        scheduleId,
-        roleId: BaseRoles.PROFESSOR,
-        lead: professor.islead,
-      }))
+    await db.transaction(async (tx) => {
+      await tx.insert(scheduleAccounts).values(
+        professorsList.map((professor) => ({
+          accountId: professor.professorId,
+          scheduleId,
+          roleId: BaseRoles.PROFESSOR,
+          lead: professor.isLead,
+        }))
+      )
+      await tx
+        .update(schedules)
+        .set({ state: 'saved' })
+        .where(eq(schedules.id, scheduleId))
+    })
+  }
+
+  public async getCoursesScheduleDistribution({
+    unitId,
+  }: {
+    unitId: Unit['id']
+  }) {
+    const unitTypeResponse = await db
+      .select({
+        unitType: units.type,
+      })
+      .from(units)
+      .where(eq(units.id, unitId))
+
+    if (!unitTypeResponse.length) {
+      throw new Error('No se encontró la unidad especificada')
+    }
+
+    const [{ unitType }] = unitTypeResponse
+    let coursesSchedule: {
+      course: {
+        id: number
+        name: string
+        code: string
+      }
+      schedule: {
+        id: number
+        code: string
+        state: 'saved' | 'editing'
+        vacancies: number
+      }
+    }[]
+    if (unitType === 'department' || unitType === 'section') {
+      coursesSchedule = await this.getCoursesOfDepartmentOrSection(unitId)
+    } else if (unitType === 'speciality') {
+      coursesSchedule = await this.getCoursesOfProposalSpeciality(unitId)
+    } else {
+      throw new Error('Tipo de unidad no soportado')
+    }
+    const coursesScheduleGrouped = groupBy(
+      coursesSchedule,
+      (course) => course.course.id
     )
+    const coursesScheduleFormated: CourseSchedule[] = []
+
+    Object.entries(coursesScheduleGrouped).forEach(
+      ([courseId, courseSchedules]) => {
+        coursesScheduleFormated.push({
+          id: parseInt(courseId),
+          code: courseSchedules[0].course.code,
+          name: courseSchedules[0].course.name,
+          schedules: courseSchedules.map(
+            (courseSchedule) => courseSchedule.schedule
+          ),
+        })
+      }
+    )
+
+    return coursesScheduleFormated
+  }
+  public async updateScheduleVisibility({
+    scheduleId,
+    visibility,
+  }: {
+    scheduleId: number
+    visibility: ScheduleSchema['visibility']
+  }) {
+    await db
+      .update(schedules)
+      .set({ visibility })
+      .where(eq(schedules.id, scheduleId))
+  }
+  private async getCoursesOfProposalSpeciality(speciality: Unit['id']) {
+    return await db
+      .select({
+        course: {
+          id: courses.id,
+          name: courses.name,
+          code: courses.code,
+        },
+        schedule: {
+          id: schedules.id,
+          code: schedules.code,
+          vacancies: schedules.vacancies,
+          state: schedules.state,
+          visibility: schedules.visibility,
+        },
+      })
+      .from(enrollmentProposalCourses)
+      .innerJoin(
+        enrollmentProposal,
+        eq(
+          enrollmentProposal.id,
+          enrollmentProposalCourses.enrollmentProposalId
+        )
+      )
+      .innerJoin(courses, eq(courses.id, enrollmentProposalCourses.courseId))
+      .innerJoin(schedules, and(eq(schedules.courseId, courses.id)))
+      .where(
+        and(
+          eq(enrollmentProposal.state, 'aproved'),
+          eq(enrollmentProposal.specialityId, speciality)
+        )
+      )
+      .orderBy(desc(enrollmentProposal.createdAt))
+      .limit(1)
+  }
+
+  private async getCoursesOfDepartmentOrSection(unitId: Unit['id']) {
+    return await db
+      .select({
+        course: {
+          id: courses.id,
+          name: courses.name,
+          code: courses.code,
+        },
+        schedule: {
+          id: schedules.id,
+          code: schedules.code,
+          vacancies: schedules.vacancies,
+          state: schedules.state,
+        },
+      })
+      .from(schedules)
+      .innerJoin(courses, eq(courses.id, schedules.courseId))
+      .innerJoin(units, eq(units.id, courses.unitId))
+      .where(
+        and(
+          or(eq(units.parentId, unitId), eq(courses.unitId, unitId)),
+          eq(schedules.state, 'editing')
+        )
+      )
   }
 }
 

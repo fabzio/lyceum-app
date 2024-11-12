@@ -1,5 +1,5 @@
 import db from '@/database'
-import { courses } from '@/database/schema'
+import { courses, units } from '@/database/schema'
 import {
   aliasedTable,
   and,
@@ -15,8 +15,30 @@ import {
 import { CourseDAO } from '../dao/CourseDAO'
 import { Course } from '@/interfaces/models/Course'
 import { DuplicatedCourseCode } from '../errors'
+import { CoursesSchema } from '@/database/schema/courses'
 
 class CourseService implements CourseDAO {
+  public async searchCourses(q: string) {
+    const result = await db
+      .select({
+        id: courses.id,
+        code: courses.code,
+        name: courses.name,
+      })
+      .from(courses)
+      .where(
+        and(
+          or(ilike(courses.name, `%${q}%`), ilike(courses.code, `%${q}%`)),
+          eq(courses.state, true)
+        )
+      )
+      .limit(5)
+    return result.map((course) => ({
+      id: course.id,
+      code: course.code,
+      name: course.name,
+    }))
+  }
   public async getAllCourses(params: {
     q?: string
     page: number
@@ -54,8 +76,11 @@ class CourseService implements CourseDAO {
         code: courses.code,
         name: courses.name,
         credits: courses.credits,
+        unit: units.name,
+        unitType: units.type,
       })
       .from(courses)
+      .leftJoin(units, eq(courses.unitId, units.id))
       .where(
         and(
           or(
@@ -74,9 +99,7 @@ class CourseService implements CourseDAO {
       )
 
     const result = coursesResponse.map((course) => ({
-      id: course.id,
-      code: course.code,
-      name: course.name,
+      ...course,
       credits: parseFloat(course.credits),
     }))
     return {
@@ -119,6 +142,8 @@ class CourseService implements CourseDAO {
       name: string
       code: string
       credits: number
+      unitId?: number
+      unitName?: string
     }[]
   ) {
     const existingCourses = await db
@@ -136,12 +161,47 @@ class CourseService implements CourseDAO {
           existingCourses.map((course) => course.code).join(', ')
       )
     }
-    await db.insert(courses).values(
-      courseList.map((course) => ({
-        ...course,
+    let coursesToInsert: CoursesSchema[]
+    if (courseList.every((course) => course.unitName !== undefined)) {
+      const unitsId = await db
+        .select({
+          id: units.id,
+          name: units.name,
+        })
+        .from(units)
+        .where(
+          and(
+            inArray(units.type, ['department', 'section']),
+            inArray(
+              units.name,
+              Array.from(new Set(courseList.map((course) => course.unitName!)))
+            )
+          )
+        )
+        .limit(1)
+      const unitMap = new Map(unitsId.map((unit) => [unit.name, unit.id]))
+      courseList.forEach((course) => {
+        if (!unitMap.has(course.unitName!)) {
+          throw new Error(
+            'No se encontró el departamento o sección: ' + course.unitName
+          )
+        }
+      })
+      coursesToInsert = courseList.map((course) => ({
+        code: course.code,
+        name: course.name,
+        unitId: unitMap.get(course.unitName!)!,
         credits: course.credits.toFixed(2),
       }))
-    )
+    } else {
+      coursesToInsert = courseList.map((course) => ({
+        code: course.code,
+        name: course.name,
+        unitId: course.unitId!,
+        credits: course.credits.toFixed(2),
+      }))
+    }
+    await db.insert(courses).values(coursesToInsert)
   }
   public async updateCourse(
     courseCode: string,
@@ -149,6 +209,7 @@ class CourseService implements CourseDAO {
       name: string
       code: string
       credits: number
+      unitId: number
     }
   ) {
     const existingCourses = await db
@@ -183,6 +244,7 @@ class CourseService implements CourseDAO {
           name: course.name,
           code: course.code,
           credits: course.credits.toFixed(2),
+          unitId: course.unitId,
         })
         .where(eq(courses.code, courseCode))
     })

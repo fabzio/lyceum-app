@@ -34,6 +34,7 @@ export default function NewEnrollmentPropose() {
           title: 'Solicitud enviada',
           description: 'Se inicio el proceso de propuesta de matricula',
         })
+      setIsOpen(false)
     },
     onError: ({ message }) => {
       toast({

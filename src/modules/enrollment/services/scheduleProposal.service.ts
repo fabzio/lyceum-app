@@ -1,7 +1,9 @@
 import db from '@/database'
 import {
+  courses,
   enrollmentProposal,
   enrollmentProposalCourses,
+  schedules,
   terms,
   units,
 } from '@/database/schema'
@@ -19,8 +21,11 @@ import { error } from 'console'
 import { any } from 'zod'
 import { Proposal } from '@/interfaces/models/Proposal'
 import { PaginatedData } from '@/interfaces/PaginatedData'
+import ScheduleDistributionService from './scheduleDistribution.service'
+import { ScheduleSchema } from '@/database/schema/schedules'
 
 class ScheduleProposalService implements ScheduleProposalDAO {
+  private scheduleDistributionService = new ScheduleDistributionService()
   public async insertCourseToScheduleProposal(
     enrollmentProposalId: number,
     coursesList: {
@@ -120,10 +125,64 @@ class ScheduleProposalService implements ScheduleProposalDAO {
     }
 
     // 3. Actualizar el estado si es válido
-    await db
-      .update(enrollmentProposal)
-      .set({ state: newStatus })
-      .where(eq(enrollmentProposal.id, enrollmentProposalId))
+    await db.transaction(async (tx) => {
+      await tx
+        .update(enrollmentProposal)
+        .set({ state: newStatus })
+        .where(eq(enrollmentProposal.id, enrollmentProposalId))
+      if (newStatus === 'aproved') {
+        const proposalDataresponse = await tx
+          .select({
+            termId: enrollmentProposal.termId,
+          })
+          .from(enrollmentProposal)
+          .where(eq(enrollmentProposal.id, enrollmentProposalId))
+        if (proposalDataresponse.length === 0) {
+          throw new Error('No se encontró la propuesta de matrícula')
+        }
+        const [proposaldata] = proposalDataresponse
+        const coursesProposal = await tx
+          .select({
+            courseId: enrollmentProposalCourses.courseId,
+            visibleSchedules: enrollmentProposalCourses.visibleSchedules,
+            hiddenSchedules: enrollmentProposalCourses.hiddenSchedules,
+            vacanciesPerSchema: enrollmentProposalCourses.vacanciesPerSchema,
+          })
+          .from(enrollmentProposalCourses)
+          .where(
+            eq(
+              enrollmentProposalCourses.enrollmentProposalId,
+              enrollmentProposalId
+            )
+          )
+
+        const shcedulesToInsert: ScheduleSchema[] = []
+        coursesProposal.forEach((course) => {
+          const numVisible = course.visibleSchedules
+          const numHidden = course.hiddenSchedules
+          for (let i = 0; i < numVisible; i++) {
+            shcedulesToInsert.push({
+              code: `H10${i + 1}`,
+              courseId: course.courseId,
+              termId: proposaldata.termId,
+              vacancies: course.vacanciesPerSchema,
+              visibility: true,
+            })
+          }
+          for (let i = 0; i < numHidden; i++) {
+            shcedulesToInsert.push({
+              code: `H20${i + 1}`,
+              courseId: course.courseId,
+              termId: proposaldata.termId,
+              vacancies: course.vacanciesPerSchema,
+              visibility: false,
+            })
+          }
+        })
+
+        await tx.insert(schedules).values(shcedulesToInsert)
+      }
+    })
   }
 
   public async insertScheduleProposal(
@@ -337,59 +396,71 @@ class ScheduleProposalService implements ScheduleProposalDAO {
     })
   }
 
-  public async getProposal(
-    specialityId: number,
-    termId?: number
-  ): Promise<Proposal | null> {
-    let proposal: Proposal | null = null
-    if (termId == undefined) {
-      const latestProposalArray = await db
-        .select()
-        .from(enrollmentProposal)
-        .where(eq(enrollmentProposal.specialityId, specialityId))
-        .orderBy(desc(enrollmentProposal.createdAt))
-        .limit(1)
-      proposal = latestProposalArray[0]
-    } else {
-      const altProposal = await db
-        .select()
-        .from(enrollmentProposal)
-        .where(
-          and(
-            eq(enrollmentProposal.specialityId, specialityId),
-            eq(enrollmentProposal.termId, termId)
-          )
-        )
-      proposal = altProposal[0]
+  public async getProposal(requestId: number): Promise<Partial<Proposal>> {
+    const response = await db
+      .select({
+        state: enrollmentProposal.state,
+      })
+      .from(enrollmentProposal)
+      .where(eq(enrollmentProposal.id, requestId))
+    if (response.length === 0) {
+      throw new Error('La propuesta no existe')
     }
+    const [proposal] = response
     return proposal
   }
 
-  public async getCoursesProposal(proposalId: number): Promise<
-    {
-      id: number
-      enrollmentProposalId: number
-      courseId: number
-      vacanciesPerSchema: number
-      hiddenSchedules: number
-      visibleSchedules: number
-    }[]
-  > {
-    const proposalCourses = await db
-      .select()
+  public async getCoursesProposal(params: {
+    proposalID: number
+    page: number
+    limit: number
+    sortBy?: string
+  }): Promise<PaginatedData<{
+    proposalID: number
+    courseId: number
+    courseCode: string
+    courseName: string
+    vacants: number
+    numberVisible: number
+    numberHidden: number
+  }> | null> {
+    const { proposalID, page, limit, sortBy } = params
+
+    const [{ total }] = await db
+      .select({
+        total: sql<string>`count(*)`,
+      })
       .from(enrollmentProposalCourses)
-      .where(eq(enrollmentProposalCourses.enrollmentProposalId, proposalId))
-    return proposalCourses
+      .where(eq(enrollmentProposalCourses.enrollmentProposalId, proposalID))
+
+    const proposalCourses = await db
+      .select({
+        proposalID: enrollmentProposalCourses.enrollmentProposalId,
+        courseId: enrollmentProposalCourses.courseId,
+        courseCode: courses.code,
+        courseName: courses.name,
+        vacants: enrollmentProposalCourses.vacanciesPerSchema,
+        numberVisible: enrollmentProposalCourses.visibleSchedules,
+        numberHidden: enrollmentProposalCourses.hiddenSchedules,
+      })
+      .from(enrollmentProposalCourses)
+      .innerJoin(courses, eq(enrollmentProposalCourses.courseId, courses.id))
+      .where(eq(enrollmentProposalCourses.enrollmentProposalId, proposalID))
+      .offset(page * limit)
+      .limit(limit)
+
+    return {
+      result: proposalCourses,
+      rowCount: +total,
+      currentPage: page,
+      totalPages: Math.ceil(+total / limit),
+      hasNext: +total > (page + 1) * limit,
+    }
   }
 
   public async deleteCoursesInScheduleProposal(
     enrollmentProposalId: number,
-    coursesList: {
-      courseId: number
-      vacanciesPerSchema: number
-      visibleSchedules: number
-      hiddenSchedules: number
-    }[]
+    coursesList: number[]
   ) {
     //Validación 1 - La propuesta de horarios debe existir
     const existingEnrollmentProposal = await db
@@ -405,12 +476,12 @@ class ScheduleProposalService implements ScheduleProposalDAO {
     //Validación 2 - Los cursos en la lista no se deben repetir
     const courseIdSet = new Set<number>()
     for (const course of coursesList) {
-      if (courseIdSet.has(course.courseId)) {
+      if (courseIdSet.has(course)) {
         throw new RepeatedCoursesError(
-          `El curso con ID ${course.courseId} está duplicado en la lista de cursos`
+          `El curso con ID ${course} está duplicado en la lista de cursos`
         )
       }
-      courseIdSet.add(course.courseId)
+      courseIdSet.add(course)
     }
 
     //Ahora sí eliminamos los cursos en la tabla :)
@@ -423,7 +494,7 @@ class ScheduleProposalService implements ScheduleProposalDAO {
               enrollmentProposalCourses.enrollmentProposalId,
               enrollmentProposalId
             ),
-            eq(enrollmentProposalCourses.courseId, course.courseId)
+            eq(enrollmentProposalCourses.courseId, course)
           )
         )
     }

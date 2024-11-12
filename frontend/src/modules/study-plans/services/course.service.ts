@@ -4,6 +4,23 @@ import http from '@frontend/lib/http'
 import axios from 'axios'
 
 class CourseService {
+  static async searchCourse(q: string): Promise<Course[]> {
+    try {
+      const res = await http.get('/study-plan/course-management/search', {
+        params: { q },
+      })
+      const response = res.data as ResponseAPI<Course[]>
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
   static async fetchCourses(
     filtersAndPagination: Filters
   ): Promise<PaginatedData<Course>> {
@@ -50,7 +67,7 @@ class CourseService {
   }
   */
   static async addCourse(
-    courses: Pick<Course, 'code' | 'credits' | 'name'>[]
+    courses: Pick<Course, 'code' | 'credits' | 'name' | 'unitName'>[]
   ): Promise<void> {
     try {
       const res = await http.post('/study-plan/course-management', {
@@ -70,7 +87,7 @@ class CourseService {
 
   static async updateCourse(args: {
     code: string
-    course: Pick<Course, 'code' | 'credits' | 'name'>
+    course: Pick<Course, 'code' | 'credits' | 'name' | 'unitId'>
   }): Promise<void> {
     try {
       const res = await http.put(

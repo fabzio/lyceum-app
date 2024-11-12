@@ -33,18 +33,22 @@ class EnrollmentProposalService {
     }
   }
 
-  public static async updateScheduleProposalStatus(
-    scheduleId: string,
-    newStatus: string
-  ): Promise<void> {
+  public static async updateScheduleProposalStatus({
+    newStatus,
+    requestId,
+  }: {
+    requestId: number
+    newStatus: 'requested' | 'sended' | 'aproved' | 'assigned'
+  }) {
     try {
-      const res = await http.put(`enrollment/schedule-proposal/${scheduleId}`, {
+      const res = await http.put(`enrollment/schedule-proposal/${requestId}`, {
         newStatus: newStatus,
       })
-      const response = res.data as ResponseAPI<null>
+      const response = res.data as ResponseAPI
       if (!response.success) {
         throw new Error(response.message)
       }
+      return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const errorResponse = error.response?.data as ResponseAPI
@@ -75,6 +79,118 @@ class EnrollmentProposalService {
       if (!response.success) {
         throw new Error(response.message)
       }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(
+          (error.response?.data.message || error.message) ?? error.message
+        )
+      }
+      throw error
+    }
+  }
+  public static async insertCourseToScheduleProposal({
+    requestId,
+    coursesList,
+  }: {
+    requestId: number
+    coursesList: {
+      courseId: number
+      vacanciesPerSchema: number
+      visibleSchedules: number
+      hiddenSchedules: number
+    }[]
+  }) {
+    try {
+      const res = await http.post(
+        `/enrollment/schedule-proposal/${requestId}/courses`,
+        {
+          coursesList,
+        }
+      )
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(
+          (error.response?.data.message || error.message) ?? error.message
+        )
+      }
+      throw error
+    }
+  }
+
+  public static async updateCourseInScheduleProposal({
+    requestId,
+    coursesList,
+  }: {
+    requestId: number
+    coursesList: {
+      courseId: number
+      vacanciesPerSchema: number
+      visibleSchedules: number
+      hiddenSchedules: number
+    }[]
+  }) {
+    try {
+      const res = await http.put(
+        `/enrollment/schedule-proposal/${requestId}/courses`,
+        {
+          coursesList,
+        }
+      )
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(
+          (error.response?.data.message || error.message) ?? error.message
+        )
+      }
+      throw error
+    }
+  }
+
+  public static async deleteCourseFromScheduleProposal({
+    requestId,
+    coursesList,
+  }: {
+    requestId: number
+    coursesList: number[]
+  }) {
+    try {
+      const res = await http.delete(
+        `/enrollment/schedule-proposal/${requestId}/courses`,
+        {
+          data: {
+            coursesList,
+          },
+        }
+      )
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(
+          (error.response?.data.message || error.message) ?? error.message
+        )
+      }
+      throw error
+    }
+  }
+  public static async getEnrollmentProposalById(requestId: number) {
+    try {
+      const res = await http.get(`/enrollment/schedule-proposal/${requestId}`)
+      const response = res.data as ResponseAPI<EnrollmentProposal>
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(

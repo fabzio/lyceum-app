@@ -27,10 +27,10 @@ export default function CourseTable() {
   const sortingState = sortByToState(filters.sortBy)
   const columns = useMemo(
     () =>
-      courseTableColumns.filter(
-        (_, idx) =>
-          havePermission(StudyPlanPermissionsDict.MANAGE_COURSES) &&
-          idx !== courseTableColumns.length - 1
+      courseTableColumns.filter((_, idx) =>
+        idx === courseTableColumns.length - 1
+          ? havePermission(StudyPlanPermissionsDict.MANAGE_COURSES)
+          : true
       ),
     [havePermission]
   )

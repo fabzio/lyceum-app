@@ -1,5 +1,6 @@
 import { Proposal } from '@/interfaces/models/Proposal'
 import { PaginatedData } from '@/interfaces/PaginatedData'
+
 export interface ScheduleProposalDAO {
   insertCourseToScheduleProposal(
     enrollmentProposalId: number,
@@ -50,24 +51,26 @@ export interface ScheduleProposalDAO {
     }[]
   ): Promise<void>
 
-  getProposal(specialityId: number, termId?: number): Promise<Proposal | null>
+  getProposal(reqeustId: number): Promise<Partial<Proposal>>
 
-  getCoursesProposal(proposalId: number): Promise<
-    {
-      id: number
-      enrollmentProposalId: number
-      courseId: number
-      vacanciesPerSchema: number
-      hiddenSchedules: number
-      visibleSchedules: number
-    }[]
-  >
+  getCoursesProposal(params: {
+    proposalID: number
+    page: number
+    limit: number
+    sortBy?: string
+  }): Promise<PaginatedData<{
+    proposalID: number
+    courseId: number
+    courseCode: string
+    courseName: string
+    vacants: number
+    numberVisible: number
+    numberHidden: number
+  }> | null>
 
   deleteCoursesInScheduleProposal(
     enrollmentProposalId: number,
-    coursesList: {
-      courseId: number
-    }[]
+    coursesList: number[]
   ): Promise<void>
 }
 

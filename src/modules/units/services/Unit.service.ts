@@ -91,6 +91,7 @@ class UnitService {
       .select({
         id: units.id,
         name: units.name,
+        unitType: units.type,
       })
       .from(units)
       .where(and(inArray(units.type, types), ilike(units.name, `%${q}%`)))

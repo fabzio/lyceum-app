@@ -4,9 +4,7 @@ import {
   EnrollmentModificationRoute,
   ScheduleProposalRoute,
   ScheduleDistributionRoute,
-  EnrollmentApprovalRoute,
 } from './routes'
-import { ne } from 'drizzle-orm'
 
 class Enrollment implements Route {
   public path = '/enrollment'
@@ -19,7 +17,6 @@ class Enrollment implements Route {
       new EnrollmentModificationRoute(),
       new ScheduleProposalRoute(),
       new ScheduleDistributionRoute(),
-      new EnrollmentApprovalRoute(),
     ]
     this.initializeRoutes()
   }

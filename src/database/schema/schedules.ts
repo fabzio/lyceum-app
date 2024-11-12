@@ -3,6 +3,7 @@ import {
   foreignKey,
   integer,
   serial,
+  smallint,
   varchar,
 } from 'drizzle-orm/pg-core'
 import { schema } from '..'
@@ -10,6 +11,8 @@ import { courses } from './courses'
 import { terms } from './terms'
 import { relations } from 'drizzle-orm'
 import { scheduleStatus } from './enums'
+import { createInsertSchema } from 'drizzle-zod'
+import { z } from 'zod'
 
 export const schedules = schema.table(
   'schedules',
@@ -19,7 +22,8 @@ export const schedules = schema.table(
     courseId: integer('course_id').notNull(),
     termId: integer('term_id').notNull(),
     state: scheduleStatus('state').notNull().default('editing'),
-    visibility: boolean ('visibility').notNull(),
+    vacancies: smallint('vacancies').notNull(),
+    visibility: boolean('visibility').notNull(),
   },
   (table) => ({
     scheduleCourseFk: foreignKey({
@@ -46,3 +50,6 @@ export const scheduleRelations = relations(schedules, ({ one }) => ({
     references: [terms.id],
   }),
 }))
+
+export const scheuleSchema = createInsertSchema(schedules)
+export type ScheduleSchema = z.infer<typeof scheuleSchema>

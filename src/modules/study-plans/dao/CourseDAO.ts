@@ -1,6 +1,7 @@
 import { Course } from '@/interfaces/models/Course'
 import { PaginatedData } from '@/interfaces/PaginatedData'
 export interface CourseDAO {
+  searchCourses: (q: string) => Promise<Omit<Course, 'credits'>[]>
   getAllCourses: (filters: {
     q?: string
     page: number
@@ -9,7 +10,13 @@ export interface CourseDAO {
   }) => Promise<PaginatedData<Course>>
   getCoursesDetail: (params: { courseId: string }) => Promise<Course>
   createCourse: (
-    courseList: { name: string; code: string; credits: number }[]
+    courseList: {
+      name: string
+      code: string
+      credits: number
+      unitId?: number
+      unitName?: string
+    }[]
   ) => Promise<void>
   updateCourse: (
     courseCode: string,
@@ -17,6 +24,7 @@ export interface CourseDAO {
       name: string
       code: string
       credits: number
+      unitId: number
     }
   ) => Promise<void>
   disableCourse: (courseCode: string) => Promise<void>

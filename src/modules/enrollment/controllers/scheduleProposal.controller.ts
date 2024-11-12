@@ -11,7 +11,10 @@ import {
 } from '../dtos'
 import { z, ZodObject } from 'zod'
 import { ScheduleProposalDAO } from '../dao'
-import { getScheduleProposalsInUnitDTO } from '../dtos/scheduleProposalDTO'
+import {
+  getScheduleProposalCoursesDTO,
+  getScheduleProposalsInUnitDTO,
+} from '../dtos/scheduleProposalDTO'
 
 class ScheduleProposalController {
   private router = new Hono()
@@ -163,22 +166,18 @@ class ScheduleProposalController {
   )
 
   public getProposal = this.router.get(
-    '/',
+    '/:requestId',
     zValidator(
-      'query',
+      'param',
       z.object({
-        specialityId: z.string(),
-        termId: z.string().optional(),
+        requestId: z.string(),
       })
     ),
     async (c) => {
-      const { specialityId, termId } = c.req.valid('query')
+      const { requestId } = c.req.valid('param')
       try {
         const response: ResponseAPI = {
-          data: await this.scheduleProposalService.getProposal(
-            parseInt(specialityId),
-            termId ? parseInt(termId) : undefined
-          ),
+          data: await this.scheduleProposalService.getProposal(+requestId),
           message: 'Proposal retrieved successfully',
           success: true,
         }
@@ -193,7 +192,8 @@ class ScheduleProposalController {
   )
 
   public getCoursesProposal = this.router.get(
-    '/:enrollmentProposalId',
+    '/:enrollmentProposalId/courses',
+    zValidator('query', getScheduleProposalCoursesDTO),
     zValidator(
       'param',
       z.object({
@@ -201,12 +201,16 @@ class ScheduleProposalController {
       })
     ),
     async (c) => {
+      const params = c.req.valid('query')
       const { enrollmentProposalId } = c.req.valid('param')
       try {
         const response: ResponseAPI = {
-          data: await this.scheduleProposalService.getCoursesProposal(
-            parseInt(enrollmentProposalId)
-          ),
+          data: await this.scheduleProposalService.getCoursesProposal({
+            limit: +params.limit,
+            page: +params.page,
+            sortBy: params.sortBy,
+            proposalID: +parseInt(enrollmentProposalId),
+          }),
           message: 'Courses retrieved successfully',
           success: true,
         }

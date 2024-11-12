@@ -31,6 +31,7 @@ export const QueryKeys = {
     ENROLLMENT_PROPOSALS: 'enrollment_proposals',
     ENROLLMENTS_MODIFY: 'enrollments_modify',
     ENROLLMENTS_MODIFY_DETAIL: 'enrollment_modify_detail',
+    SCHEDULE_DISTRIBUTION: 'schedule_distribution',
   },
   studyPlan: {
     COURSES: 'courses',

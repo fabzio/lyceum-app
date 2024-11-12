@@ -31,6 +31,19 @@ class CourseController {
       return c.json(response)
     }
   )
+  public searchCourses = this.router.get(
+    '/search',
+    zValidator('query', z.object({ q: z.string() })),
+    async (c) => {
+      const { q } = c.req.valid('query')
+      const response: ResponseAPI = {
+        data: await this.courseService.searchCourses(q),
+        message: 'Courses retrieved',
+        success: true,
+      }
+      return c.json(response)
+    }
+  )
 
   public getCoursesDetail = this.router.get('/:courseId', async (c) => {
     const { courseId } = c.req.param()
@@ -75,6 +88,7 @@ class CourseController {
         name: z.string(),
         code: z.string(),
         credits: z.number(),
+        unitId: z.number(),
       })
     ),
     async (c) => {
