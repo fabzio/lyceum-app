@@ -172,18 +172,21 @@ const formSchema = z.object({
     .number({
       required_error: 'Los cupos por horario son requeridos',
     })
-    .max(80)
-    .min(1),
+    .max(120, 'El máximo de cupos por horario es 120')
+    .min(1, 'El mínimo de cupos por horario es 1')
+    .int('Debe ser un número entero'),
   visibleSchedules: z.coerce
     .number({
       required_error: 'Los cupos por horario son requeridos',
     })
-    .max(10)
-    .min(1),
+    .max(10, 'El máximo de horarios visibles es 10')
+    .min(1, 'El mínimo de horarios visibles es 1')
+    .int('Debe ser un número entero'),
   hiddenSchedules: z.coerce
     .number({
       required_error: 'Los cupos por horario son requeridos',
     })
-    .max(10)
-    .min(1),
+    .max(10, 'El máximo de horarios ocultos es 10')
+    .min(0, 'El mínimo de horarios ocultos es 0')
+    .int('Debe ser un número entero'),
 })

@@ -28,7 +28,13 @@ import {
 import { UnitsInsertSchema } from './schema/units'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import BaseModules, { BaseModulesDict } from '@/auth/modules'
-import { ThesisPermissions } from '@/auth/permissions'
+import {
+  FAQPermissions,
+  StudentProcessPermissions,
+  ThesisPermissions,
+} from '@/auth/permissions'
+import { EnrollmentPermissionsDict } from '@/auth/permissions/Enrollment'
+import { FAQPermissionsDict } from '@/auth/permissions/FAQ'
 
 const queryClient = postgres({
   db: DB_DATABASE,
@@ -53,91 +59,6 @@ await db.transaction(async (tx) => {
     .returning({
       universityId: units.id,
     })
-
-  const faculties = await tx
-    .insert(units)
-    .values(
-      facultiesMock.map((faculty) => ({ ...faculty, parentId: universityId }))
-    )
-    .returning({
-      facultyId: units.id,
-      facultyName: units.name,
-    })
-
-  const specialities = (
-    await Promise.all(
-      faculties.map((faculty) => {
-        return tx
-          .insert(units)
-          .values(
-            specialitiesMap[faculty.facultyName].map(
-              (speciality) =>
-                ({
-                  name: speciality,
-                  type: 'speciality',
-                  parentId: faculty.facultyId,
-                }) as UnitsInsertSchema
-            )
-          )
-          .returning({
-            specialityId: units.id,
-            specialityName: units.name,
-          })
-      })
-    )
-  ).flat()
-
-  await Promise.all(
-    specialities.map((speciality) => {
-      if (areasMap[speciality.specialityName]) {
-        return tx
-          .insert(units)
-          .values(
-            areasMap[speciality.specialityName].map(
-              (area) =>
-                ({
-                  name: area,
-                  type: 'area',
-                  parentId: speciality.specialityId,
-                }) as UnitsInsertSchema
-            )
-          )
-          .returning({
-            termId: units.id,
-            termName: units.name,
-          })
-      }
-    })
-  )
-
-  const departmentInserted = await tx
-    .insert(units)
-    .values(
-      departmentsMock.map((department) => ({
-        name: department,
-        type: 'department' as const,
-        parentId: universityId,
-      }))
-    )
-    .returning({
-      departmentId: units.id,
-      departmentName: units.name,
-    })
-  const sectionsToInsert = departmentInserted
-    .map((department) => {
-      const sections = sectionsMap[department.departmentName] ?? []
-      return sections.map(
-        (section) =>
-          ({
-            name: section,
-            type: 'section',
-            parentId: department.departmentId,
-          }) as UnitsInsertSchema
-      )
-    })
-    .flat()
-
-  await tx.insert(units).values(sectionsToInsert)
   console.info('Units inserted')
   //Base roles
   await tx.insert(roles).values([
@@ -259,78 +180,6 @@ await db.transaction(async (tx) => {
         email: 'fmontoya@pucp.edu.pe',
         unitId: universityId,
       },
-      {
-        name: 'Ricardo Bartra',
-        firstSurname: 'Smith',
-        secondSurname: 'Bartra',
-        code: '20176243',
-        email: 'ricardo.bartra@pucp.edu.pe',
-        unitId: universityId,
-      },
-      {
-        name: 'Leonardo Vega',
-        firstSurname: 'Grijalva',
-        secondSurname: 'Vega',
-        code: '20240102',
-        email: 'a20197102@pucp.edu.pe',
-        unitId: universityId,
-      },
-      {
-        name: 'Sebastian Castillejo',
-        firstSurname: 'Franco',
-        secondSurname: 'Castillejo',
-        code: '20190948',
-        email: 'a20190948@pucp.edu.pe',
-        unitId: universityId,
-      },
-      {
-        name: 'Piero Alvarez',
-        firstSurname: 'Castillo',
-        secondSurname: 'Alvarez',
-        code: '20195903',
-        email: 'alvarez.piero@pucp.edu.pe',
-        unitId: universityId,
-      },
-      {
-        name: 'Diego Ancajima',
-        firstSurname: 'Diaz',
-        secondSurname: 'Ancajima',
-        code: '20202308',
-        email: 'a20202308@pucp.edu.pe',
-        unitId: universityId,
-      },
-      {
-        name: 'Jhoyfer Melendez',
-        firstSurname: 'Torres',
-        secondSurname: 'Melendez',
-        code: '20203823',
-        email: 'jmelendezt@pucp.edu.pe',
-        unitId: universityId,
-      },
-      {
-        name: 'Alonso Alvarado',
-        firstSurname: 'Eslava',
-        secondSurname: 'Alvarado',
-        code: '20180731',
-        email: 'aalvaradoe@pucp.edu.pe',
-        unitId: universityId,
-      },
-      {
-        name: 'Paul Espettia',
-        firstSurname: 'Rodríguez',
-        secondSurname: 'Espettia',
-        code: '20181395',
-        email: 'paul.espettia@pucp.edu.pe',
-        unitId: universityId,
-      },
-      {
-        name: 'Alvaro Espinoza',
-        firstSurname: 'Esparza',
-        secondSurname: 'Larranaga',
-        code: '20195925',
-        email: 'aesparzal@pucp.edu.pe',
-        unitId: universityId,
-      },
     ])
     .returning({ accountId: accounts.id })
   console.info('Accounts inserted')
@@ -399,6 +248,10 @@ await db.transaction(async (tx) => {
           permission.moduleId ===
             insertedModules.find(
               (module) => module.moduleCode === BaseModulesDict.SECURITY
+            )?.moduleId! ||
+          permission.moduleId ===
+            insertedModules.find(
+              (module) => module.moduleCode === BaseModulesDict.UNITS
             )?.moduleId!
       )
       .map((permission) => ({
@@ -407,12 +260,63 @@ await db.transaction(async (tx) => {
       }))
   )
 
-  await tx.insert(rolePermissions).values({
-    permissionId: permissionsInserted.find(
-      (permission) => permission.permissionName === ThesisPermissions[0].name
-    )?.permissionId!,
-    roleId: BaseRoles.STUDENT,
-  })
+  await tx.insert(rolePermissions).values([
+    {
+      permissionId: permissionsInserted.find(
+        (permission) =>
+          permission.permissionName ===
+          ThesisPermissions.find(
+            (permission) => permission.name === 'CREATE_THESIS'
+          )?.name
+      )?.permissionId!,
+      roleId: BaseRoles.STUDENT,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permission) =>
+          permission.permissionName ===
+          ThesisPermissions.find(
+            (permission) => permission.name === 'READ_THESIS'
+          )?.name
+      )?.permissionId!,
+      roleId: BaseRoles.PROFESSOR,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permission) =>
+          permission.permissionName ===
+          ThesisPermissions.find(
+            (permission) => permission.name === 'APROVE_THESIS_PHASE_1'
+          )?.name
+      )?.permissionId!,
+      roleId: BaseRoles.PROFESSOR,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permission) =>
+          permission.permissionName ===
+          StudentProcessPermissions.find(
+            (permission) => permission.name === 'UPDATE_RISK_STUDENT_REPORT'
+          )?.name
+      )?.permissionId!,
+      roleId: BaseRoles.PROFESSOR,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permission) =>
+          permission.permissionName ===
+          EnrollmentPermissionsDict.REQUEST_ADITIONAL_ENROLLMENT
+      )?.permissionId!,
+      roleId: BaseRoles.STUDENT,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permission) =>
+          permission.permissionName === FAQPermissionsDict.READ_FAQ
+      )?.permissionId!,
+      roleId: BaseRoles.STUDENT,
+    },
+  ])
 
   await tx.insert(accountRoles).values(
     accountsId.map(({ accountId }) => ({

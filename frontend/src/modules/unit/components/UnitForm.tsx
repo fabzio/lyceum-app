@@ -18,9 +18,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import UnitService from '../services/Unit.service'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { useToast } from '@frontend/hooks/use-toast'
+import { useFilters } from '@frontend/hooks/useFilters'
+import { QueryKeys } from '@frontend/constants/queryKeys'
 
 interface Props {
   unit?: Unit
@@ -29,6 +31,9 @@ interface Props {
 }
 
 export default function UnitForm({ unit, unitType, handleClose }: Props) {
+  const { filters } = useFilters('/_auth/unidades')
+  const queryClient = useQueryClient()
+
   const { toast } = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -40,6 +45,9 @@ export default function UnitForm({ unit, unitType, handleClose }: Props) {
       toast({
         title: 'Unidad creada',
         description: 'La unidad ha sido creada con éxito',
+      })
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.unit.UNITS, unitType, filters],
       })
       handleClose()
     },

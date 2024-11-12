@@ -9,13 +9,17 @@ export const DEFAULT_PAGE_SIZE = 10
 
 export default function EnrollmentProposalAccordion() {
   const { getRoleWithPermission } = useSessionStore()
+  const facultyId = getRoleWithPermission(
+    EnrollmentPermissionsDict.READ_SCHEDULE_PROFESORS
+  )?.unitId
+  const unitId = getRoleWithPermission(
+    EnrollmentPermissionsDict.ASSIGN_SCHEDULE_PROFESORS
+  )?.unitId
   const { data: coursesSchedule } = useSuspenseQuery({
     queryKey: [QueryKeys.enrollment.SCHEDULE_DISTRIBUTION],
     queryFn: () =>
       EnrollmenDistributionService.getCoursesSchedules({
-        unitId: getRoleWithPermission(
-          EnrollmentPermissionsDict.REQUEST_SCHEDULE_PROPOSAL
-        )!.unitId,
+        unitId: (facultyId ?? unitId)!,
       }),
   })
   if (!coursesSchedule.length) {

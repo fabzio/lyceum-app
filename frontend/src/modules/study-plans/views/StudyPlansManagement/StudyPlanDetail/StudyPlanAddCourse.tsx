@@ -23,7 +23,7 @@ export default function StudyPlanAddCourse() {
   })
 
   return (
-    <ExpandibleAsidebar>
+    <ExpandibleAsidebar defaultOpen>
       <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="relative flex flex-row space-x-2">
           <div className="flex-grow">

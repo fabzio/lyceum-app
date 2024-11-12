@@ -19,7 +19,7 @@ import {
 } from '@frontend/components/ui/form'
 import { Input } from '@frontend/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Info, Loader2, Upload } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -34,11 +34,15 @@ import {
   HoverCardTrigger,
 } from '@frontend/components/ui/hover-card'
 import { useState } from 'react'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import { useFilters } from '@frontend/hooks/useFilters'
 
 interface Props {
   unitType: UnitType
 }
 export default function MasiveUnitsDialog({ unitType }: Props) {
+  const { filters } = useFilters('/_auth/unidades')
+  const queryClient = useQueryClient()
   const [isOpen, setIsOpen] = useState(false)
   const { toast } = useToast()
   const { mutate, isPending } = useMutation({
@@ -54,6 +58,9 @@ export default function MasiveUnitsDialog({ unitType }: Props) {
       toast({
         title: 'Carga correcta',
         description: 'Unidades importadas correctamente',
+      })
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.unit.UNITS, unitType, filters],
       })
       setIsOpen(false)
     },
