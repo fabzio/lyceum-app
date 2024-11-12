@@ -7,6 +7,7 @@ import { StudentProcessModule } from './student-process/student-process.module'
 import { EnrollmentModule } from './enrollment/enrollment.module'
 import { UnitModule } from './unit/unit.module'
 import { HiringModule } from './hiring/hiring.module'
+import { FAQModule } from './faq/faq.module'
 
 const Modules = [
   StudyPlanModule,
@@ -15,6 +16,7 @@ const Modules = [
   SecurityModule,
   UserModule,
   ThesisModule,
+  FAQModule,
   UnitModule,
   HiringModule,
 ]
