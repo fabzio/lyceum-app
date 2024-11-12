@@ -8,7 +8,16 @@ import {
   scheduleAccounts,
   terms,
 } from '@/database/schema'
-import { aliasedTable, and, asc, desc, eq, ilike, sql } from 'drizzle-orm'
+import {
+  aliasedTable,
+  and,
+  asc,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  sql,
+} from 'drizzle-orm'
 import { EnrollmentModificationDAO } from '../dao/EnrollmentModificationDAO'
 import { EnrollmentModificationsSchema } from '@/database/schema/enrollmentModifications'
 import { PaginatedData } from '@/interfaces/PaginatedData'
@@ -245,19 +254,29 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
     if (+pendingEnrollment[0].count > 0) {
       throw new Error('Ya existe una solicitud pendiente para este horario')
     }
+    const nestedSchedule = aliasedTable(schedules, 'nestedSchedule')
 
-    const existingStudentInSchedule = await db
+    const existingStudentInCourse = await db
       .select()
       .from(scheduleAccounts)
+      .innerJoin(schedules, eq(scheduleAccounts.scheduleId, schedules.id))
+      .innerJoin(terms, eq(schedules.termId, terms.id))
       .where(
         and(
           eq(scheduleAccounts.accountId, studentId),
-          eq(scheduleAccounts.scheduleId, scheduleId)
+          inArray(
+            schedules.courseId,
+            db
+              .select()
+              .from(nestedSchedule)
+              .where(eq(nestedSchedule.id, scheduleId))
+          )
         )
       )
+
     //TODO: Crear error personalizado
-    if (requestType === 'aditional' && existingStudentInSchedule.length > 0) {
-      throw new Error('El estudiante ya está inscrito en el horario')
+    if (requestType === 'aditional' && existingStudentInCourse.length > 0) {
+      throw new Error('El estudiante ya está inscrito en el curso')
     }
     const currentTerm = await db
       .select({

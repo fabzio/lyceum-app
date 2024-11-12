@@ -17,13 +17,16 @@ import {
   SelectValue,
 } from '@frontend/components/ui/select'
 import { Textarea } from '@frontend/components/ui/textarea'
+import { QueryKeys } from '@frontend/constants/queryKeys'
 import { useToast } from '@frontend/hooks/use-toast'
 import { BaseRoles } from '@frontend/interfaces/enums/BaseRoles'
+import { ThesisPermissionsDict } from '@frontend/interfaces/enums/permissions/Thesis'
 import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisThemeRequest.service'
+import UnitService from '@frontend/modules/unit/services/Unit.service'
 import AccountsService from '@frontend/service/Accounts.service'
 import { useSessionStore } from '@frontend/store'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { Loader2, Plus, X } from 'lucide-react'
 import { useFieldArray, useForm } from 'react-hook-form'
@@ -31,7 +34,7 @@ import { z } from 'zod'
 
 export default function NewThesisForm() {
   const { toast } = useToast()
-  const { session } = useSessionStore()
+  const { session, getRoleWithPermission } = useSessionStore()
   const navigate = useNavigate({
     from: '/tesis/nueva-solicitud',
   })
@@ -56,7 +59,13 @@ export default function NewThesisForm() {
     control: form.control,
     name: 'students',
   })
-
+  const { data: listAreas, isLoading } = useQuery({
+    queryKey: [QueryKeys.unit.UNITS],
+    queryFn: () =>
+      UnitService.getChildUnits(
+        getRoleWithPermission(ThesisPermissionsDict.CREATE_THESIS)!.unitId
+      ),
+  })
   const { mutate, isPending } = useMutation({
     mutationFn: ThesisThemeRequestService.createThesis,
     onSuccess: ({ historyId, thesisCode }) => {
@@ -128,14 +137,19 @@ export default function NewThesisForm() {
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Elija un área de su especialidad" />
+                    {isLoading ? (
+                      <Loader2 className="animate-spin" />
+                    ) : (
+                      <SelectValue placeholder="Elija un área de su especialidad" />
+                    )}
                   </SelectTrigger>
                 </FormControl>
-                {/*FIXME: Cargar areas del backend*/}
                 <SelectContent>
-                  <SelectItem value="72">Ingeniería de Software</SelectItem>
-                  <SelectItem value="73">Ciberseguridad</SelectItem>
-                  <SelectItem value="74">Ciencia de la Computación</SelectItem>
+                  {listAreas?.map((area) => (
+                    <SelectItem key={area.id} value={area.id.toString()}>
+                      {area.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />

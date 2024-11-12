@@ -26,13 +26,17 @@ export const Route = createFileRoute('/_auth/matricula/distribucion')({
   validateSearch: () => ({}) as CourseProposalFilters,
   loader: async ({ context: { queryClient, sessionStore } }) => {
     const { getRoleWithPermission } = sessionStore
+    const facultyId = getRoleWithPermission(
+      EnrollmentPermissionsDict.READ_SCHEDULE_PROFESORS
+    )?.unitId
+    const unitId = getRoleWithPermission(
+      EnrollmentPermissionsDict.ASSIGN_SCHEDULE_PROFESORS
+    )?.unitId
     return queryClient.ensureQueryData({
       queryKey: [QueryKeys.enrollment.SCHEDULE_DISTRIBUTION],
       queryFn: () =>
         EnrollmenDistributionService.getCoursesSchedules({
-          unitId: getRoleWithPermission(
-            EnrollmentPermissionsDict.READ_SCHEDULE_PROFESORS
-          )!.unitId,
+          unitId: (facultyId ?? unitId)!,
         }),
     })
   },

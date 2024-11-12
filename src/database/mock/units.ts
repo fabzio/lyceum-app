@@ -152,15 +152,10 @@ export const departmentsMock = [
   'Humanidades',
   'Psicología',
   'Teología',
-  'Informática, Electrónica y de las Telecomunicaciones',
+  'Ingeniería',
 ]
 
-;('')
 export const sectionsMap: Record<string, string[]> = {
   Ciencias: ['Física', 'Matemáticas', 'Química'],
-  'Informática, Electrónica y de las Telecomunicaciones': [
-    'Informática',
-    'Electrónica',
-    'Telecomunicaciones',
-  ],
+  Ingeniería: ['Informática', 'Electrónica', 'Telecomunicaciones'],
 }

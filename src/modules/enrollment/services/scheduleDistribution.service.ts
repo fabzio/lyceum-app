@@ -10,6 +10,7 @@ import {
   specialityStudyPlans,
   units,
   courses,
+  terms,
 } from '@/database/schema'
 import { eq, inArray, and, desc, or } from 'drizzle-orm'
 import {
@@ -209,14 +210,14 @@ class ScheduleDistributionService implements ScheduleDistributionDAO {
       )
       .innerJoin(courses, eq(courses.id, enrollmentProposalCourses.courseId))
       .innerJoin(schedules, and(eq(schedules.courseId, courses.id)))
+      .innerJoin(terms, eq(terms.id, enrollmentProposal.termId))
       .where(
         and(
           eq(enrollmentProposal.state, 'aproved'),
+          eq(terms.current, true),
           eq(enrollmentProposal.specialityId, speciality)
         )
       )
-      .orderBy(desc(enrollmentProposal.createdAt))
-      .limit(1)
   }
 
   private async getCoursesOfDepartmentOrSection(unitId: Unit['id']) {
