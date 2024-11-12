@@ -22,7 +22,6 @@ export default function NewEnrollmentPropose() {
   const [isOpen, setIsOpen] = useState(false)
   const { session, getRoleWithPermission } = useSessionStore()
   const queryClient = useQueryClient()
-  const termId = 1
 
   const { mutate, isPending } = useMutation({
     mutationFn: EnrollmentProposalService.newEnrollmentProposal,
@@ -50,7 +49,7 @@ export default function NewEnrollmentPropose() {
         EnrollmentPermissionsDict.REQUEST_SCHEDULE_PROPOSAL
       )!.unitId,
       accountId: session!.id,
-      termId,
+      termId: session!.term.id,
     })
   }
   return (

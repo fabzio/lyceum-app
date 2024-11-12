@@ -203,7 +203,7 @@ class ScheduleProposalService implements ScheduleProposalDAO {
     const currentTerm = await db
       .select()
       .from(terms)
-      .where(eq(terms.id, termId))
+      .where(and(eq(terms.id, termId), eq(terms.current, true)))
     if (currentTerm.length === 0) {
       //TODO: Encontrar la forma de validar que la fecha de creacion de la propuesta esté dentro del ciclo vigente
       throw new Error(
@@ -356,6 +356,12 @@ class ScheduleProposalService implements ScheduleProposalDAO {
     if (existingEnrollmentProposal.length === 0) {
       throw new EnrollmentProposalNotFoundError(
         'La propuesta de horario no ha sido encontrada'
+      )
+    }
+
+    if (existingEnrollmentProposal[0].state === 'aproved') {
+      throw new Error(
+        'La propuesta de horario ya ha sido aprobada, no se pueden realizar cambios'
       )
     }
 
