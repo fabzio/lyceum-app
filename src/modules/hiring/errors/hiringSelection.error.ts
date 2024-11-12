@@ -1,4 +1,10 @@
 import { createErrorFactory } from '@/middlewares/errorMiddlewares'
+
+export const HiringNotFoundError = createErrorFactory(
+  'HiringNotFoundError',
+  404
+)
+
 export const JobRequestNotFoundError = createErrorFactory(
   'JobRequestNotFoundError',
   404

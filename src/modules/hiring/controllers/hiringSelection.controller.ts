@@ -8,11 +8,34 @@ import {
   getCandidateHiringListDTO,
 } from '../dtos'
 import { z, ZodObject } from 'zod'
+import { createHiringSelectionDTO } from '../dtos/hiringSelectionDTO'
 class HiringSelectioncontroller {
   private router = new Hono()
 
   private hiringSelectionService: HiringSelectionDAO =
     new HiringSelectionService()
+  public createHiringSelection = this.router.post(
+    '/',
+    zValidator('json', createHiringSelectionDTO),
+    async (c) => {
+      const newHiring = c.req.valid('json')
+      try {
+        const response: ResponseAPI = {
+          data: await this.hiringSelectionService.createHiringSelection(
+            newHiring
+          ),
+          message: 'Hiring Selection correctly created',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
 
   public updateJobRequestStatus = this.router.put(
     '/:jobRequestId/status',

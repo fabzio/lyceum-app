@@ -1,22 +1,17 @@
-import {
-  serial,
-  text,
-  date,
-  timestamp,
-  pgEnum,
-  uuid,
-} from 'drizzle-orm/pg-core'
+import { serial, text, date, timestamp, integer } from 'drizzle-orm/pg-core'
 import { schema } from '..'
-import { accounts } from './accounts'
 import { hiringStatus } from './enums'
 import { relations } from 'drizzle-orm'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
+import { units } from './units'
 
 export const hirings = schema.table('hirings', {
   id: serial('id').primaryKey(),
   description: text('description').notNull(),
-  accountId: uuid('account_id').references(() => accounts.id),
+  unitId: integer('unit_id')
+    .notNull()
+    .references(() => units.id),
   status: hiringStatus('status').default('receiving').notNull(),
   startDate: date('start_date').notNull(),
   endReceivingDate: date('end_receiving_date').notNull(),
@@ -26,9 +21,9 @@ export const hirings = schema.table('hirings', {
 })
 
 export const hiringsRelations = relations(hirings, ({ one }) => ({
-  account: one(accounts, {
-    fields: [hirings.accountId],
-    references: [accounts.id],
+  unit: one(units, {
+    fields: [hirings.unitId],
+    references: [units.id],
   }),
 }))
 
