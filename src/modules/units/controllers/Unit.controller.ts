@@ -73,13 +73,13 @@ class UnitController {
     zValidator(
       'param',
       z.object({
-        unitId: unitsSchema.shape.id,
+        unitId: z.coerce.number(),
       })
     ),
     async (c) => {
       const { unitId } = c.req.valid('param')
       try {
-        const response = await this.unitService.getChildrenUnits(+unitId!)
+        const response = await this.unitService.getChildrenUnits(unitId)
         return c.json({
           data: response,
           message: 'Children units retrieved',
