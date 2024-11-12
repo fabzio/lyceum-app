@@ -1,5 +1,18 @@
 import { z } from 'zod'
 
+export const createHiringSelectionDTO = z.object({
+  description: z.string().min(1),
+  unitId: z.coerce.number(),
+  startDate: z.date(),
+  endReceivingDate: z.date(),
+  resultsPublicationDate: z.date(),
+  endDate: z.date(),
+})
+
+export type CreateHiringSelectionPropDTO = z.infer<
+  typeof createHiringSelectionDTO
+>
+
 export const updateHiringSelectionStatusDTO = z.object({
   accountId: z.string().min(1),
   newStatus: z.enum([

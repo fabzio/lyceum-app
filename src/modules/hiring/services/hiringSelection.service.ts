@@ -5,8 +5,10 @@ import {
   accounts,
   courseHiringRequirements,
   courseHirings,
+  hirings,
+  units,
 } from '@/database/schema'
-import { and, eq, inArray, desc, sql, asc } from 'drizzle-orm'
+import { and, eq, inArray, desc, sql, asc, or } from 'drizzle-orm'
 
 import { HiringSelectionDAO } from '../dao'
 import {
@@ -17,7 +19,33 @@ import {
 import { JobRequestsSchema } from '@/database/schema/jobRequests'
 import { AccountsSchema } from '@/database/schema/accounts'
 import { courseStep, jobRequestState } from '@/database/schema/enums'
+import { CreateHiringSelectionPropDTO } from '../dtos/hiringSelectionDTO'
+import { HiringNotFoundError } from '../errors/hiringSelection.error'
 class HiringSelectionService implements HiringSelectionDAO {
+  public async createHiringSelection(newHiring: CreateHiringSelectionPropDTO) {
+    const unit = await db
+      .select()
+      .from(units)
+      .where(
+        and(
+          or(eq(units.type, 'department'), eq(units.type, 'section')),
+          eq(units.id, newHiring.unitId)
+        )
+      )
+
+    if (unit.length === 0) {
+      throw new HiringNotFoundError('Su unidad no es un departamento o sección')
+    }
+
+    await db.insert(hirings).values({
+      ...newHiring,
+      startDate: newHiring.startDate.toISOString(),
+      endReceivingDate: newHiring.endReceivingDate.toISOString(),
+      resultsPublicationDate: newHiring.resultsPublicationDate.toISOString(),
+      endDate: newHiring.endDate.toISOString(),
+    })
+  }
+
   public async updateHiringSelectionStatus(
     jobRequestId: number,
     accountId: string,
