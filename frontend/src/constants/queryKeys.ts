@@ -47,4 +47,7 @@ export const QueryKeys = {
     EXTERNS: 'externs',
     GENERIC: 'generic',
   },
+  hiring: {
+    HIRINGS: 'hirings',
+  },
 }

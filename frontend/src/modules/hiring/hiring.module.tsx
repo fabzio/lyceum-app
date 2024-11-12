@@ -9,5 +9,15 @@ export const HiringModule: AppModule = {
   icon: <Briefcase />,
   description: 'Módulo de gestión de contrataciones',
   submodules: [
+    {
+      label: 'Selección de docentes',
+      path: '/contrataciones/seleccion-docentes',
+      permissions: [],
+    },
+    {
+      label: 'Gestión de jefes de práctica',
+      path: '/contrataciones/gestion-jefes-practica',
+      permissions: [],
+    },
   ],
 }
