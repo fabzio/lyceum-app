@@ -76,23 +76,25 @@ class GenericService {
     scheduleId?: string // Parámetro `scheduleId`
   }): Promise<
     PaginatedData<{
+      id: string
       code: string
       name: string
       firstSurname: string
       secondSurname: string
       email: string
-      roles: number[]
+      role: number | null // Rol específico de scheduleAccounts
+      lead: boolean // Campo `lead` de scheduleAccounts
     }>
   > {
     const [field, order] = params.sortBy?.split('.') || ['name', 'asc']
+
     // Obtener el total de registros con el filtro `scheduleId`
     const [{ total }] = await db
       .select({
         total: sql<string>`count(*)`,
       })
       .from(accounts)
-      .leftJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
-      .innerJoin(scheduleAccounts, eq(scheduleAccounts.accountId, accounts.id)) // JOIN con `scheduleAccounts`
+      .leftJoin(scheduleAccounts, eq(scheduleAccounts.accountId, accounts.id)) // Cambiamos el JOIN a `scheduleAccounts`
       .where(
         and(
           or(
@@ -105,18 +107,21 @@ class GenericService {
             : sql`1=1` // Filtro opcional `scheduleId`
         )
       )
+
     const mappedFields = {
       ['name']: accounts.name,
       ['code']: accounts.code,
       ['firstSurname']: accounts.firstSurname,
       ['secondSurname']: accounts.secondSurname,
       ['email']: accounts.email,
-      ['roles']: accountRoles.roleId,
+      ['role']: scheduleAccounts.roleId, // Usamos `scheduleAccounts.roleId`
+      ['lead']: scheduleAccounts.lead, // Campo `lead` en el mapeo
     }
     const mappedSortBy = {
       ['asc']: asc,
       ['desc']: desc,
     }
+
     // Obtener los datos con la misma estructura de filtros
     const AccountsResponse = await db
       .select({
@@ -126,11 +131,11 @@ class GenericService {
         firstSurname: accounts.firstSurname,
         secondSurname: accounts.secondSurname,
         email: accounts.email,
-        roles: sql<number[]>`array_agg(${accountRoles.roleId})`,
+        role: scheduleAccounts.roleId, // Seleccionamos un único valor de `roleId`
+        lead: sql<boolean>`coalesce(${scheduleAccounts.lead}, false)`, // Incluimos el campo `lead` y aseguramos que no sea null
       })
       .from(accounts)
-      .leftJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
-      .innerJoin(scheduleAccounts, eq(scheduleAccounts.accountId, accounts.id)) // JOIN con `scheduleAccounts`
+      .leftJoin(scheduleAccounts, eq(scheduleAccounts.accountId, accounts.id)) // Cambiamos el JOIN a `scheduleAccounts`
       .where(
         and(
           or(
@@ -143,7 +148,6 @@ class GenericService {
             : sql`1=1` // Filtro opcional `scheduleId`
         )
       )
-      .groupBy(accounts.id)
       .offset(params.page * params.limit)
       .limit(params.limit)
       .orderBy(

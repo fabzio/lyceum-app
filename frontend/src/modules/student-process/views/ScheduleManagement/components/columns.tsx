@@ -85,47 +85,66 @@ export const AccountTableColumns: ColumnDef<AccountRoles>[] = [
     cell: ({ row }) => <div>{row.getValue('email')}</div>,
   },
   {
-    accessorKey: 'roles',
+    accessorKey: 'role',
     header: 'Rol',
     cell: ({ row }) => {
-      const roles = row.getValue('roles') as number[]; // Obtener la lista de roles
-      const roleLabels = roles.map(roleId => {
-        if (roleId === 1) return 'Estudiante';
-        if (roleId === 2) return 'Profesor';
-        return 'Otro'; // Default para roles no especificados
-      });
-      return <div>{roleLabels.join(', ')}</div>; // Muestra todos los roles como una lista
+      const rol = row.getValue('role') as number | null // Obtener la lista de roles
+      const lead = row.original.lead as boolean
+      let roleLabel: string
+
+      if (rol === null) {
+        roleLabel = 'JP'
+      } else if (rol === 1) {
+        roleLabel = lead ? 'Delegado' : 'Estudiante'
+      } else if (rol === 2) {
+        roleLabel = lead ? 'Profesor Principal' : 'Profesor'
+      } else {
+        roleLabel = 'Otro' // Default si el rol no es específico
+      }
+      return <div>{roleLabel}</div>
     },
   },
   {
     accessorKey: 'actions',
     header: 'Acciones',
-    //TODO: Agregar funcionalidad para editar y deshabilitar estudiantes
-    //cell: ({ row }) => {
-    cell: ({row}) => {
-      // const { code } = row.original
-      // const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-      // const [isDisableDialogOpen, setIsDisableDialogOpen] = useState(false)
+    cell: ({ row }) => {
+      const rol = row.getValue('role') as number | null // Obtener el rol
+      const lead = row.original.lead as boolean // Obtener el valor de 'lead'
 
-      const roles = row.original.roles as number[];
-      const isStudent = roles.includes(1) || roles.includes(2); //deberia ser solo el 1 pero para que se vea por ahora
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <span className="sr-only">Abrir acciones</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {isStudent && (
-              <DropdownMenuItem onClick={() => {/* Lógica para hacer delegado */}}>
-                Hacer delegado
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      if ((rol === 1 && !lead) || rol === null) {
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <span className="sr-only">Abrir acciones</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {rol === 1 && !lead && (
+                <DropdownMenuItem
+                  onClick={() => {
+                    /* Lógica para hacer delegado */
+                  }}
+                >
+                  Hacer delegado
+                </DropdownMenuItem>
+              )}
+              {rol === null && (
+                <DropdownMenuItem
+                  onClick={() => {
+                    /* Lógica para eliminar JP */
+                  }}
+                >
+                  Eliminar JP
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      } else {
+        return null
+      }
     },
   },
 ]
