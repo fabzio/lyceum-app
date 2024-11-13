@@ -282,15 +282,22 @@ class HiringSelectionService implements HiringSelectionDAO {
 
     console.log(hiringsWithCourses)
 
-    // Procesamiento de los resultados para asegurar los tipos correctos
-    return hiringsWithCourses.map((hiring: any) => ({
-      hiringId: hiring.hiring_id,
-      hiringName: hiring.hiring_name,
-      endDate: new Date(hiring.end_date), // Convertimos endDate a tipo Date
-      coursesNumber: parseInt(hiring.courses_number, 10), // Convertimos coursesNumber a número
-      courseHiringIds: hiring.course_hiring_ids, // Dejamos course_hiring_ids como UUIDs (strings)
-      courseNames: hiring.course_names,
-    }))
+    return hiringsWithCourses.map((hiring: any) => {
+      const coursesPerHiring = hiring.course_hiring_ids.map(
+        (id: string, index: number) => ({
+          id,
+          name: hiring.course_names[index],
+        })
+      )
+
+      return {
+        hiringId: hiring.hiring_id,
+        hiringName: hiring.hiring_name,
+        endDate: new Date(hiring.end_date), // Convertimos endDate a tipo Date
+        coursesNumber: parseInt(hiring.courses_number, 10), // Convertimos coursesNumber a número
+        coursesPerHiring, // Nuevo arreglo con objetos {id, name} para cada curso
+      }
+    })
   }
 }
 
