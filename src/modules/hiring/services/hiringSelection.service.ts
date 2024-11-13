@@ -7,6 +7,7 @@ import {
   courseHirings,
   hirings,
   units,
+  courses,
 } from '@/database/schema'
 import { and, eq, inArray, desc, sql, asc, or } from 'drizzle-orm'
 
@@ -23,6 +24,8 @@ import { CreateHiringSelectionPropDTO } from '../dtos/hiringSelectionDTO'
 import { HiringNotFoundError } from '../errors/hiringSelection.error'
 import { GetHiringsWithCoursesQueryDTO } from '../dtos/hiringSelectionDTO'
 import { HiringsWithCoursesDTO } from '../dtos/hiringSelectionDTO'
+import { CourseHiringRequirementsSchema } from '@/database/schema/courseHiringRequirements'
+import groupBy from 'just-group-by'
 
 class HiringSelectionService implements HiringSelectionDAO {
   public async createHiringSelection(newHiring: CreateHiringSelectionPropDTO) {
@@ -39,13 +42,55 @@ class HiringSelectionService implements HiringSelectionDAO {
     if (unit.length === 0) {
       throw new HiringNotFoundError('Su unidad no es un departamento o sección')
     }
+    await db.transaction(async (tx) => {
+      const [{ newHiringId }] = await tx
+        .insert(hirings)
+        .values({
+          description: newHiring.description,
+          unitId: newHiring.unitId,
+          startDate: newHiring.startDate.toISOString(),
+          endReceivingDate: newHiring.endReceivingDate.toISOString(),
+          resultsPublicationDate:
+            newHiring.resultsPublicationDate.toISOString(),
+          endDate: newHiring.endDate.toISOString(),
+        })
+        .returning({
+          newHiringId: hirings.id,
+        })
 
-    await db.insert(hirings).values({
-      ...newHiring,
-      startDate: newHiring.startDate.toISOString(),
-      endReceivingDate: newHiring.endReceivingDate.toISOString(),
-      resultsPublicationDate: newHiring.resultsPublicationDate.toISOString(),
-      endDate: newHiring.endDate.toISOString(),
+      const newCourseHiringIds = await tx
+        .insert(courseHirings)
+        .values(
+          newHiring.courses.map((course) => ({
+            hiringId: newHiringId,
+            courseId: course.id,
+          }))
+        )
+        .returning({
+          newCourseHiringId: courseHirings.id,
+          hiringId: courseHirings.hiringId,
+          courseId: courseHirings.courseId,
+        })
+      const mapCourseHiringId = new Map(
+        newCourseHiringIds.map((courseHiring) => [
+          `${courseHiring.hiringId}-${courseHiring.courseId}`,
+          courseHiring.newCourseHiringId,
+        ])
+      )
+
+      const requirements: CourseHiringRequirementsSchema[] = []
+      newHiring.courses.forEach((course) => {
+        course.requirements.forEach((requirement) => {
+          requirements.push({
+            courseHiringId: mapCourseHiringId.get(
+              `${newHiringId}-${course.id}`
+            )!,
+            detail: requirement.detail,
+          })
+        })
+      })
+
+      await tx.insert(courseHiringRequirements).values(requirements)
     })
   }
 

@@ -8,6 +8,7 @@ import {
 } from '@config'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
+import * as drizzleSchema from './schema'
 
 const queryClient = postgres({
   db: DB_DATABASE,
@@ -22,6 +23,7 @@ const queryClient = postgres({
 })
 const db = drizzle(queryClient, {
   logger: true,
+  schema: drizzleSchema,
 })
 import { pgSchema } from 'drizzle-orm/pg-core'
 

@@ -10,8 +10,10 @@ export const courseHiringRequirements = schema.table(
   'course_hiring_requirements',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    courseHiringId: uuid('course_hiring_id').references(() => courseHirings.id),
-    detail: text('detail'),
+    courseHiringId: uuid('course_hiring_id')
+      .references(() => courseHirings.id)
+      .notNull(),
+    detail: text('detail').notNull(),
     step: courseStep('step'),
   }
 )
