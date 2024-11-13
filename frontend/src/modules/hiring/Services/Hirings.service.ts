@@ -1,10 +1,25 @@
 import { Hiring } from '@frontend/interfaces/models/Hiring'
 import http from '@frontend/lib/http'
 import axios from 'axios'
+import { CreateTeacherSelectionForm } from '../views/TeacherSelection/NewTeacherSelection/components/TeacherSelectionForm'
 
 const USE_MOCK = true // Cambia a false para usar la solicitud real
 
 class HiringService {
+  public static async createTeacherSelection(data: CreateTeacherSelectionForm) {
+    try {
+      const res = await http.post('/hiring-selection', data)
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
   public static async getHirings(): Promise<Hiring[]> {
     if (USE_MOCK) {
       // Datos en duro simulados
@@ -13,7 +28,7 @@ class HiringService {
 
     // Lógica original (cuando el backend esté disponible)
     try {
-      const res = await http.get('contrataciones/seleccion-docentes')
+      const res = await http.get('/hiring-selection')
       const response = res.data as ResponseAPI
 
       if (!response.success) {
