@@ -46,3 +46,32 @@ export const getCandidateHiringListDTO = z.object({
 export type getCandidateHiringLisPropDTO = z.infer<
   typeof getCandidateHiringListDTO
 >
+
+export const hiringsWithCoursesDTO = z.object({
+  hiringId: z.number(), // ID de la tabla hirings como número
+  hiringName: z.string(),
+  endDate: z.date(), // Fecha convertida a tipo Date en el servicio
+  coursesNumber: z.number(), // Número total de cursos
+  courseHiringIds: z.array(z.string()), // UUIDs (string) desde course_hirings
+  courseNames: z.array(z.string()),
+})
+
+export type HiringsWithCoursesDTO = z.infer<typeof hiringsWithCoursesDTO>
+
+export const getHiringsWithCoursesQueryDTO = z.object({
+  q: z.string().optional(), // Para un filtro opcional de búsqueda
+  page: z
+    .string()
+    .transform((v) => parseInt(v))
+    .optional()
+    .default('1'), // Paginación
+  limit: z
+    .string()
+    .transform((v) => parseInt(v))
+    .optional()
+    .default('10'), // Límite de resultados
+})
+
+export type GetHiringsWithCoursesQueryDTO = z.infer<
+  typeof getHiringsWithCoursesQueryDTO
+>
