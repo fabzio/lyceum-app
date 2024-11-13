@@ -3,6 +3,8 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import HiringService from '../../Services/Hirings.service'
 import { Input } from '@frontend/components/ui/input'
 import HiringAccordion from './components/HiringAccordion'
+import { Button } from '@frontend/components/ui/button'
+import { Link } from '@tanstack/react-router'
 
 export default function TeacherSelection() {
   const { data } = useSuspenseQuery({
@@ -15,9 +17,9 @@ export default function TeacherSelection() {
         <div className="md:flex-grow">
           <Input type="search" placeholder="🔎 Buscar asignación" />
         </div>
-        <div className="flex gap-2">
-          <button>Nueva asignación</button>
-        </div>
+        <Link to="/contrataciones/seleccion-docentes/nuevo">
+          <Button>Nueva convoctoria</Button>
+        </Link>
       </div>
       <div>
         <HiringAccordion hirings={data} />
