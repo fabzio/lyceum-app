@@ -11,6 +11,7 @@ import {
 } from '@/database/schema'
 import { surveyQuestions } from '@/database/schema/surveyQuestions'
 import { CreateSurveyDTO } from '../dtos/SurveyDTO'
+import { Unit } from '@/interfaces/models/Unit'
 import { ScheduleSchema } from '@/database/schema/schedules'
 import { CoursesSchema } from '@/database/schema/courses'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
@@ -18,6 +19,23 @@ import Survey from '..'
 import { date } from 'drizzle-orm/mysql-core'
 
 class SurveyService {
+  public async getSpecialitySurveys(unitId: Unit['id']) {
+    const isSpeciality = await db.query.units.findFirst({
+      columns: {
+        id: true,
+      },
+      where: and(eq(units.id, unitId), eq(units.type, 'speciality')),
+    })
+    console.log(isSpeciality)
+    if (!isSpeciality) throw new Error('Especialidad no encontrada')
+
+    return await db.query.surveys.findMany({
+      columns: {
+        unitId: false,
+      },
+      where: eq(surveys.unitId, unitId),
+    })
+  }
   public async createSurvey(surveyData: CreateSurveyDTO) {
     const exisitngUnit = await db.query.units.findFirst({
       columns: {

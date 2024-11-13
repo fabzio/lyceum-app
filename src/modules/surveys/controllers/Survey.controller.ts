@@ -7,6 +7,24 @@ import { z } from 'zod'
 class SurveyController {
   private surveyService = new SurveyService()
   private router = new Hono()
+  public getSpecialitySurveys = this.router.get(
+    '/speciality/:unitId',
+    zValidator('param', z.object({ unitId: z.coerce.number() })),
+    async (c) => {
+      const unitId = c.req.valid('param').unitId
+      try {
+        const response = await this.surveyService.getSpecialitySurveys(unitId)
+        return c.json({
+          data: response,
+          message: 'Speciality surveys',
+          success: true,
+        })
+      } catch (error) {
+        if (error instanceof LyceumError) c.status(error.code)
+        throw error
+      }
+    }
+  )
   public createSurvey = this.router.post(
     '/',
     zValidator('json', createSurveyDTO),
