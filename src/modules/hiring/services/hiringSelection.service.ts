@@ -296,7 +296,7 @@ class HiringSelectionService implements HiringSelectionDAO {
     filters: GetHiringsWithCoursesQueryDTO
   ): Promise<HiringsWithCoursesDTO[]> {
     const { q, page, limit } = filters
-    const offset = (page - 1) * limit
+    const offset = page * limit
 
     const hiringsWithCourses = await db.execute(sql`
       SELECT 
@@ -341,6 +341,8 @@ class HiringSelectionService implements HiringSelectionDAO {
         endDate: new Date(hiring.end_date), // Convertimos endDate a tipo Date
         coursesNumber: parseInt(hiring.courses_number, 10), // Convertimos coursesNumber a número
         coursesPerHiring, // Nuevo arreglo con objetos {id, name} para cada curso
+        courseHiringIds: hiring.course_hiring_ids,
+        courseNames: hiring.course_names,
       }
     })
   }
