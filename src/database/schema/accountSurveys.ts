@@ -17,9 +17,8 @@ export const accountSurveys = schema.table(
   {
     subjectAccountId: uuid('subject_account_id').notNull(),
     evaluatorAccountId: uuid('evaluator_account_id').notNull(),
-    surveyId: uuid('survey_id').notNull(),
+    surveyId: integer('survey_id').notNull(),
     scheduleId: integer('schedule_id'),
-    termId: integer('term_id'),
     answered: boolean('answered').default(false),
   },
   (table) => ({
@@ -29,7 +28,6 @@ export const accountSurveys = schema.table(
         table.evaluatorAccountId,
         table.surveyId,
         table.scheduleId,
-        table.termId,
       ],
       name: 'account_survey_pk',
     }),
@@ -53,11 +51,6 @@ export const accountSurveys = schema.table(
       foreignColumns: [schedules.id],
       name: 'account_survey_schedule_fk',
     }),
-    termFk: foreignKey({
-      columns: [table.termId],
-      foreignColumns: [terms.id],
-      name: 'account_survey_term_fk',
-    }),
   })
 )
 
@@ -78,7 +71,6 @@ export const accountSurveyRelations = relations(accountSurveys, ({ one }) => ({
     fields: [accountSurveys.scheduleId],
     references: [schedules.id],
   }),
-  term: one(terms, { fields: [accountSurveys.termId], references: [terms.id] }),
 }))
 
 export const accountSurveySchema = createInsertSchema(accountSurveys)

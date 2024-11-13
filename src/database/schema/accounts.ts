@@ -17,7 +17,6 @@ import { scheduleAccounts } from './scheduleAccounts'
 import { riskStudents } from './riskStudents'
 import { contactsInfo } from './contactsInfo'
 import { units } from '.'
-import { password } from 'bun'
 
 export const accounts = schema.table(
   'accounts',
