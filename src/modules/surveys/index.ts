@@ -1,6 +1,7 @@
 import { Route } from '@/interfaces/route'
 import { Hono } from 'hono'
 import { authMiddleware } from '@/auth/authMiddleware'
+import SurveyRoute from './routes/survey.route'
 
 class Survey implements Route {
   public path = '/surveys'
@@ -9,7 +10,7 @@ class Survey implements Route {
   private routes: Route[]
 
   constructor() {
-    this.routes = []
+    this.routes = [new SurveyRoute()]
     this.initializeMiddlewares()
     this.initializeRoutes()
   }
