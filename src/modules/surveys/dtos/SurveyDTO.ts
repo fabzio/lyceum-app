@@ -1,5 +1,6 @@
 import { surveyQuestionsSchema } from '@/database/schema/surveyQuestions'
 import { surveySchema } from '@/database/schema/surveys'
+import { accountsSchema } from '@/database/schema/accounts'
 import { z } from 'zod'
 
 export const createSurveyDTO = z.object({

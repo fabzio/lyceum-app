@@ -3,7 +3,7 @@ import { SurveyService } from '../services'
 import { zValidator } from '@hono/zod-validator'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
 import { createSurveyDTO } from '../dtos/SurveyDTO'
-
+import { z } from 'zod'
 class SurveyController {
   private surveyService = new SurveyService()
   private router = new Hono()
@@ -21,6 +21,34 @@ class SurveyController {
         })
       } catch (error) {
         if (error instanceof LyceumError) c.status(error.code)
+        throw error
+      }
+    }
+  )
+
+  public getUnAnsweredSurveys = this.router.get(
+    '/',
+
+    zValidator(
+      'query',
+      z.object({
+        accountId: z.string(),
+      })
+    ),
+
+    async (c) => {
+      const { accountId } = c.req.valid('query')
+      try {
+        const response: ResponseAPI = {
+          data: await this.surveyService.getUnAnsweredSurveys(accountId),
+          message: 'UnAnsweredSurveys correctly get',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
         throw error
       }
     }

@@ -43,8 +43,11 @@ export { riskStudentReports } from '@/database/schema/riskStudentReports'
 export { riskStudents } from '@/database/schema/riskStudents'
 export { rolePermissions } from '@/database/schema/rolePermissions'
 export { roles } from '@/database/schema/roles'
-export { scheduleAccounts } from '@/database/schema/scheduleAccounts'
-export { schedules } from '@/database/schema/schedules'
+export {
+  scheduleAccounts,
+  scheduleAccountsRelations,
+} from '@/database/schema/scheduleAccounts'
+export { schedules, scheduleRelations } from '@/database/schema/schedules'
 export { specialityStudyPlans } from '@/database/schema/specialityStudyPlans'
 export { studyPlanCourses } from '@/database/schema/studyPlanCourses'
 export { studyPlans } from '@/database/schema/studyPlans'
