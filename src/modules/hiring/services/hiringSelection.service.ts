@@ -7,8 +7,9 @@ import {
   courseHirings,
   hirings,
   units,
+  courses,
 } from '@/database/schema'
-import { and, eq, inArray, desc, sql, asc, or } from 'drizzle-orm'
+import { and, eq, inArray, desc, sql, asc, or, ilike } from 'drizzle-orm'
 
 import { HiringSelectionDAO } from '../dao'
 import {
@@ -23,6 +24,8 @@ import { CreateHiringSelectionPropDTO } from '../dtos/hiringSelectionDTO'
 import { HiringNotFoundError } from '../errors/hiringSelection.error'
 import { GetHiringsWithCoursesQueryDTO } from '../dtos/hiringSelectionDTO'
 import { HiringsWithCoursesDTO } from '../dtos/hiringSelectionDTO'
+import { CourseHiringRequirementsSchema } from '@/database/schema/courseHiringRequirements'
+import groupBy from 'just-group-by'
 
 class HiringSelectionService implements HiringSelectionDAO {
   public async createHiringSelection(newHiring: CreateHiringSelectionPropDTO) {
@@ -39,13 +42,55 @@ class HiringSelectionService implements HiringSelectionDAO {
     if (unit.length === 0) {
       throw new HiringNotFoundError('Su unidad no es un departamento o sección')
     }
+    await db.transaction(async (tx) => {
+      const [{ newHiringId }] = await tx
+        .insert(hirings)
+        .values({
+          description: newHiring.description,
+          unitId: newHiring.unitId,
+          startDate: newHiring.startDate.toISOString(),
+          endReceivingDate: newHiring.endReceivingDate.toISOString(),
+          resultsPublicationDate:
+            newHiring.resultsPublicationDate.toISOString(),
+          endDate: newHiring.endDate.toISOString(),
+        })
+        .returning({
+          newHiringId: hirings.id,
+        })
 
-    await db.insert(hirings).values({
-      ...newHiring,
-      startDate: newHiring.startDate.toISOString(),
-      endReceivingDate: newHiring.endReceivingDate.toISOString(),
-      resultsPublicationDate: newHiring.resultsPublicationDate.toISOString(),
-      endDate: newHiring.endDate.toISOString(),
+      const newCourseHiringIds = await tx
+        .insert(courseHirings)
+        .values(
+          newHiring.courses.map((course) => ({
+            hiringId: newHiringId,
+            courseId: course.id,
+          }))
+        )
+        .returning({
+          newCourseHiringId: courseHirings.id,
+          hiringId: courseHirings.hiringId,
+          courseId: courseHirings.courseId,
+        })
+      const mapCourseHiringId = new Map(
+        newCourseHiringIds.map((courseHiring) => [
+          `${courseHiring.hiringId}-${courseHiring.courseId}`,
+          courseHiring.newCourseHiringId,
+        ])
+      )
+
+      const requirements: CourseHiringRequirementsSchema[] = []
+      newHiring.courses.forEach((course) => {
+        course.requirements.forEach((requirement) => {
+          requirements.push({
+            courseHiringId: mapCourseHiringId.get(
+              `${newHiringId}-${course.id}`
+            )!,
+            detail: requirement.detail,
+          })
+        })
+      })
+
+      await tx.insert(courseHiringRequirements).values(requirements)
     })
   }
 
@@ -250,46 +295,38 @@ class HiringSelectionService implements HiringSelectionDAO {
     unitId: number,
     filters: GetHiringsWithCoursesQueryDTO
   ): Promise<HiringsWithCoursesDTO[]> {
-    const { q, page, limit } = filters
-    const offset = (page - 1) * limit
+    const { q = '', page, limit } = filters
+    const offset = page * limit
+    const hiringsWithCourses = await db.query.hirings.findMany({
+      columns: {
+        createdIn: false,
+      },
+      where: ilike(hirings.description, `%${q}%`),
+      with: {
+        courses: {
+          with: {
+            course: {
+              columns: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+      limit: limit,
+      offset: offset,
+    })
 
-    const hiringsWithCourses = await db.execute(sql`
-      SELECT 
-        h.id AS hiring_id,
-        h.description AS hiring_name,
-        h.end_date AS end_date,
-        COUNT(ch.id) AS courses_number,
-        ARRAY_AGG(ch.id) AS course_hiring_ids, -- UUIDs como strings
-        ARRAY_AGG(c.name) AS course_names
-      FROM 
-        dev.hirings h
-      JOIN 
-        dev.course_hirings ch ON h.id = ch.hiring_id
-      JOIN 
-        dev.courses c ON ch.course_id = c.id
-      JOIN
-        dev.units u ON h.unit_id = u.id
-      WHERE 
-        u.id = ${unitId}
-        ${q ? sql`AND h.description ILIKE ${'%' + q + '%'}` : sql``} -- Filtro opcional por búsqueda
-      GROUP BY 
-        h.id, h.description, h.end_date
-      ORDER BY 
-        h.id DESC
-      LIMIT ${limit}
-      OFFSET ${offset};
-    `)
-
-    console.log(hiringsWithCourses)
-
-    // Procesamiento de los resultados para asegurar los tipos correctos
-    return hiringsWithCourses.map((hiring: any) => ({
-      hiringId: hiring.hiring_id,
-      hiringName: hiring.hiring_name,
-      endDate: new Date(hiring.end_date), // Convertimos endDate a tipo Date
-      coursesNumber: parseInt(hiring.courses_number, 10), // Convertimos coursesNumber a número
-      courseHiringIds: hiring.course_hiring_ids, // Dejamos course_hiring_ids como UUIDs (strings)
-      courseNames: hiring.course_names,
+    return hiringsWithCourses.map((hiring) => ({
+      id: hiring.id,
+      name: hiring.description,
+      status: hiring.status,
+      endDate: hiring.endDate,
+      courses: hiring.courses.map((courseHiring) => ({
+        id: courseHiring.course!.id,
+        name: courseHiring.course!.name,
+      })),
     }))
   }
 }

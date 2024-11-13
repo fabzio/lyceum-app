@@ -6,7 +6,7 @@ import {
   serial,
   uuid,
 } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { schedules } from './schedules'
 import { accounts } from './accounts'
 import { roles } from './roles'

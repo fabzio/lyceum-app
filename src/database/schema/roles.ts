@@ -3,7 +3,7 @@ import { relations } from 'drizzle-orm'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
 import { unitType } from './enums'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { rolePermissions } from './rolePermissions'
 import { accountRoles } from '.'
 

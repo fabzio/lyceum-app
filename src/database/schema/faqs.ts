@@ -1,5 +1,5 @@
 import { foreignKey, integer, serial, varchar } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { faqCategories } from './faqCategories'
 import { relations } from 'drizzle-orm'
 import { createInsertSchema } from 'drizzle-zod'

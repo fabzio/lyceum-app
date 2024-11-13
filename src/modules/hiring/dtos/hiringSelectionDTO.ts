@@ -1,12 +1,28 @@
 import { z } from 'zod'
 
 export const createHiringSelectionDTO = z.object({
+  unitId: z.number(),
   description: z.string().min(1),
-  unitId: z.coerce.number(),
-  startDate: z.date(),
-  endReceivingDate: z.date(),
-  resultsPublicationDate: z.date(),
-  endDate: z.date(),
+  startDate: z.coerce.date(),
+  endReceivingDate: z.coerce.date(),
+  resultsPublicationDate: z.coerce.date(),
+  endDate: z.coerce.date(),
+  courses: z
+    .array(
+      z.object({
+        id: z.number(),
+        name: z.string(),
+        code: z.string(),
+        requirements: z
+          .array(
+            z.object({
+              detail: z.string().min(1),
+            })
+          )
+          .nonempty(),
+      })
+    )
+    .nonempty(),
 })
 
 export type CreateHiringSelectionPropDTO = z.infer<
@@ -47,29 +63,28 @@ export type getCandidateHiringLisPropDTO = z.infer<
   typeof getCandidateHiringListDTO
 >
 
+export const coursePerHiringDTO = z.object({
+  id: z.number(), // UUID del curso
+  name: z.string(), // Nombre del curso
+})
+
+export type CoursePerHiringDTO = z.infer<typeof coursePerHiringDTO>
+
 export const hiringsWithCoursesDTO = z.object({
-  hiringId: z.number(), // ID de la tabla hirings como número
-  hiringName: z.string(),
-  endDate: z.date(), // Fecha convertida a tipo Date en el servicio
-  coursesNumber: z.number(), // Número total de cursos
-  courseHiringIds: z.array(z.string()), // UUIDs (string) desde course_hirings
-  courseNames: z.array(z.string()),
+  id: z.number(), // ID de la tabla hirings como número
+  name: z.string(),
+  endDate: z.string(),
+  status: z.string(),
+  courses: z.array(coursePerHiringDTO), // Nuevo array con objetos {id, name} para cada curso
 })
 
 export type HiringsWithCoursesDTO = z.infer<typeof hiringsWithCoursesDTO>
 
 export const getHiringsWithCoursesQueryDTO = z.object({
+  unitId: z.coerce.number(), // ID de la unidad
   q: z.string().optional(), // Para un filtro opcional de búsqueda
-  page: z
-    .string()
-    .transform((v) => parseInt(v))
-    .optional()
-    .default('1'), // Paginación
-  limit: z
-    .string()
-    .transform((v) => parseInt(v))
-    .optional()
-    .default('10'), // Límite de resultados
+  page: z.coerce.number().optional().default(0),
+  limit: z.coerce.number().optional().default(5),
 })
 
 export type GetHiringsWithCoursesQueryDTO = z.infer<

@@ -144,24 +144,16 @@ class HiringSelectioncontroller {
   )
 
   public getHiringsWithCourses = this.router.get(
-    '/:unitId/hirings',
+    '/',
     zValidator('query', getHiringsWithCoursesQueryDTO),
     async (c) => {
       try {
-        const unitId = parseInt(c.req.param('unitId'))
         const filters = c.req.valid('query')
-
-        const hirings: HiringsWithCoursesDTO[] =
-          await this.hiringSelectionService.getHiringsWithCoursesByUnit(
-            unitId,
-            filters
-          )
-
-        // Validación de la respuesta con Zod, aplicando el DTO a la lista completa
-        hirings.forEach((hiring) => hiringsWithCoursesDTO.parse(hiring))
-
         const response = {
-          data: hirings,
+          data: await this.hiringSelectionService.getHiringsWithCoursesByUnit(
+            filters.unitId,
+            filters
+          ),
           success: true,
           message: 'Hirings with courses retrieved successfully',
         }

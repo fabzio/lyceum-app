@@ -8,7 +8,7 @@ import {
 } from 'drizzle-orm/pg-core'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { accounts, units } from '@/database/schema'
 import { surveyType } from './enums'
 import { relations } from 'drizzle-orm'

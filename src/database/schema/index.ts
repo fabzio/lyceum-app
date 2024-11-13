@@ -22,8 +22,14 @@ export { accountsPerHiring } from '@/database/schema/accountsPerHiring'
 export { surveyAnswers } from '@/database/schema/surveyAnswers'
 export { audits } from '@/database/schema/audtis'
 export { contactsInfo } from '@/database/schema/contactsInfo'
-export { courseHiringRequirements } from '@/database/schema/courseHiringRequirements'
-export { courseHirings } from '@/database/schema/courseHirings'
+export {
+  courseHiringRequirements,
+  courseHiringRequirementsRelations,
+} from '@/database/schema/courseHiringRequirements'
+export {
+  courseHirings,
+  courseHiringsRelations,
+} from '@/database/schema/courseHirings'
 export { courses } from '@/database/schema/courses'
 export { enrollmentModifications } from '@/database/schema/enrollmentModifications'
 export { enrollmentProposal } from '@/database/schema/enrollmentProposal'
@@ -50,7 +56,7 @@ export { thesis } from '@/database/schema/thesis'
 export { units } from '@/database/schema/units'
 export { unitsSupports } from '@/database/schema/unitsSupports'
 export { evaluations } from '@/database/schema/evaluations'
-export { hirings } from '@/database/schema/hirings'
+export { hirings, hiringsRelations } from '@/database/schema/hirings'
 export { jobRequests } from '@/database/schema/jobRequests'
 export { surveys } from '@/database/schema/surveys'
 export { accountSurveys } from '@/database/schema/accountSurveys'

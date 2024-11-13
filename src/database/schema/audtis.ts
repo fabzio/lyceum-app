@@ -5,7 +5,7 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { accounts } from './accounts'
 
 export const audits = schema.table(
