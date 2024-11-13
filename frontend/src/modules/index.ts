@@ -6,6 +6,7 @@ import { UserModule } from './users/users.module'
 import { StudentProcessModule } from './student-process/student-process.module'
 import { EnrollmentModule } from './enrollment/enrollment.module'
 import { UnitModule } from './unit/unit.module'
+import { SurveysModule } from './surveys/surveys.module'
 
 const Modules = [
   StudyPlanModule,
@@ -15,6 +16,7 @@ const Modules = [
   UserModule,
   ThesisModule,
   UnitModule,
+  SurveysModule,
 ]
 
 export const getModuleByPath = (path: ValidRoutes) => {

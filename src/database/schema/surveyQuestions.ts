@@ -1,4 +1,4 @@
-import { uuid, varchar, foreignKey } from 'drizzle-orm/pg-core'
+import { uuid, varchar, foreignKey, jsonb } from 'drizzle-orm/pg-core'
 import { schema } from '..'
 import { surveyQuestionType } from './enums'
 import { surveys } from './surveys'
@@ -13,6 +13,7 @@ export const surveyQuestions = schema.table(
     type: surveyQuestionType('type').notNull(),
     questionText: varchar('question_text').notNull(),
     surveyId: uuid('survey_id').notNull(),
+    options: jsonb('options'),
   },
   (table) => ({
     surveyFk: foreignKey({
