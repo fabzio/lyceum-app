@@ -8,7 +8,12 @@ import {
   getCandidateHiringListDTO,
 } from '../dtos'
 import { z, ZodObject } from 'zod'
-import { createHiringSelectionDTO } from '../dtos/hiringSelectionDTO'
+import {
+  createHiringSelectionDTO,
+  getHiringsWithCoursesQueryDTO,
+  hiringsWithCoursesDTO,
+  HiringsWithCoursesDTO,
+} from '../dtos/hiringSelectionDTO'
 class HiringSelectioncontroller {
   private router = new Hono()
 
@@ -128,6 +133,39 @@ class HiringSelectioncontroller {
           message: 'Job request detail retrieved successfully',
           success: true,
         }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public getHiringsWithCourses = this.router.get(
+    '/:unitId/hirings',
+    zValidator('query', getHiringsWithCoursesQueryDTO),
+    async (c) => {
+      try {
+        const unitId = parseInt(c.req.param('unitId'))
+        const filters = c.req.valid('query')
+
+        const hirings: HiringsWithCoursesDTO[] =
+          await this.hiringSelectionService.getHiringsWithCoursesByUnit(
+            unitId,
+            filters
+          )
+
+        // Validación de la respuesta con Zod, aplicando el DTO a la lista completa
+        hirings.forEach((hiring) => hiringsWithCoursesDTO.parse(hiring))
+
+        const response = {
+          data: hirings,
+          success: true,
+          message: 'Hirings with courses retrieved successfully',
+        }
+
         return c.json(response)
       } catch (error) {
         if (error instanceof LyceumError) {
