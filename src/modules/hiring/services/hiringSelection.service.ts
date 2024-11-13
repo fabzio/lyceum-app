@@ -21,6 +21,9 @@ import { AccountsSchema } from '@/database/schema/accounts'
 import { courseStep, jobRequestState } from '@/database/schema/enums'
 import { CreateHiringSelectionPropDTO } from '../dtos/hiringSelectionDTO'
 import { HiringNotFoundError } from '../errors/hiringSelection.error'
+import { GetHiringsWithCoursesQueryDTO } from '../dtos/hiringSelectionDTO'
+import { HiringsWithCoursesDTO } from '../dtos/hiringSelectionDTO'
+
 class HiringSelectionService implements HiringSelectionDAO {
   public async createHiringSelection(newHiring: CreateHiringSelectionPropDTO) {
     const unit = await db
@@ -242,6 +245,52 @@ class HiringSelectionService implements HiringSelectionDAO {
         evaluatorLastname: item.evaluatorLastname as string,
       })),
     }
+  }
+  public async getHiringsWithCoursesByUnit(
+    unitId: number,
+    filters: GetHiringsWithCoursesQueryDTO
+  ): Promise<HiringsWithCoursesDTO[]> {
+    const { q, page, limit } = filters
+    const offset = (page - 1) * limit
+
+    const hiringsWithCourses = await db.execute(sql`
+      SELECT 
+        h.id AS hiring_id,
+        h.description AS hiring_name,
+        h.end_date AS end_date,
+        COUNT(ch.id) AS courses_number,
+        ARRAY_AGG(ch.id) AS course_hiring_ids, -- UUIDs como strings
+        ARRAY_AGG(c.name) AS course_names
+      FROM 
+        dev.hirings h
+      JOIN 
+        dev.course_hirings ch ON h.id = ch.hiring_id
+      JOIN 
+        dev.courses c ON ch.course_id = c.id
+      JOIN
+        dev.units u ON h.unit_id = u.id
+      WHERE 
+        u.id = ${unitId}
+        ${q ? sql`AND h.description ILIKE ${'%' + q + '%'}` : sql``} -- Filtro opcional por búsqueda
+      GROUP BY 
+        h.id, h.description, h.end_date
+      ORDER BY 
+        h.id DESC
+      LIMIT ${limit}
+      OFFSET ${offset};
+    `)
+
+    console.log(hiringsWithCourses)
+
+    // Procesamiento de los resultados para asegurar los tipos correctos
+    return hiringsWithCourses.map((hiring: any) => ({
+      hiringId: hiring.hiring_id,
+      hiringName: hiring.hiring_name,
+      endDate: new Date(hiring.end_date), // Convertimos endDate a tipo Date
+      coursesNumber: parseInt(hiring.courses_number, 10), // Convertimos coursesNumber a número
+      courseHiringIds: hiring.course_hiring_ids, // Dejamos course_hiring_ids como UUIDs (strings)
+      courseNames: hiring.course_names,
+    }))
   }
 }
 
