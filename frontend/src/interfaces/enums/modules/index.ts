@@ -9,7 +9,7 @@ export const ModulesDict = {
   FAQ: 'FAQ',
   UNITS: 'UNITS',
   HIRING: 'HIRING',
-  SURVEY: 'SURVEY',
+  SURVEYS: 'SURVEYS',
 } as const
 
 export type ModulesDict = (typeof ModulesDict)[keyof typeof ModulesDict]

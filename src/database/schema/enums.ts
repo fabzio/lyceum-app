@@ -81,6 +81,7 @@ export const hiringType = schema.enum('hiring_type', [
 export const courseStep = schema.enum('course_step', ['phase1', 'phase2'])
 
 export const surveyQuestionType = schema.enum('survey_question_type', [
+  'boolean',
   'multiple',
   'text',
 ])

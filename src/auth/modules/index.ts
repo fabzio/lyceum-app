@@ -8,6 +8,7 @@ import {
   ThesisPermissions,
   UnitPermissions,
   UsersPermissions,
+  SurveyPermissions,
 } from '../permissions'
 
 export const BaseModulesDict = {
@@ -19,6 +20,8 @@ export const BaseModulesDict = {
   SECURITY: 'SECURITY',
   FAQ: 'FAQ',
   UNITS: 'UNITS',
+  SURVEYS: 'SURVEYS',
+  HIRING: 'HIRING',
 } as const
 
 export type BaseModulesDict = keyof typeof BaseModulesDict
@@ -61,7 +64,7 @@ const BaseModules = [
   },
   {
     name: 'Contratación',
-    code: 'HIRING',
+    code: BaseModulesDict.HIRING,
     permissions: HiringPermissions,
   },
   {
@@ -69,6 +72,11 @@ const BaseModules = [
     code: BaseModulesDict.UNITS,
 
     permissions: UnitPermissions,
+  },
+  {
+    name: 'Encuestas',
+    code: BaseModulesDict.SURVEYS,
+    permissions: SurveyPermissions,
   },
 ] as const
 
