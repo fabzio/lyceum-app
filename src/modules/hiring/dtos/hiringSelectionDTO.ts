@@ -47,13 +47,19 @@ export type getCandidateHiringLisPropDTO = z.infer<
   typeof getCandidateHiringListDTO
 >
 
+export const coursePerHiringDTO = z.object({
+  id: z.string(), // UUID del curso
+  name: z.string(), // Nombre del curso
+})
+
+export type CoursePerHiringDTO = z.infer<typeof coursePerHiringDTO>
+
 export const hiringsWithCoursesDTO = z.object({
   hiringId: z.number(), // ID de la tabla hirings como número
   hiringName: z.string(),
   endDate: z.date(), // Fecha convertida a tipo Date en el servicio
   coursesNumber: z.number(), // Número total de cursos
-  courseHiringIds: z.array(z.string()), // UUIDs (string) desde course_hirings
-  courseNames: z.array(z.string()),
+  coursesPerHiring: z.array(coursePerHiringDTO), // Nuevo array con objetos {id, name} para cada curso
 })
 
 export type HiringsWithCoursesDTO = z.infer<typeof hiringsWithCoursesDTO>
