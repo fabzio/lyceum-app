@@ -53,7 +53,7 @@ export default HiringService
 const mockData: Hiring[] = [
   {
     id: '1',
-    name: 'Proceso de contratación para Docente de Matemáticas',
+    name: 'Convocatoria 20240003',
     status: 'activo',
     endDate: '2024-12-31',
     courses: [
@@ -79,7 +79,7 @@ const mockData: Hiring[] = [
   },
   {
     id: '2',
-    name: 'Proceso de contratación para Docente de Física',
+    name: 'Convocatoria 20240002',
     status: 'finalizado',
     endDate: '2023-11-30',
     courses: [
@@ -96,7 +96,7 @@ const mockData: Hiring[] = [
   },
   {
     id: '3',
-    name: 'Proceso de contratación para Docente de Historia',
+    name: 'Convocatoria 20240001',
     status: 'en revisión',
     endDate: '2024-06-15',
     courses: [
@@ -117,6 +117,84 @@ const mockData: Hiring[] = [
         unitId: 3,
         unitType: 'department',
         unitName: 'Departamento de Humanidades',
+      },
+    ],
+  },
+  {
+    id: '4',
+    name: 'Convocatoria 20240004',
+    status: 'activo',
+    endDate: '2025-12-31',
+    courses: [
+      {
+        id: 101,
+        code: 'MAT101',
+        name: 'Álgebra Lineal',
+        credits: 4,
+        unitId: 1,
+        unitType: 'department', // Suponiendo que UnitType sea una enumeración con valores como este
+        unitName: 'Departamento de Matemáticas',
+      },
+      {
+        id: 102,
+        code: 'MAT102',
+        name: 'Cálculo Diferencial',
+        credits: 4,
+        unitId: 1,
+        unitType: 'department',
+        unitName: 'Departamento de Matemáticas',
+      },
+    ],
+  },
+  {
+    id: '5',
+    name: 'Convocatoria 20240005',
+    status: 'activo',
+    endDate: '2025-11-31',
+    courses: [
+      {
+        id: 101,
+        code: 'MAT101',
+        name: 'Álgebra Lineal',
+        credits: 4,
+        unitId: 1,
+        unitType: 'department', // Suponiendo que UnitType sea una enumeración con valores como este
+        unitName: 'Departamento de Matemáticas',
+      },
+      {
+        id: 102,
+        code: 'MAT102',
+        name: 'Cálculo Diferencial',
+        credits: 4,
+        unitId: 1,
+        unitType: 'department',
+        unitName: 'Departamento de Matemáticas',
+      },
+    ],
+  },
+  {
+    id: '6',
+    name: 'Convocatoria 20240006',
+    status: 'activo',
+    endDate: '2025-10-31',
+    courses: [
+      {
+        id: 101,
+        code: 'MAT101',
+        name: 'Álgebra Lineal',
+        credits: 4,
+        unitId: 1,
+        unitType: 'department', // Suponiendo que UnitType sea una enumeración con valores como este
+        unitName: 'Departamento de Matemáticas',
+      },
+      {
+        id: 102,
+        code: 'MAT102',
+        name: 'Cálculo Diferencial',
+        credits: 4,
+        unitId: 1,
+        unitType: 'department',
+        unitName: 'Departamento de Matemáticas',
       },
     ],
   },
