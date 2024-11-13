@@ -1,9 +1,9 @@
 import { surveys, SurveySchema } from '@/database/schema/surveys'
-import { CreateSurveyDTO } from '../dtos'
 import db from '@/database'
 import { and, eq } from 'drizzle-orm'
 import { units } from '@/database/schema'
 import { surveyQuestions } from '@/database/schema/surveyQuestions'
+import { CreateSurveyDTO } from '../dtos/SurveyDTO'
 
 class SurveyService {
   public async createSurvey(surveyData: CreateSurveyDTO) {

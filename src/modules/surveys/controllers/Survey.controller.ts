@@ -1,8 +1,8 @@
 import { Hono } from 'hono'
 import { SurveyService } from '../services'
 import { zValidator } from '@hono/zod-validator'
-import { createSurveyDTO } from '../dtos'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
+import { createSurveyDTO } from '../dtos/SurveyDTO'
 
 class SurveyController {
   private surveyService = new SurveyService()
