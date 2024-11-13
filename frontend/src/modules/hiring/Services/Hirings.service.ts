@@ -6,7 +6,11 @@ import { CreateTeacherSelectionForm } from '../views/TeacherSelection/NewTeacher
 const USE_MOCK = true // Cambia a false para usar la solicitud real
 
 class HiringService {
-  public static async createTeacherSelection(data: CreateTeacherSelectionForm) {
+  public static async createTeacherSelection(
+    data: CreateTeacherSelectionForm & {
+      unitId: number
+    }
+  ) {
     try {
       const res = await http.post('/hiring-selection', data)
       const response = res.data as ResponseAPI

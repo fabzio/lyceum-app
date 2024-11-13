@@ -144,16 +144,15 @@ class HiringSelectioncontroller {
   )
 
   public getHiringsWithCourses = this.router.get(
-    '/:unitId/hirings',
+    '/',
     zValidator('query', getHiringsWithCoursesQueryDTO),
     async (c) => {
       try {
-        const unitId = parseInt(c.req.param('unitId'))
         const filters = c.req.valid('query')
 
         const hirings: HiringsWithCoursesDTO[] =
           await this.hiringSelectionService.getHiringsWithCoursesByUnit(
-            unitId,
+            filters.unitId,
             filters
           )
 

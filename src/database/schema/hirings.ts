@@ -5,6 +5,7 @@ import { relations } from 'drizzle-orm'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
 import { units } from './units'
+import { courseHirings } from './courseHirings'
 
 export const hirings = schema.table('hirings', {
   id: serial('id').primaryKey(),
@@ -20,11 +21,12 @@ export const hirings = schema.table('hirings', {
   createdIn: timestamp('created_in').defaultNow(),
 })
 
-export const hiringsRelations = relations(hirings, ({ one }) => ({
+export const hiringsRelations = relations(hirings, ({ one, many }) => ({
   unit: one(units, {
     fields: [hirings.unitId],
     references: [units.id],
   }),
+  courses: many(courseHirings),
 }))
 
 export const hiringsSchema = createInsertSchema(hirings)

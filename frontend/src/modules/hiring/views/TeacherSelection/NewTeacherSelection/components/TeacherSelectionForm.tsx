@@ -8,8 +8,11 @@ import HiringService from '@frontend/modules/hiring/Services/Hirings.service'
 import { Loader2 } from 'lucide-react'
 import { useToast } from '@frontend/hooks/use-toast'
 import CoursesSelection from './CoursesSelection'
+import { useSessionStore } from '@frontend/store'
+import { HiringPermissionsDict } from '@frontend/interfaces/enums/permissions/Hiring'
 
 export default function TeacherSelectionForm() {
+  const { getRoleWithPermission } = useSessionStore()
   const { toast } = useToast()
   const { mutate, isPending } = useMutation({
     mutationFn: HiringService.createTeacherSelection,
@@ -31,7 +34,12 @@ export default function TeacherSelectionForm() {
     resolver: zodResolver(formSchema),
   })
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    mutate(data)
+    mutate({
+      ...data,
+      unitId: getRoleWithPermission(
+        HiringPermissionsDict.CREATE_HIRING_PROCESS
+      )!.unitId,
+    })
   }
   return (
     <FormProvider {...form}>
