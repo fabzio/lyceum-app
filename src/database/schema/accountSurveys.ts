@@ -19,7 +19,6 @@ export const accountSurveys = schema.table(
     evaluatorAccountId: uuid('evaluator_account_id').notNull(),
     surveyId: integer('survey_id').notNull(),
     scheduleId: integer('schedule_id'),
-    answered: boolean('answered').default(false),
   },
   (table) => ({
     pk: primaryKey({
