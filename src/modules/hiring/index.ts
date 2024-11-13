@@ -3,7 +3,7 @@ import { Hono } from 'hono'
 import { HiringSelectionRoute } from './routes'
 
 class Hiring implements Route {
-  public path = '/hiring-selection'
+  public path = '/hiring'
   public router: Hono = new Hono()
 
   private routes: Route[]
