@@ -11,7 +11,7 @@ import { studyPlanCourses, units } from '@/database/schema'
 import { relations } from 'drizzle-orm'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 
 export const courses = schema.table(
   'courses',

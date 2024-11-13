@@ -1,5 +1,5 @@
 import { serial, text, date, timestamp, integer } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { hiringStatus } from './enums'
 import { relations } from 'drizzle-orm'
 import { createInsertSchema } from 'drizzle-zod'

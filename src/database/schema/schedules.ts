@@ -6,7 +6,7 @@ import {
   smallint,
   varchar,
 } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { courses } from './courses'
 import { terms } from './terms'
 import { relations } from 'drizzle-orm'

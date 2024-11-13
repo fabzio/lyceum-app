@@ -5,7 +5,7 @@ import {
   primaryKey,
   foreignKey,
 } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { accounts, schedules, terms } from '@/database/schema'
 import { surveys } from './surveys'
 import { relations } from 'drizzle-orm'

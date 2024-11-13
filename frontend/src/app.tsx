@@ -5,12 +5,18 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import ErrorPage from './layouts/ErrorPage'
 import NotFound from './layouts/NotFound'
 import { useSessionStore } from './store'
+import { useToast } from './hooks/use-toast'
 
 const queryClient = new QueryClient()
 
 const router = createRouter({
   routeTree,
-  context: { auth: undefined!, queryClient, sessionStore: undefined! },
+  context: {
+    auth: undefined!,
+    queryClient,
+    sessionStore: undefined!,
+    toaster: undefined!,
+  },
   defaultErrorComponent: ({ error }) => (
     <ErrorPage displayErrorMessage={error.message} />
   ),
@@ -33,8 +39,9 @@ export default function App() {
 function InnerApp() {
   const auth = useAuth()
   const sessionStore = useSessionStore()
+  const toaster = useToast()
   if (auth.isLoading) return <div></div>
   return (
-    <RouterProvider router={router} context={{ auth, sessionStore }} />
+    <RouterProvider router={router} context={{ auth, sessionStore, toaster }} />
   )
 }

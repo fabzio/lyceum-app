@@ -1,5 +1,11 @@
-import { foreignKey, integer, serial, timestamp, uuid } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import {
+  foreignKey,
+  integer,
+  serial,
+  timestamp,
+  uuid,
+} from 'drizzle-orm/pg-core'
+import { schema } from '../pgSchema'
 import { enrollmentProposalStatus } from './enums'
 import { units } from './units'
 import { accounts } from './accounts'

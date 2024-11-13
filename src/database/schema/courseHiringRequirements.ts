@@ -1,5 +1,5 @@
 import { uuid, text } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { courseHirings } from './courseHirings'
 import { courseStep } from './enums'
 import { relations } from 'drizzle-orm'

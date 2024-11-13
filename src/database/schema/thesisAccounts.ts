@@ -1,5 +1,5 @@
 import { boolean, foreignKey, integer, serial, uuid } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { roles } from './roles'
 import { accounts } from './accounts'
 import { thesis } from './thesis'

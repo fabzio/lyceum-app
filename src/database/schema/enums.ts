@@ -1,4 +1,4 @@
-import { schema } from '..'
+import { schema } from '../pgSchema'
 
 export const unitType = schema.enum('unit_type', [
   'university',

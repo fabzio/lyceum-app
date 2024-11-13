@@ -3,10 +3,10 @@ import { z } from 'zod'
 export const createHiringSelectionDTO = z.object({
   unitId: z.number(),
   description: z.string().min(1),
-  startDate: z.date(),
-  endReceivingDate: z.date(),
-  resultsPublicationDate: z.date(),
-  endDate: z.date(),
+  startDate: z.coerce.date(),
+  endReceivingDate: z.coerce.date(),
+  resultsPublicationDate: z.coerce.date(),
+  endDate: z.coerce.date(),
   courses: z
     .array(
       z.object({
@@ -64,18 +64,18 @@ export type getCandidateHiringLisPropDTO = z.infer<
 >
 
 export const coursePerHiringDTO = z.object({
-  id: z.string(), // UUID del curso
+  id: z.number(), // UUID del curso
   name: z.string(), // Nombre del curso
 })
 
 export type CoursePerHiringDTO = z.infer<typeof coursePerHiringDTO>
 
 export const hiringsWithCoursesDTO = z.object({
-  hiringId: z.number(), // ID de la tabla hirings como número
-  hiringName: z.string(),
-  endDate: z.date(), // Fecha convertida a tipo Date en el servicio
-  coursesNumber: z.number(), // Número total de cursos
-  coursesPerHiring: z.array(coursePerHiringDTO), // Nuevo array con objetos {id, name} para cada curso
+  id: z.number(), // ID de la tabla hirings como número
+  name: z.string(),
+  endDate: z.string(),
+  status: z.string(),
+  courses: z.array(coursePerHiringDTO), // Nuevo array con objetos {id, name} para cada curso
 })
 
 export type HiringsWithCoursesDTO = z.infer<typeof hiringsWithCoursesDTO>

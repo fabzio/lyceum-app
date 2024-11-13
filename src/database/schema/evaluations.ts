@@ -1,5 +1,5 @@
 import { serial, decimal, date, uuid, integer } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { jobRequests } from './jobRequests'
 import { accounts } from './accounts'
 import { courseHiringRequirements } from './courseHiringRequirements'

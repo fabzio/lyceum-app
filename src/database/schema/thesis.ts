@@ -11,7 +11,7 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { accounts } from './accounts'
 import { units } from './units'
 import { thesisJuryStatus } from './enums'

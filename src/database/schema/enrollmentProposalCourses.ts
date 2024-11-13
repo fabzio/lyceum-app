@@ -1,5 +1,5 @@
 import { foreignKey, integer, serial, smallint } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { enrollmentProposal } from './enrollmentProposal'
 import { courses } from './courses'
 

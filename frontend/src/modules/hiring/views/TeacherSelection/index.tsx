@@ -1,23 +1,33 @@
 import { QueryKeys } from '@frontend/constants/queryKeys'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import HiringService from '../../Services/Hirings.service'
 import { Input } from '@frontend/components/ui/input'
 import HiringAccordion from './components/HiringAccordion'
 import { Link } from '@tanstack/react-router'
 import { Button } from '@frontend/components/ui/button'
-import { useState } from 'react'
 import debounce from 'debounce'
+import { useSessionStore } from '@frontend/store'
+import { HiringPermissionsDict } from '@frontend/interfaces/enums/permissions/Hiring'
+import { useFilters } from '@frontend/hooks/useFilters'
 
 export default function HiringSelection() {
-  const { data } = useSuspenseQuery({
-    queryKey: [QueryKeys.hiring.HIRINGS],
-    queryFn: HiringService.getHirings,
+  const { filters, setFilters } = useFilters(
+    '/_auth/contrataciones/seleccion-docentes'
+  )
+  const { getRoleWithPermission } = useSessionStore()
+  const { data } = useQuery({
+    queryKey: [QueryKeys.hiring.HIRINGS, filters],
+    queryFn: () =>
+      HiringService.getHirings({
+        unitId: getRoleWithPermission(
+          HiringPermissionsDict.VIEW_LIST_OF_OPEN_HIRINGS
+        )!.unitId,
+        ...filters,
+      }),
   })
 
-  const [searchTerm, setSearchTerm] = useState('')
-
   const handleSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value)
+    setFilters({ ...filters, q: e.target.value })
   }, 300)
 
   return (
@@ -34,7 +44,7 @@ export default function HiringSelection() {
           <Button>Nueva convoctoria</Button>
         </Link>
       </div>
-      <HiringAccordion hirings={data} searchTerm={searchTerm} />
+      <HiringAccordion hirings={data ?? []} />
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import { uuid, varchar, foreignKey } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { surveyQuestionType } from './enums'
 import { surveys } from './surveys'
 import { relations } from 'drizzle-orm'

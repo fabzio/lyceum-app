@@ -9,7 +9,7 @@ import {
   units,
   courses,
 } from '@/database/schema'
-import { and, eq, inArray, desc, sql, asc, or } from 'drizzle-orm'
+import { and, eq, inArray, desc, sql, asc, or, ilike } from 'drizzle-orm'
 
 import { HiringSelectionDAO } from '../dao'
 import {
@@ -295,56 +295,39 @@ class HiringSelectionService implements HiringSelectionDAO {
     unitId: number,
     filters: GetHiringsWithCoursesQueryDTO
   ): Promise<HiringsWithCoursesDTO[]> {
-    const { q, page, limit } = filters
+    const { q = '', page, limit } = filters
     const offset = page * limit
-
-    const hiringsWithCourses = await db.execute(sql`
-      SELECT 
-        h.id AS hiring_id,
-        h.description AS hiring_name,
-        h.end_date AS end_date,
-        COUNT(ch.id) AS courses_number,
-        ARRAY_AGG(ch.id) AS course_hiring_ids, -- UUIDs como strings
-        ARRAY_AGG(c.name) AS course_names
-      FROM 
-        dev.hirings h
-      JOIN 
-        dev.course_hirings ch ON h.id = ch.hiring_id
-      JOIN 
-        dev.courses c ON ch.course_id = c.id
-      JOIN
-        dev.units u ON h.unit_id = u.id
-      WHERE 
-        u.id = ${unitId}
-        ${q ? sql`AND h.description ILIKE ${'%' + q + '%'}` : sql``} -- Filtro opcional por búsqueda
-      GROUP BY 
-        h.id, h.description, h.end_date
-      ORDER BY 
-        h.id DESC
-      LIMIT ${limit}
-      OFFSET ${offset};
-    `)
-
-    console.log(hiringsWithCourses)
-
-    return hiringsWithCourses.map((hiring: any) => {
-      const coursesPerHiring = hiring.course_hiring_ids.map(
-        (id: string, index: number) => ({
-          id,
-          name: hiring.course_names[index],
-        })
-      )
-
-      return {
-        hiringId: hiring.hiring_id,
-        hiringName: hiring.hiring_name,
-        endDate: new Date(hiring.end_date), // Convertimos endDate a tipo Date
-        coursesNumber: parseInt(hiring.courses_number, 10), // Convertimos coursesNumber a número
-        coursesPerHiring, // Nuevo arreglo con objetos {id, name} para cada curso
-        courseHiringIds: hiring.course_hiring_ids,
-        courseNames: hiring.course_names,
-      }
+    const hiringsWithCourses = await db.query.hirings.findMany({
+      columns: {
+        createdIn: false,
+      },
+      where: ilike(hirings.description, `%${q}%`),
+      with: {
+        courses: {
+          with: {
+            course: {
+              columns: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+      limit: limit,
+      offset: offset,
     })
+
+    return hiringsWithCourses.map((hiring) => ({
+      id: hiring.id,
+      name: hiring.description,
+      status: hiring.status,
+      endDate: hiring.endDate,
+      courses: hiring.courses.map((courseHiring) => ({
+        id: courseHiring.course!.id,
+        name: courseHiring.course!.name,
+      })),
+    }))
   }
 }
 

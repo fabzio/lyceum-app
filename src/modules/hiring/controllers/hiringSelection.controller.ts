@@ -149,18 +149,11 @@ class HiringSelectioncontroller {
     async (c) => {
       try {
         const filters = c.req.valid('query')
-
-        const hirings: HiringsWithCoursesDTO[] =
-          await this.hiringSelectionService.getHiringsWithCoursesByUnit(
+        const response = {
+          data: await this.hiringSelectionService.getHiringsWithCoursesByUnit(
             filters.unitId,
             filters
-          )
-
-        // Validación de la respuesta con Zod, aplicando el DTO a la lista completa
-        hirings.forEach((hiring) => hiringsWithCoursesDTO.parse(hiring))
-
-        const response = {
-          data: hirings,
+          ),
           success: true,
           message: 'Hirings with courses retrieved successfully',
         }

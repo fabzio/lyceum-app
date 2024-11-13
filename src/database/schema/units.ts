@@ -2,7 +2,7 @@ import { foreignKey, integer, serial, varchar } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { accountRoles, specialityStudyPlans, unitType } from '@/database/schema'
 
 export const units = schema.table(

@@ -4,40 +4,26 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@frontend/components/ui/accordion'
+import { Button } from '@frontend/components/ui/button'
 import { Course } from '@frontend/interfaces/models/Course'
 import { Hiring } from '@frontend/interfaces/models/Hiring'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 const ITEMS_PER_PAGE = 5
 interface Props {
   hirings: Hiring[]
-  searchTerm: string
 }
 
-export default function HiringAccordion({ hirings = [], searchTerm }: Props) {
+export default function HiringAccordion({ hirings = [] }: Props) {
   const [currentPage, setCurrentPage] = useState(0)
 
-  // Filtrar los datos según el término de búsqueda
-  const filteredHirings = useMemo(() => {
-    return hirings.filter((hiring) =>
-      hiring.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  }, [hirings, searchTerm])
-
-  // Dividir los datos en páginas
-  const paginatedHirings = useMemo(() => {
-    const start = currentPage * ITEMS_PER_PAGE
-    const end = start + ITEMS_PER_PAGE
-    return filteredHirings.slice(start, end)
-  }, [filteredHirings, currentPage])
-
-  const totalPages = Math.ceil(filteredHirings.length / ITEMS_PER_PAGE)
+  const totalPages = Math.ceil(hirings.length / ITEMS_PER_PAGE)
 
   return (
     <div>
       <Accordion type="single" collapsible>
-        {paginatedHirings.length > 0 ? (
-          paginatedHirings.map(({ id, name, endDate, courses }) => (
+        {hirings.length > 0 ? (
+          hirings.map(({ id, name, endDate, courses }) => (
             <AccordionItem key={id} value={id}>
               <AccordionTrigger>
                 <div className="w-full px-2 flex justify-between">
@@ -66,9 +52,7 @@ export default function HiringAccordion({ hirings = [], searchTerm }: Props) {
           disabled={currentPage === 0}
           onClick={() => setCurrentPage(currentPage - 1)}
           className={`px-3 py-1 rounded-md ${
-            currentPage === 0
-              ? 'text-gray-400 cursor-not-allowed bg-gray-100'
-              : 'text-gray-600 hover:bg-gray-200'
+            currentPage === 0 ? 'cursor-not-allowed' : ' hover:bg-muted'
           }`}
         >
           Anterior
@@ -79,9 +63,7 @@ export default function HiringAccordion({ hirings = [], searchTerm }: Props) {
             key={i}
             onClick={() => setCurrentPage(i)}
             className={`px-3 py-1 rounded-md ${
-              i === currentPage
-                ? ' text- font-medium'
-                : 'bg-transparent text-gray-600 hover:bg-gray-200'
+              i === currentPage ? ' text- font-medium' : 'bg-muted'
             }`}
           >
             {i + 1}
@@ -92,9 +74,7 @@ export default function HiringAccordion({ hirings = [], searchTerm }: Props) {
           disabled={currentPage === totalPages - 1}
           onClick={() => setCurrentPage(currentPage + 1)}
           className={`px-3 py-1 rounded-md ${
-            currentPage === totalPages - 1
-              ? 'text-gray-400 cursor-not-allowed bg-gray-100'
-              : 'text-gray-600 hover:bg-gray-200'
+            currentPage === totalPages - 1 ? 'cursor-not-allowed' : ''
           }`}
         >
           Siguiente
@@ -113,9 +93,7 @@ function AssigmentAccordionItem({ courses }: { courses: Course[] }) {
             <span className="font-">{course.name}</span> {course.unitName}
           </div>
           <div>
-            <button className="text-blue-500 hover:underline">
-              Administrar
-            </button>
+            <Button variant="outline">Administrar</Button>
           </div>
         </li>
       ))}

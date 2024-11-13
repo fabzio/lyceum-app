@@ -7,7 +7,7 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { thesis } from './thesis'
 import { foreignKey } from 'drizzle-orm/pg-core'
 import { createInsertSchema } from 'drizzle-zod'
