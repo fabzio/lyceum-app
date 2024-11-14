@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { SurveyService } from '../services'
 import { zValidator } from '@hono/zod-validator'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
-import { createSurveyDTO } from '../dtos/SurveyDTO'
+import { createSurveyDTO, insertAnswerDTO } from '../dtos/SurveyDTO'
 import { z } from 'zod'
 class SurveyController {
   private surveyService = new SurveyService()
@@ -82,6 +82,26 @@ class SurveyController {
         return c.json({
           data: response,
           message: 'Survey questions',
+          success: true,
+        })
+      } catch (error) {
+        if (error instanceof LyceumError) c.status(error.code)
+        throw error
+      }
+    }
+  )
+
+  public insertAnsweredSurvey = this.router.post(
+    '/answers',
+    zValidator('json', insertAnswerDTO),
+    async (c) => {
+      const answeredSurveyData = c.req.valid('json')
+      try {
+        const response =
+          await this.surveyService.insertAnsweredSurvey(answeredSurveyData)
+        return c.json({
+          data: response,
+          message: 'Answered survey inserted',
           success: true,
         })
       } catch (error) {

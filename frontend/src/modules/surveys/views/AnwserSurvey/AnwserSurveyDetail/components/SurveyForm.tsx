@@ -17,14 +17,40 @@ import { useMutation } from '@tanstack/react-query'
 import AnwserSurveyService from '@frontend/modules/surveys/services/AnswerSurvey.service'
 import { useSessionStore } from '@frontend/store'
 import { Loader2 } from 'lucide-react'
+import { useToast } from '@frontend/hooks/use-toast'
+import { useNavigate } from '@tanstack/react-router'
 
 interface Props {
+  subjectAccountId: string
+  scheduleId: number
   questions: Question[]
 }
-export default function SurveyForm({ questions }: Props) {
+export default function SurveyForm({
+  subjectAccountId,
+  scheduleId,
+  questions,
+}: Props) {
   const { session } = useSessionStore()
+  const { toast } = useToast()
+  const navigate = useNavigate()
   const { mutate, isPending } = useMutation({
     mutationFn: AnwserSurveyService.insertAnswers,
+    onSuccess: () => {
+      toast({
+        title: 'Encuesta enviada',
+        description: 'Gracias por responder la encuesta',
+      })
+      navigate({
+        to: '..',
+      })
+    },
+    onError: ({ message }) => {
+      toast({
+        title: 'Error al enviar la encuesta',
+        description: message,
+        variant: 'destructive',
+      })
+    },
   })
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -40,6 +66,8 @@ export default function SurveyForm({ questions }: Props) {
     mutate({
       ...data,
       evaluatorAccountId: session!.id,
+      subjectAccountId,
+      scheduleId,
     })
   }
 

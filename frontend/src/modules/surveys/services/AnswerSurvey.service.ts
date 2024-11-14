@@ -39,10 +39,12 @@ class AnwserSurveyService {
   public static async insertAnswers(
     params: SurveyFormValues & {
       evaluatorAccountId: Account['id']
+      subjectAccountId: Account['id']
+      scheduleId: number
     }
   ) {
     try {
-      const res = await http.post('/surveys/answer', params)
+      const res = await http.post('/surveys/survey/answers', params)
       const response = res.data as ResponseAPI
       if (!response.success) throw new Error(response.message)
     } catch (error) {

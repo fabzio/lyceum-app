@@ -18,7 +18,7 @@ export default function AnwserSurvey() {
   return (
     <div>
       {surveyList?.map((survey) => (
-        <div className="w-4/%">
+        <div className="w-4/5" key={survey.id}>
           <div key={survey.id} className="flex w-full items-center gap-4">
             <h3 className="flex-1 text-3xl font-semibold">{survey.name}</h3>
             <div>

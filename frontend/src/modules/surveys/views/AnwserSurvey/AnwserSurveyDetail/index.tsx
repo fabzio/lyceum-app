@@ -45,7 +45,11 @@ export default function AnwserSurveyDetail() {
           </h3>
         </section>
       )}
-      <SurveyForm questions={data.questions} />
+      <SurveyForm
+        questions={data.questions}
+        scheduleId={scheduleId}
+        subjectAccountId={subjetAccountId}
+      />
     </PageLayout>
   )
 }

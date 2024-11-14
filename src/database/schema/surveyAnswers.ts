@@ -12,7 +12,7 @@ export const surveyAnswers = schema.table(
     id: serial('id').primaryKey().notNull(),
     questionId: integer('question_id').notNull(),
     subjectAccountId: uuid('subject_account_id').notNull(),
-    answerRawText: varchar('answer_raw_text'),
+    answerRawText: varchar('answer_raw_text').notNull(),
   },
   (table) => ({
     questionFk: foreignKey({

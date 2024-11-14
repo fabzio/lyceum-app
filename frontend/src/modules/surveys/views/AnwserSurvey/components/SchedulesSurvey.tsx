@@ -13,7 +13,7 @@ interface Props {
 }
 export default function SchedulesSurvey({ schedules, surveyId }: Props) {
   return (
-    <Accordion type="single" className="w-full">
+    <Accordion collapsible type="single" className="w-full">
       {schedules.map((schedule, index) => (
         <AccordionItem key={index} value={schedule.scheduleId.toString()}>
           <AccordionTrigger>

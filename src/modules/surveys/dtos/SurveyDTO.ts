@@ -19,3 +19,19 @@ export const createSurveyDTO = z.object({
     .nonempty(),
 })
 export type CreateSurveyDTO = z.infer<typeof createSurveyDTO>
+
+export const insertAnswerDTO = z.object({
+  questions: z.array(
+    z.object({
+      id: z.number(),
+      questionText: z.string(),
+      type: z.string(),
+      answer: z.string(),
+    })
+  ),
+  evaluatorAccountId: z.string(),
+  subjectAccountId: z.string(),
+  scheduleId: z.number(),
+})
+
+export type InsertAnswerDTO = z.infer<typeof insertAnswerDTO>

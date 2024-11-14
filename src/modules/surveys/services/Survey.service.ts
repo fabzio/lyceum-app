@@ -21,9 +21,10 @@ import {
   unitType,
   accountRoles,
   accountSurveys,
+  surveyAnswers,
 } from '@/database/schema'
 import { surveyQuestions } from '@/database/schema/surveyQuestions'
-import { CreateSurveyDTO } from '../dtos/SurveyDTO'
+import { CreateSurveyDTO, InsertAnswerDTO } from '../dtos/SurveyDTO'
 import { Unit } from '@/interfaces/models/Unit'
 import { ScheduleSchema } from '@/database/schema/schedules'
 import { CoursesSchema } from '@/database/schema/courses'
@@ -221,6 +222,31 @@ class SurveyService {
       where: eq(surveys.id, surveyId),
     })
     return questions
+  }
+
+  public async insertAnsweredSurvey(params: InsertAnswerDTO) {
+    const surveyId = await db.query.surveyQuestions.findFirst({
+      where: eq(surveyQuestions.id, params.questions[0].id),
+      columns: {
+        surveyId: true,
+      },
+    })
+    if (!surveyId) throw new Error('Pregunta no encontrada')
+
+    await db.transaction(async (tx) => {
+      await tx.insert(accountSurveys).values({
+        ...params,
+        surveyId: surveyId.surveyId,
+      })
+
+      await tx.insert(surveyAnswers).values(
+        params.questions.map((question) => ({
+          subjectAccountId: params.subjectAccountId,
+          questionId: question.id,
+          answerRawText: question.answer,
+        }))
+      )
+    })
   }
 }
 export default SurveyService
