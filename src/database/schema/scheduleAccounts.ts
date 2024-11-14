@@ -17,7 +17,7 @@ export const scheduleAccounts = schema.table(
   {
     scheduleId: serial('schedule_id').notNull(),
     accountId: uuid('account_id').notNull(),
-    roleId: integer('role_id').notNull(),
+    roleId: integer('role_id'),
     lead: boolean('lead').default(false),
   },
   (table) => ({

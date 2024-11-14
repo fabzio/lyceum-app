@@ -18,7 +18,7 @@ export const accountSurveys = schema.table(
     subjectAccountId: uuid('subject_account_id').notNull(),
     evaluatorAccountId: uuid('evaluator_account_id').notNull(),
     surveyId: integer('survey_id').notNull(),
-    scheduleId: integer('schedule_id'),
+    scheduleId: integer('schedule_id').notNull(),
   },
   (table) => ({
     pk: primaryKey({

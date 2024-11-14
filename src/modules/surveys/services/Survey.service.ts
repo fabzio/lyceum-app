@@ -1,6 +1,16 @@
 import { surveys, SurveySchema } from '@/database/schema/surveys'
 import db from '@/database'
-import { and, between, Column, eq, gte, lte } from 'drizzle-orm'
+import {
+  and,
+  between,
+  Column,
+  eq,
+  gte,
+  inArray,
+  isNull,
+  lte,
+  or,
+} from 'drizzle-orm'
 import {
   units,
   scheduleAccounts,
@@ -8,6 +18,9 @@ import {
   courses,
   terms,
   accounts,
+  unitType,
+  accountRoles,
+  accountSurveys,
 } from '@/database/schema'
 import { surveyQuestions } from '@/database/schema/surveyQuestions'
 import { CreateSurveyDTO } from '../dtos/SurveyDTO'
@@ -17,6 +30,7 @@ import { CoursesSchema } from '@/database/schema/courses'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import Survey from '..'
 import { date } from 'drizzle-orm/mysql-core'
+import groupBy from 'just-group-by'
 
 class SurveyService {
   public async getSpecialitySurveys(unitId: Unit['id']) {
@@ -63,77 +77,132 @@ class SurveyService {
     })
   }
 
-  public async getUnAnsweredSurveys(
-    AccountId: string
-  ): Promise<
-    (Pick<ScheduleSchema, 'id' | 'code'> &
-      Pick<CoursesSchema, 'id' | 'code' | 'name'>)[]
-  > {
-    // Formatear `date` como una cadena en el formato adecuado (YYYY-MM-DD)
+  public async getUnAnsweredSurveys(AccountId: string) {
+    const unitStudentResponse = await db
+      .select({
+        unitId: accounts.unitId,
+        unitType: units.type,
+      })
+      .from(accounts)
+      .innerJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
+      .innerJoin(units, eq(units.id, accounts.unitId))
+      .where(
+        and(
+          eq(accounts.id, AccountId),
+          eq(units.type, 'speciality'),
+          eq(accountRoles.roleId, BaseRoles.STUDENT)
+        )
+      )
+    if (!unitStudentResponse.length)
+      throw new Error('No se encontró la especialidad del estudiante')
+    const [unitStudent] = unitStudentResponse
     let date = new Date()
-
-    const survey = await db
-      .select()
+    const surveysAvailable = await db
+      .select({
+        id: surveys.id,
+        name: surveys.name,
+        endDate: surveys.endDate,
+      })
       .from(surveys)
       .where(
         and(
-          gte(surveys.creationDate, date),
-          lte(surveys.endDate, date),
-          eq(surveys.active, true)
+          eq(surveys.unitId, unitStudent.unitId),
+          eq(surveys.active, true),
+          gte(surveys.endDate, date),
+          lte(surveys.creationDate, date)
         )
       )
+    if (!surveysAvailable.length) return []
 
-    if (!surveys) {
-      return []
-    }
-    const UnAnsweredSurveys = await db
+    const accountsToEvaluate = await db
       .select({
-        id: schedules.id, // Esto será el id del ScheduleSchema
-        code: schedules.code, // Esto será el code del ScheduleSchema
-        courseId: courses.id, // Este será el id del CoursesSchema
-        courseCode: courses.code, // Este será el code del CoursesSchema
-        courseName: courses.name, // Esto será el name del CoursesSchema
+        course: {
+          code: courses.code,
+          name: courses.name,
+        },
+        schedule: {
+          id: schedules.id,
+          code: schedules.code,
+        },
+        account: {
+          id: scheduleAccounts.accountId,
+          name: accounts.name,
+          firstSurname: accounts.firstSurname,
+          secondSurname: accounts.secondSurname,
+          role: scheduleAccounts.roleId,
+        },
       })
-      .from(courses)
-      .innerJoin(schedules, eq(schedules.courseId, courses.id))
-      .innerJoin(
-        scheduleAccounts,
-        eq(scheduleAccounts.scheduleId, schedules.id)
-      )
-      .innerJoin(terms, eq(terms.id, schedules.termId))
-
+      .from(scheduleAccounts)
+      .innerJoin(accounts, eq(accounts.id, scheduleAccounts.accountId))
+      .innerJoin(schedules, eq(schedules.id, scheduleAccounts.scheduleId))
+      .innerJoin(courses, eq(courses.id, schedules.courseId))
       .where(
         and(
-          eq(scheduleAccounts.accountId, AccountId),
-          eq(scheduleAccounts.roleId, BaseRoles.STUDENT),
-          eq(terms.current, true)
+          or(
+            isNull(scheduleAccounts.roleId),
+            eq(scheduleAccounts.roleId, BaseRoles.PROFESSOR)
+          ),
+          inArray(
+            scheduleAccounts.scheduleId,
+            db
+              .selectDistinct({
+                id: scheduleAccounts.scheduleId,
+              })
+              .from(scheduleAccounts)
+              .where(and(eq(scheduleAccounts.accountId, AccountId)))
+          )
         )
       )
-
-    const a = await db.query.scheduleAccounts.findMany({
-      where: and(
-        eq(scheduleAccounts.accountId, AccountId),
-        eq(scheduleAccounts.roleId, BaseRoles.STUDENT)
-      ),
-      with: {
-        account: {
-          columns: {
-            id: true,
-            name: true,
-            firstSurname: true,
-            secondSurname: true,
-          },
-        },
-      },
+    const alreadyAnswered = await this.getAnsweredSurveys(AccountId)
+    const UnAnsweredSurveys = surveysAvailable.map((survey) => {
+      const accountsToEvaluateSurvey = accountsToEvaluate.filter(
+        (account) =>
+          !alreadyAnswered.find(
+            (answered) =>
+              answered.scheduleId === account.schedule.id &&
+              answered.subjectAccountId === account.account.id &&
+              answered.surveyId === survey.id
+          )
+      )
+      return {
+        ...survey,
+        schedules: Object.entries(
+          groupBy(accountsToEvaluateSurvey, (account) => account.schedule.id)
+        ).map(([scheduleId, accounts]) => ({
+          scheduleId,
+          scheduleCode: accounts[0].schedule.code,
+          courseName: accounts[0].course.name,
+          accounts: accounts.map((account) => ({
+            accountId: account.account.id,
+            accountName: account.account.name,
+            firstSurname: account.account.firstSurname,
+            secondSurname: account.account.secondSurname,
+          })),
+        })),
+      }
     })
 
-    console.log(a)
-    // Mapear los resultados para ajustarlos a los tipos esperados
-    return UnAnsweredSurveys.map((result) => ({
-      id: result.id, // Asignar el ID del horario
-      code: result.code, // Asignar el código del horario
-      name: result.courseName, // Asignar el nombre del curso
-    }))
+    return UnAnsweredSurveys.filter((survey) => survey.schedules.length)
+  }
+
+  public async getAnsweredSurveys(AccountId: string) {
+    const answeredSurveys = await db
+      .select({
+        scheduleId: accountSurveys.scheduleId,
+        subjectAccountId: accountSurveys.subjectAccountId,
+        surveyId: accountSurveys.surveyId,
+      })
+      .from(accountSurveys)
+      .innerJoin(surveys, eq(surveys.id, accountSurveys.surveyId))
+      .where(
+        and(
+          eq(accountSurveys.evaluatorAccountId, AccountId),
+          eq(surveys.active, true),
+          gte(surveys.endDate, new Date()),
+          lte(surveys.creationDate, new Date())
+        )
+      )
+    return answeredSurveys
   }
 }
 export default SurveyService

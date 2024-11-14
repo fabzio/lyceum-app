@@ -21,7 +21,7 @@ export const SurveysModule: AppModule = {
     },
     {
       label: 'Responder encuestas',
-      path: '/encuestas/coordinador-seccion',
+      path: '/encuestas/listado',
       permissions: [SurveyPermissionsDict.ANSWER_SURVEY],
     },
   ],
