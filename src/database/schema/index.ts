@@ -67,3 +67,15 @@ export {
   surveyQuestions,
   surveyQuestionsRelations,
 } from '@/database/schema/surveyQuestions'
+export {
+  presentationLetters,
+  presentationLettersRelations,
+} from '@/database/schema/presentationLetters'
+export {
+  presentationLetterActions,
+  presentationLetterActionsRelations,
+} from '@/database/schema/presentationLetterActions'
+export {
+  presentationLetterAccounts,
+  presentationLetterAccountsRelations,
+} from '@/database/schema/presentationLetterAccounts'
