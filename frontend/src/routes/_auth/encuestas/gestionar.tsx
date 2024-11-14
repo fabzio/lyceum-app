@@ -1,6 +1,8 @@
+import { Filters } from '@frontend/interfaces/types'
 import ManageSurvey from '@frontend/modules/surveys/views/ManageSurvey'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/encuestas/gestionar')({
+  validateSearch: () => ({}) as Filters,
   component: () => <ManageSurvey />,
 })

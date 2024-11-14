@@ -43,12 +43,13 @@ class SurveyService {
     console.log(isSpeciality)
     if (!isSpeciality) throw new Error('Especialidad no encontrada')
 
-    return await db.query.surveys.findMany({
+    const surveysSpeciality = await db.query.surveys.findMany({
       columns: {
         unitId: false,
       },
       where: eq(surveys.unitId, unitId),
     })
+    return surveysSpeciality
   }
   public async createSurvey(surveyData: CreateSurveyDTO) {
     const exisitngUnit = await db.query.units.findFirst({

@@ -8,10 +8,10 @@ class SurveyController {
   private surveyService = new SurveyService()
   private router = new Hono()
   public getSpecialitySurveys = this.router.get(
-    '/speciality/:unitId',
-    zValidator('param', z.object({ unitId: z.coerce.number() })),
+    '/speciality',
+    zValidator('query', z.object({ unitId: z.coerce.number() })),
     async (c) => {
-      const unitId = c.req.valid('param').unitId
+      const unitId = c.req.valid('query').unitId
       try {
         const response = await this.surveyService.getSpecialitySurveys(unitId)
         return c.json({

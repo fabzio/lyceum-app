@@ -1,5 +1,6 @@
 import { Button } from '@frontend/components/ui/button'
 import { useNavigate } from '@tanstack/react-router'
+import SurveyTable from './components/SurveyTable'
 
 export default function ManageSurvey() {
   const navigate = useNavigate()
@@ -16,7 +17,7 @@ export default function ManageSurvey() {
         </div>
       </div>
       <div>
-        <p>Acá se listan las plantillas existentes</p>
+        <SurveyTable />
       </div>
     </div>
   )
