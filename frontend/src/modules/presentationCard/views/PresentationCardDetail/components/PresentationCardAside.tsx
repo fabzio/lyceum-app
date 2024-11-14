@@ -47,7 +47,7 @@ export default function ThesisThemeAside() {
   })
   const navigate = useNavigate()
   const { requestCode } = useParams({
-    from: '/_auth/tesis/tema-tesis/$requestCode',
+    from: '/_auth/carta-de-presentacion/carta/$requestCode',
   }) as { requestCode?: string }
   return (
     <ExpandibleAsidebar>
@@ -71,7 +71,7 @@ export default function ThesisThemeAside() {
             )}
             onClick={() =>
               navigate({
-                to: '/tesis/tema-tesis/$requestCode',
+                to: '/carta-de-presentacion/carta/$requestCode',
                 params: { requestCode: thesisThemeRequest.code },
                 search: {
                   historyId: thesisThemeRequest.lastAction.id,
