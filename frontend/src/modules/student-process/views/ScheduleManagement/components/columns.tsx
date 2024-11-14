@@ -5,7 +5,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@frontend/components/ui/dropdown-menu'
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import { toast } from '@frontend/hooks/use-toast'
 import { AccountRoles } from '@frontend/interfaces/models/AccountRoles'
+import ScheduleService from '@frontend/service/Schedules.service'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
 // TODO: Agregar funcionalidad para editar y deshabilitar estudiantes
@@ -13,6 +17,7 @@ import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
 // import { useState } from 'react'
 // import EditStudentDialog from './EditStudentDialog'
 // import StudentForm from './StudentForm'
+
 export const AccountTableColumns: ColumnDef<AccountRoles>[] = [
   {
     accessorKey: 'code',
@@ -108,10 +113,70 @@ export const AccountTableColumns: ColumnDef<AccountRoles>[] = [
     accessorKey: 'actions',
     header: 'Acciones',
     cell: ({ row }) => {
+      const queryClient = useQueryClient()
       const rol = row.getValue('role') as number | null // Obtener el rol
       const lead = row.original.lead as boolean // Obtener el valor de 'lead'
+      const id = row.original.id as string // Obtener el id del JP
 
-      if ((rol === 1 && !lead) || rol === null) {
+      const { mutate: deleteJP } = useMutation({
+        mutationFn: () => ScheduleService.deleteJP(id),
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: [QueryKeys.users.GENERIC] })
+          toast({
+            title: 'Éxito',
+            description: 'JP eliminado correctamente.',
+          })
+        },
+        onError: () => {
+          toast({
+            title: 'Error',
+            description: 'No se pudo eliminar el JP.',
+            variant: 'destructive',
+          })
+        },
+      })
+
+      const { mutate: toggleLead } = useMutation({
+        mutationFn: () => ScheduleService.toggleLead(id),
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: [QueryKeys.users.GENERIC] })
+          toast({
+            title: 'Éxito',
+            description: 'Estado de delegado actualizado correctamente.',
+          })
+        },
+        onError: () => {
+          toast({
+            title: 'Error',
+            description: 'No se pudo actualizar el estado de delegado.',
+            variant: 'destructive',
+          })
+        },
+      })
+
+      const handleEliminarJP = () => deleteJP()
+      const handleToggleLead = () => toggleLead()
+      /*
+      const handleEliminarJP = async () => {
+        try {
+          // Llamamos al servicio para eliminar el JP
+          await ScheduleService.deleteJP(id); // Aquí llamamos al servicio de eliminación
+          // Refrescar la lista o hacer alguna otra acción luego de eliminar
+        } catch (error) {
+          console.error('Error al eliminar JP', error);
+        }
+      };  
+      const handleToggleLead = async () => {
+        try {
+          // Llamamos al servicio para alternar el valor de 'lead'
+          await ScheduleService.toggleLead(id); // Aquí llamamos al servicio para alternar 'lead'
+          // Refrescar la lista o hacer alguna otra acción luego de alternar el 'lead'
+        } catch (error) {
+          console.error('Error al alternar el lead', error);
+        }
+      };
+      */
+      if (rol === 1 || rol === null) {
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -123,19 +188,20 @@ export const AccountTableColumns: ColumnDef<AccountRoles>[] = [
             <DropdownMenuContent>
               {rol === 1 && !lead && (
                 <DropdownMenuItem
-                  onClick={() => {
-                    /* Lógica para hacer delegado */
-                  }}
+                  onClick={handleToggleLead} // Hacer delegado
                 >
                   Hacer delegado
                 </DropdownMenuItem>
               )}
-              {rol === null && (
+              {rol === 1 && lead && (
                 <DropdownMenuItem
-                  onClick={() => {
-                    /* Lógica para eliminar JP */
-                  }}
+                  onClick={handleToggleLead} // Eliminar delegado
                 >
+                  Eliminar delegado
+                </DropdownMenuItem>
+              )}
+              {rol === null && (
+                <DropdownMenuItem onClick={handleEliminarJP}>
                   Eliminar JP
                 </DropdownMenuItem>
               )}

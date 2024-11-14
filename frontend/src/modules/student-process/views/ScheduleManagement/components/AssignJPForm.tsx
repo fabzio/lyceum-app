@@ -9,12 +9,12 @@ import {
   FormLabel,
   FormMessage,
 } from '@frontend/components/ui/form'
-//import { QueryKeys } from '@frontend/constants/queryKeys'
+import { QueryKeys } from '@frontend/constants/queryKeys'
 import { useToast } from '@frontend/hooks/use-toast'
 import AccountsService from '@frontend/service/Accounts.service'
 import ScheduleService from '@frontend/service/Schedules.service'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation /*, useQueryClient */ } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -31,16 +31,16 @@ const formSchema = z.object({
 })
 
 export default function AssignJPForm({ handleClose, scheduleId }: Props) {
-  //const queryClient = useQueryClient()
+  const queryClient = useQueryClient()
   const { toast } = useToast()
 
   const { mutate, isPending } = useMutation({
     mutationFn: (data: { userId: string }) =>
       ScheduleService.assignJP(scheduleId, data.userId),
     onSuccess: () => {
-      /*queryClient.invalidateQueries({
-        queryKey: [QueryKeys.]
-    })*/
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.users.GENERIC],
+      })
       handleClose()
     },
     onError: ({ message }) => {

@@ -52,5 +52,36 @@ class ScheduleGenericService implements ScheduleGenericDAO {
       lead: null,
     })
   }
+  public async deleteJP(id: string): Promise<void> {
+    try {
+      await db
+        .delete(scheduleAccounts) // Eliminar el JP de la tabla scheduleAccounts
+        .where(eq(scheduleAccounts.accountId, id)) // Condición para eliminar por el ID
+    } catch (error) {
+      throw new Error(`No se pudo eliminar el JP con ID: ${id}`)
+    }
+  }
+  public async toggleLead(id: string): Promise<void> {
+    try {
+      // Obtener el valor actual de 'lead' para el estudiante
+      const currentLead = await db
+        .select({ lead: scheduleAccounts.lead })
+        .from(scheduleAccounts)
+        .where(eq(scheduleAccounts.accountId, id))
+        .limit(1)
+        .then((res) => res[0]?.lead)
+
+      // Alternar el valor de 'lead'
+      const newLeadValue = currentLead === true ? false : true
+
+      // Actualizar el valor de 'lead' en scheduleAccounts
+      await db
+        .update(scheduleAccounts)
+        .set({ lead: newLeadValue })
+        .where(eq(scheduleAccounts.accountId, id))
+    } catch (error) {
+      throw new Error(`No se pudo alternar el valor de lead para el ID: ${id}`)
+    }
+  }
 }
 export default ScheduleGenericService

@@ -39,6 +39,32 @@ class ScheduleService {
       throw new Error('Failed to assign JP')
     }
   }
+  static async deleteJP(id: string): Promise<void> {
+    try {
+      const response = await http.delete('/schedule/deleteJP', {
+        params: { id },
+      })
+
+      if (!response.data.success) {
+        throw new Error('Error al eliminar el JP')
+      }
+    } catch (error) {
+      throw new Error('No se pudo eliminar el JP')
+    }
+  }
+  static async toggleLead(id: string): Promise<void> {
+    try {
+      const response = await http.put('/schedule/toggleLead', null, {
+        params: { id }, // Pasamos el ID del estudiante
+      })
+
+      if (!response.data.success) {
+        throw new Error('Error al actualizar el lead')
+      }
+    } catch (error) {
+      throw new Error('No se pudo alternar el lead')
+    }
+  }
 }
 
 export default ScheduleService

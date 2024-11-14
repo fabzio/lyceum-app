@@ -10,4 +10,8 @@ export interface ScheduleGenericDAO {
     }[]
   >
   assignJP: (scheduleId: number, accountId: string) => Promise<void>
+
+  deleteJP: (id: string) => Promise<void>
+
+  toggleLead: (id: string) => Promise<void>
 }
