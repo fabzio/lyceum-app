@@ -7,6 +7,7 @@ import { StudyPlanPermissions } from './StudyPlan'
 import { ThesisPermissionsDict } from './Thesis'
 import { UserPermissionsDict } from './Users'
 import { UnitPermissionsDict } from './Units'
+import { SurveyPermissionsDict } from './Survey'
 
 export type PermissionCode =
   | SecurityPermissionsDict
@@ -18,4 +19,5 @@ export type PermissionCode =
   | HiringPermissionsDict
   | FAQPermissionsDict
   | UnitPermissionsDict
+  | SurveyPermissionsDict
   | 'TODO_PERMISSION'

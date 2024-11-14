@@ -24,7 +24,6 @@ class ThesisThemeRequestService {
       throw error
     }
   }
-
   public static async createThesis(thesis: Omit<Thesis, 'id'>): Promise<{
     thesisCode: string
     historyId: number

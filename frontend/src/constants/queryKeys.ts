@@ -47,4 +47,11 @@ export const QueryKeys = {
     EXTERNS: 'externs',
     GENERIC: 'generic',
   },
+  hiring: {
+    HIRINGS: 'hirings',
+  },
+  survey: {
+    SURVEYS: 'surveys',
+    UNANWSERED_SURVEYS: 'unanswered_surveys',
+  },
 }

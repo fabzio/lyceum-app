@@ -1,5 +1,5 @@
 import { foreignKey, integer, serial } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { units } from './units'
 
 export const unitsSupports = schema.table(

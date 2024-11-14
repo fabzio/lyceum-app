@@ -1,5 +1,5 @@
 import { serial, unique, varchar } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 
 export const riskReasons = schema.table(
   'risk_reasons',

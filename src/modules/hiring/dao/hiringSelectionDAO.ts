@@ -1,8 +1,15 @@
 import { AccountsSchema } from '@/database/schema/accounts'
 import { JobRequestsSchema } from '@/database/schema/jobRequests'
 import { courseStep, jobRequestState } from '@/database/schema/enums'
+import {
+  CreateHiringSelectionPropDTO,
+  GetHiringsWithCoursesQueryDTO,
+  HiringsWithCoursesDTO,
+} from '../dtos/hiringSelectionDTO'
 
 export interface HiringSelectionDAO {
+  createHiringSelection(newHiring: CreateHiringSelectionPropDTO): Promise<void>
+
   updateHiringSelectionStatus(
     jobRequestId: number,
     accountId: string,
@@ -44,6 +51,11 @@ export interface HiringSelectionDAO {
       evaluatorLastname: string
     }[]
   }>
+
+  getHiringsWithCoursesByUnit(
+    unitId: number,
+    filters: GetHiringsWithCoursesQueryDTO
+  ): Promise<HiringsWithCoursesDTO[]>
 }
 
 export default HiringSelectionDAO

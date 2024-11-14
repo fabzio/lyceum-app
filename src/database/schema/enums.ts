@@ -1,4 +1,4 @@
-import { schema } from '..'
+import { schema } from '../pgSchema'
 
 export const unitType = schema.enum('unit_type', [
   'university',
@@ -87,3 +87,8 @@ export const surveyQuestionType = schema.enum('survey_question_type', [
 ])
 
 export const surveyType = schema.enum('survey_type', ['midterm', 'annual'])
+
+export const presentationLetterStatus = schema.enum(
+  'presentation_letter_status',
+  ['sent', 'accepted', 'rejected', 'succeeded']
+)

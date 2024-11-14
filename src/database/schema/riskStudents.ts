@@ -6,7 +6,7 @@ import {
   boolean,
   integer,
 } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { schedules } from './schedules'
 import { riskReasons } from './riskReasons'
 import { accounts } from './accounts'

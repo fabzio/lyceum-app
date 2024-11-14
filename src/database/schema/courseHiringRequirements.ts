@@ -1,5 +1,5 @@
 import { uuid, text } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { courseHirings } from './courseHirings'
 import { courseStep } from './enums'
 import { relations } from 'drizzle-orm'
@@ -10,8 +10,10 @@ export const courseHiringRequirements = schema.table(
   'course_hiring_requirements',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    courseHiringId: uuid('course_hiring_id').references(() => courseHirings.id),
-    detail: text('detail'),
+    courseHiringId: uuid('course_hiring_id')
+      .references(() => courseHirings.id)
+      .notNull(),
+    detail: text('detail').notNull(),
     step: courseStep('step'),
   }
 )

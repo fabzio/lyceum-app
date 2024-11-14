@@ -7,7 +7,7 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { riskStudents } from './riskStudents'
 import { relations } from 'drizzle-orm'
 

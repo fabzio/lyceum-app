@@ -5,22 +5,24 @@ import {
   varchar,
   integer,
   foreignKey,
+  serial,
 } from 'drizzle-orm/pg-core'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
-import { schema } from '..'
-import { accounts, units } from '@/database/schema'
+import { schema } from '../pgSchema'
+import { accounts, surveyQuestions, units } from '@/database/schema'
 import { surveyType } from './enums'
 import { relations } from 'drizzle-orm'
 
 export const surveys = schema.table(
   'surveys',
   {
-    id: uuid('id').defaultRandom().primaryKey().notNull(),
+    id: serial('id').primaryKey().notNull(),
     name: varchar('name').notNull(),
     creatorId: uuid('creator_id').notNull(),
     unitId: integer('unit_id').notNull(),
-    creationDate: date('creation_date').notNull(),
+    creationDate: date('creation_date', { mode: 'date' }).defaultNow(),
+    endDate: date('end_date', { mode: 'date' }).notNull(),
     surveyType: surveyType('survey_type').notNull(),
     active: boolean('active').default(true).notNull(),
   },
@@ -38,7 +40,7 @@ export const surveys = schema.table(
   })
 )
 
-export const surveyRelations = relations(surveys, ({ one }) => ({
+export const surveyRelations = relations(surveys, ({ one, many }) => ({
   creator: one(accounts, {
     fields: [surveys.creatorId],
     references: [accounts.id],
@@ -47,6 +49,7 @@ export const surveyRelations = relations(surveys, ({ one }) => ({
     fields: [surveys.unitId],
     references: [units.id],
   }),
+  questions: many(surveyQuestions),
 }))
 
 export const surveySchema = createInsertSchema(surveys)

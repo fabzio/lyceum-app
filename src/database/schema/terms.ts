@@ -2,8 +2,8 @@ import { boolean, char, serial } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
-import { schema } from '..'
-import { studyPlans } from '@/database/schema'
+import { schema } from '../pgSchema'
+import { schedules, studyPlans } from '@/database/schema'
 
 export const terms = schema.table('terms', {
   id: serial('id').primaryKey(),
@@ -18,6 +18,8 @@ export const termsRelations = relations(terms, ({ many }) => ({
   studyPlan_endTerm: many(studyPlans, {
     relationName: 'studyPlans_endTerm_terms_id',
   }),
+
+  schedules: many(schedules),
 }))
 
 export const termsSchema = createInsertSchema(terms)

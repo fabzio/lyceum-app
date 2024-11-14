@@ -8,11 +8,39 @@ import {
   getCandidateHiringListDTO,
 } from '../dtos'
 import { z, ZodObject } from 'zod'
+import {
+  createHiringSelectionDTO,
+  getHiringsWithCoursesQueryDTO,
+  hiringsWithCoursesDTO,
+  HiringsWithCoursesDTO,
+} from '../dtos/hiringSelectionDTO'
 class HiringSelectioncontroller {
   private router = new Hono()
 
   private hiringSelectionService: HiringSelectionDAO =
     new HiringSelectionService()
+  public createHiringSelection = this.router.post(
+    '/',
+    zValidator('json', createHiringSelectionDTO),
+    async (c) => {
+      const newHiring = c.req.valid('json')
+      try {
+        const response: ResponseAPI = {
+          data: await this.hiringSelectionService.createHiringSelection(
+            newHiring
+          ),
+          message: 'Hiring Selection correctly created',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
 
   public updateJobRequestStatus = this.router.put(
     '/:jobRequestId/status',
@@ -105,6 +133,31 @@ class HiringSelectioncontroller {
           message: 'Job request detail retrieved successfully',
           success: true,
         }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public getHiringsWithCourses = this.router.get(
+    '/',
+    zValidator('query', getHiringsWithCoursesQueryDTO),
+    async (c) => {
+      try {
+        const filters = c.req.valid('query')
+        const response = {
+          data: await this.hiringSelectionService.getHiringsWithCoursesByUnit(
+            filters.unitId,
+            filters
+          ),
+          success: true,
+          message: 'Hirings with courses retrieved successfully',
+        }
+
         return c.json(response)
       } catch (error) {
         if (error instanceof LyceumError) {

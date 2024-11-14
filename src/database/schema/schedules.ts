@@ -6,13 +6,15 @@ import {
   smallint,
   varchar,
 } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { courses } from './courses'
 import { terms } from './terms'
 import { relations } from 'drizzle-orm'
 import { scheduleStatus } from './enums'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
+import { accounts } from './accounts'
+import { scheduleAccounts } from './scheduleAccounts'
 
 export const schedules = schema.table(
   'schedules',
@@ -40,7 +42,7 @@ export const schedules = schema.table(
   })
 )
 
-export const scheduleRelations = relations(schedules, ({ one }) => ({
+export const scheduleRelations = relations(schedules, ({ one, many }) => ({
   course: one(courses, {
     fields: [schedules.courseId],
     references: [courses.id],
@@ -49,6 +51,7 @@ export const scheduleRelations = relations(schedules, ({ one }) => ({
     fields: [schedules.termId],
     references: [terms.id],
   }),
+  accounts: many(scheduleAccounts),
 }))
 
 export const scheuleSchema = createInsertSchema(schedules)

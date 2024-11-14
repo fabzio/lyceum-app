@@ -10,14 +10,13 @@ import {
 } from 'drizzle-orm/pg-core'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { accountStatus } from './enums'
 import { relations } from 'drizzle-orm'
 import { scheduleAccounts } from './scheduleAccounts'
 import { riskStudents } from './riskStudents'
 import { contactsInfo } from './contactsInfo'
 import { units } from '.'
-import { password } from 'bun'
 
 export const accounts = schema.table(
   'accounts',

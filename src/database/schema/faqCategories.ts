@@ -1,5 +1,5 @@
 import { serial, unique, varchar } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { relations } from 'drizzle-orm'
 import { faqs } from './faqs'
 import { createInsertSchema } from 'drizzle-zod'

@@ -8,7 +8,7 @@ import {
 import { relations } from 'drizzle-orm'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { courses, studyPlans } from '@/database/schema'
 
 export const studyPlanCourses = schema.table(

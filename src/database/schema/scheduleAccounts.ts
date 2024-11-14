@@ -6,7 +6,7 @@ import {
   serial,
   uuid,
 } from 'drizzle-orm/pg-core'
-import { schema } from '..'
+import { schema } from '../pgSchema'
 import { schedules } from './schedules'
 import { accounts } from './accounts'
 import { roles } from './roles'
@@ -17,7 +17,7 @@ export const scheduleAccounts = schema.table(
   {
     scheduleId: serial('schedule_id').notNull(),
     accountId: uuid('account_id').notNull(),
-    roleId: integer('role_id').notNull(),
+    roleId: integer('role_id'),
     lead: boolean('lead').default(false),
   },
   (table) => ({
