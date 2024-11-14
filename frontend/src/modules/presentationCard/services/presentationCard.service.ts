@@ -93,7 +93,7 @@ class PresentationCardService {
             presentationCard: {
               id: '12345',
               entityName: 'OpenAI Project',
-              scheduleId: 789,
+              scheduleId: '789',
               accountIds: ['AC001', 'AC002', 'AC003'],
               description: 'Project proposal for OpenAI collaboration',
               createdAt: '2024-11-12T10:30:00Z',
