@@ -335,7 +335,7 @@ class GenericService {
       password: null,
       allowedModules,
       roles: rolesWithPermissions,
-      term: currentTerm,
+      term: currentTerm[0],
     }
   }
 }

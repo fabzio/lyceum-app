@@ -27,12 +27,13 @@ export const oauthRoute = new Hono()
         email: profile.email!,
         googleId: profile.id!,
       })
+      const { allowedModules, roles, ...cookieContent } = payload
       setCookie(
         c,
         'lyceum-tkn',
         await sign(
           {
-            ...payload,
+            ...cookieContent,
             exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
             iat: Math.floor(Date.now() / 1000),
           },
@@ -70,12 +71,13 @@ export const authRoute = new Hono()
           email: data.code,
           password: data.password,
         })
+        const { allowedModules, roles, ...cookieContent } = response
         setCookie(
           c,
           'lyceum-tkn',
           await sign(
             {
-              ...response,
+              ...cookieContent,
               exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
               iat: Math.floor(Date.now() / 1000),
             },
@@ -115,12 +117,13 @@ export const authRoute = new Hono()
       email: token.email,
       googleId: token.googleId ?? '',
     })
+    const { allowedModules, roles, ...cookieContent } = updatedData
     setCookie(
       c,
       'lyceum-tkn',
       await sign(
         {
-          ...updatedData,
+          ...cookieContent,
           exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
           iat: Math.floor(Date.now() / 1000),
         },
