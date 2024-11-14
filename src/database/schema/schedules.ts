@@ -15,6 +15,7 @@ import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
 import { accounts } from './accounts'
 import { scheduleAccounts } from './scheduleAccounts'
+import { surveyAnswers } from './surveyAnswers'
 
 export const schedules = schema.table(
   'schedules',
@@ -52,6 +53,7 @@ export const scheduleRelations = relations(schedules, ({ one, many }) => ({
     references: [terms.id],
   }),
   accounts: many(scheduleAccounts),
+  surveyAnswers: many(surveyAnswers),
 }))
 
 export const scheuleSchema = createInsertSchema(schedules)

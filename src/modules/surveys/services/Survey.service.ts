@@ -244,9 +244,51 @@ class SurveyService {
           subjectAccountId: params.subjectAccountId,
           questionId: question.id,
           answerRawText: question.answer,
+          scheduleId: params.scheduleId,
         }))
       )
     })
+  }
+
+  public async getSurveyResults(surveyId: NonNullable<SurveySchema['id']>) {
+    const survey = await db.query.surveys.findFirst({
+      columns: {
+        id: true,
+        name: true,
+      },
+      with: {
+        questions: {
+          with: {
+            answers: {
+              with: {
+                account: {
+                  columns: {
+                    name: true,
+                    firstSurname: true,
+                    secondSurname: true,
+                  },
+                },
+                schedule: {
+                  columns: {
+                    code: true,
+                  },
+                  with: {
+                    course: {
+                      columns: {
+                        name: true,
+                        code: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      where: eq(surveys.id, surveyId),
+    })
+    return survey
   }
 }
 export default SurveyService

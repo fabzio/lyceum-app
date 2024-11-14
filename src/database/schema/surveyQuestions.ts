@@ -5,6 +5,7 @@ import { surveys } from './surveys'
 import { relations } from 'drizzle-orm'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
+import { surveyAnswers } from './surveyAnswers'
 
 export const surveyQuestions = schema.table(
   'survey_questions',
@@ -25,11 +26,12 @@ export const surveyQuestions = schema.table(
 
 export const surveyQuestionsRelations = relations(
   surveyQuestions,
-  ({ one }) => ({
+  ({ one, many }) => ({
     survey: one(surveys, {
       fields: [surveyQuestions.surveyId],
       references: [surveys.id],
     }),
+    answers: many(surveyAnswers),
   })
 )
 

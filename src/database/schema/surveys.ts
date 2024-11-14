@@ -10,7 +10,12 @@ import {
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
 import { schema } from '../pgSchema'
-import { accounts, surveyQuestions, units } from '@/database/schema'
+import {
+  accounts,
+  surveyAnswers,
+  surveyQuestions,
+  units,
+} from '@/database/schema'
 import { surveyType } from './enums'
 import { relations } from 'drizzle-orm'
 

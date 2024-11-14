@@ -3,7 +3,7 @@ import http from '@frontend/lib/http'
 import axios from 'axios'
 import { SurveyStudent } from '../interfaces/SurveyStudent'
 import { SurveyQuestions } from '../interfaces/SuerveyQuestions'
-import { SurveyFormValues } from '../views/AnwserSurvey/AnwserSurveyDetail/components/SurveyForm'
+import { SurveyFormValues } from '../views/AnswerSurvey/AnwserSurveyDetail/components/SurveyForm'
 
 class AnwserSurveyService {
   public static async getUnawseredSurveys(params: {

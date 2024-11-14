@@ -7,7 +7,7 @@ export const createSurveyDTO = z.object({
   name: surveySchema.shape.name,
   creatorId: surveySchema.shape.creatorId,
   unitId: surveySchema.shape.unitId,
-  endDate: surveySchema.shape.endDate,
+  endDate: z.coerce.date(),
   surveyType: surveySchema.shape.surveyType,
   questions: z
     .array(

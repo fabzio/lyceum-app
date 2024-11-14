@@ -110,5 +110,24 @@ class SurveyController {
       }
     }
   )
+
+  public getSurveyResults = this.router.get(
+    '/:surveyId/results',
+    zValidator('param', z.object({ surveyId: z.coerce.number() })),
+    async (c) => {
+      const surveyId = c.req.valid('param').surveyId
+      try {
+        const response = await this.surveyService.getSurveyResults(surveyId)
+        return c.json({
+          data: response,
+          message: 'Survey results',
+          success: true,
+        })
+      } catch (error) {
+        if (error instanceof LyceumError) c.status(error.code)
+        throw error
+      }
+    }
+  )
 }
 export default SurveyController

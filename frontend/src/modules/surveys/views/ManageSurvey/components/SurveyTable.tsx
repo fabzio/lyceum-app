@@ -8,12 +8,14 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { surveyTableColums } from './columns'
 import { sortByToState, stateToSortBy } from '@frontend/lib/table'
+import { useNavigate } from '@tanstack/react-router'
 
 const DEFAULT_PAGE_INDEX = 0
 const DEFAULT_PAGE_SIZE = 10
 
 export default function SurveyTable() {
-  const { getRoleWithPermission } = useSessionStore()
+  const navigate = useNavigate()
+  const { getRoleWithPermission, havePermission } = useSessionStore()
   const { filters, setFilters } = useFilters('/_auth/encuestas/gestionar')
   const { data: surveyList } = useQuery({
     queryKey: [QueryKeys.survey.SURVEYS],
@@ -30,6 +32,12 @@ export default function SurveyTable() {
     pageSize: filters.pageSize || DEFAULT_PAGE_SIZE,
   }
   const sortingState = sortByToState(filters.sortBy)
+  const handleRowClick = (surveyId: string) => {
+    navigate({
+      to: `/encuestas/gestionar/$surveyId`,
+      params: { surveyId },
+    })
+  }
   return (
     <DataTable
       data={surveyList || []}
@@ -54,6 +62,11 @@ export default function SurveyTable() {
         rowCount: surveyList?.length || 0,
         pageCount: 1,
       }}
+      onRowClick={
+        havePermission(SurveyPermissionsDict.READ_SURVEY_RESULTS)
+          ? (item) => handleRowClick(item.id.toString())
+          : () => {}
+      }
     />
   )
 }

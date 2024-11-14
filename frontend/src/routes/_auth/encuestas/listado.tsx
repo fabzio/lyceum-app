@@ -2,7 +2,7 @@ import { toastNotAutorized } from '@frontend/constants/errorMessages'
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import { SurveyPermissionsDict } from '@frontend/interfaces/enums/permissions/Survey'
 import AnwserSurveyService from '@frontend/modules/surveys/services/AnswerSurvey.service'
-import AnwserSurvey from '@frontend/modules/surveys/views/AnwserSurvey'
+import AnwserSurvey from '@frontend/modules/surveys/views/AnswerSurvey'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/encuestas/listado')({

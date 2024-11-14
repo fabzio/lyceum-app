@@ -15,11 +15,15 @@ export {
   courseStep,
   surveyQuestionType,
   surveyType,
+  presentationLetterStatus,
 } from '@/database/schema/enums'
 export { accountRoles } from '@/database/schema/accountRoles'
 export { accounts } from '@/database/schema/accounts'
 export { accountsPerHiring } from '@/database/schema/accountsPerHiring'
-export { surveyAnswers } from '@/database/schema/surveyAnswers'
+export {
+  surveyAnswers,
+  surveyAnswersRelations,
+} from '@/database/schema/surveyAnswers'
 export { audits } from '@/database/schema/audtis'
 export { contactsInfo } from '@/database/schema/contactsInfo'
 export {
