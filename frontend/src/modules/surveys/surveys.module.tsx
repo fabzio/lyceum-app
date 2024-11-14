@@ -11,7 +11,7 @@ export const SurveysModule: AppModule = {
   description: 'Administración de encuestas y sus resultados',
   submodules: [
     {
-      label: 'Gestión de encuestas',
+      label: 'Encuestas',
       path: '/encuestas/gestionar',
       permissions: [
         SurveyPermissionsDict.CREATE_SURVEY,

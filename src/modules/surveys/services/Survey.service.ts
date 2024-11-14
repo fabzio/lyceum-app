@@ -102,7 +102,9 @@ class SurveyService {
       .select({
         id: surveys.id,
         name: surveys.name,
+        creationDate: surveys.creationDate,
         endDate: surveys.endDate,
+        type: surveys.surveyType,
       })
       .from(surveys)
       .where(
@@ -170,14 +172,15 @@ class SurveyService {
         schedules: Object.entries(
           groupBy(accountsToEvaluateSurvey, (account) => account.schedule.id)
         ).map(([scheduleId, accounts]) => ({
-          scheduleId,
+          scheduleId: +scheduleId,
           scheduleCode: accounts[0].schedule.code,
           courseName: accounts[0].course.name,
           accounts: accounts.map((account) => ({
-            accountId: account.account.id,
-            accountName: account.account.name,
+            id: account.account.id,
+            name: account.account.name,
             firstSurname: account.account.firstSurname,
             secondSurname: account.account.secondSurname,
+            roleId: account.account.role,
           })),
         })),
       }
@@ -204,6 +207,20 @@ class SurveyService {
         )
       )
     return answeredSurveys
+  }
+
+  public async getSurveyQuestions(surveyId: NonNullable<SurveySchema['id']>) {
+    const questions = await db.query.surveys.findFirst({
+      columns: {
+        id: true,
+        name: true,
+      },
+      with: {
+        questions: true,
+      },
+      where: eq(surveys.id, surveyId),
+    })
+    return questions
   }
 }
 export default SurveyService

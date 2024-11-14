@@ -61,6 +61,9 @@ export { unitsSupports } from '@/database/schema/unitsSupports'
 export { evaluations } from '@/database/schema/evaluations'
 export { hirings, hiringsRelations } from '@/database/schema/hirings'
 export { jobRequests } from '@/database/schema/jobRequests'
-export { surveys } from '@/database/schema/surveys'
+export { surveys, surveyRelations } from '@/database/schema/surveys'
 export { accountSurveys } from '@/database/schema/accountSurveys'
-export { surveyQuestions } from '@/database/schema/surveyQuestions'
+export {
+  surveyQuestions,
+  surveyQuestionsRelations,
+} from '@/database/schema/surveyQuestions'

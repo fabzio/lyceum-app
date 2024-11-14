@@ -49,7 +49,7 @@ export const surveyRelations = relations(surveys, ({ one, many }) => ({
     fields: [surveys.unitId],
     references: [units.id],
   }),
-  quuestions: many(surveyQuestions),
+  questions: many(surveyQuestions),
 }))
 
 export const surveySchema = createInsertSchema(surveys)
