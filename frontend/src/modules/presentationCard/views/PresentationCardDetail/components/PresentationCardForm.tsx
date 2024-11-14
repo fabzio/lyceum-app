@@ -44,7 +44,7 @@ export default function NewPresentationCardForm() {
     append: appendAccount,
     remove: removeAccount,
     fields: accountIds,
-  } = useFieldArray<z.infer<typeof formSchema>>({
+  } = useFieldArray({
     name: 'accountIds',
     control: form.control,
   })
@@ -158,7 +158,9 @@ export default function NewPresentationCardForm() {
                               userType: BaseRoles.STUDENT,
                             })
                           }
-                          handleSelect={(item) => field.onChange(item?.code)}
+                          handleSelect={(item) =>
+                            field.onChange({ id: item?.code })
+                          } // Updated to pass an object
                           renderOption={(item) => (
                             <div className="hover:bg-muted px-1 text-sm flex justify-between">
                               <span>{`${item.name} ${item.firstSurname} ${item.secondSurname} `}</span>
@@ -232,7 +234,7 @@ const formSchema = z.object({
   description: z
     .string()
     .min(1, 'Debes llenar el propósito de la carta de presentación'),
-  file: z.instanceof(File, { message: 'Debe seleccionar un archivo' }),
+  //file: z.instanceof(File, { message: 'Debe seleccionar un archivo' }),
 })
 
 // Service and Dialog placeholders
