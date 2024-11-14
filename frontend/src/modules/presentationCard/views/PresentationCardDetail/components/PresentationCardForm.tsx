@@ -44,9 +44,9 @@ export default function NewPresentationCardForm() {
     append: appendAccount,
     remove: removeAccount,
     fields: accountIds,
-  } = useFieldArray({
-    control: form.control,
+  } = useFieldArray<z.infer<typeof formSchema>>({
     name: 'accountIds',
+    control: form.control,
   })
 
   const { mutate, isPending } = useMutation({
@@ -75,9 +75,9 @@ export default function NewPresentationCardForm() {
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     mutate({
       ...data,
+      accountIds: data.accountIds.map((account) => account.id),
     })
   }
-
   return (
     <Form {...form}>
       <form
@@ -113,7 +113,7 @@ export default function NewPresentationCardForm() {
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Seleccione el ID del horario" />
+                    <SelectValue placeholder="Seleccionar curso" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -134,7 +134,7 @@ export default function NewPresentationCardForm() {
               type="button"
               size="icon"
               variant="ghost"
-              onClick={() => appendAccount('')}
+              onClick={() => appendAccount({ id: '' })}
             >
               <Plus />
             </Button>
@@ -223,11 +223,16 @@ export default function NewPresentationCardForm() {
 
 const formSchema = z.object({
   entityName: z.string().min(1, 'El nombre de la entidad es requerido'),
-  scheduleId: z.number().min(1, 'Debes seleccionar un curso y su horario'),
-  accountIds: z.array(z.string().min(1, 'Se necesita al menos un estudiante')),
+  scheduleId: z.string().min(1, 'Debes seleccionar un curso y su horario'),
+  accountIds: z.array(
+    z.object({
+      id: z.string().min(1, 'Se necesita al menos un estudiante'),
+    })
+  ),
   description: z
     .string()
     .min(1, 'Debes llenar el propósito de la carta de presentación'),
+  file: z.instanceof(File, { message: 'Debe seleccionar un archivo' }),
 })
 
 // Service and Dialog placeholders
