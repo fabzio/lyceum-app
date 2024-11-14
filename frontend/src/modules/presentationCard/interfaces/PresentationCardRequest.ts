@@ -5,6 +5,7 @@ export interface PresentationCardRequest {
   status: 'pending' | 'approved' | 'rejected'
   step: 1 | 2 | 3 | 4
   lastAction: {
+    date: Date
     id: number
     account: string
     action: 'denied' | 'approved' | 'sended'
