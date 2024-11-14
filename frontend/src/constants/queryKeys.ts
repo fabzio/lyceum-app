@@ -47,4 +47,7 @@ export const QueryKeys = {
     EXTERNS: 'externs',
     GENERIC: 'generic',
   },
+  presentationCards: {
+    PRESENTATION_LETTERS_REQUESTS: 'presentation_cards_requests',
+  },
 }
