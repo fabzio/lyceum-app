@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Account } from '@frontend/interfaces/models/Account'
 import { PresentationCardRequest } from '../interfaces/PresentationCardRequest'
-import http from '@frontend/lib/http'
+//import http from '@frontend/lib/http'
 import { PresentationCard } from '../interfaces/PresentationCard'
 
 class PresentationCardService {
