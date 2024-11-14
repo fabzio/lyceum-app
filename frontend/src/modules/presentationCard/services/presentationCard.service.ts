@@ -19,28 +19,30 @@ class PresentationCardService {
             {
               presentationCard: {
                 id: '12345',
-                entityName: 'Entity Name',
-                scheduleId: '67891',
-                description: 'Description of the presentation card',
+                entityName: 'CLARO PERU',
+                scheduleId: 67891,
+                description:
+                  'CLARO es una empresa de telecomunicaciones en Perú',
                 createdAt: '2023-10-01T00:00:00Z',
                 accountIds: [accountCode, 'ACC456'],
                 file: new File([''], 'filename.txt'),
               },
-              status: 'pending',
+              status: 'send',
               step: 1,
               lastAction: {
                 id: 6,
                 account: 'la tuya',
-                action: 'enviado',
+                action: 'sended',
                 role: 'Estudiante',
               },
             },
             {
               presentationCard: {
                 id: '123456',
-                entityName: 'Entity Name2',
+                entityName: 'INTERBANK PERU',
                 scheduleId: 67891,
-                description: 'Description of the presentation card2',
+                description:
+                  'INTERBANK es una empresa de servicios financieros en Perú',
                 createdAt: '2023-10-01T00:00:00Z',
                 accountIds: [accountCode, 'ACC4562'],
                 file: new File([''], 'filename2.txt'),
@@ -50,8 +52,8 @@ class PresentationCardService {
               lastAction: {
                 id: 66,
                 account: 'la mia',
-                action: 'aprobado',
-                role: 'Director',
+                action: 'approved',
+                role: 'Director de carrera',
               },
             },
           ],
