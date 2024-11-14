@@ -20,7 +20,7 @@ class PresentationCardService {
               presentationCard: {
                 id: '12345',
                 entityName: 'Entity Name',
-                scheduleId: 67891,
+                scheduleId: '67891',
                 description: 'Description of the presentation card',
                 createdAt: '2023-10-01T00:00:00Z',
                 accountIds: [accountCode, 'ACC456'],
@@ -84,7 +84,7 @@ class PresentationCardService {
       formData.append('scheduleId', presentationCard.scheduleId.toString())
       formData.append('accountIds', JSON.stringify(presentationCard.accountIds))
       formData.append('description', presentationCard.description)
-
+      console.log('Se recibio el scheduleid: ' + presentationCard.scheduleId)
       // const res = await http.post(`/thesis/theme`, formData)
       // LETTER: Cambiar mock data por lo que devuelva el endpoint
       const res = {
