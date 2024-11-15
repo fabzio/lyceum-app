@@ -6,7 +6,7 @@ import {
 import CoverLetterDetailMain from './components/PresentationCardMain'
 import CoverLetterHistory from './components/PresentationCardHistory'
 
-export default function CoverLetterDetailDetailSection() {
+export default function CoverLetterDetailSection() {
   return (
     <ResizablePanelGroup
       direction="horizontal"

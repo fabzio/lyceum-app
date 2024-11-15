@@ -3,7 +3,7 @@ import { Account } from '@frontend/interfaces/models/Account'
 export interface PresentationCard {
   id: string
   entityName: string
-  scheduleId: number
+  scheduleId: string
   accountIds: Account['code'][]
   description: string
   createdAt: string

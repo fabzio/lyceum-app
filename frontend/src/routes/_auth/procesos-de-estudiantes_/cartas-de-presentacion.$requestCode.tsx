@@ -1,5 +1,5 @@
 import TransitionPage from '@frontend/components/anim/TransitionPage'
-import CoverLetterDetail from '@frontend/modules/student-process/views/CoverLetter/PresentationCardDetail'
+import CoverLetterDetailSection from '@frontend/modules/student-process/views/CoverLetter/PresentationCardDetail/PresentationCardDetailSection'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
@@ -11,7 +11,7 @@ export const Route = createFileRoute(
 function CoverLetterDetailPage() {
   return (
     <TransitionPage>
-      <CoverLetterDetail />
+      <CoverLetterDetailSection />
     </TransitionPage>
   )
 }

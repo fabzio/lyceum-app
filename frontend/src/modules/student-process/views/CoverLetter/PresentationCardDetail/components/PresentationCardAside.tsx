@@ -1,80 +1,48 @@
 import ExpandibleAsidebar from '@frontend/components/ExpandibleAsidebar'
 import { Badge } from '@frontend/components/ui/badge'
 import { Button } from '@frontend/components/ui/button'
-import { Input } from '@frontend/components/ui/input'
 import { QueryKeys } from '@frontend/constants/queryKeys'
-import { ThesisPermissionsDict } from '@frontend/interfaces/enums/permissions/Thesis'
-import { cn } from '@frontend/lib/utils'
-import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisThemeRequest.service'
-import { mapStatus } from '@frontend/modules/thesis/utils'
+import PresentationCardService from '@frontend/modules/student-process/services/presentationCard.service'
 import { useSessionStore } from '@frontend/store'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { ListFilter } from 'lucide-react'
 
 export default function CoverLetterAside() {
-  const { session, getRoleWithPermission, havePermission } = useSessionStore()
-
-  const specialtiyId = getRoleWithPermission(
-    ThesisPermissionsDict.APROVE_THESIS_PHASE_3
-  )?.unitId
-  const areaId = getRoleWithPermission(
-    ThesisPermissionsDict.APROVE_THESIS_PHASE_2
-  )?.unitId
-
+  const { session } = useSessionStore()
   const accountCode = session!.code
-  const { data: thesisThemeRequests } = useQuery({
-    queryKey: [QueryKeys.thesis.THESIS_REQUESTS],
-    queryFn: specialtiyId
-      ? () =>
-          ThesisThemeRequestService.getSpecialtyThesisThemeRequest({
-            specialtiyId,
-          })
-      : areaId
-        ? () =>
-            ThesisThemeRequestService.getAreaThesisThemeRequest({
-              areaId: areaId,
-            })
-        : havePermission(ThesisPermissionsDict.APROVE_THESIS_PHASE_1)
-          ? () =>
-              ThesisThemeRequestService.getAdvisorThesisThemeRequest({
-                advisorCode: accountCode,
-              })
-          : () =>
-              ThesisThemeRequestService.getStudentThesisThemeRequest({
-                studentCode: accountCode,
-              }),
+  const { data: presentationCardRequest } = useQuery({
+    queryKey: [QueryKeys.presentationCards.PRESENTATION_LETTERS_REQUESTS],
+    queryFn: () =>
+      PresentationCardService.getPresentationCardRequests({ accountCode }),
   })
   const navigate = useNavigate()
   const { requestCode } = useParams({
-    from: '/_auth/tesis/tema-tesis/$requestCode',
+    from: '/_auth/procesos-de-estudiantes/cartas-de-presentacion/$requestCode',
   }) as { requestCode?: string }
   return (
     <ExpandibleAsidebar>
       <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="relative flex flex-row space-x-2">
-          <div className="flex-grow">
-            <Input placeholder="🔎 Buscar" />
-          </div>
           <Button variant="ghost">
             <ListFilter className="h-4 w-4" />
           </Button>
         </div>
       </div>
       <ul className="space-y-2">
-        {thesisThemeRequests?.map((thesisThemeRequest) => (
+        {presentationCardRequest?.map((presentationCardRequest) => (
           <li
-            key={thesisThemeRequest.code}
+            key={presentationCardRequest.}
             className={cn(
               'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
-              requestCode === thesisThemeRequest.code && 'bg-muted'
+              requestCode === presentationCardRequest.code && 'bg-muted'
             )}
             onClick={() =>
               navigate({
-                to: '/tesis/tema-tesis/$requestCode',
-                params: { requestCode: thesisThemeRequest.code },
+                to: '/procesos-de-estudiantes/cartas-de-presentacion/$requestCode',
+                params: { requestCode: presentationCardRequest.code },
                 search: {
-                  historyId: thesisThemeRequest.lastAction.id,
+                  historyId: presentationCardRequest.lastAction.id,
                 },
               })
             }
@@ -83,24 +51,26 @@ export default function CoverLetterAside() {
               <div className="flex items-center">
                 <div className="flex items-center gap-2">
                   <div className="font-semibold">
-                    {thesisThemeRequest.title}
+                    {presentationCardRequest.title}
                   </div>
                 </div>
                 <div
                   className={cn(
                     'ml-auto text-xs',
-                    requestCode === thesisThemeRequest.code
+                    requestCode === presentationCardRequest.code
                       ? 'text-foreground'
                       : 'text-muted-foreground'
                   )}
                 ></div>
               </div>
-              <div className="text-sm">{thesisThemeRequest.applicant.name}</div>
+              <div className="text-sm">
+                {/* {presentationCardRequest.applicant.name} */}
+              </div>
             </div>
             <Badge>
-              {mapStatus[thesisThemeRequest.lastAction?.action] +
+              {/* {mapStatus[presentationCardRequest.lastAction?.action] +
                 ' ' +
-                thesisThemeRequest.lastAction?.role.toLocaleLowerCase()}
+                presentationCardRequest.lastAction?.role.toLocaleLowerCase()} */}
             </Badge>
           </li>
         ))}
