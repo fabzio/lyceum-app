@@ -36,7 +36,7 @@ export default function CoverLetterDetailMain() {
       }),
   })
 
-  const presentationCard = presentationCardRequestDetail[1]?.presentationCard
+  const presentationCard = presentationCardRequestDetail[1]
 
   return (
     <div className="flex h-full flex-col overflow-y-hidden">
@@ -66,7 +66,7 @@ export default function CoverLetterDetailMain() {
             <CardContent className="space-y-6">
               <div>
                 <h3 className="font-bold mb-2">Nombre de la Empresa</h3>
-                <p>{presentationCard.entityName}</p>
+                <p>{presentationCard.companyName}</p>
               </div>
               <div>
                 <h3 className="font-bold mb-2">Descripcion</h3>

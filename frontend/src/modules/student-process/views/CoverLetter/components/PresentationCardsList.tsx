@@ -5,14 +5,13 @@ import {
   CardContent,
   CardDescription,
 } from '@frontend/components/ui/card'
-import { mapStatus } from '@frontend/modules/thesis/utils'
 import { useNavigate } from '@tanstack/react-router'
 import { Badge } from '@frontend/components/ui/badge'
 import moment from 'moment'
-import { PresentationCardRequest } from '@frontend/modules/student-process/interfaces/PresentationCardRequest'
+import { PresentationCard } from '@frontend/modules/student-process/interfaces/PresentationCard'
 
 interface ListProps {
-  presentationCardRequests?: PresentationCardRequest[]
+  presentationCardRequests?: PresentationCard[]
 }
 export default function PresentationCardsList({
   presentationCardRequests = [],
@@ -28,7 +27,7 @@ export default function PresentationCardsList({
     <div>
       {presentationCardRequests?.map((presentationCardRequest) => (
         <PresentationCardElement
-          key={presentationCardRequest.presentationCard.id}
+          key={presentationCardRequest.id}
           {...presentationCardRequest}
         />
       ))}
@@ -36,11 +35,14 @@ export default function PresentationCardsList({
   )
 }
 
-type ElementProps = PresentationCardRequest
+type ElementProps = PresentationCard
 
 function PresentationCardElement({
-  presentationCard: { id: code, entityName, createdAt: date, accountIds },
-  lastAction,
+  id: code,
+  companyName,
+  createdAt: date,
+  accountIds,
+  status,
 }: ElementProps) {
   const navigate = useNavigate({
     from: '/procesos-de-estudiantes/cartas-de-presentacion',
@@ -57,21 +59,23 @@ function PresentationCardElement({
         <CardTitle className="text-sm font-medium text-muted-foreground">
           N°{code}
         </CardTitle>
-        <Badge variant="secondary">
-          {mapStatus[lastAction.action] +
-            ' ' +
-            lastAction.role.toLocaleLowerCase()}
-        </Badge>
+        <Badge variant="secondary">{mapCoverLetterStatus[status]}</Badge>
       </CardHeader>
       <CardContent>
         <CardTitle className="text-lg font-semibold leading-none tracking-tight">
-          {entityName}
+          {companyName}
         </CardTitle>
         <CardDescription className="mt-2 flex justify-between text-sm text-muted-foreground">
-          <span>{accountIds[0]}</span>
+          <span>{accountIds}</span>
           <span>{moment(date).format('DD/MM/YYYY')}</span>
         </CardDescription>
       </CardContent>
     </Card>
   )
+}
+
+export const mapCoverLetterStatus = {
+  pending: 'Pendiente',
+  approved: 'Aprobado',
+  rejected: 'Rechazado',
 }

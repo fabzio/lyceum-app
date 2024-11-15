@@ -33,20 +33,16 @@ export default function CoverLetterAside() {
       <ul className="space-y-2">
         {presentationCardRequest?.map((presentationCardRequest) => (
           <li
-            key={presentationCardRequest.presentationCard.id}
+            key={presentationCardRequest.id}
             className={cn(
               'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
-              requestCode === presentationCardRequest.presentationCard.id &&
-                'bg-muted'
+              requestCode === presentationCardRequest.id && 'bg-muted'
             )}
             onClick={() =>
               navigate({
                 to: '/procesos-de-estudiantes/cartas-de-presentacion/$requestCode',
                 params: {
-                  requestCode: presentationCardRequest.presentationCard.id,
-                },
-                search: {
-                  historyId: presentationCardRequest.lastAction.id,
+                  requestCode: presentationCardRequest.id,
                 },
               })
             }
@@ -55,18 +51,9 @@ export default function CoverLetterAside() {
               <div className="flex items-center">
                 <div className="flex items-center gap-2">
                   <div className="font-semibold">
-                    {presentationCardRequest.presentationCard.entityName}
+                    {presentationCardRequest.companyName}
                   </div>
                 </div>
-                <div
-                  className={cn(
-                    'ml-auto text-xs',
-                    requestCode ===
-                      presentationCardRequest.lastAction.id.toString()
-                      ? 'text-foreground'
-                      : 'text-muted-foreground'
-                  )}
-                ></div>
               </div>
               <div className="text-sm">
                 {/* {presentationCardRequest.applicant.name} */}

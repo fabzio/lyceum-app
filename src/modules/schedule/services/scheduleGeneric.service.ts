@@ -1,8 +1,9 @@
 import db from '@/database'
-import { scheduleAccounts, schedules } from '@/database/schema'
+import { courses, scheduleAccounts, schedules, terms } from '@/database/schema'
 import { and, eq, sql } from 'drizzle-orm'
 import { ScheduleGenericDAO } from '../dao/scheduleGenericDAO'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
+import { Account } from '@/interfaces/models/Account'
 class ScheduleGenericService implements ScheduleGenericDAO {
   public async fetchSchedulesByCourse(courseId: number) {
     // Validación 1: Verifica que el courseId no sea nulo o indefinido
@@ -82,6 +83,22 @@ class ScheduleGenericService implements ScheduleGenericDAO {
     } catch (error) {
       throw new Error(`No se pudo alternar el valor de lead para el ID: ${id}`)
     }
+  }
+
+  public async getAccountSchedules(accountId: Account['id']) {
+    return await db
+      .select({
+        id: scheduleAccounts.scheduleId,
+        code: schedules.code,
+        courseName: courses.name,
+      })
+      .from(scheduleAccounts)
+      .innerJoin(schedules, eq(schedules.id, scheduleAccounts.scheduleId))
+      .innerJoin(terms, eq(terms.id, schedules.termId))
+      .innerJoin(courses, eq(courses.id, schedules.courseId))
+      .where(
+        and(eq(scheduleAccounts.accountId, accountId), eq(terms.current, true))
+      )
   }
 }
 export default ScheduleGenericService

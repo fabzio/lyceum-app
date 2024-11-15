@@ -4,7 +4,6 @@ import {
   ResizablePanelGroup,
 } from '@frontend/components/ui/resizable'
 import CoverLetterDetailMain from './components/PresentationCardMain'
-import CoverLetterHistory from './components/PresentationCardHistory'
 
 export default function CoverLetterDetailSection() {
   return (
@@ -16,9 +15,6 @@ export default function CoverLetterDetailSection() {
         <CoverLetterDetailMain />
       </ResizablePanel>
       <ResizableHandle />
-      <ResizablePanel>
-        <CoverLetterHistory />
-      </ResizablePanel>
     </ResizablePanelGroup>
   )
 }
