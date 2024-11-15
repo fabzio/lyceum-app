@@ -449,6 +449,45 @@ class GenericService {
       throw new Error('Error saving contact information')
     }
   }
+  public static async updateContactInfo({
+    accountId,
+    phone,
+    secondaryPhone,
+    identityType,
+    CUI,
+  }: {
+    accountId: string
+    phone?: string
+    secondaryPhone?: string
+    identityType?: 'passport' | 'national_id'
+    CUI?: string
+  }) {
+    try {
+      // Construir el objeto de actualización dinámicamente, incluyendo solo los campos provistos
+      const updateData: Record<string, any> = {}
+      if (phone) updateData.phone = phone
+      if (secondaryPhone) updateData.secondaryPhone = secondaryPhone
+      if (identityType) updateData.identityType = identityType
+      if (CUI) updateData.CUI = CUI
+
+      if (Object.keys(updateData).length === 0) {
+        throw new Error('No fields provided for update')
+      }
+
+      await db
+        .update(contactsInfo)
+        .set(updateData)
+        .where(eq(contactsInfo.accountId, accountId))
+
+      return {
+        success: true,
+        message: 'Contact information updated successfully',
+      }
+    } catch (error) {
+      console.error('Error updating contact information:', error)
+      throw new Error('Error updating contact information')
+    }
+  }
 }
 
 export default GenericService

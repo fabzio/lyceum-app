@@ -152,27 +152,64 @@ export const authRoute = new Hono()
     return c.json({ data: updatedData, message: 'Authorized', success: true })
 
     authRoute.post(
-      '/complete-profile',
+      '/complete-profile/:accountId',
       zValidator(
         'json',
         z.object({
-          accountId: z.string(),
           phone: z.string(),
           secondaryPhone: z.string().optional(),
-          identityType: z.enum(['passport', 'national_id']), // Tipo de identidad opcional
+          identityType: z.enum(['passport', 'national_id']),
           CUI: z.string(),
         })
       ),
       async (c) => {
+        const accountId = c.req.param('accountId') // Extraer el accountId de los parámetros de la URL
         const data = c.req.valid('json')
+
         try {
           // Llamar al método de `GenericService` para guardar la información de contacto
-          const response = await GenericService.saveContactInfo(data)
+          const response = await GenericService.saveContactInfo({
+            accountId,
+            ...data,
+          })
           return c.json(response)
         } catch (error) {
           c.status(500)
           return c.json({
-            message: 'Failed in save contact information',
+            message: 'Failed to save contact information',
+            success: false,
+          })
+        }
+      }
+    )
+
+    // Ruta PUT para actualizar la información de contacto con accountId en la URL
+    authRoute.put(
+      '/update-contact-info/:accountId',
+      zValidator(
+        'json',
+        z.object({
+          phone: z.string().optional(),
+          secondaryPhone: z.string().optional(),
+          identityType: z.enum(['passport', 'national_id']).optional(),
+          CUI: z.string().optional(),
+        })
+      ),
+      async (c) => {
+        const accountId = c.req.param('accountId') // Extraer el accountId de los parámetros de la URL
+        const data = c.req.valid('json')
+
+        try {
+          // Llamar al método de `GenericService` para actualizar la información de contacto
+          const response = await GenericService.updateContactInfo({
+            accountId,
+            ...data,
+          })
+          return c.json(response)
+        } catch (error) {
+          c.status(500)
+          return c.json({
+            message: 'Failed to update contact information',
             success: false,
           })
         }
