@@ -85,12 +85,13 @@ class PresentationCardService {
       const formData = new FormData()
       formData.append('companyName', presentationCard.companyName)
       formData.append('scheduleId', presentationCard.scheduleId.toString())
-      formData.append('accountIds', JSON.stringify(presentationCard.accountIds))
+      formData.append('accounts', JSON.stringify(presentationCard.accountIds))
       formData.append('description', presentationCard.description)
       formData.append('documentFile', presentationCard.documentFile)
       const res = await http.post(
-        `/presentation-letters/letters${accountId}`,
-        formData
+        `/presentation-letters/letters/${accountId}`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
       )
 
       const response = res.data as ResponseAPI<{

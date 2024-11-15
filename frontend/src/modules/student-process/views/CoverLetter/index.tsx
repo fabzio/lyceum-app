@@ -15,7 +15,7 @@ export default function PresentationCardsOverview() {
 
   const unitId = getRoleWithPermission(
     StudentProcessPermissionsDict.REVIEW_PRESENTATION_LETTER
-  )!.unitId
+  )?.unitId
   console.log(unitId)
   const { data: presentationCardRequests } = useSuspenseQuery({
     queryKey: [QueryKeys.presentationCards.PRESENTATION_LETTERS_REQUESTS],
