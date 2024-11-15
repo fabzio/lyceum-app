@@ -19,6 +19,32 @@ class PresentationCardService {
             {
               presentationCard: {
                 id: '12345',
+                entityName: 'OpenAI Project',
+                scheduleId: '789',
+                accountIds: ['AC001', 'AC002', 'AC003'],
+                description: 'Project proposal for OpenAI collaboration',
+                createdAt: '2024-11-12T10:30:00Z',
+                scheduleCode: 'SCH-2024-001',
+                courseCode: 'CS101',
+                courseName: 'Introduction to Machine Learning',
+                accounts: [
+                  { code: 'AC001', name: 'John Doe', role: 'Manager' },
+                  { code: 'AC002', name: 'Jane Smith', role: 'Analyst' },
+                  { code: 'AC003', name: 'Alice Brown', role: 'Developer' },
+                ],
+              },
+              status: 'sended',
+              step: 2,
+              lastAction: {
+                id: 42,
+                account: 'AC001',
+                action: 'sended',
+                role: 'Manager',
+              },
+            },
+            {
+              presentationCard: {
+                id: '123456',
                 entityName: 'CLARO PERU',
                 scheduleId: 67891,
                 description:
@@ -38,7 +64,7 @@ class PresentationCardService {
             },
             {
               presentationCard: {
-                id: '123456',
+                id: '1234567',
                 entityName: 'INTERBANK PERU',
                 scheduleId: 67891,
                 description:

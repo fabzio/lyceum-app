@@ -36,7 +36,7 @@ export default function PresentationCardMain() {
       }),
   })
 
-  const presentationCard = presentationCardRequestDetail[0]?.presentationCard
+  const presentationCard = presentationCardRequestDetail[1]?.presentationCard
 
   return (
     <div className="flex h-full flex-col overflow-y-hidden">
@@ -86,14 +86,13 @@ export default function PresentationCardMain() {
                     <TableRow>
                       <TableHead>Código</TableHead>
                       <TableHead>Nombre</TableHead>
-                      <TableHead>Rol</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {presentationCard.accounts?.map((account) => (
-                      <TableRow key={account.code}>
-                        <TableCell>{account.code}</TableCell>
-                        <TableCell>{account.name}</TableCell>
+                    {presentationCard.accountIds?.map((account) => (
+                      <TableRow key={account}>
+                        <TableCell>{account}</TableCell>
+                        <TableCell>{account}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
