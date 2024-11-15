@@ -23,10 +23,24 @@ export const oauthRoute = new Hono()
       return c.redirect('/login')
     }
     try {
-      const payload = await GenericService.googleLogin({
-        email: profile.email!,
-        googleId: profile.id!,
-      })
+      // Intentar obtener o crear cuenta
+      let payload
+      try {
+        // Intentar login con la cuenta de Google
+        payload = await GenericService.googleLogin({
+          email: profile.email!,
+          googleId: profile.id!,
+        })
+      } catch (error) {
+        // Si no se encuentra, proceder con el registro
+        payload = await GenericService.registerNewAccount({
+          email: profile.email!,
+          googleId: profile.id!,
+          name: profile.name || '', // Nombre desde Google
+          firstSurname: profile.family_name || '', // Apellido desde Google
+        })
+      }
+
       const { allowedModules, roles, ...cookieContent } = payload
       setCookie(
         c,
@@ -41,12 +55,16 @@ export const oauthRoute = new Hono()
         ),
         cookieOptions
       )
-      return c.redirect('/')
+      return c.json({
+        data: payload,
+        message: 'User authorized or registered',
+        success: true,
+      })
     } catch (error) {
       console.error(error)
       return c.redirect('/login')
     }
-  })
+  }) // Código para el endpoint de logout
   .get('/logout', async (c) => {
     const token = c.get('token')
     if (token?.token) await revokeToken(token.token)
@@ -132,4 +150,32 @@ export const authRoute = new Hono()
       cookieOptions
     )
     return c.json({ data: updatedData, message: 'Authorized', success: true })
+
+    authRoute.post(
+      '/complete-profile',
+      zValidator(
+        'json',
+        z.object({
+          accountId: z.string(),
+          phone: z.string(),
+          secondaryPhone: z.string().optional(),
+          identityType: z.enum(['passport', 'national_id']), // Tipo de identidad opcional
+          CUI: z.string(),
+        })
+      ),
+      async (c) => {
+        const data = c.req.valid('json')
+        try {
+          // Llamar al método de `GenericService` para guardar la información de contacto
+          const response = await GenericService.saveContactInfo(data)
+          return c.json(response)
+        } catch (error) {
+          c.status(500)
+          return c.json({
+            message: 'Failed in save contact information',
+            success: false,
+          })
+        }
+      }
+    )
   })

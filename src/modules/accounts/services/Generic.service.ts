@@ -2,6 +2,7 @@ import db from '@/database'
 import {
   accountRoles,
   accounts,
+  contactsInfo,
   modules,
   permissions,
   rolePermissions,
@@ -336,6 +337,116 @@ class GenericService {
       allowedModules,
       roles: rolesWithPermissions,
       term: currentTerm[0],
+    }
+  }
+  public static generateUniqueCode(): string {
+    return 'E' + (Math.floor(Math.random() * 1000000) % 10000000).toString()
+  }
+
+  public static async registerNewAccount({
+    email,
+    googleId,
+    name,
+    firstSurname,
+  }: {
+    email: string
+    googleId: string
+    name: string
+    firstSurname: string
+  }) {
+    // Verificar si el usuario ya existe (para evitar duplicados)
+    const existingAccount = await db
+      .select({
+        id: accounts.id,
+      })
+      .from(accounts)
+      .where(eq(accounts.email, email))
+
+    if (existingAccount.length > 0) {
+      throw new Error('El usuario ya existe en el sistema')
+    }
+
+    // Iniciar una transacción para insertar el usuario y su rol asociado
+    const newAccount = await db.transaction(async (tx) => {
+      // Insertar la cuenta en la tabla `accounts`
+      const [account] = await tx
+        .insert(accounts)
+        .values({
+          name,
+          firstSurname,
+          secondSurname: ' ',
+          code: this.generateUniqueCode(),
+          googleId,
+          email,
+          state: 'inactive',
+          unitId: -1, // ID de la unidad de la cual no es parte (puede ser -1 para usuarios externos)
+        })
+        .returning({
+          id: accounts.id,
+          email: accounts.email,
+          name: accounts.name,
+          firstSurname: accounts.firstSurname,
+          googleId: accounts.googleId,
+        })
+
+      // Definir el rol de "Externo" y agregarlo a `accountRoles`
+      await tx.insert(accountRoles).values({
+        accountId: account.id,
+        roleId: BaseRoles.EXTERNAL, // ID del rol de "Externo"
+        unitId: -1,
+      })
+
+      return account
+    })
+
+    // Roles y módulos permitidos (puede ajustarse según los permisos de un "Externo")
+    const allowedModules: string[] = [] // Especificar módulos permitidos para usuarios externos
+    const rolesWithPermissions: {
+      roleId: number
+      permissions: { permission: string; module: string }[]
+    }[] = [
+      {
+        roleId: BaseRoles.EXTERNAL,
+        permissions: [], // Definir permisos por defecto para el rol de "Externo"
+      },
+    ]
+
+    return {
+      ...newAccount, // Información del nuevo usuario
+      allowedModules,
+      roles: rolesWithPermissions,
+    }
+  }
+
+  public static async saveContactInfo({
+    accountId,
+    phone,
+    secondaryPhone,
+    identityType,
+    CUI,
+  }: {
+    accountId: string
+    phone: string
+    secondaryPhone?: string
+    identityType: 'passport' | 'national_id'
+    CUI: string
+  }) {
+    try {
+      await db.insert(contactsInfo).values({
+        accountId,
+        phone,
+        secondaryPhone,
+        identityType: identityType as 'national' | 'foreign',
+        CUI,
+      })
+
+      return {
+        success: true,
+        message: 'Contact information saved successfully',
+      }
+    } catch (error) {
+      console.error('Error saving contact information:', error)
+      throw new Error('Error saving contact information')
     }
   }
 }
