@@ -1,7 +1,6 @@
 import ExpandibleAsidebar from '@frontend/components/ExpandibleAsidebar'
 import { Badge } from '@frontend/components/ui/badge'
 import { Button } from '@frontend/components/ui/button'
-import { Input } from '@frontend/components/ui/input'
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import { ThesisPermissionsDict } from '@frontend/interfaces/enums/permissions/Thesis'
 import { cn } from '@frontend/lib/utils'
@@ -12,7 +11,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { ListFilter } from 'lucide-react'
 
-export default function ThesisThemeAside() {
+export default function PAside() {
   const { session, getRoleWithPermission, havePermission } = useSessionStore()
 
   const specialtiyId = getRoleWithPermission(
@@ -23,7 +22,7 @@ export default function ThesisThemeAside() {
   )?.unitId
 
   const accountCode = session!.code
-  const { data: thesisThemeRequests } = useQuery({
+  const { data: presentationCardRequest } = useQuery({
     queryKey: [QueryKeys.thesis.THESIS_REQUESTS],
     queryFn: specialtiyId
       ? () =>
@@ -47,34 +46,31 @@ export default function ThesisThemeAside() {
   })
   const navigate = useNavigate()
   const { requestCode } = useParams({
-    from: '/_auth/tesis/tema-tesis/$requestCode',
+    from: '/_auth/carta-de-presentacion/carta/$requestCode',
   }) as { requestCode?: string }
   return (
     <ExpandibleAsidebar>
       <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="relative flex flex-row space-x-2">
-          <div className="flex-grow">
-            <Input placeholder="🔎 Buscar" />
-          </div>
           <Button variant="ghost">
             <ListFilter className="h-4 w-4" />
           </Button>
         </div>
       </div>
       <ul className="space-y-2">
-        {thesisThemeRequests?.map((thesisThemeRequest) => (
+        {presentationCardRequest?.map((presentationCardRequest) => (
           <li
-            key={thesisThemeRequest.code}
+            key={presentationCardRequest.code}
             className={cn(
               'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
-              requestCode === thesisThemeRequest.code && 'bg-muted'
+              requestCode === presentationCardRequest.code && 'bg-muted'
             )}
             onClick={() =>
               navigate({
-                to: '/tesis/tema-tesis/$requestCode',
-                params: { requestCode: thesisThemeRequest.code },
+                to: '/carta-de-presentacion/carta/$requestCode',
+                params: { requestCode: presentationCardRequest.code },
                 search: {
-                  historyId: thesisThemeRequest.lastAction.id,
+                  historyId: presentationCardRequest.lastAction.id,
                 },
               })
             }
@@ -83,24 +79,26 @@ export default function ThesisThemeAside() {
               <div className="flex items-center">
                 <div className="flex items-center gap-2">
                   <div className="font-semibold">
-                    {thesisThemeRequest.title}
+                    {presentationCardRequest.title}
                   </div>
                 </div>
                 <div
                   className={cn(
                     'ml-auto text-xs',
-                    requestCode === thesisThemeRequest.code
+                    requestCode === presentationCardRequest.code
                       ? 'text-foreground'
                       : 'text-muted-foreground'
                   )}
                 ></div>
               </div>
-              <div className="text-sm">{thesisThemeRequest.applicant.name}</div>
+              <div className="text-sm">
+                {presentationCardRequest.applicant.name}
+              </div>
             </div>
             <Badge>
-              {mapStatus[thesisThemeRequest.lastAction?.action] +
+              {mapStatus[presentationCardRequest.lastAction?.action] +
                 ' ' +
-                thesisThemeRequest.lastAction?.role.toLocaleLowerCase()}
+                presentationCardRequest.lastAction?.role.toLocaleLowerCase()}
             </Badge>
           </li>
         ))}

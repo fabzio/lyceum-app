@@ -11,5 +11,5 @@ export interface PresentationCard {
   courseCode?: string
   courseName?: string
   accounts?: Account[]
-  file?: File
+  file?: File //Debe ser una URL
 }
