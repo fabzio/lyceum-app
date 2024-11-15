@@ -112,7 +112,6 @@ class PresentationCardService {
       formData.append('scheduleId', presentationCard.scheduleId.toString())
       formData.append('accountIds', JSON.stringify(presentationCard.accountIds))
       formData.append('description', presentationCard.description)
-      console.log('Se recibio el scheduleid: ' + presentationCard.scheduleId)
       // const res = await http.post(`/thesis/theme`, formData)
       // LETTER: Cambiar mock data por lo que devuelva el endpoint
       const res = {
