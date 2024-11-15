@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Account } from '@frontend/interfaces/models/Account'
 import { PresentationCardRequest } from '../interfaces/PresentationCardRequest'
-import http from '@frontend/lib/http'
+//import http from '@frontend/lib/http'
 import { PresentationCard } from '../interfaces/PresentationCard'
 
 class PresentationCardService {
@@ -20,7 +20,7 @@ class PresentationCardService {
               presentationCard: {
                 id: '12345',
                 entityName: 'Entity Name',
-                scheduleId: 67891,
+                scheduleId: '67891',
                 description: 'Description of the presentation card',
                 createdAt: '2023-10-01T00:00:00Z',
                 accountIds: [accountCode, 'ACC456'],
@@ -84,7 +84,6 @@ class PresentationCardService {
       formData.append('scheduleId', presentationCard.scheduleId.toString())
       formData.append('accountIds', JSON.stringify(presentationCard.accountIds))
       formData.append('description', presentationCard.description)
-
       // const res = await http.post(`/thesis/theme`, formData)
       // LETTER: Cambiar mock data por lo que devuelva el endpoint
       const res = {
@@ -93,7 +92,7 @@ class PresentationCardService {
             presentationCard: {
               id: '12345',
               entityName: 'OpenAI Project',
-              scheduleId: 789,
+              scheduleId: '789',
               accountIds: ['AC001', 'AC002', 'AC003'],
               description: 'Project proposal for OpenAI collaboration',
               createdAt: '2024-11-12T10:30:00Z',
