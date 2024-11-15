@@ -24,7 +24,7 @@ import {
 import { ThesisThemeDAO } from '../dao/thesisThemeDAO'
 import { ThesisActionsSchema } from '@/database/schema/thesisActions'
 import { ThesisThemeRequestNotFound } from '../errors'
-import { generateThesisCode, getAccountsIds } from './utils'
+import { generateRandomCode, getAccountsIds } from './utils'
 import { Account } from '@/interfaces/models/Account'
 
 class ThesisThemeService implements ThesisThemeDAO {
@@ -403,7 +403,7 @@ class ThesisThemeService implements ThesisThemeDAO {
         throw new ThesisThemeRequestNotFound('Asesores no encontrados')
       let thesisCode
       while (true) {
-        thesisCode = generateThesisCode()
+        thesisCode = generateRandomCode()
         const [thesisExists] = await db
           .select({ id: thesis.id })
           .from(thesis)
