@@ -1,5 +1,6 @@
 import { AppModule } from '@frontend/interfaces/AppModule'
 import { ModulesDict } from '@frontend/interfaces/enums/modules'
+import { StudentProcessPermissionsDict } from '@frontend/interfaces/enums/permissions/StudentProcess'
 import { FileUser } from 'lucide-react'
 
 export const StudentProcessModule: AppModule = {
@@ -12,12 +13,20 @@ export const StudentProcessModule: AppModule = {
     {
       label: 'Alumnos en riesgo',
       path: '/cursos/alumnos-riesgo',
-      permissions: [],
+      permissions: [
+        StudentProcessPermissionsDict.READ_RISK_STUDENTS,
+        StudentProcessPermissionsDict.LOAD_RISK_STUDENTS,
+        StudentProcessPermissionsDict.REQUEST_RISK_STUDENT_REPORT,
+        StudentProcessPermissionsDict.UPDATE_RISK_STUDENT_REPORT,
+      ],
     },
     {
       label: 'Horarios',
       path: '/cursos/horarios',
-      permissions: [],
-    }
+      permissions: [
+        StudentProcessPermissionsDict.MANAGE_DELEGATE,
+        StudentProcessPermissionsDict.MANAGE_JP,
+      ],
+    },
   ],
 }
