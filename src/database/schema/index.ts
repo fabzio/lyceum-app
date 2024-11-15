@@ -76,10 +76,6 @@ export {
   presentationLettersRelations,
 } from '@/database/schema/presentationLetters'
 export {
-  presentationLetterActions,
-  presentationLetterActionsRelations,
-} from '@/database/schema/presentationLetterActions'
-export {
   presentationLetterAccounts,
   presentationLetterAccountsRelations,
 } from '@/database/schema/presentationLetterAccounts'
