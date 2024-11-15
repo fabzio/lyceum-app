@@ -7,6 +7,8 @@ import AccountsService from '@frontend/service/Accounts.service'
 import { AccountTableColumns } from './columns' // Definir columnas de la tabla para las cuentas
 import { useFilters } from '@frontend/hooks/useFilters'
 import NewAssignmentDialog from './NewAssignmentDialog'
+import Need from '@frontend/components/Need'
+import { StudentProcessPermissionsDict } from '@frontend/interfaces/enums/permissions/StudentProcess'
 
 //import { useNavigate } from '@tanstack/react-router';
 
@@ -40,7 +42,9 @@ export default function AccountTable({ scheduleId }: AccountTableProps) {
     <>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Lista de Usuarios</h2>
-        <NewAssignmentDialog scheduleId={scheduleId} />
+        <Need permissions={StudentProcessPermissionsDict.MANAGE_JP}>
+          <NewAssignmentDialog scheduleId={scheduleId} />
+        </Need>
       </div>
       <DataTable
         data={accounts?.result ?? []}
