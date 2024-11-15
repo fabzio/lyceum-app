@@ -33,7 +33,10 @@ export const StudentProcessModule: AppModule = {
     {
       label: 'Horarios',
       path: '/procesos-de-estudiantes/horarios',
-      permissions: [],
+      permissions: [
+        StudentProcessPermissionsDict.MANAGE_DELEGATE,
+        StudentProcessPermissionsDict.MANAGE_JP,
+      ],
     },
   ],
 }

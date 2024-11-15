@@ -14,7 +14,6 @@ import { presentationLetterStatus } from './enums'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
 import { relations } from 'drizzle-orm'
-import { presentationLetterActions } from './presentationLetterActions'
 import { presentationLetterAccounts } from './presentationLetterAccounts'
 
 export const presentationLetters = schema.table(
@@ -27,10 +26,11 @@ export const presentationLetters = schema.table(
     requestCode: char('request_code', { length: 10 }),
     companyName: varchar('company_name', { length: 255 }).notNull(),
     detail: text('detail'),
+    observation: text('observation'),
     submissionDate: timestamp('submission_date'),
     acceptanceDate: timestamp('acceptance_date'),
     completionDate: timestamp('completion_date'),
-    lastActionId: integer('last_action_id'),
+    documentId: varchar('content', { length: 1024 }),
   },
   (table) => ({
     scheduleFk: foreignKey({
@@ -57,7 +57,6 @@ export const presentationLettersRelations = relations(
       fields: [presentationLetters.unitId],
       references: [units.id],
     }),
-    actions: many(presentationLetterActions), // Relación de uno a muchos con `presentationLetterActions`
     accounts: many(presentationLetterAccounts), // Relación de muchos a muchos con `presentationLetterAccounts`
   })
 )

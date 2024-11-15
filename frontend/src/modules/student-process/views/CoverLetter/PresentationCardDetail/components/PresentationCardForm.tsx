@@ -49,7 +49,7 @@ export default function NewPresentationCardForm() {
     control: form.control,
   })
 
-  const { mutate, isPending } = useMutation({
+  const { isPending } = useMutation({
     mutationFn: PresentationCardService.insertPresentationCard,
     onSuccess: ({ presentationCard: { id, entityName } }) => {
       toast({

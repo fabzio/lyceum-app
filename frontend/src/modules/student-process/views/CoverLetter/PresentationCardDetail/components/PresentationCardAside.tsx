@@ -2,6 +2,7 @@ import ExpandibleAsidebar from '@frontend/components/ExpandibleAsidebar'
 import { Badge } from '@frontend/components/ui/badge'
 import { Button } from '@frontend/components/ui/button'
 import { QueryKeys } from '@frontend/constants/queryKeys'
+import { cn } from '@frontend/lib/utils'
 import PresentationCardService from '@frontend/modules/student-process/services/presentationCard.service'
 import { useSessionStore } from '@frontend/store'
 import { useQuery } from '@tanstack/react-query'
@@ -32,15 +33,18 @@ export default function CoverLetterAside() {
       <ul className="space-y-2">
         {presentationCardRequest?.map((presentationCardRequest) => (
           <li
-            key={presentationCardRequest.}
+            key={presentationCardRequest.presentationCard.id}
             className={cn(
               'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
-              requestCode === presentationCardRequest.code && 'bg-muted'
+              requestCode === presentationCardRequest.presentationCard.id &&
+                'bg-muted'
             )}
             onClick={() =>
               navigate({
                 to: '/procesos-de-estudiantes/cartas-de-presentacion/$requestCode',
-                params: { requestCode: presentationCardRequest.code },
+                params: {
+                  requestCode: presentationCardRequest.presentationCard.id,
+                },
                 search: {
                   historyId: presentationCardRequest.lastAction.id,
                 },
@@ -51,13 +55,14 @@ export default function CoverLetterAside() {
               <div className="flex items-center">
                 <div className="flex items-center gap-2">
                   <div className="font-semibold">
-                    {presentationCardRequest.title}
+                    {presentationCardRequest.presentationCard.entityName}
                   </div>
                 </div>
                 <div
                   className={cn(
                     'ml-auto text-xs',
-                    requestCode === presentationCardRequest.code
+                    requestCode ===
+                      presentationCardRequest.lastAction.id.toString()
                       ? 'text-foreground'
                       : 'text-muted-foreground'
                   )}
