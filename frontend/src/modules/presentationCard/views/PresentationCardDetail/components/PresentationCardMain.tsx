@@ -19,6 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@frontend/components/ui/card'
+import PDFPreview from './PDFPreview'
 
 export default function PresentationCardMain() {
   const { requestCode } = useParams({
@@ -36,6 +37,7 @@ export default function PresentationCardMain() {
   })
 
   const presentationCard = presentationCardRequestDetail[0]?.presentationCard
+
   return (
     <div className="flex h-full flex-col overflow-y-hidden">
       <div className="flex items-center justify-between p-4">
@@ -97,6 +99,9 @@ export default function PresentationCardMain() {
                   </TableBody>
                 </Table>
               </div>
+              {presentationCard.file && (
+                <PDFPreview file={URL.createObjectURL(presentationCard.file)} />
+              )}
             </CardContent>
           </Card>
         </div>
