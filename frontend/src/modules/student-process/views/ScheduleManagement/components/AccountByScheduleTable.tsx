@@ -18,7 +18,9 @@ type AccountTableProps = {
 }
 
 export default function AccountTable({ scheduleId }: AccountTableProps) {
-  const { filters, setFilters } = useFilters('/_auth/cursos/horarios')
+  const { filters, setFilters } = useFilters(
+    '/_auth/procesos-de-estudiantes/horarios'
+  )
 
   const { data: accounts, isLoading } = useQuery({
     queryKey: [QueryKeys.users.GENERIC, scheduleId, filters],

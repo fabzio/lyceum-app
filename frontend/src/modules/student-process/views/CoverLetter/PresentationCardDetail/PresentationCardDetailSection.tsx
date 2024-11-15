@@ -3,21 +3,21 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from '@frontend/components/ui/resizable'
-import ThesisThemeMain from './components/ThesisThemeMain'
-import ThesisThemeHistory from './components/ThesisThemeHistory'
+import CoverLetterDetailMain from './components/PresentationCardMain'
+import CoverLetterHistory from './components/PresentationCardHistory'
 
-export default function ThesisThemeDetailSection() {
+export default function CoverLetterDetailDetailSection() {
   return (
     <ResizablePanelGroup
       direction="horizontal"
       className="max-h-[calc(100vh-3.5rem)] overflow-y-hidden items-stretch"
     >
       <ResizablePanel defaultSize={80}>
-        <ThesisThemeMain />
+        <CoverLetterDetailMain />
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel>
-        <ThesisThemeHistory />
+        <CoverLetterHistory />
       </ResizablePanel>
     </ResizablePanelGroup>
   )

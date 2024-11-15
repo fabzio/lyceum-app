@@ -12,7 +12,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { ListFilter } from 'lucide-react'
 
-export default function ThesisThemeAside() {
+export default function CoverLetterAside() {
   const { session, getRoleWithPermission, havePermission } = useSessionStore()
 
   const specialtiyId = getRoleWithPermission(

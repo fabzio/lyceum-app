@@ -5,10 +5,9 @@ import ThesisThemeStepper from '@frontend/modules/thesis/components/ThesisThemeS
 import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisThemeRequest.service'
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
-import ThesisThemeReview from '../../components/ThesisThemeReview'
 import { ScrollArea } from '@frontend/components/ui/scroll-area'
 
-export default function ThesisThemeHistory() {
+export default function CoverLetterHistory() {
   const { requestCode } = useParams({
     from: '/_auth/tesis/tema-tesis/$requestCode',
   })
@@ -48,7 +47,7 @@ export default function ThesisThemeHistory() {
         </div>
         <div>
           <h3 className="font-semibold mb-2">Contenido</h3>
-          <ThesisThemeReview />
+          {/* <ThesisThemeReview /> */}
         </div>
       </div>
     </div>

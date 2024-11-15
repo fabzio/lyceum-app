@@ -19,7 +19,7 @@ import {
 import { Textarea } from '@frontend/components/ui/textarea'
 import { useToast } from '@frontend/hooks/use-toast'
 import { BaseRoles } from '@frontend/interfaces/enums/BaseRoles'
-import PresentationCardService from '@frontend/modules/presentationCard/services/presentationCard.service'
+import PresentationCardService from '@frontend/modules/student-process/services/presentationCard.service'
 import AccountsService from '@frontend/service/Accounts.service'
 //LETTER: Se debe implementar el agregar el codigo del alumno a la solicitud de carta de presentacion
 // import { useSessionStore } from '@frontend/store'
@@ -34,7 +34,7 @@ export default function NewPresentationCardForm() {
   const { toast } = useToast()
   //const { session } = useSessionStore()
   const navigate = useNavigate({
-    from: '/carta-de-presentacion/nueva-solicitud',
+    from: '/procesos-de-estudiantes/cartas-de-presentacion/nueva-solicitud',
   })
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,7 +57,7 @@ export default function NewPresentationCardForm() {
         description: `La solicitud de presentación para ${entityName} ha sido enviada correctamente`,
       })
       navigate({
-        to: '/carta-de-presentacion/carta/$requestCode',
+        to: '/procesos-de-estudiantes/cartas-de-presentacion/$requestCode',
         params: {
           requestCode: id,
         },
@@ -75,6 +75,7 @@ export default function NewPresentationCardForm() {
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     mutate({
       ...data,
+      accountIds: data.accountIds.map((account) => account.id),
     })
   }
 
@@ -134,7 +135,11 @@ export default function NewPresentationCardForm() {
               type="button"
               size="icon"
               variant="ghost"
-              onClick={() => appendAccount('')}
+              onClick={() =>
+                appendAccount({
+                  id: '',
+                })
+              }
             >
               <Plus />
             </Button>
@@ -224,7 +229,9 @@ export default function NewPresentationCardForm() {
 const formSchema = z.object({
   entityName: z.string().min(1, 'El nombre de la entidad es requerido'),
   scheduleId: z.number().min(1, 'Debes seleccionar un curso y su horario'),
-  accountIds: z.array(z.string().min(1, 'Se necesita al menos un estudiante')),
+  accountIds: z.array(
+    z.object({ id: z.string().min(1, 'Se necesita al menos un estudiante') })
+  ),
   description: z
     .string()
     .min(1, 'Debes llenar el propósito de la carta de presentación'),

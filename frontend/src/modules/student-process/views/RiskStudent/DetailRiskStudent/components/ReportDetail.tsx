@@ -10,10 +10,10 @@ import moment from 'moment'
 
 export default function ReportDetail() {
   const { code } = useParams({
-    from: '/_auth/cursos/alumnos-riesgo/$code',
+    from: '/_auth/procesos-de-estudiantes/alumnos-riesgo/$code',
   })
   const { scheduleId, reportId } = useSearch({
-    from: '/_auth/cursos/alumnos-riesgo/$code',
+    from: '/_auth/procesos-de-estudiantes/alumnos-riesgo/$code',
   })
   const { data: reportsDetail, isLoading } = useQuery({
     queryKey: [QueryKeys.courses.RISK_STUDENT_REPORT, reportId ?? 0],

@@ -14,10 +14,9 @@ import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisT
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
 import { Badge } from '@frontend/components/ui/badge'
-import ThesisResponseSection from '../../components/ThesisResponseSection'
 import DownloadThesisDoc from '@frontend/modules/thesis/components/DownloadThesisDoc'
 
-export default function ThesisThemeMain() {
+export default function CoverLetterDetailMain() {
   const { requestCode } = useParams({
     from: '/_auth/tesis/tema-tesis/$requestCode',
   })
@@ -111,7 +110,7 @@ export default function ThesisThemeMain() {
                 </TableBody>
               </Table>
             </div>
-            <ThesisResponseSection />
+            {/* <ThesisResponseSection /> */}
           </div>
         </ScrollArea>
       </div>

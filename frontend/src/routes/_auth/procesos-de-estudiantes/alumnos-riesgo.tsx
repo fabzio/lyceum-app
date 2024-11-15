@@ -6,7 +6,9 @@ import RiskStudentService from '@frontend/modules/student-process/services/riskS
 import RiskStudents from '@frontend/modules/student-process/views/RiskStudent'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_auth/cursos/alumnos-riesgo')({
+export const Route = createFileRoute(
+  '/_auth/procesos-de-estudiantes/alumnos-riesgo'
+)({
   validateSearch: () => ({}) as Filters,
   beforeLoad: async ({ context: { sessionStore } }) => {
     const { getAllPermissions } = sessionStore

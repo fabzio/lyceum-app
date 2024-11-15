@@ -29,7 +29,7 @@ import { Loader2, Plus, X } from 'lucide-react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-export default function NewThesisForm() {
+export default function NewCoverLetterForm() {
   const { toast } = useToast()
   const { session } = useSessionStore()
   const navigate = useNavigate({

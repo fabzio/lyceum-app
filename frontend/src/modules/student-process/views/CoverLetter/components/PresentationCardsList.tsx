@@ -9,7 +9,7 @@ import { mapStatus } from '@frontend/modules/thesis/utils'
 import { useNavigate } from '@tanstack/react-router'
 import { Badge } from '@frontend/components/ui/badge'
 import moment from 'moment'
-import { PresentationCardRequest } from '@frontend/modules/presentationCard/interfaces/PresentationCardRequest'
+import { PresentationCardRequest } from '@frontend/modules/student-process/interfaces/PresentationCardRequest'
 
 interface ListProps {
   presentationCardRequests?: PresentationCardRequest[]
@@ -43,15 +43,12 @@ function PresentationCardElement({
   lastAction,
 }: ElementProps) {
   const navigate = useNavigate({
-    from: '/carta-de-presentacion',
+    from: '/procesos-de-estudiantes/cartas-de-presentacion',
   })
   const handleChooseCard = () => {
     navigate({
-      to: '/carta-de-presentacion/carta/$requestCode',
+      to: '/procesos-de-estudiantes/cartas-de-presentacion/$requestCode',
       params: { requestCode: code },
-      search: {
-        historyId: lastAction.id,
-      },
     })
   }
   return (
