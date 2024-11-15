@@ -1,3 +1,4 @@
+import Need from '@frontend/components/Need'
 import { Button } from '@frontend/components/ui/button'
 import {
   DropdownMenu,
@@ -7,6 +8,7 @@ import {
 } from '@frontend/components/ui/dropdown-menu'
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import { toast } from '@frontend/hooks/use-toast'
+import { StudentProcessPermissionsDict } from '@frontend/interfaces/enums/permissions/StudentProcess'
 import { AccountRoles } from '@frontend/interfaces/models/AccountRoles'
 import ScheduleService from '@frontend/service/Schedules.service'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -187,23 +189,33 @@ export const AccountTableColumns: ColumnDef<AccountRoles>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               {rol === 1 && !lead && (
-                <DropdownMenuItem
-                  onClick={handleToggleLead} // Hacer delegado
+                <Need
+                  permissions={StudentProcessPermissionsDict.MANAGE_DELEGATE}
                 >
-                  Hacer delegado
-                </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handleToggleLead} // Hacer delegado
+                  >
+                    Hacer delegado
+                  </DropdownMenuItem>
+                </Need>
               )}
               {rol === 1 && lead && (
-                <DropdownMenuItem
-                  onClick={handleToggleLead} // Eliminar delegado
+                <Need
+                  permissions={StudentProcessPermissionsDict.MANAGE_DELEGATE}
                 >
-                  Eliminar delegado
-                </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handleToggleLead} // Eliminar delegado
+                  >
+                    Eliminar delegado
+                  </DropdownMenuItem>
+                </Need>
               )}
               {rol === null && (
-                <DropdownMenuItem onClick={handleEliminarJP}>
-                  Eliminar JP
-                </DropdownMenuItem>
+                <Need permissions={StudentProcessPermissionsDict.MANAGE_JP}>
+                  <DropdownMenuItem onClick={handleEliminarJP}>
+                    Eliminar JP
+                  </DropdownMenuItem>
+                </Need>
               )}
             </DropdownMenuContent>
           </DropdownMenu>

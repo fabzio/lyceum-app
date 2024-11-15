@@ -3,7 +3,9 @@ import { useFilters } from '@frontend/hooks/useFilters'
 import debounce from 'debounce'
 
 export default function SearchRiskStudentInput() {
-  const { setFilters } = useFilters('/_auth/cursos/alumnos-riesgo')
+  const { setFilters } = useFilters(
+    '/_auth/procesos-de-estudiantes/alumnos-riesgo'
+  )
   const handleSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters({ q: e.target.value })
   }, 300)

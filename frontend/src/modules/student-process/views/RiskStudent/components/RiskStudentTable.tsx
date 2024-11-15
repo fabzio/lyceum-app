@@ -16,13 +16,15 @@ const DEFAULT_PAGE_SIZE = 5
 
 export default function RiskStudentTable() {
   const navigate = useNavigate({
-    from: '/cursos/alumnos-riesgo',
+    from: '/procesos-de-estudiantes/alumnos-riesgo',
   })
   const { session, getRoleWithPermission } = useSessionStore()
   const role = getRoleWithPermission(
     StudentProcessPermissionsDict.LOAD_RISK_STUDENTS
   )
-  const { filters, setFilters } = useFilters('/_auth/cursos/alumnos-riesgo')
+  const { filters, setFilters } = useFilters(
+    '/_auth/procesos-de-estudiantes/alumnos-riesgo'
+  )
   const { data } = useQuery({
     queryKey: [QueryKeys.courses.RISK_STUDENTS, filters],
     queryFn: role?.unitId
@@ -71,7 +73,7 @@ export default function RiskStudentTable() {
       }}
       onRowClick={(riskStudent: RiskStudentGeneral) =>
         navigate({
-          to: '/cursos/alumnos-riesgo/$code',
+          to: '/procesos-de-estudiantes/alumnos-riesgo/$code',
           params: {
             code: riskStudent.student.code.toString(),
           },
