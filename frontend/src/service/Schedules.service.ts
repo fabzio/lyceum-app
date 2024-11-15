@@ -1,5 +1,6 @@
 import http from '@frontend/lib/http'
 import { ScheduleByCourse } from '@frontend/interfaces/models/ScheduleByCourse'
+import axios from 'axios'
 
 class ScheduleService {
   public static async getSchedulesByCourse(
@@ -63,6 +64,37 @@ class ScheduleService {
       }
     } catch (error) {
       throw new Error('No se pudo alternar el lead')
+    }
+  }
+
+  static async getAccounSchedule(accountId: string): Promise<
+    {
+      id: number
+      code: string
+      courseName: string
+    }[]
+  > {
+    try {
+      const res = await http.get(`/schedule/account/schedules`, {
+        params: { accountId },
+      })
+      const response = res.data as ResponseAPI<
+        {
+          id: number
+          code: string
+          courseName: string
+        }[]
+      >
+
+      if (!response.success) {
+        throw new Error('Error al obtener el horario')
+      }
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
     }
   }
 }

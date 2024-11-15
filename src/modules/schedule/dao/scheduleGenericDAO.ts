@@ -1,3 +1,5 @@
+import { Account } from '@/interfaces/models/Account'
+
 //import { Course } from '@/interfaces/models/Course'
 export interface ScheduleGenericDAO {
   fetchSchedulesByCourse: (courseId: number) => Promise<
@@ -14,4 +16,11 @@ export interface ScheduleGenericDAO {
   deleteJP: (id: string) => Promise<void>
 
   toggleLead: (id: string) => Promise<void>
+  getAccountSchedules: (accountId: Account['id']) => Promise<
+    {
+      id: number
+      code: string
+      courseName: string
+    }[]
+  >
 }

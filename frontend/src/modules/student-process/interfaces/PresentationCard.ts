@@ -2,7 +2,7 @@ import { Account } from '@frontend/interfaces/models/Account'
 
 export interface PresentationCard {
   id: string
-  entityName: string
+  companyName: string
   scheduleId: string
   accountIds: Account['code'][]
   description: string
@@ -12,4 +12,5 @@ export interface PresentationCard {
   courseName?: string
   accounts?: Account[]
   file?: File
+  status: 'pending' | 'approved' | 'rejected'
 }

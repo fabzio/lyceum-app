@@ -6,19 +6,17 @@ import NewPresentationCardButton from './components/NewPresentationCardButton'
 import PresentationCardsList from './components/PresentationCardsList'
 import { useSessionStore } from '@frontend/store'
 import PresentationCardService from '../../services/presentationCard.service'
+import { StudentProcessPermissionsDict } from '@frontend/interfaces/enums/permissions/StudentProcess'
 
 export default function PresentationCardsOverview() {
-  //LETTER: Implementar permisos para visualizar la lista de cartas de presentacion
-  // const { session, getRoleWithPermission, havePermission } = useSessionStore()
-  const { session } = useSessionStore()
-  // const specialtiyId = getRoleWithPermission(
-  //   ThesisPermissionsDict.APROVE_THESIS_PHASE_3
-  // )?.unitId
-  // const areaId = getRoleWithPermission(
-  //   ThesisPermissionsDict.APROVE_THESIS_PHASE_2
-  // )?.unitId
+  const { session, getRoleWithPermission } = useSessionStore()
 
   const accountCode = session!.code
+
+  const unitId = getRoleWithPermission(
+    StudentProcessPermissionsDict.REVIEW_PRESENTATION_LETTER
+  )!.unitId
+  console.log(unitId)
   const { data: presentationCardRequests } = useSuspenseQuery({
     queryKey: [QueryKeys.presentationCards.PRESENTATION_LETTERS_REQUESTS],
     queryFn: () => {

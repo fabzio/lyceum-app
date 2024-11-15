@@ -21,16 +21,17 @@ import { useToast } from '@frontend/hooks/use-toast'
 import { BaseRoles } from '@frontend/interfaces/enums/BaseRoles'
 import PresentationCardService from '@frontend/modules/student-process/services/presentationCard.service'
 import AccountsService from '@frontend/service/Accounts.service'
-//LETTER: Se debe implementar el agregar el codigo del alumno a la solicitud de carta de presentacion
-// import { useSessionStore } from '@frontend/store'
+import ScheduleService from '@frontend/service/Schedules.service'
+import { useSessionStore } from '@frontend/store'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { Loader2, Plus, X } from 'lucide-react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 export default function NewPresentationCardForm() {
+  const { session } = useSessionStore()
   const { toast } = useToast()
   //const { session } = useSessionStore()
   const navigate = useNavigate({
@@ -49,12 +50,12 @@ export default function NewPresentationCardForm() {
     control: form.control,
   })
 
-  const { isPending } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: PresentationCardService.insertPresentationCard,
-    onSuccess: ({ presentationCard: { id, entityName } }) => {
+    onSuccess: ({ id, companyName }) => {
       toast({
         title: 'Solicitud enviada',
-        description: `La solicitud de presentación para ${entityName} ha sido enviada correctamente`,
+        description: `La solicitud de presentación para ${companyName} ha sido enviada correctamente`,
       })
       navigate({
         to: '/procesos-de-estudiantes/cartas-de-presentacion/$requestCode',
@@ -72,13 +73,16 @@ export default function NewPresentationCardForm() {
     },
   })
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data)
-    // mutate({
-    //   ...data,
+  const { data: accountSchedules } = useQuery({
+    queryKey: ['schedules', session!.id],
+    queryFn: () => ScheduleService.getAccounSchedule(session!.id),
+  })
 
-    //   accountIds: data.accountIds.map((account) => account.id),
-    // })
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    mutate({
+      presentationCard: data,
+      accountId: session!.id,
+    })
   }
   return (
     <Form {...form}>
@@ -88,7 +92,7 @@ export default function NewPresentationCardForm() {
       >
         <FormField
           control={form.control}
-          name="entityName"
+          name="companyName"
           render={({ field }) => (
             <FormItem className="col-span-1 md:col-span-2">
               <FormLabel>Nombre de la Entidad</FormLabel>
@@ -119,9 +123,14 @@ export default function NewPresentationCardForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {/* Add SelectItem entries here or load dynamically */}
-                  <SelectItem value="1">Horario 1</SelectItem>
-                  <SelectItem value="2">Horario 2</SelectItem>
+                  {accountSchedules?.map((schedule) => (
+                    <SelectItem
+                      key={schedule.id}
+                      value={schedule.id.toString()}
+                    >
+                      {schedule.courseName} - {schedule.code}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -201,7 +210,7 @@ export default function NewPresentationCardForm() {
         </div>
         <FormField
           control={form.control}
-          name="file"
+          name="documentFile"
           // eslint-disable-next-line
           render={({ field: { value, onChange, ...filedProps } }) => (
             <FormItem className="col-span-1 md:col-span-2">
@@ -252,14 +261,20 @@ export default function NewPresentationCardForm() {
   )
 }
 
-const formSchema = z.object({
-  entityName: z.string().min(1, 'El nombre de la entidad es requerido'),
-  scheduleId: z.number().min(1, 'Debes seleccionar un curso y su horario'),
+export const formSchema = z.object({
+  companyName: z.string().min(1, 'El nombre de la entidad es requerido'),
+  scheduleId: z.coerce
+    .number()
+    .min(1, 'Debes seleccionar un curso y su horario'),
   accountIds: z.array(
     z.object({ id: z.string().min(1, 'Se necesita al menos un estudiante') })
   ),
   description: z
-    .string()
+    .string({
+      required_error: 'Debes llenar el propósito de la carta de presentación',
+    })
     .min(1, 'Debes llenar el propósito de la carta de presentación'),
-  file: z.instanceof(File, { message: 'Debe seleccionar un archivo' }),
+  documentFile: z.instanceof(File, { message: 'Debe seleccionar un archivo' }),
 })
+
+export type NewPresentationCardFormValues = z.infer<typeof formSchema>
