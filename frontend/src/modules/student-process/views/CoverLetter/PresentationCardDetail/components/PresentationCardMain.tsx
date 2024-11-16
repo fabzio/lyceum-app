@@ -20,6 +20,7 @@ import {
 } from '@frontend/components/ui/card'
 import PDFPreview from './PDFPreview'
 import PresentationCardService from '@frontend/modules/student-process/services/presentationCard.service'
+import { mapCoverLetterStatus } from '../../components/PresentationCardsList'
 
 export default function CoverLetterDetailMain() {
   const { requestCode } = useParams({
@@ -31,12 +32,10 @@ export default function CoverLetterDetailMain() {
       requestCode,
     ],
     queryFn: () =>
-      PresentationCardService.getPresentationCardRequests({
-        accountCode: requestCode,
-      }),
+      PresentationCardService.getPresentationCardDetail(+requestCode),
   })
 
-  const presentationCard = presentationCardRequestDetail[1]
+  const presentationCard = presentationCardRequestDetail
 
   return (
     <div className="flex h-full flex-col overflow-y-hidden">
@@ -46,14 +45,14 @@ export default function CoverLetterDetailMain() {
         </h1>
         <Badge
           variant={
-            presentationCardRequestDetail[0].status === 'approved'
+            presentationCard.status === 'accepted'
               ? 'default'
-              : 'secondary'
+              : presentationCard.status === 'rejected'
+                ? 'destructive'
+                : 'secondary'
           }
         >
-          {presentationCardRequestDetail[0].status === 'approved'
-            ? 'Aprobado'
-            : 'Pendiente'}
+          {mapCoverLetterStatus[presentationCard.status]}
         </Badge>
       </div>
       <Separator />
@@ -70,13 +69,13 @@ export default function CoverLetterDetailMain() {
               </div>
               <div>
                 <h3 className="font-bold mb-2">Descripcion</h3>
-                <p>{presentationCard.description}</p>
+                <p>{presentationCard.detail}</p>
               </div>
               <div>
                 <h3 className="font-bold mb-2">Curso y Horario</h3>
                 <p>
-                  {presentationCard.courseName} -{' '}
-                  {presentationCard.scheduleCode}
+                  {presentationCard.scheduleCode} -{' '}
+                  {presentationCard.courseName}
                 </p>
               </div>
               <div>
@@ -89,10 +88,10 @@ export default function CoverLetterDetailMain() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {presentationCard.accountIds?.map((account) => (
-                      <TableRow key={account}>
-                        <TableCell>{account}</TableCell>
-                        <TableCell>{account}</TableCell>
+                    {presentationCard.accounts?.map((account) => (
+                      <TableRow key={account.id}>
+                        <TableCell>{account.code}</TableCell>
+                        <TableCell>{`${account.name} ${account.firstSurname} ${account.secondSurname}`}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

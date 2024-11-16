@@ -10,6 +10,34 @@ class PresentationLetterController {
   private router = new Hono()
   private presentatioLetterService = new PresentationLettersService()
 
+  public getPresentationLetterDetail = this.router.get(
+    '/:presentationLetterId',
+    zValidator(
+      'param',
+      z.object({
+        presentationLetterId: z.coerce.number(),
+      })
+    ),
+    async (c) => {
+      const { presentationLetterId } = c.req.valid('param')
+      try {
+        const response: ResponseAPI = {
+          data: await this.presentatioLetterService.getPresentationLetterDetail(
+            presentationLetterId
+          ),
+          message: 'Presentation letter detail',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
   public startPresentationLetter = this.router.post(
     '/:requesterId',
     zValidator(

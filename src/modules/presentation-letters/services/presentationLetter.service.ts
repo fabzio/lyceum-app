@@ -12,6 +12,50 @@ import { generateRandomCode } from '@/modules/thesis/services/utils'
 import { and, eq, inArray, desc, sql, asc, or, ilike, param } from 'drizzle-orm'
 
 class PresentationLettersService {
+  public async getPresentationLetterDetail(presentationLetterId: number) {
+    const presentationLetter = await db.query.presentationLetters.findFirst({
+      where: (presentationLetters, { eq }) =>
+        eq(presentationLetters.id, presentationLetterId),
+      with: {
+        schedule: {
+          columns: {
+            code: true,
+          },
+          with: {
+            course: {
+              columns: {
+                name: true,
+              },
+            },
+          },
+        },
+        accounts: {
+          with: {
+            account: {
+              columns: {
+                name: true,
+                firstSurname: true,
+                secondSurname: true,
+                code: true,
+              },
+            },
+          },
+        },
+      },
+    })
+    if (!presentationLetter) throw new Error('Presentation letter not found')
+    return {
+      ...presentationLetter,
+      scheduleCode: presentationLetter.schedule.code,
+      courseName: presentationLetter.schedule.course.name,
+
+      accounts: presentationLetter.accounts.map((account) => {
+        return {
+          ...account.account,
+        }
+      }),
+    }
+  }
   public async createPresentationLetter(params: {
     requesterId: string
     companyName: string

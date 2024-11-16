@@ -5,12 +5,12 @@ export interface PresentationCard {
   companyName: string
   scheduleId: string
   accountIds: Account['code'][]
-  description: string
+  detail: string
   createdAt: string
   scheduleCode?: string
   courseCode?: string
   courseName?: string
   accounts?: Account[]
   file?: File
-  status: 'pending' | 'approved' | 'rejected'
+  status: 'sent' | 'accepted' | 'rejected' | 'succeeded'
 }

@@ -75,7 +75,8 @@ function PresentationCardElement({
 }
 
 export const mapCoverLetterStatus = {
-  pending: 'Pendiente',
-  approved: 'Aprobado',
+  sent: 'Pendiente',
+  accepted: 'Aprobado',
   rejected: 'Rechazado',
+  succeeded: 'Exitoso',
 }

@@ -16,7 +16,7 @@ import { relations } from 'drizzle-orm'
 import { scheduleAccounts } from './scheduleAccounts'
 import { riskStudents } from './riskStudents'
 import { contactsInfo } from './contactsInfo'
-import { units } from '.'
+import { presentationLetterAccounts, units } from '.'
 
 export const accounts = schema.table(
   'accounts',
@@ -52,6 +52,7 @@ export const accountsRelations = relations(accounts, ({ many }) => ({
   scheduleAccounts: many(scheduleAccounts),
   riskStudents: many(riskStudents),
   contactsInfo: many(contactsInfo),
+  presentationLetters: many(presentationLetterAccounts),
 }))
 
 export const accountsSchema = createInsertSchema(accounts)
