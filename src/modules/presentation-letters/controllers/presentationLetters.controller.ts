@@ -77,6 +77,35 @@ class PresentationLetterController {
       }
     }
   )
+
+  public getAllsPresentationLetterInUnit = this.router.get(
+    '/:unitId',
+    zValidator(
+      'param',
+      z.object({
+        unitId: z.coerce.number(),
+      })
+    ),
+
+    async (c) => {
+      const unitId = Number(c.req.param('unitId'))
+      try {
+        const response: ResponseAPI = {
+          data: await this.presentatioLetterService.getPresentationLetterByUnit(
+            { UnitId: unitId }
+          ),
+          message: 'Presentation letters retrieved successfully',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
 }
 
 export default PresentationLetterController

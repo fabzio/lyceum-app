@@ -6,7 +6,11 @@ import {
   presentationLetters,
   presentationLetterStatus,
   schedules,
+  units,
 } from '@/database/schema'
+import { CoursesSchema } from '@/database/schema/courses'
+import { PresentationLettersSchema } from '@/database/schema/presentationLetters'
+import { ScheduleSchema } from '@/database/schema/schedules'
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { generateRandomCode } from '@/modules/thesis/services/utils'
 import { and, eq, inArray, desc, sql, asc, or, ilike, param } from 'drizzle-orm'
@@ -110,6 +114,46 @@ class PresentationLettersService {
       return { id: vUnitId, companyName: params.companyName }
     })
     return res
+  }
+
+  public async getPresentationLetterByUnit(params: {
+    UnitId: number
+  }): Promise<
+    (Pick<
+      PresentationLettersSchema,
+      'id' | 'companyName' | 'submissionDate' | 'status'
+    > &
+      Pick<CoursesSchema, 'id' | 'name' | 'code'> &
+      Pick<ScheduleSchema, 'id' | 'code'>)[]
+  > {
+    const letterInUnitListQuery = await db
+      .select({
+        letterid: presentationLetters.id,
+        companyName: presentationLetters.companyName,
+        submissionDate: presentationLetters.submissionDate,
+        status: presentationLetters.status,
+        scheduleId: schedules.id,
+        schedulesCode: schedules.code,
+        courseId: courses.id,
+        coursesName: courses.name,
+        coursesCode: courses.code,
+      })
+      .from(presentationLetters)
+      .innerJoin(schedules, eq(presentationLetters.scheduleId, schedules.id))
+      .innerJoin(courses, eq(schedules.courseId, courses.id))
+      .innerJoin(units, eq(courses.unitId, units.id))
+      .where(eq(units.id, params.UnitId))
+
+    return letterInUnitListQuery.map((row) => ({
+      id: row.letterid,
+      companyName: row.companyName,
+      submissionDate: row.submissionDate,
+      status: row.status,
+      scheduleId: row.scheduleId,
+      code: row.schedulesCode,
+      name: row.coursesName,
+      courseCode: row.coursesCode,
+    }))
   }
 }
 export default PresentationLettersService
