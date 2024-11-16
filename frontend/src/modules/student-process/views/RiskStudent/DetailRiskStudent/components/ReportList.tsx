@@ -10,13 +10,13 @@ import { Skeleton } from '@frontend/components/ui/skeleton'
 
 export default function ReportList() {
   const { code } = useParams({
-    from: '/_auth/cursos/alumnos-riesgo/$code',
+    from: '/_auth/procesos-de-estudiantes/alumnos-riesgo/$code',
   })
   const { scheduleId, reportId } = useSearch({
-    from: '/_auth/cursos/alumnos-riesgo/$code',
+    from: '/_auth/procesos-de-estudiantes/alumnos-riesgo/$code',
   })
   const naviagte = useNavigate({
-    from: '/cursos/alumnos-riesgo/$code',
+    from: '/procesos-de-estudiantes/alumnos-riesgo/$code',
   })
   const setSelectedReport = (reportId: number) => {
     naviagte({

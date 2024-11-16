@@ -13,10 +13,10 @@ import { CartesianGrid, Line, LineChart, XAxis } from 'recharts'
 
 export default function RiskStudentTrack() {
   const { code } = useParams({
-    from: '/_auth/cursos/alumnos-riesgo/$code',
+    from: '/_auth/procesos-de-estudiantes/alumnos-riesgo/$code',
   })
   const { scheduleId } = useSearch({
-    from: '/_auth/cursos/alumnos-riesgo/$code',
+    from: '/_auth/procesos-de-estudiantes/alumnos-riesgo/$code',
   })
 
   const { data: reports, isLoading } = useQuery({

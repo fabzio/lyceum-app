@@ -3,7 +3,9 @@ import RiskStudentService from '@frontend/modules/student-process/services/riskS
 import DetailRiskStudent from '@frontend/modules/student-process/views/RiskStudent/DetailRiskStudent'
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_auth/cursos/alumnos-riesgo/$code')({
+export const Route = createFileRoute(
+  '/_auth/procesos-de-estudiantes/alumnos-riesgo/$code'
+)({
   validateSearch: () => ({}) as { scheduleId: number; reportId?: number },
   loaderDeps: ({ search }) => {
     const { scheduleId } = search

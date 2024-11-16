@@ -29,6 +29,7 @@ import { FAQPermissionsDict } from '@/auth/permissions/FAQ'
 import { ThesisPermissionsDict } from '@/auth/permissions/Thesis'
 import { StudyPlanPermissionsDict } from '@/auth/permissions/StudyPlan'
 import { StudentProcessPermissionsDict } from '@/auth/permissions/StudentProcess'
+import { SurveyPermissionsDict } from '@/auth/permissions/Surveys'
 
 const queryClient = postgres({
   db: DB_DATABASE,
@@ -358,6 +359,13 @@ await db.transaction(async (tx) => {
     {
       permissionId: permissionsInserted.find(
         (permission) =>
+          permission.permissionName === SurveyPermissionsDict.ANSWER_SURVEY
+      )?.permissionId!,
+      roleId: BaseRoles.STUDENT,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permission) =>
           permission.permissionName ===
           ThesisPermissions.find(
             (permission) => permission.name === 'APROVE_THESIS_PHASE_1'
@@ -416,6 +424,9 @@ await db.transaction(async (tx) => {
     StudentProcessPermissionsDict.READ_RISK_STUDENTS,
     StudentProcessPermissionsDict.LOAD_RISK_STUDENTS,
     StudentProcessPermissionsDict.REQUEST_RISK_STUDENT_REPORT,
+    SurveyPermissionsDict.CREATE_SURVEY,
+    SurveyPermissionsDict.READ_SURVEY,
+    SurveyPermissionsDict.READ_SURVEY_RESULTS,
   ]
   await tx.insert(rolePermissions).values(
     carreerDirectorPermissions.map((permission) => ({

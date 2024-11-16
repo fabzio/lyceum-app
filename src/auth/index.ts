@@ -55,11 +55,7 @@ export const oauthRoute = new Hono()
         ),
         cookieOptions
       )
-      return c.json({
-        data: payload,
-        message: 'User authorized or registered',
-        success: true,
-      })
+      return c.redirect('/')
     } catch (error) {
       console.error(error)
       return c.redirect('/login')

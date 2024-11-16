@@ -15,10 +15,10 @@ import RiskStudentsProfessorData from './components/RiskStudentsProfessorData'
 
 export default function StudentReport() {
   const { code } = useParams({
-    from: '/_auth/cursos/alumnos-riesgo/$code',
+    from: '/_auth/procesos-de-estudiantes/alumnos-riesgo/$code',
   })
   const { scheduleId } = useSearch({
-    from: '/_auth/cursos/alumnos-riesgo/$code',
+    from: '/_auth/procesos-de-estudiantes/alumnos-riesgo/$code',
   })
 
   const { data: selectedRiskStudent } = useSuspenseQuery({
