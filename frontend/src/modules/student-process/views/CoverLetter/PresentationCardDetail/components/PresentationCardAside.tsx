@@ -2,20 +2,32 @@ import ExpandibleAsidebar from '@frontend/components/ExpandibleAsidebar'
 import { Badge } from '@frontend/components/ui/badge'
 import { Button } from '@frontend/components/ui/button'
 import { QueryKeys } from '@frontend/constants/queryKeys'
+import { StudentProcessPermissionsDict } from '@frontend/interfaces/enums/permissions/StudentProcess'
 import { cn } from '@frontend/lib/utils'
 import PresentationCardService from '@frontend/modules/student-process/services/presentationCard.service'
 import { useSessionStore } from '@frontend/store'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { ListFilter } from 'lucide-react'
+import { mapCoverLetterStatus } from '../../components/columns'
 
 export default function CoverLetterAside() {
-  const { session } = useSessionStore()
+  const { session, getRoleWithPermission } = useSessionStore()
   const accountCode = session!.code
-  const { data: presentationCardRequest } = useQuery({
+  const unitId = getRoleWithPermission(
+    StudentProcessPermissionsDict.REVIEW_PRESENTATION_LETTER
+  )?.unitId
+  const { data: presentationCardRequests } = useQuery({
     queryKey: [QueryKeys.presentationCards.PRESENTATION_LETTERS_REQUESTS],
-    queryFn: () =>
-      PresentationCardService.getPresentationCardRequests({ accountCode }),
+    queryFn: unitId
+      ? () =>
+          PresentationCardService.getPresentationCardRequestsInUnit({
+            unitId,
+          })
+      : () =>
+          PresentationCardService.getPresentationCardRequests({
+            accountCode: accountCode,
+          }),
   })
   const navigate = useNavigate()
   const { requestCode } = useParams({
@@ -31,18 +43,19 @@ export default function CoverLetterAside() {
         </div>
       </div>
       <ul className="space-y-2">
-        {presentationCardRequest?.map((presentationCardRequest) => (
+        {presentationCardRequests?.map((presentationCardRequest) => (
           <li
             key={presentationCardRequest.id}
             className={cn(
               'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
-              requestCode === presentationCardRequest.id && 'bg-muted'
+              requestCode === presentationCardRequest.id.toString() &&
+                'bg-muted'
             )}
             onClick={() =>
               navigate({
                 to: '/procesos-de-estudiantes/cartas-de-presentacion/$requestCode',
                 params: {
-                  requestCode: presentationCardRequest.id,
+                  requestCode: presentationCardRequest.id.toString(),
                 },
               })
             }
@@ -56,13 +69,11 @@ export default function CoverLetterAside() {
                 </div>
               </div>
               <div className="text-sm">
-                {/* {presentationCardRequest.applicant.name} */}
+                {presentationCardRequest.name} - {presentationCardRequest.code}
               </div>
             </div>
             <Badge>
-              {/* {mapStatus[presentationCardRequest.lastAction?.action] +
-                ' ' +
-                presentationCardRequest.lastAction?.role.toLocaleLowerCase()} */}
+              {mapCoverLetterStatus[presentationCardRequest.status]}
             </Badge>
           </li>
         ))}

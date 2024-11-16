@@ -20,7 +20,7 @@ import {
 } from '@frontend/components/ui/card'
 import PDFPreview from './PDFPreview'
 import PresentationCardService from '@frontend/modules/student-process/services/presentationCard.service'
-import { mapCoverLetterStatus } from '../../components/PresentationCardsList'
+import { mapCoverLetterStatus } from '../../components/columns'
 
 export default function CoverLetterDetailMain() {
   const { requestCode } = useParams({

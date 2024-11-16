@@ -79,16 +79,16 @@ class PresentationLetterController {
   )
 
   public getAllsPresentationLetterInUnit = this.router.get(
-    '/:unitId',
+    '/',
     zValidator(
-      'param',
+      'query',
       z.object({
         unitId: z.coerce.number(),
       })
     ),
 
     async (c) => {
-      const unitId = Number(c.req.param('unitId'))
+      const { unitId } = c.req.valid('query')
       try {
         const response: ResponseAPI = {
           data: await this.presentatioLetterService.getPresentationLetterByUnit(
