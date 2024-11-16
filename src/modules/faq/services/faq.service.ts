@@ -4,9 +4,18 @@ import { FAQ } from '@/interfaces/models/FAQ'
 import { faqCategories, faqs } from '@/database/schema'
 import { FaqsSchema } from '@/database/schema/faqs'
 import { eq } from 'drizzle-orm'
+import { Unit } from '@/interfaces/models/Unit'
 
 class FAQService implements FaqDAO {
-  public async getFAQs(): Promise<FAQ[]> {
+  public async getFAQs(unitId: Unit['id']): Promise<FAQ[]> {
+    const unitExist = await db.query.units.findFirst({
+      columns: {
+        id: true,
+      },
+      where: (units, { eq, and }) =>
+        and(eq(units.id, unitId), eq(units.type, 'speciality')),
+    })
+    if (!unitExist) throw new Error('Especialidad no encontrada')
     return (await db
       .select({
         id: faqs.id,
@@ -16,10 +25,8 @@ class FAQService implements FaqDAO {
         category: faqCategories.name,
       })
       .from(faqs)
-      .innerJoin(
-        faqCategories,
-        eq(faqs.faqCategoryId, faqCategories.id)
-      )) as FAQ[]
+      .innerJoin(faqCategories, eq(faqs.faqCategoryId, faqCategories.id))
+      .where(eq(faqs.specialityId, unitId))) as FAQ[]
   }
 
   public async createFAQ(data: FaqsSchema): Promise<void> {
