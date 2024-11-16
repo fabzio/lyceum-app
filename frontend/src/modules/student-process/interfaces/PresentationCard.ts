@@ -1,6 +1,17 @@
 import { Account } from '@frontend/interfaces/models/Account'
 
 export interface PresentationCard {
+  id: number
+  companyName: string
+  submissionDate: string
+  status: 'sent' | 'accepted' | 'rejected' | 'succeeded'
+  scheduleId: number
+  code: string
+  name: string
+  courseCode: string
+}
+
+export interface PresentationCardDetail {
   id: string
   companyName: string
   scheduleId: string

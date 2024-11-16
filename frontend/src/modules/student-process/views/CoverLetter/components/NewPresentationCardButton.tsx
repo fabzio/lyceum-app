@@ -5,7 +5,6 @@ import { Link } from '@tanstack/react-router'
 
 export default function NewPresentationCardButton() {
   return (
-    //LETTER: Actualizar permisos
     <Need
       permissions={StudentProcessPermissionsDict.CREATE_PRESENTATION_LETTER}
     >

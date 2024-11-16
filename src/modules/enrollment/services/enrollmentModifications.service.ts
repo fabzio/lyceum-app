@@ -23,6 +23,7 @@ import { EnrollmentModificationsSchema } from '@/database/schema/enrollmentModif
 import { PaginatedData } from '@/interfaces/PaginatedData'
 import { Account } from '@/interfaces/models/Account'
 import { Unit } from '@/interfaces/models/Unit'
+import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 
 class EnrollmentModificationService implements EnrollmentModificationDAO {
   public async getAllEnrollmentsOfSpeciality(params: {
@@ -205,7 +206,7 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
           await trx.insert(scheduleAccounts).values({
             scheduleId: enrollment.scheduleId,
             accountId: enrollment.studentId,
-            roleId: 2, // Rol fijo de estudiante
+            roleId: BaseRoles.STUDENT,
             lead: false,
           })
         } else if (enrollment.requestType === 'withdrawal') {
