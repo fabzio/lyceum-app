@@ -17,15 +17,19 @@ import {
   FormLabel,
   FormMessage,
 } from '@frontend/components/ui/form'
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@frontend/components/ui/hover-card'
 import { Input } from '@frontend/components/ui/input'
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import { useToast } from '@frontend/hooks/use-toast'
 import { getCsvData } from '@frontend/lib/utils'
-import { Professor } from '@frontend/modules/users/interfaces/Professor'
 import ProfessorService from '@frontend/modules/users/services/Professor.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Loader2, Upload } from 'lucide-react'
+import { Info, Loader2, Upload } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -55,18 +59,27 @@ export default function MasiveProfessorDialog() {
   })
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    const dataJson = await getCsvData<
-      Pick<
-        Professor,
-        'code' | 'name' | 'firstSurname' | 'secondSurname' | 'email'
-      >
-    >(data.file)
-    const dataParsed = dataJson.map((professor) => ({
-      ...professor,
-      code: professor.code.toString(),
-    }))
-
-    mutate(dataParsed)
+    try {
+      const jsonData = await getCsvData<CSVRow>(data.file)
+      const parseData = jsonData.map((unit) => csvSchema.parse(unit))
+      mutate(
+        parseData.map((unit) => ({
+          name: unit['Nombre'],
+          code: unit['Código'],
+          email: unit['Correo institucional'],
+          firstSurname: unit['Primer apellido'],
+          secondSurname: unit['Segundo apellido'],
+          unitName: unit['Sección/Departamento'],
+        }))
+      )
+    } catch (error) {
+      toast({
+        title: 'Error',
+        variant: 'destructive',
+        description: (error as Error).message,
+      })
+      return
+    }
   }
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -86,9 +99,22 @@ export default function MasiveProfessorDialog() {
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <FormField
               name="file"
+              // eslint-disable-next-line
               render={({ field: { value, onChange, ...filedProps } }) => (
                 <FormItem>
-                  <FormLabel>Archivo</FormLabel>
+                  <HoverCard openDelay={100}>
+                    <HoverCardTrigger>
+                      <FormLabel className="inline-block hover:underline w-auto">
+                        <div className="flex">
+                          Archivo <Info className="h-4" />
+                        </div>
+                      </FormLabel>
+                    </HoverCardTrigger>
+                    <HoverCardContent>
+                      Código | Nombre | Primer apellido | Segundo apellido |
+                      Correo institucional | Sección/Departamento
+                    </HoverCardContent>
+                  </HoverCard>
                   <FormControl>
                     <Input
                       {...filedProps}
@@ -123,3 +149,14 @@ export default function MasiveProfessorDialog() {
 const formSchema = z.object({
   file: z.instanceof(File, { message: 'Debe seleccionar un archivo' }),
 })
+
+const csvSchema = z.object({
+  Código: z.coerce.string().length(8),
+  ['Nombre']: z.string(),
+  ['Primer apellido']: z.string(),
+  ['Segundo apellido']: z.string(),
+  ['Correo institucional']: z.string().email(),
+  ['Sección/Departamento']: z.string(),
+})
+
+type CSVRow = z.infer<typeof csvSchema>

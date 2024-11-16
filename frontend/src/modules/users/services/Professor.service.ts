@@ -32,10 +32,10 @@ class ProfessorService {
   }
 
   static async addProfessor(
-    professors: Pick<
+    professors: (Pick<
       Professor,
       'code' | 'name' | 'firstSurname' | 'secondSurname' | 'email'
-    >[]
+    > & { unitName: string })[]
   ): Promise<void> {
     try {
       const res = await http.post('/accounts/professors', {
