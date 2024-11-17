@@ -488,6 +488,54 @@ class GenericService {
       throw new Error('Error updating contact information')
     }
   }
+
+  public async updateAccount(
+    accountId: string,
+    updateData: Record<string, any>
+  ) {
+    try {
+      // Construir el objeto de actualización dinámicamente, incluyendo solo los campos proporcionados
+      const dataToUpdate: Partial<{
+        name: string
+        firstSurname: string
+        secondSurname: string
+        email: string
+        state: 'active' | 'inactive' | 'deleted'
+        unitId: number
+        code: string
+      }> = {}
+
+      if (updateData.name) dataToUpdate.name = updateData.name
+      if (updateData.firstSurname)
+        dataToUpdate.firstSurname = updateData.firstSurname
+      if (updateData.secondSurname)
+        dataToUpdate.secondSurname = updateData.secondSurname
+      if (updateData.email) dataToUpdate.email = updateData.email
+      if (updateData.state) dataToUpdate.state = updateData.state
+      if (updateData.unitId !== undefined)
+        dataToUpdate.unitId = updateData.unitId
+      if (updateData.code) dataToUpdate.code = updateData.code
+
+      // Verificar si se proporciona al menos un campo para actualizar
+      if (Object.keys(dataToUpdate).length === 0) {
+        throw new Error('No fields provided for update')
+      }
+
+      // Realizar la actualización en la base de datos
+      await db
+        .update(accounts)
+        .set(dataToUpdate)
+        .where(eq(accounts.id, accountId))
+
+      return {
+        success: true,
+        message: 'Account information updated successfully',
+      }
+    } catch (error) {
+      console.error('Error updating account information:', error)
+      throw new Error('Error updating account information')
+    }
+  }
 }
 
 export default GenericService
