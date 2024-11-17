@@ -350,6 +350,14 @@ await db.transaction(async (tx) => {
       permissionId: permissionsInserted.find(
         (permission) =>
           permission.permissionName ===
+          StudentProcessPermissionsDict.CREATE_PRESENTATION_LETTER
+      )?.permissionId!,
+      roleId: BaseRoles.STUDENT,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permission) =>
+          permission.permissionName ===
           ThesisPermissions.find(
             (permission) => permission.name === 'READ_THESIS'
           )?.name
