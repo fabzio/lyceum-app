@@ -65,7 +65,7 @@ class PresentationLetterController {
             description,
             accountsParse,
           }),
-          message: 'Students created',
+          message: 'Presentation Letter created',
           success: true,
         }
         return c.json(response)
@@ -93,6 +93,35 @@ class PresentationLetterController {
         const response: ResponseAPI = {
           data: await this.presentatioLetterService.getPresentationLetterByUnit(
             { UnitId: unitId }
+          ),
+          message: 'Presentation letters retrieved successfully',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public getAllsPresentationLetterByAccount = this.router.get(
+    '/list/:accountId',
+    zValidator(
+      'param',
+      z.object({
+        accountId: z.string(),
+      })
+    ),
+
+    async (c) => {
+      const { accountId } = c.req.valid('param')
+      try {
+        const response: ResponseAPI = {
+          data: await this.presentatioLetterService.getPresentationLetterByAccount(
+            { id: accountId }
           ),
           message: 'Presentation letters retrieved successfully',
           success: true,
