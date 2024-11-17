@@ -1,6 +1,5 @@
 import { ModeToggle } from '../components/ModeToggle'
 import ProfileSettings from '../components/ProfileSettings'
-import Notifications from '../components/Notifications'
 import SearchBar from '../components/SearchBar'
 import TSRBreadCums from '@frontend/components/TSRBreadCums'
 
@@ -10,7 +9,6 @@ export default function NavbarDesktop() {
       <TSRBreadCums />
       <SearchBar />
       <section className="flex items-center gap-4">
-        <Notifications />
         <ModeToggle />
         <ProfileSettings />
       </section>

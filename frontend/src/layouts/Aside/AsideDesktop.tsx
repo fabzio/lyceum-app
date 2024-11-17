@@ -10,7 +10,6 @@ import {
 } from '@frontend/components/ui/menubar'
 import { filterTabs } from '@frontend/lib/utils'
 import { useSessionStore } from '@frontend/store'
-import { Button } from '@frontend/components/ui/button'
 
 interface Props {
   asideElements: AsideElement[]
@@ -50,13 +49,12 @@ export default function AsideDesktop({ asideElements = [] }: Props) {
               </MenubarMenu>
             </div>
           ) : (
-            <Link key={element.code} to={element.path}>
-              <Button
-                className="flex items-center justify-center w-full h-12"
-                variant="ghost"
-              >
-                {element.icon}
-              </Button>
+            <Link
+              key={element.code}
+              to={element.path}
+              className="w-full rounded-md x-2 flex justify-center hover:bg-muted"
+            >
+              {element.icon}
             </Link>
           )
         })}
