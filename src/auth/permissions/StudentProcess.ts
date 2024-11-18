@@ -3,6 +3,10 @@ export const StudentProcessPermissionsDict = {
   LOAD_RISK_STUDENTS: 'LOAD_RISK_STUDENTS',
   REQUEST_RISK_STUDENT_REPORT: 'REQUEST_RISK_STUDENT_REPORT',
   UPDATE_RISK_STUDENT_REPORT: 'UPDATE_RISK_STUDENT_REPORT',
+  CREATE_PRESENTATION_LETTER: 'CREATE_PRESENTATION_LETTER',
+  REVIEW_PRESENTATION_LETTER: 'REVIEW_PRESENTATION_LETTER',
+  APPROVE_PRESENTATION_LETTER: 'APPROVE_PRESENTATION_LETTER',
+  READ_PRESENTATION_LETTER: 'READ_PRESENTATION_LETTER',
 } as const
 
 const StudentProcessPermissions = [
@@ -21,6 +25,22 @@ const StudentProcessPermissions = [
   {
     name: StudentProcessPermissionsDict.UPDATE_RISK_STUDENT_REPORT,
     description: 'Actualizar reporte de estudiantes en riesgo',
+  },
+  {
+    name: StudentProcessPermissionsDict.CREATE_PRESENTATION_LETTER,
+    description: 'Crear carta de presentación',
+  },
+  {
+    name: StudentProcessPermissionsDict.REVIEW_PRESENTATION_LETTER,
+    description: 'Revisar carta de presentación',
+  },
+  {
+    name: StudentProcessPermissionsDict.APPROVE_PRESENTATION_LETTER,
+    description: 'Aprobar carta de presentación',
+  },
+  {
+    name: StudentProcessPermissionsDict.READ_PRESENTATION_LETTER,
+    description: 'Leer carta de presentación',
   },
 ] as const
 

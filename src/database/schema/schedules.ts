@@ -13,6 +13,9 @@ import { relations } from 'drizzle-orm'
 import { scheduleStatus } from './enums'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
+import { accounts } from './accounts'
+import { scheduleAccounts } from './scheduleAccounts'
+import { surveyAnswers } from './surveyAnswers'
 
 export const schedules = schema.table(
   'schedules',
@@ -40,7 +43,7 @@ export const schedules = schema.table(
   })
 )
 
-export const scheduleRelations = relations(schedules, ({ one }) => ({
+export const scheduleRelations = relations(schedules, ({ one, many }) => ({
   course: one(courses, {
     fields: [schedules.courseId],
     references: [courses.id],
@@ -49,6 +52,8 @@ export const scheduleRelations = relations(schedules, ({ one }) => ({
     fields: [schedules.termId],
     references: [terms.id],
   }),
+  accounts: many(scheduleAccounts),
+  surveyAnswers: many(surveyAnswers),
 }))
 
 export const scheuleSchema = createInsertSchema(schedules)

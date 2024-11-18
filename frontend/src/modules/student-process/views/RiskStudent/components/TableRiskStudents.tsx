@@ -32,7 +32,7 @@ export default function TableRiskStudents({
   const OnRowClick = (riskStudent: RiskStudentGeneral) => {
     setSelectedRiskStudent(riskStudent)
     navigate({
-      to: '/cursos/alumnos-riesgo/$code',
+      to: '/procesos-de-estudiantes/alumnos-riesgo/$code',
       params: {
         code: riskStudent.student.code,
       },

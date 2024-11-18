@@ -50,4 +50,11 @@ export const QueryKeys = {
   hiring: {
     HIRINGS: 'hirings',
   },
+  survey: {
+    SURVEYS: 'surveys',
+    UNANWSERED_SURVEYS: 'unanswered_surveys',
+  },
+  presentationCards: {
+    PRESENTATION_LETTERS_REQUESTS: 'presentation_cards_requests',
+  },
 }

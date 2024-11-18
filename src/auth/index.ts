@@ -23,16 +23,31 @@ export const oauthRoute = new Hono()
       return c.redirect('/login')
     }
     try {
-      const payload = await GenericService.googleLogin({
-        email: profile.email!,
-        googleId: profile.id!,
-      })
+      // Intentar obtener o crear cuenta
+      let payload
+      try {
+        // Intentar login con la cuenta de Google
+        payload = await GenericService.googleLogin({
+          email: profile.email!,
+          googleId: profile.id!,
+        })
+      } catch (error) {
+        // Si no se encuentra, proceder con el registro
+        payload = await GenericService.registerNewAccount({
+          email: profile.email!,
+          googleId: profile.id!,
+          name: profile.name || '', // Nombre desde Google
+          firstSurname: profile.family_name || '', // Apellido desde Google
+        })
+      }
+
+      const { allowedModules, roles, ...cookieContent } = payload
       setCookie(
         c,
         'lyceum-tkn',
         await sign(
           {
-            ...payload,
+            ...cookieContent,
             exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
             iat: Math.floor(Date.now() / 1000),
           },
@@ -45,7 +60,7 @@ export const oauthRoute = new Hono()
       console.error(error)
       return c.redirect('/login')
     }
-  })
+  }) // Código para el endpoint de logout
   .get('/logout', async (c) => {
     const token = c.get('token')
     if (token?.token) await revokeToken(token.token)
@@ -70,12 +85,13 @@ export const authRoute = new Hono()
           email: data.code,
           password: data.password,
         })
+        const { allowedModules, roles, ...cookieContent } = response
         setCookie(
           c,
           'lyceum-tkn',
           await sign(
             {
-              ...response,
+              ...cookieContent,
               exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
               iat: Math.floor(Date.now() / 1000),
             },
@@ -115,12 +131,13 @@ export const authRoute = new Hono()
       email: token.email,
       googleId: token.googleId ?? '',
     })
+    const { allowedModules, roles, ...cookieContent } = updatedData
     setCookie(
       c,
       'lyceum-tkn',
       await sign(
         {
-          ...updatedData,
+          ...cookieContent,
           exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
           iat: Math.floor(Date.now() / 1000),
         },
@@ -129,4 +146,69 @@ export const authRoute = new Hono()
       cookieOptions
     )
     return c.json({ data: updatedData, message: 'Authorized', success: true })
+
+    authRoute.post(
+      '/complete-profile/:accountId',
+      zValidator(
+        'json',
+        z.object({
+          phone: z.string(),
+          secondaryPhone: z.string().optional(),
+          identityType: z.enum(['passport', 'national_id']),
+          CUI: z.string(),
+        })
+      ),
+      async (c) => {
+        const accountId = c.req.param('accountId') // Extraer el accountId de los parámetros de la URL
+        const data = c.req.valid('json')
+
+        try {
+          // Llamar al método de `GenericService` para guardar la información de contacto
+          const response = await GenericService.saveContactInfo({
+            accountId,
+            ...data,
+          })
+          return c.json(response)
+        } catch (error) {
+          c.status(500)
+          return c.json({
+            message: 'Failed to save contact information',
+            success: false,
+          })
+        }
+      }
+    )
+
+    // Ruta PUT para actualizar la información de contacto con accountId en la URL
+    authRoute.put(
+      '/update-contact-info/:accountId',
+      zValidator(
+        'json',
+        z.object({
+          phone: z.string().optional(),
+          secondaryPhone: z.string().optional(),
+          identityType: z.enum(['passport', 'national_id']).optional(),
+          CUI: z.string().optional(),
+        })
+      ),
+      async (c) => {
+        const accountId = c.req.param('accountId') // Extraer el accountId de los parámetros de la URL
+        const data = c.req.valid('json')
+
+        try {
+          // Llamar al método de `GenericService` para actualizar la información de contacto
+          const response = await GenericService.updateContactInfo({
+            accountId,
+            ...data,
+          })
+          return c.json(response)
+        } catch (error) {
+          c.status(500)
+          return c.json({
+            message: 'Failed to update contact information',
+            success: false,
+          })
+        }
+      }
+    )
   })

@@ -29,6 +29,7 @@ import { FAQPermissionsDict } from '@/auth/permissions/FAQ'
 import { ThesisPermissionsDict } from '@/auth/permissions/Thesis'
 import { StudyPlanPermissionsDict } from '@/auth/permissions/StudyPlan'
 import { StudentProcessPermissionsDict } from '@/auth/permissions/StudentProcess'
+import { SurveyPermissionsDict } from '@/auth/permissions/Surveys'
 
 const queryClient = postgres({
   db: DB_DATABASE,
@@ -174,6 +175,79 @@ await db.transaction(async (tx) => {
         email: 'fmontoya@pucp.edu.pe',
         unitId: universityId,
       },
+
+      {
+        name: 'Ricardo Bartra',
+        firstSurname: 'Smith',
+        secondSurname: 'Bartra',
+        code: '20176243',
+        email: 'ricardo.bartra@pucp.edu.pe',
+        unitId: universityId,
+      },
+      {
+        name: 'Leonardo Vega',
+        firstSurname: 'Grijalva',
+        secondSurname: 'Vega',
+        code: '20240102',
+        email: 'a20197102@pucp.edu.pe',
+        unitId: universityId,
+      },
+      {
+        name: 'Sebastian Castillejo',
+        firstSurname: 'Franco',
+        secondSurname: 'Castillejo',
+        code: '20190948',
+        email: 'a20190948@pucp.edu.pe',
+        unitId: universityId,
+      },
+      {
+        name: 'Piero Alvarez',
+        firstSurname: 'Castillo',
+        secondSurname: 'Alvarez',
+        code: '20195903',
+        email: 'alvarez.piero@pucp.edu.pe',
+        unitId: universityId,
+      },
+      {
+        name: 'Diego Ancajima',
+        firstSurname: 'Diaz',
+        secondSurname: 'Ancajima',
+        code: '20202308',
+        email: 'a20202308@pucp.edu.pe',
+        unitId: universityId,
+      },
+      {
+        name: 'Jhoyfer Melendez',
+        firstSurname: 'Torres',
+        secondSurname: 'Melendez',
+        code: '20203823',
+        email: 'jmelendezt@pucp.edu.pe',
+        unitId: universityId,
+      },
+      {
+        name: 'Alonso Alvarado',
+        firstSurname: 'Eslava',
+        secondSurname: 'Alvarado',
+        code: '20180731',
+        email: 'aalvaradoe@pucp.edu.pe',
+        unitId: universityId,
+      },
+      {
+        name: 'Paul Espettia',
+        firstSurname: 'Rodríguez',
+        secondSurname: 'Espettia',
+        code: '20181395',
+        email: 'paul.espettia@pucp.edu.pe',
+        unitId: universityId,
+      },
+      {
+        name: 'Alvaro Espinoza',
+        firstSurname: 'Esparza',
+        secondSurname: 'Larranaga',
+        code: '20195925',
+        email: 'aesparzal@pucp.edu.pe',
+        unitId: universityId,
+      },
     ])
     .returning({ accountId: accounts.id })
   console.info('Accounts inserted')
@@ -276,11 +350,26 @@ await db.transaction(async (tx) => {
       permissionId: permissionsInserted.find(
         (permission) =>
           permission.permissionName ===
+          StudentProcessPermissionsDict.CREATE_PRESENTATION_LETTER
+      )?.permissionId!,
+      roleId: BaseRoles.STUDENT,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permission) =>
+          permission.permissionName ===
           ThesisPermissions.find(
             (permission) => permission.name === 'READ_THESIS'
           )?.name
       )?.permissionId!,
       roleId: BaseRoles.PROFESSOR,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permission) =>
+          permission.permissionName === SurveyPermissionsDict.ANSWER_SURVEY
+      )?.permissionId!,
+      roleId: BaseRoles.STUDENT,
     },
     {
       permissionId: permissionsInserted.find(
@@ -343,6 +432,9 @@ await db.transaction(async (tx) => {
     StudentProcessPermissionsDict.READ_RISK_STUDENTS,
     StudentProcessPermissionsDict.LOAD_RISK_STUDENTS,
     StudentProcessPermissionsDict.REQUEST_RISK_STUDENT_REPORT,
+    SurveyPermissionsDict.CREATE_SURVEY,
+    SurveyPermissionsDict.READ_SURVEY,
+    SurveyPermissionsDict.READ_SURVEY_RESULTS,
   ]
   await tx.insert(rolePermissions).values(
     carreerDirectorPermissions.map((permission) => ({
@@ -354,7 +446,7 @@ await db.transaction(async (tx) => {
     .insert(roles)
     .values({
       name: 'Secretario académico',
-      unitType: 'speciality',
+      unitType: 'faculty',
       editable: true,
     })
     .returning({ roleId: roles.id })

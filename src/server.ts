@@ -9,6 +9,8 @@ import StudyPlan from './modules/study-plans'
 import Thesis from './modules/thesis'
 import Units from './modules/units'
 import Hiring from './modules/hiring'
+import Survey from './modules/surveys'
+import PresentationLetters from './modules/presentation-letters'
 const app = new App([
   new Security(),
   new FAQ(),
@@ -20,6 +22,8 @@ const app = new App([
   new Schedule(),
   new Units(),
   new Hiring(),
+  new Survey(),
+  new PresentationLetters(),
 ])
 
 export default {

@@ -1,18 +1,19 @@
-import { uuid, varchar, foreignKey } from 'drizzle-orm/pg-core'
+import { varchar, foreignKey, integer, serial } from 'drizzle-orm/pg-core'
 import { schema } from '../pgSchema'
 import { surveyQuestionType } from './enums'
 import { surveys } from './surveys'
 import { relations } from 'drizzle-orm'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
+import { surveyAnswers } from './surveyAnswers'
 
 export const surveyQuestions = schema.table(
   'survey_questions',
   {
-    id: uuid('id').defaultRandom().primaryKey().notNull(),
+    id: serial('id').primaryKey().notNull(),
     type: surveyQuestionType('type').notNull(),
     questionText: varchar('question_text').notNull(),
-    surveyId: uuid('survey_id').notNull(),
+    surveyId: integer('survey_id').notNull(),
   },
   (table) => ({
     surveyFk: foreignKey({
@@ -25,11 +26,12 @@ export const surveyQuestions = schema.table(
 
 export const surveyQuestionsRelations = relations(
   surveyQuestions,
-  ({ one }) => ({
+  ({ one, many }) => ({
     survey: one(surveys, {
       fields: [surveyQuestions.surveyId],
       references: [surveys.id],
     }),
+    answers: many(surveyAnswers),
   })
 )
 

@@ -21,7 +21,7 @@ export default function ProfileSettings() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button size="icon" variant="ghost">
-          <User />
+          <User className="h-8 w-8" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>

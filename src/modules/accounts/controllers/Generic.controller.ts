@@ -69,6 +69,47 @@ class GenericController {
       }
     }
   )
+
+  public updateAccount = this.router.put(
+    ':accountId',
+    zValidator(
+      'json',
+      z.object({
+        name: z.string().optional(),
+        firstSurname: z.string().optional(),
+        secondSurname: z.string().optional(),
+        email: z.string().optional(),
+        state: z.enum(['active', 'inactive', 'deleted']).optional(),
+        unitId: z.number().optional(),
+        code: z.string().optional(),
+      })
+    ),
+    async (c) => {
+      const accountId = c.req.param('accountId') // Extrae accountId de la URL
+      const updateData = c.req.valid('json') // Extrae el payload del cuerpo de la solicitud
+
+      try {
+        const response = await this.accountService.updateAccount(
+          accountId,
+          updateData
+        )
+
+        return c.json({
+          data: response,
+          message: 'Account information updated successfully',
+          success: true,
+        })
+      } catch (error) {
+        console.error('Error updating account:', error)
+
+        c.status(500)
+        return c.json({
+          message: 'Failed to update account information',
+          success: false,
+        })
+      }
+    }
+  )
 }
 
 export default GenericController

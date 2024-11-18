@@ -12,6 +12,6 @@ export const getAccountsIds = async (accountsCode: string): Promise<string> => {
   return response[0]?.id
 }
 
-export const generateThesisCode = (): string => {
+export const generateRandomCode = (): string => {
   return Math.floor(1000000000 + Math.random() * 9000000000).toString()
 }

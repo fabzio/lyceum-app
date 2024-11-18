@@ -1,0 +1,1 @@
+export { assignJPDTO } from './scheduleGenericDTO'

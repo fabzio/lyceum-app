@@ -15,11 +15,15 @@ export {
   courseStep,
   surveyQuestionType,
   surveyType,
+  presentationLetterStatus,
 } from '@/database/schema/enums'
 export { accountRoles } from '@/database/schema/accountRoles'
 export { accounts } from '@/database/schema/accounts'
 export { accountsPerHiring } from '@/database/schema/accountsPerHiring'
-export { surveyAnswers } from '@/database/schema/surveyAnswers'
+export {
+  surveyAnswers,
+  surveyAnswersRelations,
+} from '@/database/schema/surveyAnswers'
 export { audits } from '@/database/schema/audtis'
 export { contactsInfo } from '@/database/schema/contactsInfo'
 export {
@@ -43,8 +47,11 @@ export { riskStudentReports } from '@/database/schema/riskStudentReports'
 export { riskStudents } from '@/database/schema/riskStudents'
 export { rolePermissions } from '@/database/schema/rolePermissions'
 export { roles } from '@/database/schema/roles'
-export { scheduleAccounts } from '@/database/schema/scheduleAccounts'
-export { schedules } from '@/database/schema/schedules'
+export {
+  scheduleAccounts,
+  scheduleAccountsRelations,
+} from '@/database/schema/scheduleAccounts'
+export { schedules, scheduleRelations } from '@/database/schema/schedules'
 export { specialityStudyPlans } from '@/database/schema/specialityStudyPlans'
 export { studyPlanCourses } from '@/database/schema/studyPlanCourses'
 export { studyPlans } from '@/database/schema/studyPlans'
@@ -58,6 +65,17 @@ export { unitsSupports } from '@/database/schema/unitsSupports'
 export { evaluations } from '@/database/schema/evaluations'
 export { hirings, hiringsRelations } from '@/database/schema/hirings'
 export { jobRequests } from '@/database/schema/jobRequests'
-export { surveys } from '@/database/schema/surveys'
+export { surveys, surveyRelations } from '@/database/schema/surveys'
 export { accountSurveys } from '@/database/schema/accountSurveys'
-export { surveyQuestions } from '@/database/schema/surveyQuestions'
+export {
+  surveyQuestions,
+  surveyQuestionsRelations,
+} from '@/database/schema/surveyQuestions'
+export {
+  presentationLetters,
+  presentationLettersRelations,
+} from '@/database/schema/presentationLetters'
+export {
+  presentationLetterAccounts,
+  presentationLetterAccountsRelations,
+} from '@/database/schema/presentationLetterAccounts'
