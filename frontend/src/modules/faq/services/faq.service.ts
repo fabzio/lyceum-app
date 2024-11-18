@@ -1,11 +1,12 @@
 import http from '@frontend/lib/http'
 import { FAQ } from '../interfaces/FAQ'
 import axios from 'axios'
+import { Unit } from '@frontend/interfaces/models/Unit'
 
 class FAQService {
-  public static async getFAQs(): Promise<FAQ[]> {
+  public static async getFAQs(params: { unitId: Unit['id'] }): Promise<FAQ[]> {
     try {
-      const res = await http.get('/faq/faqs')
+      const res = await http.get('/faq/faqs', { params })
       const response = res.data as ResponseAPI
       if (!response.success) {
         throw new Error(response.message)

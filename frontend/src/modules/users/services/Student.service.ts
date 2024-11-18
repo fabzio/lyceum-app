@@ -3,6 +3,7 @@ import { Filters } from '@frontend/interfaces/types'
 import http from '@frontend/lib/http'
 import { Student } from '../interfaces/Student'
 import axios from 'axios'
+import { Unit } from '@frontend/interfaces/models/Unit'
 
 class StudentService {
   static async fetchStudents(
@@ -32,10 +33,10 @@ class StudentService {
   }
 
   static async addStudent(
-    students: Pick<
+    students: (Pick<
       Student,
       'code' | 'name' | 'firstSurname' | 'secondSurname' | 'email'
-    >[]
+    > & { speciality: Unit['name'] })[]
   ): Promise<void> {
     try {
       const res = await http.post('/accounts/students', {

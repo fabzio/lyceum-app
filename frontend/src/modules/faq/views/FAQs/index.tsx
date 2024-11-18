@@ -8,11 +8,14 @@ import NewFAQDialog from './NewFAQDialog'
 import { Separator } from '@frontend/components/ui/separator'
 import Need from '@frontend/components/Need'
 import { FAQPermissionsDict } from '@frontend/interfaces/enums/permissions/FAQ'
+import { useSessionStore } from '@frontend/store'
 
 export default function FAQs() {
+  const { getRoleWithPermission } = useSessionStore()
+  const unitId = getRoleWithPermission(FAQPermissionsDict.READ_FAQ)!.unitId
   const { data: faqsList } = useSuspenseQuery({
     queryKey: [QueryKeys.faq.FAQS],
-    queryFn: () => FAQService.getFAQs(),
+    queryFn: () => FAQService.getFAQs({ unitId }),
   })
   const groupedFAQs = groupBy(faqsList, (faq) => faq.category)
   return (

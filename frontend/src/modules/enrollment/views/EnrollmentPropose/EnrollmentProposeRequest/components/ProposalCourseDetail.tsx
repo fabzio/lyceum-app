@@ -146,7 +146,7 @@ export default function ProposedCourseDetailForm({
               name="hiddenSchedules"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>#Horarios visibles</FormLabel>
+                  <FormLabel>Horarios ocultos</FormLabel>
                   <FormControl>
                     <Input {...field} min={0} type="number" />
                   </FormControl>
@@ -186,9 +186,15 @@ export default function ProposedCourseDetailForm({
 }
 
 const formSchema = z.object({
-  vacancies: z.coerce.number().min(1, 'El número de vacantes es requerido'),
+  vacancies: z.coerce
+    .number()
+    .min(1, 'El número de vacantes es requerido')
+    .int('El número de vacantes debe ser un número entero'),
   visibleSchedules: z.coerce
     .number()
+    .int('El número de horarios visibles debe ser un número entero')
     .min(1, 'El número de horarios visibles es requerido'),
-  hiddenSchedules: z.coerce.number(),
+  hiddenSchedules: z.coerce
+    .number()
+    .int('El número de horarios ocultos es requerido'),
 })

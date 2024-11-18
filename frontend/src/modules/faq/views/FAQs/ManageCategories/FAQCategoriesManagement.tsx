@@ -127,33 +127,6 @@ export default function FAQCategoriesManagement() {
 
   return (
     <div className="container mx-auto p-4">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Nombre</TableHead>
-            <TableHead className="w-[70px]">Acciones</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {categories?.length ? (
-            categories?.map((category) => (
-              <EditableCategoryRow
-                key={category.id}
-                category={category}
-                onSave={handleSave}
-                onDelete={handleDelete}
-              />
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={2} className="text-center">
-                No se encontraron categorias
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-
       <div className="mt-4">
         <div className="flex space-x-2">
           <div className="flex-grow">
@@ -169,6 +142,32 @@ export default function FAQCategoriesManagement() {
             Agregar
           </Button>
         </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nombre</TableHead>
+              <TableHead className="w-[70px]">Acciones</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {categories?.length ? (
+              categories?.map((category) => (
+                <EditableCategoryRow
+                  key={category.id}
+                  category={category}
+                  onSave={handleSave}
+                  onDelete={handleDelete}
+                />
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={2} className="text-center">
+                  No se encontraron categorias
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   )

@@ -26,7 +26,6 @@ import { Input } from '@frontend/components/ui/input'
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import { useToast } from '@frontend/hooks/use-toast'
 import { getCsvData } from '@frontend/lib/utils'
-import { Student } from '@frontend/modules/users/interfaces/Student'
 import StudentService from '@frontend/modules/users/services/Student.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -60,24 +59,29 @@ export default function MasiveStudentsDialog() {
   })
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    const dataJson = await getCsvData<
-      Pick<
-        Student,
-        | 'code'
-        | 'name'
-        | 'firstSurname'
-        | 'secondSurname'
-        | 'email'
-        | 'speciality'
-      >
-    >(data.file)
-    const dataParsed = dataJson.map((student) => ({
-      ...student,
-      code: student.code.toString(),
-    }))
-
-    mutate(dataParsed)
+    try {
+      const jsonData = await getCsvData<CSVRow>(data.file)
+      const parseData = jsonData.map((unit) => csvSchema.parse(unit))
+      mutate(
+        parseData.map((unit) => ({
+          name: unit['Nombre'],
+          code: unit['Código'],
+          email: unit['Correo institucional'],
+          firstSurname: unit['Primer apellido'],
+          secondSurname: unit['Segundo apellido'],
+          speciality: unit['Especialidad'],
+        }))
+      )
+    } catch (error) {
+      toast({
+        title: 'Error',
+        variant: 'destructive',
+        description: (error as Error).message,
+      })
+      return
+    }
   }
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -108,8 +112,8 @@ export default function MasiveStudentsDialog() {
                       </FormLabel>
                     </HoverCardTrigger>
                     <HoverCardContent>
-                      code | name | firstSurname | secondSurname | email |
-                      speciality
+                      Código | Nombre | Primer apellido | Segundo apellido |
+                      Correo institucional | Especialidad
                     </HoverCardContent>
                   </HoverCard>
                   <FormControl>
@@ -146,3 +150,14 @@ export default function MasiveStudentsDialog() {
 const formSchema = z.object({
   file: z.instanceof(File, { message: 'Debe seleccionar un archivo' }),
 })
+
+const csvSchema = z.object({
+  Código: z.coerce.string().length(8),
+  Nombre: z.string(),
+  ['Primer apellido']: z.string(),
+  ['Segundo apellido']: z.string(),
+  ['Correo institucional']: z.string().email(),
+  Especialidad: z.string(),
+})
+
+type CSVRow = z.infer<typeof csvSchema>
