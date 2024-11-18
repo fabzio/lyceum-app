@@ -23,7 +23,8 @@ export interface HiringSelectionDAO {
   ): Promise<void>
 
   getCandidateHiringList(
-    courseHiringId: string,
+    hiringId: number,
+    courseHiringId: number,
     step: 'first' | 'second' | 'selected'
   ): Promise<
     (Pick<AccountsSchema, 'id' | 'name' | 'email'> & {
@@ -56,6 +57,8 @@ export interface HiringSelectionDAO {
     unitId: number,
     filters: GetHiringsWithCoursesQueryDTO
   ): Promise<HiringsWithCoursesDTO[]>
+
+  getCandidateMotivation(applicationId: number): Promise<string | null>
 }
 
 export default HiringSelectionDAO

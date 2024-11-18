@@ -8,6 +8,7 @@ import { Button } from '@frontend/components/ui/button'
 import { Course } from '@frontend/interfaces/models/Course'
 import { Hiring } from '@frontend/interfaces/models/Hiring'
 import { useState } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
 const ITEMS_PER_PAGE = 5
 interface Props {
@@ -35,7 +36,7 @@ export default function HiringAccordion({ hirings = [] }: Props) {
                 </div>
               </AccordionTrigger>
               <AccordionContent>
-                <AssigmentAccordionItem courses={courses} />
+                <AssigmentAccordionItem courses={courses} hiringId={id} />
               </AccordionContent>
             </AccordionItem>
           ))
@@ -84,11 +85,35 @@ export default function HiringAccordion({ hirings = [] }: Props) {
   )
 }
 
-function AssigmentAccordionItem({ courses }: { courses: Course[] }) {
+function AssigmentAccordionItem({
+  courses,
+  hiringId,
+}: {
+  courses: Course[]
+  hiringId: string
+}) {
+  const navigate = useNavigate()
+
+  const handleRowClick = (course: Course) => {
+    const searchParams = new URLSearchParams()
+    searchParams.set('courseName', course.name) // Add the course name to the search parameters
+
+    navigate({
+      to: `/contrataciones/seleccion-docentes/${hiringId}/${course.id}?${searchParams.toString()}`,
+    })
+  }
   return (
     <ul className="flex flex-col gap-2">
       {courses.map((course) => (
-        <li className="flex justify-between" key={course.id}>
+        <li
+          className="flex justify-between cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
+          key={course.id}
+          onClick={(e) => {
+            if ((e.target as HTMLElement).tagName !== 'BUTTON') {
+              handleRowClick(course)
+            }
+          }}
+        >
           <div>
             <span className="font-">{course.name}</span> {course.unitName}
           </div>

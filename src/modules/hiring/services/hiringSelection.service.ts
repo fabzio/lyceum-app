@@ -156,18 +156,25 @@ class HiringSelectionService implements HiringSelectionDAO {
   }
 
   public async getCandidateHiringList(
-    courseHiringId: string,
+    hiringId: number,
+    courseHiringId: number,
     step: 'first' | 'second' | 'selected'
   ): Promise<
     (Pick<AccountsSchema, 'id' | 'name' | 'email'> & {
       jobRequestStatus: JobRequestsSchema['state']
+      jobRequestId: JobRequestsSchema['id']
     })[]
   > {
     // 1. Obtener si existe el course Hiring
     const [existingCourseHiring] = await db
       .select()
       .from(courseHirings)
-      .where(eq(courseHirings.id, courseHiringId))
+      .where(
+        and(
+          eq(courseHirings.hiringId, hiringId),
+          eq(courseHirings.courseId, courseHiringId)
+        )
+      )
 
     if (!existingCourseHiring) {
       throw new CourseHiringNotFoundError('La convocatoria del curso no existe')
@@ -176,9 +183,9 @@ class HiringSelectionService implements HiringSelectionDAO {
     let statusFilter: NonNullable<JobRequestsSchema['state']>[]
 
     if (step === 'first') {
-      statusFilter = ['sent', 'rejected']
+      statusFilter = ['sent']
     } else if (step === 'second') {
-      statusFilter = ['to_evaluate', 'evaluated']
+      statusFilter = ['to_evaluate', 'evaluated', 'rejected']
     } else {
       statusFilter = ['selected']
     }
@@ -190,6 +197,7 @@ class HiringSelectionService implements HiringSelectionDAO {
         secondSurname: accounts.secondSurname,
         email: accounts.email,
         jobRequestStatus: jobRequests.state,
+        jobRequestId: jobRequests.id,
       })
       .from(accounts)
       .innerJoin(jobRequests, eq(jobRequests.accountId, accounts.id))
@@ -199,7 +207,7 @@ class HiringSelectionService implements HiringSelectionDAO {
       )
       .where(
         and(
-          eq(courseHirings.id, courseHiringId),
+          eq(courseHirings.id, existingCourseHiring.id),
           inArray(jobRequests.state, statusFilter)
         )
       )
@@ -209,9 +217,21 @@ class HiringSelectionService implements HiringSelectionDAO {
       name: `${candidate.name} ${candidate.firstSurname} ${candidate.secondSurname}`,
       email: candidate.email,
       jobRequestStatus: candidate.jobRequestStatus,
+      jobRequestId: +candidate.jobRequestId,
     }))
 
     return candidateList
+  }
+
+  public async getCandidateMotivation(
+    applicationId: number
+  ): Promise<string | null> {
+    const application = await db
+      .select()
+      .from(jobRequests)
+      .where(eq(jobRequests.id, applicationId))
+      .limit(1)
+    return application[0].motivation
   }
 
   public async getJobRequestDetail(

@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { number, z } from 'zod'
 
 export const createHiringSelectionDTO = z.object({
   unitId: z.number(),
@@ -55,6 +55,7 @@ export type updateHiringSelectionStatusPropDTO = z.infer<
 >
 
 export const getCandidateHiringListDTO = z.object({
+  hiringId: z.string().min(1),
   courseHiringId: z.string().min(1),
   step: z.enum(['first', 'second', 'selected']),
 })
@@ -89,4 +90,12 @@ export const getHiringsWithCoursesQueryDTO = z.object({
 
 export type GetHiringsWithCoursesQueryDTO = z.infer<
   typeof getHiringsWithCoursesQueryDTO
+>
+
+export const getCandidateMotivationQueryDTO = z.object({
+  jobRequestId: z.coerce.number(),
+})
+
+export type GetCandidateMotivationQueryDTO = z.infer<
+  typeof getCandidateMotivationQueryDTO
 >
