@@ -8,6 +8,7 @@ import { Button } from '@frontend/components/ui/button'
 import { Course } from '@frontend/interfaces/models/Course'
 import { Hiring } from '@frontend/interfaces/models/Hiring'
 import { useState } from 'react'
+import { Link } from '@tanstack/react-router'
 
 const ITEMS_PER_PAGE = 5
 interface Props {
@@ -35,7 +36,7 @@ export default function HiringAccordion({ hirings = [] }: Props) {
                 </div>
               </AccordionTrigger>
               <AccordionContent>
-                <AssigmentAccordionItem courses={courses} />
+                <AssigmentAccordionItem courses={courses} hiringId={id} />
               </AccordionContent>
             </AccordionItem>
           ))
@@ -84,7 +85,13 @@ export default function HiringAccordion({ hirings = [] }: Props) {
   )
 }
 
-function AssigmentAccordionItem({ courses }: { courses: Course[] }) {
+function AssigmentAccordionItem({
+  courses,
+  hiringId,
+}: {
+  courses: Course[]
+  hiringId: string
+}) {
   return (
     <ul className="flex flex-col gap-2">
       {courses.map((course) => (
@@ -93,7 +100,15 @@ function AssigmentAccordionItem({ courses }: { courses: Course[] }) {
             <span className="font-">{course.name}</span> {course.unitName}
           </div>
           <div>
-            <Button variant="outline">Administrar</Button>
+            <Link
+              to="/contrataciones/seleccion-docentes/$hiringId"
+              params={{
+                hiringId,
+              }}
+              search={{ courseId: course.id, courseName: course.name }}
+            >
+              <Button variant="outline">Administrar</Button>
+            </Link>
           </div>
         </li>
       ))}

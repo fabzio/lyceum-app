@@ -111,6 +111,16 @@ class PresentationLettersService {
         roleId: BaseRoles.STUDENT,
         lead: true,
       })
+
+      await trx.insert(presentationLetterAccounts).values(
+        params.accountsParse.map((account) => ({
+          presentationLetterId: id,
+          accountId: account.id,
+          roleId: BaseRoles.STUDENT,
+          lead: false,
+        }))
+      )
+
       return { id: vUnitId, companyName: params.companyName }
     })
     return res
@@ -145,6 +155,49 @@ class PresentationLettersService {
       .where(eq(units.id, params.UnitId))
 
     return letterInUnitListQuery.map((row) => ({
+      id: row.letterid,
+      companyName: row.companyName,
+      submissionDate: row.submissionDate,
+      status: row.status,
+      scheduleId: row.scheduleId,
+      code: row.schedulesCode,
+      name: row.coursesName,
+      courseCode: row.coursesCode,
+    }))
+  }
+
+  public async getPresentationLetterByAccount(params: { id: string }) {
+    const PresentationLetterList = await db
+      .select({
+        letterid: presentationLetters.id,
+        companyName: presentationLetters.companyName,
+        submissionDate: presentationLetters.submissionDate,
+        status: presentationLetters.status,
+        scheduleId: schedules.id,
+        schedulesCode: schedules.code,
+        courseId: courses.id,
+        coursesName: courses.name,
+        coursesCode: courses.code,
+      })
+      .from(presentationLetters)
+      .innerJoin(schedules, eq(presentationLetters.scheduleId, schedules.id))
+      .innerJoin(courses, eq(schedules.courseId, courses.id))
+      .innerJoin(
+        presentationLetterAccounts,
+        eq(
+          presentationLetterAccounts.presentationLetterId,
+          presentationLetters.id
+        )
+      )
+      .innerJoin(
+        accounts,
+        eq(presentationLetterAccounts.accountId, accounts.id)
+      )
+      .where(eq(accounts.id, params.id))
+
+    console.log(PresentationLetterList)
+
+    return PresentationLetterList.map((row) => ({
       id: row.letterid,
       companyName: row.companyName,
       submissionDate: row.submissionDate,
