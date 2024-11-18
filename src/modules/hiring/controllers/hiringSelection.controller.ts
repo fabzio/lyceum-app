@@ -76,10 +76,11 @@ class HiringSelectioncontroller {
   )
 
   public getHiringCandidates = this.router.get(
-    '/:courseHiringId',
+    '/:hiringId/:courseHiringId/',
     zValidator(
       'param',
       z.object({
+        hiringId: z.string(),
         courseHiringId: z.string(),
       })
     ),
@@ -90,12 +91,14 @@ class HiringSelectioncontroller {
       })
     ),
     async (c) => {
+      const { hiringId } = c.req.valid('param')
       const { courseHiringId } = c.req.valid('param')
       const { step } = c.req.valid('query')
       try {
         const response: ResponseAPI = {
           data: await this.hiringSelectionService.getCandidateHiringList(
-            courseHiringId,
+            +hiringId,
+            +courseHiringId,
             step
           ),
           message: 'CandidateList Status correctly get',
@@ -160,6 +163,33 @@ class HiringSelectioncontroller {
 
         return c.json(response)
       } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public getMotivation = this.router.get(
+    '/:hiringId/:courseHiringId/:accountId/motivation',
+    zValidator('query', z.object({ id: z.string() })), // Validate that the parameter is a number
+    async (c) => {
+      try {
+        const { id } = c.req.valid('query')
+        const result =
+          await this.hiringSelectionService.getCandidateMotivation(+id)
+
+        // Construct the success response
+        const response = {
+          data: result,
+          success: true,
+          message: `Motivación de la aplicación ${id} recuperada`,
+        }
+
+        return c.json(response)
+      } catch (error) {
+        // Error handling
         if (error instanceof LyceumError) {
           c.status(error.code)
         }
