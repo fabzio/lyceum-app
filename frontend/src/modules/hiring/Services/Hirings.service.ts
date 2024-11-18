@@ -48,7 +48,7 @@ class HiringService {
 
   public static async getApplicants(
     hiringId: string,
-    courseHiringId: string,
+    courseHiringId: number,
     step: 'first' | 'second' | 'selected'
   ): Promise<
     (Pick<Account, 'id' | 'name' | 'email'> & {

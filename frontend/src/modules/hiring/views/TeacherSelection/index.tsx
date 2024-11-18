@@ -9,6 +9,7 @@ import debounce from 'debounce'
 import { useSessionStore } from '@frontend/store'
 import { HiringPermissionsDict } from '@frontend/interfaces/enums/permissions/Hiring'
 import { useFilters } from '@frontend/hooks/useFilters'
+import Need from '@frontend/components/Need'
 
 export default function HiringSelection() {
   const { filters, setFilters } = useFilters(
@@ -40,9 +41,11 @@ export default function HiringSelection() {
             onChange={handleSearch}
           />
         </div>
-        <Link to="/contrataciones/seleccion-docentes/nuevo">
-          <Button>Nueva convoctoria</Button>
-        </Link>
+        <Need permissions={[HiringPermissionsDict.CREATE_HIRING_PROCESS]}>
+          <Link to="/contrataciones/seleccion-docentes/nuevo">
+            <Button>Nueva convoctoria</Button>
+          </Link>
+        </Need>
       </div>
       <HiringAccordion hirings={data ?? []} />
     </div>

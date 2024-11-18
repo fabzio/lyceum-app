@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import { sortByToState } from '@frontend/lib/table'
 import { CandidatesColumns } from '../components/columnsCandidatesProcess'
 import DataTable from '@frontend/components/DataTable'
-import { useParams } from '@tanstack/react-router'
+import { useParams, useSearch } from '@tanstack/react-router'
 import HiringService from '@frontend/modules/hiring/Services/Hirings.service'
 
 export const DEFAULT_PAGE_INDEX = 0
@@ -15,12 +15,12 @@ type FirstFilterTableProps = {
   courseName: string | undefined
 }
 
-export default function FirstFilterTable({
-  step,
-  courseName,
-}: FirstFilterTableProps) {
-  const { hiringId, courseId } = useParams({
-    from: '/_auth/contrataciones/seleccion-docentes/$hiringId/$courseId',
+export default function FirstFilterTable({ step }: FirstFilterTableProps) {
+  const { hiringId } = useParams({
+    from: '/_auth/contrataciones/seleccion-docentes/$hiringId',
+  })
+  const { courseId, courseName } = useSearch({
+    from: '/_auth/contrataciones/seleccion-docentes/$hiringId',
   })
 
   const { data: applicants } = useQuery({

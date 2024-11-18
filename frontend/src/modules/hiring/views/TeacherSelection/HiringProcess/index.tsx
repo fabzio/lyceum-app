@@ -5,24 +5,22 @@ import {
   TabsList,
   TabsTrigger,
 } from '@frontend/components/ui/tabs'
-import FirstFilterTable from './views/TeacherSelection/HiringProcess/FirstFilterTable'
+import FirstFilterTable from './FirstFilterTable'
+import { useSearch } from '@tanstack/react-router'
 
-interface HiringProcessProps {
-  courseName?: string
-}
-
-export default function HiringProcess({ courseName }: HiringProcessProps) {
+export default function HiringProcess() {
+  const { courseName } = useSearch({
+    from: '/_auth/contrataciones/seleccion-docentes/$hiringId',
+  })
   const tabItems = [
     { value: 'primera-etapa', label: 'Primera Etapa' },
     { value: 'segunda-etapa', label: 'Segunda Etapa' },
     { value: 'seleccionados', label: 'Seleccionados' },
   ]
-
+  console.log('courseName:', courseName)
   return (
     <PageLayout name="Proceso de Contratación">
-      <h1 className="ml-6 mb-4 text-xl font-bold">
-        {(courseName || '').replace(/\+/g, ' ')}
-      </h1>
+      <h1 className="ml-6 mb-4 text-xl font-bold">{courseName}</h1>
       <div className="ml-5">
         <Tabs defaultValue="primera-etapa" className="w-full">
           <TabsList className="grid w-full grid-cols-3 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 max-w-[600px]">
