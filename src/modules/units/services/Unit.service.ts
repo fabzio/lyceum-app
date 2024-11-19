@@ -51,7 +51,8 @@ class UnitService {
         id: units.id,
         name: units.name,
         unitType: units.type,
-        parent: parentUni.name,
+        parentName: parentUni.name,
+        parentId: parentUni.id,
       })
       .from(units)
       .innerJoin(parentUni, eq(units.parentId, parentUni.id))
@@ -77,7 +78,8 @@ class UnitService {
       id: Unit['id']
       name: Unit['name']
       unitType: Unit['unitType']
-      parent: Unit['name']
+      parentName: Unit['name']
+      parentId: Unit['id']
     }>
   }
   public async getUnitsByType({
@@ -215,6 +217,37 @@ class UnitService {
       })
       .from(roles)
       .where(and(eq(roles.unitType, unitType), eq(roles.editable, true)))
+  }
+
+  public async updateUnit({
+    id,
+    name,
+    description,
+    parentId,
+  }: {
+    id: number
+    name: string
+    description?: string
+    parentId?: number
+  }) {
+    const existingUnit = await db.select().from(units).where(eq(units.id, id))
+
+    if (existingUnit.length === 0) {
+      throw new Error('La unidad no existe')
+    }
+
+    // Actualizar los datos de la unidad
+    const updatedUnit = await db
+      .update(units)
+      .set({
+        name: name,
+        description: description,
+        parentId: parentId, // Si no se proporciona un `parentId`, se establece en null
+      })
+      .where(eq(units.id, id))
+      .returning()
+
+    return updatedUnit[0] // Devuelve la unidad actualizada
   }
 }
 

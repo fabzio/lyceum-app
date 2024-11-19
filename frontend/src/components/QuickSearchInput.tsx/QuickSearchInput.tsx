@@ -14,7 +14,7 @@ interface Props<T> {
   renderOption: (item: T) => React.ReactNode
   renderSelected: (item: T) => React.ReactNode
   className?: string
-  defaultValue?: keyof T
+  defaultValue?: T
   notKeepSelected?: boolean
 }
 
@@ -26,8 +26,9 @@ export default function QuickSearchInput<T>({
   renderSelected,
   className,
   notKeepSelected = false,
+  defaultValue,
 }: Props<T>) {
-  const [item, setItem] = useState<T | null>(null)
+  const [item, setItem] = useState<T | null>(defaultValue || null)
   const [inputValue, setInputValue] = useState<string>('') // Estado para el valor del input
   const [isOpen, setIsOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
