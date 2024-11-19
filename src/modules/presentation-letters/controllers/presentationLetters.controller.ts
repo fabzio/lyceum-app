@@ -2,7 +2,10 @@ import { Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
-import { createPresentationLetterDTO } from '../dto'
+import {
+  createPresentationLetterDTO,
+  updatePresentationLetterDTO,
+} from '../dto'
 import { PresentationLettersService } from '../services'
 import { insertDocument } from '@/aws/services'
 
@@ -124,6 +127,36 @@ class PresentationLetterController {
             { id: accountId }
           ),
           message: 'Presentation letters retrieved successfully',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public updateStatusOfAPresentationLetter = this.router.put(
+    '/:presentationLetterID',
+    zValidator('param', z.object({ presentationLetterID: z.string() })),
+    zValidator('json', updatePresentationLetterDTO),
+    async (c) => {
+      const { presentationLetterID } = c.req.valid('param')
+      const { observation, reviewerId, status } = c.req.valid('json')
+      try {
+        const response: ResponseAPI = {
+          data: await this.presentatioLetterService.updateStatusOfAPresentationLetter(
+            {
+              presentationLetterID: Number(presentationLetterID),
+              observation,
+              reviewerId,
+              status,
+            }
+          ),
+          message: 'Presentation letters updated successfully',
           success: true,
         }
         return c.json(response)
