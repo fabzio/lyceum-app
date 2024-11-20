@@ -2,6 +2,7 @@ export const QueryKeys = {
   unit: {
     UNITS: 'units',
     UNIT: 'unit',
+    TERMS: 'terms',
   },
   security: {
     PERMISSIONS: 'permissions',

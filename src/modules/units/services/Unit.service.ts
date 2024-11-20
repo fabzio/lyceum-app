@@ -1,5 +1,5 @@
 import db from '@/database'
-import { accountRoles, accounts, roles } from '@/database/schema'
+import { accountRoles, accounts, roles, terms } from '@/database/schema'
 import { units, UnitsInsertSchema } from '@/database/schema/units'
 import { Unit } from '@/interfaces/models/Unit'
 import { PaginatedData } from '@/interfaces/PaginatedData'
@@ -248,6 +248,63 @@ class UnitService {
       .returning()
 
     return updatedUnit[0] // Devuelve la unidad actualizada
+  }
+  public async getTermsPaginated(params: {
+    q?: string
+    page: number
+    limit: number
+    sortBy?: string
+  }): Promise<
+    PaginatedData<{
+      id: number
+      name: string
+      current: boolean
+    }>
+  > {
+    const [field, order] = params.sortBy?.split('.') || ['name', 'asc']
+    const mappedSortBy = {
+      ['asc']: asc,
+      ['desc']: desc,
+    }
+
+    const mappedFields = {
+      ['name']: terms.name,
+      ['current']: terms.current,
+    }
+
+    const [{ count }] = await db
+      .select({
+        count: sql<string>`count(*)`,
+      })
+      .from(terms)
+      .where(params.q ? ilike(terms.name, `%${params.q}%`) : undefined)
+
+    const query = db
+      .select({
+        id: terms.id,
+        name: terms.name,
+        current: terms.current,
+      })
+      .from(terms)
+      .where(params.q ? ilike(terms.name, `%${params.q}%`) : undefined)
+      .$dynamic()
+
+    const result = await withPagination(
+      query,
+      mappedSortBy[order as keyof typeof mappedSortBy](
+        mappedFields[field as keyof typeof mappedFields]
+      ),
+      params.page,
+      params.limit
+    )
+
+    return {
+      result,
+      currentPage: params.page,
+      hasNext: +count > params.page * params.limit,
+      rowCount: +count,
+      totalPages: Math.ceil(+count / params.limit),
+    }
   }
 }
 

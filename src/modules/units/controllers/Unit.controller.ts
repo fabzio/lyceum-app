@@ -220,6 +220,43 @@ class UnitController {
       }
     }
   )
+  public getTermsPaginated = this.router.get(
+    '/terms/paginated',
+    zValidator(
+      'query',
+      z.object({
+        q: z.string().optional(),
+        page: z.coerce.number(),
+        limit: z.coerce.number(),
+        sortBy: z.string().optional(),
+      })
+    ),
+    async (c) => {
+      const { q, page, limit, sortBy } = c.req.valid('query')
+      try {
+        const response = await this.unitService.getTermsPaginated({
+          q,
+          page,
+          limit,
+          sortBy,
+        })
+        return c.json({
+          data: response,
+          message: 'Terms retrieved successfully',
+          success: true,
+        })
+      } catch (error) {
+        if (error instanceof LyceumError) c.status(error.code)
+        return c.json(
+          {
+            message: error instanceof Error ? error.message : 'Unknown error',
+            success: false,
+          },
+          500
+        )
+      }
+    }
+  )
 }
 
 export default UnitController
