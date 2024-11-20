@@ -134,5 +134,18 @@ class UnitService {
       throw error
     }
   }
+  static async makeCurrentTerm(id: number): Promise<void> {
+    try {
+      const response = await http.put('/unit/units/terms/makeCurrent', null, {
+        params: { id }, // Pasamos el ID del término
+      })
+
+      if (!response.data.success) {
+        throw new Error('Error al actualizar el término actual')
+      }
+    } catch (error) {
+      throw new Error('No se pudo actualizar el término actual')
+    }
+  }
 }
 export default UnitService

@@ -306,6 +306,22 @@ class UnitService {
       totalPages: Math.ceil(+count / params.limit),
     }
   }
+  public async setCurrentTerm(id: number): Promise<void> {
+    try {
+      // Establecer el término actual como `current = true` y desactivar el resto
+      await db.transaction(async (trx) => {
+        // Poner todos los términos como `current = false`
+        await trx.update(terms).set({ current: false })
+
+        // Establecer el término específico como `current = true`
+        await trx.update(terms).set({ current: true }).where(eq(terms.id, id))
+      })
+    } catch (error) {
+      throw new Error(
+        `No se pudo establecer el término actual para el ID: ${id}`
+      )
+    }
+  }
 }
 
 export default UnitService

@@ -257,6 +257,35 @@ class UnitController {
       }
     }
   )
+  public makeCurrent = this.router.put(
+    '/terms/makeCurrent',
+    zValidator(
+      'query',
+      z.object({
+        id: z
+          .string()
+          .transform((val) => parseInt(val, 10))
+          .refine((val) => !isNaN(val), {
+            message: 'El ID debe ser un número válido.',
+          }),
+      })
+    ),
+    async (c) => {
+      try {
+        const { id } = c.req.valid('query')
+        await this.unitService.setCurrentTerm(id)
+        return c.json({
+          success: true,
+          message: 'Semestre actualizado correctamente.',
+        })
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
 }
 
 export default UnitController
