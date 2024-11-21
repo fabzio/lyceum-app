@@ -208,5 +208,30 @@ class PresentationLettersService {
       courseCode: row.coursesCode,
     }))
   }
+
+  public async updateStatusOfAPresentationLetter(params: {
+    presentationLetterID: number
+    observation: string
+    reviewerId: string
+    status: PresentationLettersSchema['status']
+  }) {
+    const res = await db.transaction(async (trx) => {
+      await trx
+        .update(presentationLetters)
+        .set({
+          status: params.status,
+          observation: params.observation,
+          acceptanceDate: new Date(),
+        })
+        .where(eq(presentationLetters.id, params.presentationLetterID))
+
+      await trx.insert(presentationLetterAccounts).values({
+        presentationLetterId: params.presentationLetterID,
+        accountId: params.reviewerId,
+        roleId: 13,
+        lead: true,
+      })
+    })
+  }
 }
 export default PresentationLettersService
