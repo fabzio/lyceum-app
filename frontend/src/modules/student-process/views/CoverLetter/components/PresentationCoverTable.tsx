@@ -18,8 +18,7 @@ export default function CoverLetterTable() {
   const navigate = useNavigate({
     from: '/procesos-de-estudiantes/cartas-de-presentacion',
   })
-  const accountCode = session!.code
-
+  const accountId = session!.id
   const unitId = getRoleWithPermission(
     StudentProcessPermissionsDict.REVIEW_PRESENTATION_LETTER
   )?.unitId
@@ -35,7 +34,7 @@ export default function CoverLetterTable() {
           })
       : () =>
           PresentationCardService.getPresentationCardRequests({
-            accountCode: accountCode,
+            accountId,
           }),
     placeholderData: keepPreviousData,
   })

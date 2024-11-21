@@ -121,7 +121,7 @@ class PresentationLettersService {
         }))
       )
 
-      return { id: vUnitId, companyName: params.companyName }
+      return { id, companyName: params.companyName }
     })
     return res
   }
@@ -168,7 +168,7 @@ class PresentationLettersService {
 
   public async getPresentationLetterByAccount(params: { id: string }) {
     const PresentationLetterList = await db
-      .select({
+      .selectDistinct({
         letterid: presentationLetters.id,
         companyName: presentationLetters.companyName,
         submissionDate: presentationLetters.submissionDate,
@@ -194,8 +194,6 @@ class PresentationLettersService {
         eq(presentationLetterAccounts.accountId, accounts.id)
       )
       .where(eq(accounts.id, params.id))
-
-    console.log(PresentationLetterList)
 
     return PresentationLetterList.map((row) => ({
       id: row.letterid,

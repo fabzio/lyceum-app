@@ -30,12 +30,14 @@ class PresentationCardService {
     }
   }
   public static async getPresentationCardRequests({
-    accountCode,
+    accountId,
   }: {
-    accountCode: Account['code']
+    accountId: Account['id']
   }) {
     try {
-      const res = await http.get(`/thesis/theme/student/${accountCode}`)
+      const res = await http.get(
+        `/presentation-letters/letters/list/${accountId}`
+      )
 
       const response = res.data as ResponseAPI
 

@@ -13,7 +13,7 @@ import { mapCoverLetterStatus } from '../../components/columns'
 
 export default function CoverLetterAside() {
   const { session, getRoleWithPermission } = useSessionStore()
-  const accountCode = session!.code
+  const accountId = session!.id
   const unitId = getRoleWithPermission(
     StudentProcessPermissionsDict.REVIEW_PRESENTATION_LETTER
   )?.unitId
@@ -26,7 +26,7 @@ export default function CoverLetterAside() {
           })
       : () =>
           PresentationCardService.getPresentationCardRequests({
-            accountCode: accountCode,
+            accountId,
           }),
   })
   const navigate = useNavigate()
