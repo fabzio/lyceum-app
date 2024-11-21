@@ -171,11 +171,16 @@ export default function NewPresentationCardForm() {
                             AccountsService.getAccount({
                               q,
                               userType: BaseRoles.STUDENT,
-                            })
+                            }).then((res) =>
+                              res.filter(
+                                (account) => account.id !== session!.id
+                              )
+                            )
                           }
-                          handleSelect={(item) =>
-                            field.onChange({ id: item?.code })
-                          } // Updated to pass an object
+                          handleSelect={(item) => {
+                            console.log(item?.id)
+                            field.onChange({ id: item?.id })
+                          }} // Updated to pass an object
                           renderOption={(item) => (
                             <div className="hover:bg-muted px-1 text-sm flex justify-between">
                               <span>{`${item.name} ${item.firstSurname} ${item.secondSurname} `}</span>
