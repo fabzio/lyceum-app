@@ -41,7 +41,7 @@ export const Route = createFileRoute(
             })
         : () =>
             PresentationCardService.getPresentationCardRequests({
-              accountCode: session!.code,
+              accountId: session!.id,
             }),
     })
   },

@@ -121,7 +121,7 @@ class PresentationLettersService {
         }))
       )
 
-      return { id: vUnitId, companyName: params.companyName }
+      return { id, companyName: params.companyName }
     })
     return res
   }
@@ -168,7 +168,7 @@ class PresentationLettersService {
 
   public async getPresentationLetterByAccount(params: { id: string }) {
     const PresentationLetterList = await db
-      .select({
+      .selectDistinct({
         letterid: presentationLetters.id,
         companyName: presentationLetters.companyName,
         submissionDate: presentationLetters.submissionDate,

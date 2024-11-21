@@ -29,7 +29,6 @@ export default function ConfirmationDialog({ refSubmitButtom }: Props) {
   })
 
   const handleSubmit = () => {
-    console.log(mode)
     refSubmitButtom.current?.click()
     navigate({
       to: '/usuarios/estudiantes/$code',
