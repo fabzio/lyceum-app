@@ -19,7 +19,6 @@ export default function CoverLetterTable() {
     from: '/procesos-de-estudiantes/cartas-de-presentacion',
   })
   const accountId = session!.id
-  console.log('accountId', accountId)
   const unitId = getRoleWithPermission(
     StudentProcessPermissionsDict.REVIEW_PRESENTATION_LETTER
   )?.unitId

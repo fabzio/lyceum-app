@@ -178,7 +178,6 @@ export default function NewPresentationCardForm() {
                             )
                           }
                           handleSelect={(item) => {
-                            console.log(item?.id)
                             field.onChange({ id: item?.id })
                           }} // Updated to pass an object
                           renderOption={(item) => (

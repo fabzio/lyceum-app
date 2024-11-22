@@ -195,8 +195,6 @@ class PresentationLettersService {
       )
       .where(eq(accounts.id, params.id))
 
-    console.log(PresentationLetterList)
-
     return PresentationLetterList.map((row) => ({
       id: row.letterid,
       companyName: row.companyName,

@@ -17,7 +17,6 @@ export default function HiringProcess() {
     { value: 'segunda-etapa', label: 'Segunda Etapa' },
     { value: 'seleccionados', label: 'Seleccionados' },
   ]
-  console.log('courseName:', courseName)
   return (
     <PageLayout name="Proceso de Contratación">
       <h1 className="ml-6 mb-4 text-xl font-bold">{courseName}</h1>
