@@ -121,7 +121,7 @@ class PresentationLettersService {
         }))
       )
 
-      return { id: vUnitId, companyName: params.companyName }
+      return { id, companyName: params.companyName }
     })
     return res
   }
@@ -168,7 +168,7 @@ class PresentationLettersService {
 
   public async getPresentationLetterByAccount(params: { id: string }) {
     const PresentationLetterList = await db
-      .select({
+      .selectDistinct({
         letterid: presentationLetters.id,
         companyName: presentationLetters.companyName,
         submissionDate: presentationLetters.submissionDate,
@@ -195,8 +195,6 @@ class PresentationLettersService {
       )
       .where(eq(accounts.id, params.id))
 
-    console.log(PresentationLetterList)
-
     return PresentationLetterList.map((row) => ({
       id: row.letterid,
       companyName: row.companyName,
@@ -207,6 +205,31 @@ class PresentationLettersService {
       name: row.coursesName,
       courseCode: row.coursesCode,
     }))
+  }
+
+  public async updateStatusOfAPresentationLetter(params: {
+    presentationLetterID: number
+    observation: string
+    reviewerId: string
+    status: PresentationLettersSchema['status']
+  }) {
+    const res = await db.transaction(async (trx) => {
+      await trx
+        .update(presentationLetters)
+        .set({
+          status: params.status,
+          observation: params.observation,
+          acceptanceDate: new Date(),
+        })
+        .where(eq(presentationLetters.id, params.presentationLetterID))
+
+      await trx.insert(presentationLetterAccounts).values({
+        presentationLetterId: params.presentationLetterID,
+        accountId: params.reviewerId,
+        roleId: 13,
+        lead: true,
+      })
+    })
   }
 }
 export default PresentationLettersService

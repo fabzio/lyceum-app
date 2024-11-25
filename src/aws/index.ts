@@ -38,7 +38,6 @@ export const createDocument = async (file: File): Promise<string> => {
   // Upload file to S3
   const uploadCommand = new PutObjectCommand(params)
   const response = await s3Client.send(uploadCommand)
-  console.log('response', response)
   return docId
 }
 

@@ -20,7 +20,7 @@ export default function GeneralInfo({ refSubmitButtom, professor }: Props) {
     resolver: zodResolver(formSchema),
   })
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data)
+    console.log(data) //FIXME
   }
   return (
     <FormProvider {...form}>

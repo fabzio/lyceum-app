@@ -8,12 +8,17 @@ import {
   CommandList,
 } from '@frontend/components/ui/command'
 import { ValidRoutes } from '@frontend/constants/paths'
+import { ModulesDict } from '@frontend/interfaces/enums/modules'
+import { filterTabs } from '@frontend/lib/utils'
 import Modules from '@frontend/modules'
+import { useSessionStore } from '@frontend/store'
 import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 
 export default function SearchBar() {
   const navigate = useNavigate()
+  const { getAllowedModules, getAllPermissions } = useSessionStore()
+  const allowedModules = getAllowedModules()
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -28,6 +33,10 @@ export default function SearchBar() {
     return () => document.removeEventListener('keydown', down)
   }, [])
 
+  const filteredModules = Modules.filter(
+    (element) =>
+      allowedModules.includes(element.code) || element.code === ModulesDict.HOME
+  )
   const handleClick = (path: ValidRoutes) => {
     navigate({
       to: path,
@@ -51,20 +60,26 @@ export default function SearchBar() {
           <CommandEmpty>
             No se encontraron resultados para tu búsqueda
           </CommandEmpty>
-          {Modules.map((module) => (
-            <CommandGroup key={module.path} heading={module.label}>
-              {module.submodules.map((submodule) => (
-                <CommandItem
-                  key={submodule.path}
-                  onSelect={() => handleClick(submodule.path)}
-                  className="cursor-pointer"
-                >
-                  <span className="mr-1">{module.icon}</span>
-                  {submodule.label}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          ))}
+          {filteredModules.map((module) => {
+            const filteredSubmodules = filterTabs(
+              module.submodules,
+              getAllPermissions()
+            )
+            return (
+              <CommandGroup key={module.path} heading={module.label}>
+                {filteredSubmodules.map((submodule) => (
+                  <CommandItem
+                    key={submodule.path}
+                    onSelect={() => handleClick(submodule.path)}
+                    className="cursor-pointer"
+                  >
+                    <span className="mr-1">{module.icon}</span>
+                    {submodule.label}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )
+          })}
         </CommandList>
       </CommandDialog>
     </div>

@@ -41,7 +41,6 @@ class SurveyService {
       },
       where: and(eq(units.id, unitId), eq(units.type, 'speciality')),
     })
-    console.log(isSpeciality)
     if (!isSpeciality) throw new Error('Especialidad no encontrada')
 
     const surveysSpeciality = await db.query.surveys.findMany({
