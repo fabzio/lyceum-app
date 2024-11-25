@@ -1,4 +1,5 @@
 import { UnitType } from '@frontend/interfaces/enums'
+import { Term } from '@frontend/interfaces/models'
 import { Unit } from '@frontend/interfaces/models/Unit'
 import { Filters } from '@frontend/interfaces/types'
 import http from '@frontend/lib/http'
@@ -88,6 +89,62 @@ class UnitService {
         throw new Error(error.response?.data.message || error.message)
       }
       throw error
+    }
+  }
+
+  public static async updateUnit(unit: Unit) {
+    try {
+      const res = await http.put(`/unit/units/${unit.id}`, {
+        name: unit.name,
+        description: unit.description,
+        parentId: unit.parentId,
+        unitType: unit.unitType,
+      })
+      const response = res.data as ResponseAPI<Unit>
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+
+  public static async fetchTerms(params: Filters) {
+    try {
+      const res = await http.get('/unit/units/terms/paginated', {
+        params: {
+          q: params.q || '',
+          page: params.pageIndex || 0,
+          limit: params.pageSize || 10,
+        },
+      })
+      const response = res.data as ResponseAPI<PaginatedData<Term>>
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+  static async makeCurrentTerm(id: number): Promise<void> {
+    try {
+      const response = await http.put('/unit/units/terms/makeCurrent', null, {
+        params: { id }, // Pasamos el ID del término
+      })
+
+      if (!response.data.success) {
+        throw new Error('Error al actualizar el término actual')
+      }
+    } catch (error) {
+      throw new Error('No se pudo actualizar el término actual')
     }
   }
 }

@@ -1,5 +1,5 @@
 import db from '@/database'
-import { accountRoles, accounts, roles } from '@/database/schema'
+import { accountRoles, accounts, roles, terms } from '@/database/schema'
 import { units, UnitsInsertSchema } from '@/database/schema/units'
 import { Unit } from '@/interfaces/models/Unit'
 import { PaginatedData } from '@/interfaces/PaginatedData'
@@ -51,7 +51,8 @@ class UnitService {
         id: units.id,
         name: units.name,
         unitType: units.type,
-        parent: parentUni.name,
+        parentName: parentUni.name,
+        parentId: parentUni.id,
       })
       .from(units)
       .innerJoin(parentUni, eq(units.parentId, parentUni.id))
@@ -77,7 +78,8 @@ class UnitService {
       id: Unit['id']
       name: Unit['name']
       unitType: Unit['unitType']
-      parent: Unit['name']
+      parentName: Unit['name']
+      parentId: Unit['id']
     }>
   }
   public async getUnitsByType({
@@ -215,6 +217,110 @@ class UnitService {
       })
       .from(roles)
       .where(and(eq(roles.unitType, unitType), eq(roles.editable, true)))
+  }
+
+  public async updateUnit({
+    id,
+    name,
+    description,
+    parentId,
+  }: {
+    id: number
+    name: string
+    description?: string
+    parentId?: number
+  }) {
+    const existingUnit = await db.select().from(units).where(eq(units.id, id))
+
+    if (existingUnit.length === 0) {
+      throw new Error('La unidad no existe')
+    }
+
+    // Actualizar los datos de la unidad
+    const updatedUnit = await db
+      .update(units)
+      .set({
+        name: name,
+        description: description,
+        parentId: parentId, // Si no se proporciona un `parentId`, se establece en null
+      })
+      .where(eq(units.id, id))
+      .returning()
+
+    return updatedUnit[0] // Devuelve la unidad actualizada
+  }
+  public async getTermsPaginated(params: {
+    q?: string
+    page: number
+    limit: number
+    sortBy?: string
+  }): Promise<
+    PaginatedData<{
+      id: number
+      name: string
+      current: boolean
+    }>
+  > {
+    const [field, order] = params.sortBy?.split('.') || ['name', 'asc']
+    const mappedSortBy = {
+      ['asc']: asc,
+      ['desc']: desc,
+    }
+
+    const mappedFields = {
+      ['name']: terms.name,
+      ['current']: terms.current,
+    }
+
+    const [{ count }] = await db
+      .select({
+        count: sql<string>`count(*)`,
+      })
+      .from(terms)
+      .where(params.q ? ilike(terms.name, `%${params.q}%`) : undefined)
+
+    const query = db
+      .select({
+        id: terms.id,
+        name: terms.name,
+        current: terms.current,
+      })
+      .from(terms)
+      .where(params.q ? ilike(terms.name, `%${params.q}%`) : undefined)
+      .$dynamic()
+
+    const result = await withPagination(
+      query,
+      mappedSortBy[order as keyof typeof mappedSortBy](
+        mappedFields[field as keyof typeof mappedFields]
+      ),
+      params.page,
+      params.limit
+    )
+
+    return {
+      result,
+      currentPage: params.page,
+      hasNext: +count > params.page * params.limit,
+      rowCount: +count,
+      totalPages: Math.ceil(+count / params.limit),
+    }
+  }
+  public async setCurrentTerm(id: number): Promise<void> {
+    try {
+      // Establecer el término actual como `current = true` y desactivar el resto
+      await db.transaction(async (trx) => {
+        // Poner todos los términos como `current = false`
+        await trx.update(terms).set({ current: false })
+
+        // Establecer el término específico como `current = true`
+        await trx.update(terms).set({ current: true }).where(eq(terms.id, id))
+      })
+    } catch (error) {
+      throw new Error(
+        `No se pudo establecer el término actual para el ID: ${id}`
+      )
+    }
   }
 }
 

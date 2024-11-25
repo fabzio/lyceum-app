@@ -173,6 +173,119 @@ class UnitController {
       }
     }
   )
+
+  public updateUnit = this.router.put(
+    '/:unitId',
+    zValidator(
+      'param',
+      z.object({
+        unitId: z.coerce.number(),
+      })
+    ),
+    zValidator(
+      'json',
+      z.object({
+        name: z.string().min(3, 'El nombre debe tener al menos 3 caracteres'),
+        description: z.string().max(255).optional(),
+        parentId: z.number().optional(),
+      })
+    ),
+    async (c) => {
+      const { unitId } = c.req.valid('param')
+      const unitData = c.req.valid('json')
+
+      try {
+        const updatedUnit = await this.unitService.updateUnit({
+          id: unitId,
+          name: unitData.name,
+          description: unitData.description, // Si la descripción no se proporciona, será null
+          parentId: unitData.parentId, // Si no se proporciona `parentId`, se usa null
+        })
+
+        return c.json({
+          data: updatedUnit,
+          message: 'Unidad actualizada exitosamente',
+          success: true,
+        })
+      } catch (error) {
+        if (error instanceof LyceumError) c.status(error.code)
+        return c.json(
+          {
+            message:
+              error instanceof Error ? error.message : 'Error desconocido',
+            success: false,
+          },
+          500
+        )
+      }
+    }
+  )
+  public getTermsPaginated = this.router.get(
+    '/terms/paginated',
+    zValidator(
+      'query',
+      z.object({
+        q: z.string().optional(),
+        page: z.coerce.number(),
+        limit: z.coerce.number(),
+        sortBy: z.string().optional(),
+      })
+    ),
+    async (c) => {
+      const { q, page, limit, sortBy } = c.req.valid('query')
+      try {
+        const response = await this.unitService.getTermsPaginated({
+          q,
+          page,
+          limit,
+          sortBy,
+        })
+        return c.json({
+          data: response,
+          message: 'Terms retrieved successfully',
+          success: true,
+        })
+      } catch (error) {
+        if (error instanceof LyceumError) c.status(error.code)
+        return c.json(
+          {
+            message: error instanceof Error ? error.message : 'Unknown error',
+            success: false,
+          },
+          500
+        )
+      }
+    }
+  )
+  public makeCurrent = this.router.put(
+    '/terms/makeCurrent',
+    zValidator(
+      'query',
+      z.object({
+        id: z
+          .string()
+          .transform((val) => parseInt(val, 10))
+          .refine((val) => !isNaN(val), {
+            message: 'El ID debe ser un número válido.',
+          }),
+      })
+    ),
+    async (c) => {
+      try {
+        const { id } = c.req.valid('query')
+        await this.unitService.setCurrentTerm(id)
+        return c.json({
+          success: true,
+          message: 'Semestre actualizado correctamente.',
+        })
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
 }
 
 export default UnitController

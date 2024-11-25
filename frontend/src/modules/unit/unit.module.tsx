@@ -49,5 +49,10 @@ export const UnitModule: AppModule = {
         UnitPermissionsDict.WRITE_AREAS,
       ],
     },
+    {
+      label: 'Semestres',
+      path: '/unidades/semestres',
+      permissions: [],
+    },
   ],
 }
