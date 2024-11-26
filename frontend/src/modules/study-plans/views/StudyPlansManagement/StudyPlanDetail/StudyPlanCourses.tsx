@@ -18,7 +18,7 @@ export default function StudyPlanCourses() {
     from: '/_auth/plan-de-estudios/gestionar/$planId',
   })
   const { data: studyPlan } = useSuspenseQuery({
-    queryKey: [QueryKeys.studyPlan.STUDY_PLAN_DETAIL],
+    queryKey: [QueryKeys.studyPlan.STUDY_PLAN_DETAIL, planId],
     queryFn: () => StudyPlanService.getStudyPlanDetail(+planId),
   })
   const { data: studyPlanCourses, isLoading } = useQuery({

@@ -20,8 +20,8 @@ export const useStudyPlan = () => {
   const [course, setCourse] = useState<Course | null>(null)
 
   const { mutate: createMutation } = useMutation({
-    mutationFn: StudyPlanService.addCourseToStudyPlan,
-    onMutate: ({ level }) => {
+    mutationFn: StudyPlanService.addCoursesToStudyPlan,
+    onMutate: ([{ level }]) => {
       const previousCourses = data
       setQueryStore((curr) => [...curr, { course: course!, level }])
       return { previousCourses }
@@ -65,11 +65,13 @@ export const useStudyPlan = () => {
           level: Number(level),
         })
       } else if (origin === 'courses') {
-        createMutation({
-          studyPlanId: Number(planId),
-          courseId: Number(courseId),
-          level: Number(level),
-        })
+        createMutation([
+          {
+            studyPlanId: Number(planId),
+            course: +courseId,
+            level: Number(level),
+          },
+        ])
       }
     }
   }
