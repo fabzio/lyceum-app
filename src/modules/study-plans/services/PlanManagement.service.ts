@@ -146,7 +146,7 @@ class PlanManagementService {
       const existingCourses = await db
         .select({
           courseId: courses.id,
-          courseName: courses.name,
+          courseCode: courses.code,
         })
         .from(courses)
         .where(
@@ -156,7 +156,7 @@ class PlanManagementService {
           )
         )
       const coursesMap = new Map(
-        existingCourses.map((course) => [course.courseName, course.courseId])
+        existingCourses.map((course) => [course.courseCode, course.courseId])
       )
       coursesList.forEach((course) => {
         if (!coursesMap.has(course.course as string)) {

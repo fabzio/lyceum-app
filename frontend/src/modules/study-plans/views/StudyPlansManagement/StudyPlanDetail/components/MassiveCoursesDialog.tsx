@@ -43,6 +43,19 @@ export default function MassiveCoursesDialog() {
   })
   const { mutate, isPending } = useMutation({
     mutationFn: StudyPlanService.addCoursesToStudyPlan,
+    onError: ({ message }) => {
+      toast({
+        title: 'Error',
+        variant: 'destructive',
+        description: message,
+      })
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Carga exitosa',
+        description: 'Cursos cargados exitosamente',
+      })
+    },
   })
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
@@ -81,16 +94,6 @@ export default function MassiveCoursesDialog() {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="secondary">
-                  Cancelar
-                </Button>
-              </DialogClose>
-              <Button type="submit" disabled={isPending}>
-                {isPending ? <Loader2 className="animate-spin" /> : 'Cargar'}
-              </Button>
-            </DialogFooter>
             <FormField
               name="file"
               render={({ field: { value, onChange, ...filedProps } }) => (
@@ -119,6 +122,16 @@ export default function MassiveCoursesDialog() {
                 </FormItem>
               )}
             />
+            <DialogFooter className="mt-2">
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  Cancelar
+                </Button>
+              </DialogClose>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? <Loader2 className="animate-spin" /> : 'Cargar'}
+              </Button>
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>
