@@ -25,6 +25,8 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { FAQ } from '../interfaces/FAQ'
 import { useToast } from '@frontend/hooks/use-toast'
+import { useSessionStore } from '@frontend/store'
+import { FAQPermissionsDict } from '@frontend/interfaces/enums/permissions/FAQ'
 
 interface Props {
   mode: 'create' | 'edit'
@@ -32,6 +34,7 @@ interface Props {
   handleClose: () => void
 }
 export default function FAQForm({ handleClose, mode, faq }: Props) {
+  const { getRoleWithPermission } = useSessionStore()
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { data: categories } = useQuery({
@@ -79,7 +82,12 @@ export default function FAQForm({ handleClose, mode, faq }: Props) {
   })
   const onSubmit = (data: z.infer<typeof schema>) => {
     if (mode === 'create')
-      createMutation.mutate({ ...data, faqCategoryId: parseInt(data.category) })
+      createMutation.mutate({
+        ...data,
+        faqCategoryId: parseInt(data.category),
+        specialityId: getRoleWithPermission(FAQPermissionsDict.MAGANE_FAQ)!
+          .unitId,
+      })
     if (mode === 'edit')
       updateMutation.mutate({
         ...data,
