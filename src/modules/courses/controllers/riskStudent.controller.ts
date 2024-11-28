@@ -2,7 +2,10 @@ import { Hono } from 'hono'
 import { RiskStudentDAO } from '../dao/RiskStudentDAO'
 import RiskStudentService from '../services/riskStudent.service'
 import { zValidator } from '@hono/zod-validator'
-import { insertRiskStudentsDTO } from '../dto/riskStudentDTO'
+import {
+  insertOneRiskStudentsDTO,
+  insertRiskStudentsDTO,
+} from '../dto/riskStudentDTO'
 import { z } from 'zod'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
 
@@ -162,6 +165,20 @@ class RiskStudentController {
         }
         throw error
       }
+    }
+  )
+
+  public insertOneRiskStudents = this.router.post(
+    '/One/',
+    zValidator('json', insertOneRiskStudentsDTO),
+    async (c) => {
+      const studentData = c.req.valid('json')
+      const response: ResponseAPI = {
+        data: await this.riskStudentService.insertOneRiskStudents(studentData),
+        message: 'RiskStudent inserted',
+        success: true,
+      }
+      return c.json(response)
     }
   )
 }
