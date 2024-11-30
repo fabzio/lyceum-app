@@ -11,6 +11,7 @@ class AdministrativeService implements AdministrativeDAO {
   async getAdministrativeDetail(params: { code: string }) {
     const admins = await db
       .select({
+        id: accounts.id,
         code: accounts.code,
         name: accounts.name,
         firstSurname: accounts.firstSurname,
@@ -130,7 +131,6 @@ class AdministrativeService implements AdministrativeDAO {
       hasNext: +total > (params.page + 1) * params.limit,
     }
   }
-  //TODO Add methods here
 
   public async uploadAdministrativeList(
     administrativeList: {

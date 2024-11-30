@@ -65,7 +65,6 @@ class ProfessorController {
     }
   )
 
-  //TODO: Implementar INSERTAR
   public createProfessor = this.router.post(
     '/',
     zValidator('json', createProfessorsDTO),

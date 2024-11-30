@@ -82,6 +82,7 @@ class GenericController {
         state: z.enum(['active', 'inactive', 'deleted']).optional(),
         unitId: z.number().optional(),
         code: z.string().optional(),
+        speciality: z.string().optional(),
       })
     ),
     async (c) => {

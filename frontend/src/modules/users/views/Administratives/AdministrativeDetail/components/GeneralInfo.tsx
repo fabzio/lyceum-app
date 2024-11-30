@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import PersonalInformation from './PersonalInformation'
 import { Administrative } from '@frontend/modules/users/interfaces/Administrative'
+import AdministrativeService from '@frontend/modules/users/services/Administrative.service'
 
 interface Props {
   administative: Administrative
@@ -21,7 +22,14 @@ export default function GeneralInfo({ administative, refSubmitButtom }: Props) {
   })
 
   const handleSubmit = (data: z.infer<typeof formSchema>) => {
-    alert(JSON.stringify(data, null, 2))
+    if (mode === 'edit') {
+      // Enviar los datos editados a la API para actualizar el administrativo.
+      AdministrativeService.updateAdministrative(administative.id, data).catch(
+        (error) => {
+          alert(`Error al actualizar: ${error.message}`)
+        }
+      )
+    }
   }
 
   return (
