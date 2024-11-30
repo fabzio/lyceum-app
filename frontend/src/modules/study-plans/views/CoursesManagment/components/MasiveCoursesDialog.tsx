@@ -1,3 +1,4 @@
+import DownloadTemplate from '@frontend/components/DownloadTemplate'
 import { Button } from '@frontend/components/ui/button'
 import {
   Dialog,
@@ -30,7 +31,7 @@ import { getCsvData } from '@frontend/lib/utils'
 import CourseService from '@frontend/modules/study-plans/services/course.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Download, Info, Loader2, Upload } from 'lucide-react'
+import { Info, Loader2, Upload } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -79,14 +80,6 @@ export default function MasiveCoursesDialog() {
       })
     }
   }
-  const downloadTemplate = () => {
-    const csvContent = `Código,Nombre,Créditos,Unidad\n` // Encabezados del CSV
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
-    link.download = 'plantilla_cursos.csv'
-    link.click()
-  }
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -101,9 +94,9 @@ export default function MasiveCoursesDialog() {
             Sube un archivo CSV con los cursos que desea importar
           </DialogDescription>
         </DialogHeader>
-        <Button variant="outline" onClick={downloadTemplate}>
-          <Download className="mr-2 h-4 w-4" /> Descargar plantilla
-        </Button>
+        <DownloadTemplate
+          headers={['Código', 'Nombre', 'Créditos', 'Unidad']}
+        />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <FormField
