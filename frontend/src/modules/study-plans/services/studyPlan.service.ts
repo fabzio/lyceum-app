@@ -114,22 +114,17 @@ class StudyPlanService {
     }
   }
 
-  static async addCourseToStudyPlan({
-    courseId,
-    level,
-    studyPlanId,
-  }: {
-    level: number
-    studyPlanId: StudyPlan['id']
-    courseId: Course['id']
-  }): Promise<void> {
+  static async addCoursesToStudyPlan(
+    coursesList: {
+      level: number
+      studyPlanId: StudyPlan['id']
+      course: Course['code'] | Course['id']
+    }[]
+  ): Promise<void> {
     try {
       const res = await http.post(
-        `/study-plan/plan-management/${studyPlanId}/courses`,
-        {
-          level,
-          courseId,
-        }
+        `/study-plan/plan-management/${coursesList[0].studyPlanId}/courses`,
+        coursesList
       )
       const response = res.data as ResponseAPI
       if (!response.success) {

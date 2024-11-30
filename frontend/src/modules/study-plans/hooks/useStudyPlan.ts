@@ -20,16 +20,18 @@ export const useStudyPlan = () => {
   const [course, setCourse] = useState<Course | null>(null)
 
   const { mutate: createMutation } = useMutation({
-    mutationFn: StudyPlanService.addCourseToStudyPlan,
-    onMutate: ({ level }) => {
+    mutationFn: StudyPlanService.addCoursesToStudyPlan,
+    onMutate: ([{ level }]) => {
       const previousCourses = data
       setQueryStore((curr) => [...curr, { course: course!, level }])
       return { previousCourses }
     },
-    onSuccess: () =>
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.studyPlan.STUDY_PLAN_COURSES],
-      }),
+      })
+      setCourse(null)
+    },
     onError: ({ message }, _, context) => {
       if (context?.previousCourses) setQueryStore(() => context.previousCourses)
       toast({ variant: 'destructive', title: 'Error', description: message })
@@ -47,10 +49,39 @@ export const useStudyPlan = () => {
       )
       return { previousCourses }
     },
-    onSuccess: () =>
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.studyPlan.STUDY_PLAN_COURSES],
-      }),
+      })
+      setCourse(null)
+    },
+    onError: ({ message }, _, context) => {
+      if (context?.previousCourses) setQueryStore(() => context.previousCourses)
+      toast({ variant: 'destructive', title: 'Error', description: message })
+    },
+  })
+
+  const { mutate: deleteMutation } = useMutation({
+    mutationFn: StudyPlanService.deleteCourseFromStudyPlan,
+    onMutate: () => {
+      const previousCourses = data
+      console.log('previousCourses', previousCourses)
+      console.log('course', course)
+      setQueryStore((curr) =>
+        curr.filter((item) => item.course.code !== course?.code)
+      )
+      return { previousCourses }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.studyPlan.STUDY_PLAN_COURSES],
+      })
+      setCourse(null)
+    },
+    onError: ({ message }, _, context) => {
+      if (context?.previousCourses) setQueryStore(() => context.previousCourses)
+      toast({ variant: 'destructive', title: 'Error', description: message })
+    },
   })
 
   const handleDragEnd = (e: DragEndEvent) => {
@@ -65,12 +96,19 @@ export const useStudyPlan = () => {
           level: Number(level),
         })
       } else if (origin === 'courses') {
-        createMutation({
-          studyPlanId: Number(planId),
-          courseId: Number(courseId),
-          level: Number(level),
-        })
+        createMutation([
+          {
+            studyPlanId: Number(planId),
+            course: +courseId,
+            level: Number(level),
+          },
+        ])
       }
+    } else if (overId == 'delete-zone') {
+      deleteMutation({
+        studyPlanId: Number(planId),
+        courseId: Number(courseId),
+      })
     }
   }
 

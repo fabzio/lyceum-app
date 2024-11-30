@@ -6,6 +6,7 @@ import {
   modules,
   permissions,
   rolePermissions,
+  roles,
   scheduleAccounts,
   terms,
 } from '@/database/schema'
@@ -14,6 +15,46 @@ import { PaginatedData } from '@/interfaces/PaginatedData'
 import { and, asc, desc, eq, ilike, inArray, or, sql } from 'drizzle-orm'
 
 class GenericService {
+  public async getProfile(accountId: string) {
+    const response = await db.query.accounts.findFirst({
+      where: (account, { eq }) => eq(account.id, accountId),
+      columns: {
+        code: true,
+      },
+      with: {
+        accountRoles: {
+          columns: {
+            accountId: false,
+            roleId: false,
+            unitId: false,
+          },
+          with: {
+            roles: {
+              columns: {
+                name: true,
+                editable: true,
+              },
+            },
+            units: {
+              columns: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    })
+    if (!response) throw new Error('Account not found')
+    return {
+      code: response.code,
+      roles: response.accountRoles.map((role) => ({
+        role: role.roles.name,
+        unit: role.units.name,
+        editable: role.roles.editable,
+      })),
+    }
+  }
+
   public async getAccount({
     q,
     userType,

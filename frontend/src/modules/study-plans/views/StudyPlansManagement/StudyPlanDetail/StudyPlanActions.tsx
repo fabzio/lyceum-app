@@ -1,4 +1,3 @@
-import { Button } from '@frontend/components/ui/button'
 import { Input } from '@frontend/components/ui/input'
 import { Label } from '@frontend/components/ui/label'
 import {
@@ -8,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@frontend/components/ui/select'
-import { Upload } from 'lucide-react'
+import MassiveCoursesDialog from './components/MassiveCoursesDialog'
 
 export default function StudyPlanActions() {
   return (
@@ -31,9 +30,7 @@ export default function StudyPlanActions() {
           </SelectContent>
         </Select>
       </div>
-      <Button>
-        <Upload className="mr-2 h-4 w-4" /> Carga masiva de cursos
-      </Button>
+      <MassiveCoursesDialog />
     </div>
   )
 }

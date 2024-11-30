@@ -35,7 +35,7 @@ export type SessionStore = {
   getAllPermissions: () => PermissionCode[]
   havePermission: (permission: PermissionCode) => boolean
   resetSession: () => void
-  getFullName: () => string
+  getFormatedName: () => string
 }
 
 const middlewares = (f: StateCreator<SessionStore>) =>
@@ -65,7 +65,9 @@ export const useSessionStore = create<SessionStore>()(
       get().session?.roles.flatMap((role) =>
         role.permissions.map((rolePermission) => rolePermission.permission)
       ) || [],
-    getFullName: () => `${get().session?.name} ${get().session?.surname}`,
+    getFormatedName: () => {
+      return `${get().session?.name} ${get().session?.surname}`
+    },
     resetSession: () => set({}),
   }))
 )

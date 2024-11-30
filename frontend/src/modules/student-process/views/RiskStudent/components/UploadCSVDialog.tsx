@@ -14,7 +14,7 @@ import { Input } from '@frontend/components/ui/input'
 import { getCsvData } from '@frontend/lib/utils'
 import { z } from 'zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Info, Loader2, Upload } from 'lucide-react'
+import { Download, Info, Loader2, Upload } from 'lucide-react'
 import RiskStudentService from '@frontend/modules/student-process/services/riskStudent.service'
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import {
@@ -98,7 +98,14 @@ export default function UploadCSVDialog() {
       }))
     )
   }
-
+  const downloadTemplate = () => {
+    const csvContent = `Código de curso,Código de alumno,Horario,Motivo\n` // Encabezados del CSV
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = 'plantilla_estudiantes_riesgo.csv'
+    link.click()
+  }
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -115,6 +122,9 @@ export default function UploadCSVDialog() {
             riesgo.
           </DialogDescription>
         </DialogHeader>
+        <Button variant="outline" onClick={downloadTemplate}>
+          <Download className="mr-2 h-4 w-4" /> Descargar plantilla
+        </Button>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <FormField

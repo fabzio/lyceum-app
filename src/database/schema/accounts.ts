@@ -16,7 +16,7 @@ import { relations } from 'drizzle-orm'
 import { scheduleAccounts } from './scheduleAccounts'
 import { riskStudents } from './riskStudents'
 import { contactsInfo } from './contactsInfo'
-import { presentationLetterAccounts, units } from '.'
+import { accountRoles, presentationLetterAccounts, units } from '.'
 
 export const accounts = schema.table(
   'accounts',
@@ -50,6 +50,7 @@ export const accounts = schema.table(
 
 export const accountsRelations = relations(accounts, ({ many }) => ({
   scheduleAccounts: many(scheduleAccounts),
+  accountRoles: many(accountRoles),
   riskStudents: many(riskStudents),
   contactsInfo: many(contactsInfo),
   presentationLetters: many(presentationLetterAccounts),

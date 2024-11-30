@@ -1,7 +1,7 @@
 import ElemCard from '@frontend/components/ElemCard'
 import { Course } from '@frontend/interfaces/models/Course'
 
-type Props = Pick<Course, 'code' | 'name' | 'credits'>
+type Props = Pick<Course, 'id' | 'code' | 'name' | 'credits'>
 
 export default function CourseCard({ code, name, credits }: Props) {
   return (

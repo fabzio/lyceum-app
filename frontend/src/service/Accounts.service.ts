@@ -34,6 +34,25 @@ class AccountsService {
     }
   }
 
+  public static async fetchAccountProfile(accountId: Account['id']) {
+    try {
+      const res = await http.get(`/accounts/generic/profile/${accountId}`)
+      const response = res.data as ResponseAPI<{
+        code: string
+        roles: { role: string; unit: string; editable: boolean }[]
+      }>
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+
   public static async getAccount({
     q,
     userType,

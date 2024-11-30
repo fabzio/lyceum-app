@@ -126,21 +126,27 @@ class PlanManagementController {
     ),
     zValidator(
       'json',
-      z.object({
-        courseId: z.number(),
-        level: z.number(),
-      })
+      z.array(
+        z.union([
+          z.object({
+            course: z.number(),
+            level: z.number(),
+          }),
+          z.object({
+            course: z.string(),
+            level: z.number(),
+          }),
+        ])
+      )
     ),
     async (c) => {
       const { planId } = c.req.valid('param')
-      const { courseId, level } = c.req.valid('json')
+      const courses = c.req.valid('json')
       try {
         const response = {
-          data: await this.planService.addCourseToPlan({
-            studyPlanId: +planId,
-            courseId: +courseId,
-            level,
-          }),
+          data: await this.planService.addCoursesToPlan(
+            courses.map((course) => ({ ...course, studyPlanId: +planId }))
+          ),
           message: 'Course added to plan',
           success: true,
         }
@@ -197,8 +203,8 @@ class PlanManagementController {
     zValidator(
       'param',
       z.object({
-        planId: z.number(),
-        courseId: z.number(),
+        planId: z.coerce.number(),
+        courseId: z.coerce.number(),
       })
     ),
     async (c) => {
@@ -206,8 +212,8 @@ class PlanManagementController {
       try {
         const response = {
           data: await this.planService.removeCourseFromPlan({
-            studyPlanId: +planId,
-            courseId: +courseId,
+            studyPlanId: planId,
+            courseId: courseId,
           }),
           message: 'Course removed from plan',
           success: true,

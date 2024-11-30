@@ -111,6 +111,27 @@ class GenericController {
       }
     }
   )
+
+  public getProfile = this.router.get(
+    '/profile/:accountId',
+    zValidator('param', z.object({ accountId: z.string() })),
+    async (c) => {
+      const { accountId } = c.req.valid('param')
+      try {
+        const response = await this.accountService.getProfile(accountId)
+        return c.json({
+          data: response,
+          message: 'Profile retrieved',
+          success: true,
+        })
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
 }
 
 export default GenericController
