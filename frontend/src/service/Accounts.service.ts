@@ -12,7 +12,6 @@ class AccountsService {
   ): Promise<PaginatedData<AccountRoles>> {
     try {
       const res = await http.get(`/accounts/generic/bySchedule`, {
-        // Cambiamos la ruta según tu endpoint
         params: {
           q: filtersAndPagination.q || '',
           page: filtersAndPagination.pageIndex || 0,

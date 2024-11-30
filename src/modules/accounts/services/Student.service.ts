@@ -99,6 +99,7 @@ class StudentService implements StudentDAO {
   async getStudentDetail(params: { code: string }) {
     const student = await db
       .select({
+        id: accounts.id,
         code: accounts.code,
         name: accounts.name,
         firstSurname: accounts.firstSurname,

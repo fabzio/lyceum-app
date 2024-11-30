@@ -555,6 +555,8 @@ class GenericService {
       if (updateData.state) dataToUpdate.state = updateData.state
       if (updateData.unitId !== undefined)
         dataToUpdate.unitId = updateData.unitId
+      if (updateData.speciality !== undefined)
+        dataToUpdate.unitId = updateData.speciality
       if (updateData.code) dataToUpdate.code = updateData.code
 
       // Verificar si se proporciona al menos un campo para actualizar

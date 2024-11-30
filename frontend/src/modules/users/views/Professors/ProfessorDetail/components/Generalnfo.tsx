@@ -6,6 +6,7 @@ import { Professor } from '@frontend/modules/users/interfaces/Professor'
 import { useSearch } from '@tanstack/react-router'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import ProfessorService from '@frontend/modules/users/services/Professor.service'
 
 interface Props {
   refSubmitButtom: React.RefObject<HTMLButtonElement>
@@ -20,7 +21,12 @@ export default function GeneralInfo({ refSubmitButtom, professor }: Props) {
     resolver: zodResolver(formSchema),
   })
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data) //FIXME
+    if (mode === 'edit') {
+      // Enviar los datos editados a la API para actualizar el administrativo.
+      ProfessorService.updateProfessor(professor.id, data).catch((error) => {
+        alert(`Error al actualizar: ${error.message}`)
+      })
+    }
   }
   return (
     <FormProvider {...form}>
