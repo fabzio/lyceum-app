@@ -6,6 +6,7 @@ import CourseCard from './components/CourseCard'
 import { ScrollArea } from '@frontend/components/ui/scroll-area'
 import { useStudyPlan } from '@frontend/modules/study-plans/hooks/useStudyPlan'
 import { Course } from '@frontend/interfaces/models/Course'
+import DeleteZone from './components/DeleteZone'
 
 export default function StudyPlanDetail() {
   const { course, setCourse, handleDragEnd } = useStudyPlan()
@@ -15,6 +16,7 @@ export default function StudyPlanDetail() {
       onDragStart={({ active }) => setCourse(active.data.current as Course)}
       onDragEnd={handleDragEnd}
     >
+      <DeleteZone over={!!course} />
       <div className="flex h-full">
         <StudyPlanAddCourse />
         <ScrollArea className="h-svh w-full">

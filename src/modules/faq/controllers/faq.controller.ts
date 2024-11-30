@@ -37,6 +37,7 @@ class FAQsController {
         question: z.string(),
         answer: z.string(),
         category: z.number(),
+        specialityId: z.number(),
       })
     ),
     async (c) => {
@@ -44,7 +45,6 @@ class FAQsController {
       const response: ResponseAPI = {
         data: await this.faqService.createFAQ({
           ...faq,
-          specialityId: 3,
           faqCategoryId: faq.category,
         }),
         message: 'FAQ Category created',

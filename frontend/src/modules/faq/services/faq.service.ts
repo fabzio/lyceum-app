@@ -37,7 +37,7 @@ class FAQService {
       throw error
     }
   }
-  public static async updateFAQ(faq: FAQ): Promise<void> {
+  public static async updateFAQ(faq: Omit<FAQ, 'specialityId'>): Promise<void> {
     try {
       const res = await http.put('/faq/faqs', {
         id: faq.id,
