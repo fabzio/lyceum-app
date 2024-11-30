@@ -16,6 +16,9 @@ import {
   sql,
 } from 'drizzle-orm'
 import { InsertUnitDTO } from '../dto/UnitDTO'
+import { accountRoleSchema } from '@/modules/security/dto/RoleAccountsDTO'
+import { accountRolesSchema } from '@/database/schema/accountRoles'
+import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 
 class UnitService {
   public async getUnitsByTypePaginated(params: {
@@ -321,6 +324,39 @@ class UnitService {
         `No se pudo establecer el término actual para el ID: ${id}`
       )
     }
+  }
+
+  public async getStudentsFromAUnit({
+    unitId,
+    q,
+  }: {
+    unitId: number
+    q: string
+  }) {
+    return await db
+      .select({
+        id: accounts.id,
+        name: accounts.name,
+        firstSurname: accounts.firstSurname,
+        secondSurname: accounts.secondSurname,
+        code: accounts.code,
+      })
+      .from(accounts)
+      .innerJoin(
+        accountRoles,
+        eq(accountRoles.accountId, accounts.id) // Relación entre accounts y accountRoles
+      )
+      .where(
+        and(
+          eq(accountRoles.roleId, BaseRoles.STUDENT), // Validar que el rol sea estudiante
+          eq(accountRoles.unitId, unitId), // Validar unitId desde accountRoles
+          or(
+            sql`concat(${accounts.name}, ' ', ${accounts.firstSurname}, ' ', ${accounts.secondSurname}) ilike ${`%${q}%`}`,
+            ilike(accounts.code, `%${q}%`)
+          )
+        )
+      )
+      .limit(5)
   }
 }
 

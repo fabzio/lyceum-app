@@ -6,6 +6,8 @@ import SearchRiskStudentInput from './components/SearchRiskStudentInput'
 import Need from '@frontend/components/Need'
 import { StudentProcessPermissionsDict } from '@frontend/interfaces/enums/permissions/StudentProcess'
 
+import NewRiskStudentDialog from './components/NewRiskStudentDialog'
+
 export default function RiskStudents() {
   //ANOTACION 1: FALTA FILTRAR POR NOTAS : "Listo Filtrar por Puntacion"
   //ANOTACION 2: REVISANDO TAMBIÉN SERÍA BUENO UN BOTÓN PARA SOLICITAR TODAS LAS ACTUALIZACIONES, EL FIGMA SOLO SOPORTA UNO POR UNO (LUEGO FLORES NOS FUNA)
@@ -25,6 +27,7 @@ export default function RiskStudents() {
             }
           >
             <UpdateConfirmationDialog />
+            <NewRiskStudentDialog />
           </Need>
           <Need permissions={StudentProcessPermissionsDict.LOAD_RISK_STUDENTS}>
             <UploadCSVDialog />

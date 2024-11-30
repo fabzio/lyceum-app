@@ -27,9 +27,13 @@ import {
   InsertOneRiskStudentsDTO,
   InsertRiskStudentsDTO,
 } from '../dto/riskStudentDTO'
-import { RiskStudentNotFoundError } from '../errors/RiskStudent.error'
+import {
+  RiskStudentNotFoundError,
+  SchedulewithoutProfessorError,
+} from '../errors/RiskStudent.error'
 import { Unit } from '@/interfaces/models/Unit'
 import withPagination from '@/utils/withPagination'
+import { LyceumError } from '@/middlewares/errorMiddlewares'
 class RiskStudentService implements RiskStudentDAO {
   public async getAllRiskStudentOfSpeciality({
     specialityId,
@@ -47,6 +51,7 @@ class RiskStudentService implements RiskStudentDAO {
     const professor = aliasedTable(accounts, 'professor')
     const student = aliasedTable(accounts, 'student')
     const [field, order] = sortBy?.split('.') || ['score', 'asc']
+
     const [{ total }] = await db
       .select({ total: sql<string>`count(*)` })
       .from(riskStudents)
@@ -434,6 +439,19 @@ class RiskStudentService implements RiskStudentDAO {
         `Los siguientes alumnos ya están en riesgo: ` +
           existingRiskStudents.map((item) => item.studentCode).join(', ')
       )
+    }
+    const Profesorschedule = await db
+      .select()
+      .from(scheduleAccounts)
+      .where(
+        and(
+          eq(scheduleAccounts.roleId, BaseRoles.PROFESSOR),
+          eq(scheduleAccounts.lead, true)
+        )
+      )
+
+    if (Profesorschedule.length === 0) {
+      throw new SchedulewithoutProfessorError('No hay profesores en el horario')
     }
 
     await db.insert(riskStudents).values(riskStudentData)
