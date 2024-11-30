@@ -62,7 +62,7 @@ class PresentationLetterController {
             companyName,
             scheduleId,
             documentId: await insertDocument({
-              file: documentFile,
+              file: documentFile as File,
               bucketName: 'document',
             }),
             description,
