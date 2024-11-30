@@ -1,3 +1,4 @@
+import DownloadTemplate from '@frontend/components/DownloadTemplate'
 import { Button } from '@frontend/components/ui/button'
 import {
   Dialog,
@@ -92,6 +93,7 @@ export default function MassiveCoursesDialog() {
             Arrastra y suelta el archivo de cursos en formato CSV
           </DialogDescription>
         </DialogHeader>
+        <DownloadTemplate headers={['Código de curso', 'Nivel']} />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <FormField
