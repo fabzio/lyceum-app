@@ -17,8 +17,11 @@ export {
   surveyType,
   presentationLetterStatus,
 } from '@/database/schema/enums'
-export { accountRoles } from '@/database/schema/accountRoles'
-export { accounts } from '@/database/schema/accounts'
+export {
+  accountRoles,
+  accountRolesRelations,
+} from '@/database/schema/accountRoles'
+export { accounts, accountsRelations } from '@/database/schema/accounts'
 export { accountsPerHiring } from '@/database/schema/accountsPerHiring'
 export {
   surveyAnswers,
@@ -60,7 +63,7 @@ export { thesisAccounts } from '@/database/schema/thesisAccounts'
 export { thesisActions } from '@/database/schema/thesisActions'
 export { thesisJuries } from '@/database/schema/thesisJuries'
 export { thesis } from '@/database/schema/thesis'
-export { units } from '@/database/schema/units'
+export { units, unitsRelations } from '@/database/schema/units'
 export { unitsSupports } from '@/database/schema/unitsSupports'
 export { evaluations } from '@/database/schema/evaluations'
 export { hirings, hiringsRelations } from '@/database/schema/hirings'

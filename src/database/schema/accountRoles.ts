@@ -38,6 +38,10 @@ export const accountRoles = schema.table(
 )
 
 export const accountRolesRelations = relations(accountRoles, ({ one }) => ({
+  account: one(accounts, {
+    fields: [accountRoles.accountId],
+    references: [accounts.id],
+  }),
   roles: one(roles, {
     fields: [accountRoles.roleId],
     references: [roles.id],
