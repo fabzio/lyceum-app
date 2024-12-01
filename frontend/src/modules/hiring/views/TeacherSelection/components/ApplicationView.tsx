@@ -17,13 +17,18 @@ import { useForm } from 'react-hook-form'
 import { Textarea } from '@frontend/components/ui/textarea'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { useMutation } from '@tanstack/react-query'
 import { QueryKeys } from '@frontend/constants/queryKeys'
-// import { useToast } from '@frontend/hooks/use-toast'
+import { useToast } from '@frontend/hooks/use-toast'
 import { Loader2 } from 'lucide-react'
 import HiringService from '@frontend/modules/hiring/Services/Hirings.service'
 import { Eye } from 'lucide-react'
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+  useMutation,
+} from '@tanstack/react-query'
+//import HiringSelection from '..'
 
 interface Props {
   application: {
@@ -40,10 +45,13 @@ interface Props {
 export default function ViewApplication({ application, handleClose }: Props) {
   // const {hiringId, courseId } = useParams(
   //   {from: '/_auth/contrataciones/seleccion-docentes/$hiringId/$courseId'})
-  // const { toast } = useToast()
-  // const queryClient = useQueryClient()
+  const { toast } = useToast()
+  const queryClient = useQueryClient()
 
   const form = useForm<z.infer<typeof formSchema>>({
+    defaultValues: {
+      jobRequestId: application.jobRequestId,
+    },
     resolver: zodResolver(formSchema),
   })
 
@@ -72,28 +80,29 @@ export default function ViewApplication({ application, handleClose }: Props) {
   })
 
   const rejectMutation = useMutation({
-    // mutationFn: (data: z.infer<typeof formSchema>) => {
-    //   // Replace this with your actual API call
-    //   return Promise.resolve({ success: true })
-    // },
-    // onSuccess: () => {
-    //   queryClient.invalidateQueries({
-    //     queryKey: [QueryKeys.hiring.HIRINGS],
-    //   })
-    //   toast({
-    //     title: 'Aplicación rechazada',
-    //     description:
-    //       'La aplicación del postulante ha sido rechazada correctamente',
-    //   })
-    //   handleClose()
-    // },
-    // onError: (error: Error) => {
-    //   toast({
-    //     title: 'Error',
-    //     description: error.message,
-    //     variant: 'destructive',
-    //   })
-    // },
+    mutationFn: (data: z.infer<typeof formSchema>) => {
+      queryKey: [QueryKeys.hiring.HIRINGS, application.jobRequestId]
+      HiringService.updateApplication(data, 'rejected')
+      return Promise.resolve({ success: true })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.hiring.HIRINGS],
+      })
+      toast({
+        title: 'Aplicación rechazada',
+        description:
+          'La aplicación del postulante ha sido rechazada correctamente',
+      })
+      handleClose()
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
+      })
+    },
   })
 
   const onApprove = () => {
@@ -101,7 +110,11 @@ export default function ViewApplication({ application, handleClose }: Props) {
   }
 
   const onReject = () => {
-    // rejectMutation.mutate(data) <- data: z.infer<typeof formSchema>
+    const data: z.infer<typeof formSchema> = {
+      observation: form.getValues('observation') || '',
+      jobRequestId: application.jobRequestId, // Ensure you get the current form value
+    }
+    rejectMutation.mutate(data)
   }
 
   const { data: motivation } = useQuery({
@@ -208,7 +221,6 @@ export default function ViewApplication({ application, handleClose }: Props) {
 }
 
 const formSchema = z.object({
-  name: z.coerce.string().optional(),
-  hiddenSchedules: z.coerce.number(),
+  jobRequestId: z.coerce.number(),
   observation: z.coerce.string().optional(),
 })

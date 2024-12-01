@@ -104,6 +104,41 @@ class HiringService {
       throw error
     }
   }
+
+  public static async updateApplication(
+    data: {
+      jobRequestId: number
+      observation?: string
+    },
+    newStatus: 'sent' | 'rejected' | 'to_evaluate' | 'evaluated' | 'selected',
+
+    evaluationList?: {
+      evaluationId: string
+      courseHiringRequirementId: string
+      score: number
+    }[]
+  ): Promise<void> {
+    try {
+      const res = await http.put(
+        `/hiring/selection/${data.jobRequestId}/status`,
+        {
+          jobRequestId: data.jobRequestId,
+          newStatus: newStatus,
+          evaluationList: evaluationList,
+        }
+      )
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data as Promise<void>
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
 }
 
 export default HiringService

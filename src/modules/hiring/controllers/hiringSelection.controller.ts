@@ -53,13 +53,17 @@ class HiringSelectioncontroller {
     zValidator('json', updateHiringSelectionStatusDTO),
     async (c) => {
       const { jobRequestId } = c.req.valid('param')
-      const { accountId, newStatus, evaluationList = [] } = c.req.valid('json')
+      const {
+        newStatus,
+        evaluationList = [],
+        observation,
+      } = c.req.valid('json')
       try {
         const response: ResponseAPI = {
           data: await this.hiringSelectionService.updateHiringSelectionStatus(
             +jobRequestId,
-            accountId,
             newStatus,
+            observation,
             evaluationList
           ),
           message: 'JobRequest Status correctly changed',

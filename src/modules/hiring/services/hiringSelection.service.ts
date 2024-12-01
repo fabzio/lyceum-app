@@ -96,10 +96,10 @@ class HiringSelectionService implements HiringSelectionDAO {
 
   public async updateHiringSelectionStatus(
     jobRequestId: number,
-    accountId: string,
     newStatus: 'sent' | 'rejected' | 'to_evaluate' | 'evaluated' | 'selected',
+    observation: string | undefined,
 
-    evaluationList: {
+    evaluationList?: {
       evaluationId: string
       courseHiringRequirementId: string
       score: number
@@ -134,24 +134,26 @@ class HiringSelectionService implements HiringSelectionDAO {
     // 3. Actualizar el estado si es válido
     await db
       .update(jobRequests)
-      .set({ state: newStatus })
+      .set({ state: newStatus, observation: observation })
       .where(eq(jobRequests.id, jobRequestId))
 
     //4. Hacer el barrido de los puntajes si existe la lista de puntajes.
-    if (evaluationList.length > 0) {
-      const currentDate = new Date() // fecha actual
+    if (evaluationList != undefined) {
+      if (evaluationList.length > 0) {
+        const currentDate = new Date() // fecha actual
 
-      await Promise.all(
-        evaluationList.map((evaluation) =>
-          db
-            .update(evaluations)
-            .set({
-              score: evaluation.score.toFixed(2), // redondea a 2 decimales
-              evaluationDate: currentDate.toISOString(), // usa la fecha actual
-            })
-            .where(eq(evaluations.id, Number(evaluation.evaluationId)))
+        await Promise.all(
+          evaluationList.map((evaluation) =>
+            db
+              .update(evaluations)
+              .set({
+                score: evaluation.score.toFixed(2), // redondea a 2 decimales
+                evaluationDate: currentDate.toISOString(), // usa la fecha actual
+              })
+              .where(eq(evaluations.id, Number(evaluation.evaluationId)))
+          )
         )
-      )
+      }
     }
   }
 
@@ -183,9 +185,9 @@ class HiringSelectionService implements HiringSelectionDAO {
     let statusFilter: NonNullable<JobRequestsSchema['state']>[]
 
     if (step === 'first') {
-      statusFilter = ['sent']
+      statusFilter = ['sent', 'rejected']
     } else if (step === 'second') {
-      statusFilter = ['to_evaluate', 'evaluated', 'rejected']
+      statusFilter = ['to_evaluate', 'evaluated']
     } else {
       statusFilter = ['selected']
     }

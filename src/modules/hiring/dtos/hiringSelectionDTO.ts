@@ -30,7 +30,6 @@ export type CreateHiringSelectionPropDTO = z.infer<
 >
 
 export const updateHiringSelectionStatusDTO = z.object({
-  accountId: z.string().min(1),
   newStatus: z.enum([
     'sent',
     'rejected',
@@ -38,6 +37,8 @@ export const updateHiringSelectionStatusDTO = z.object({
     'evaluated',
     'selected',
   ]),
+
+  observation: z.string().optional(),
 
   evaluationList: z
     .array(

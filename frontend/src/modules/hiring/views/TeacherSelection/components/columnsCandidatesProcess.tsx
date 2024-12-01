@@ -96,7 +96,7 @@ export const CandidatesColumns = (
     },
   ]
 
-  if (step === 'second') {
+  if (step === 'first') {
     baseColumns.push({
       accessorKey: 'actions',
       header: 'Acciones',
@@ -117,12 +117,12 @@ type JobRequestStatus =
   | 'rejected'
   | 'to_evaluate'
   | 'evaluated'
-  | 'selected' // Define valid statuses
+  | 'selected'
 
 const jobRequestStatusLabels: Record<JobRequestStatus, string> = {
   sent: 'Recibido',
   selected: 'Seleccionado',
   rejected: 'Rechazado',
-  to_evaluate: 'Por revisar',
-  evaluated: 'Aprobado',
+  to_evaluate: 'Por evaluar',
+  evaluated: 'Evaluado',
 }
