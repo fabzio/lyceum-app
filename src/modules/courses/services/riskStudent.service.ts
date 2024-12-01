@@ -576,6 +576,19 @@ class RiskStudentService implements RiskStudentDAO {
 
     await db.insert(riskStudents).values(riskStudentData)
   }
+
+  public async getAllReasonForRiskStudent(): Promise<
+    { id: number; name: string }[]
+  > {
+    const reasons = await db
+      .select({
+        id: riskReasons.id,
+        name: riskReasons.description,
+      })
+      .from(riskReasons)
+
+    return reasons
+  }
 }
 
 export default RiskStudentService

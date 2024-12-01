@@ -111,4 +111,6 @@ export interface RiskStudentDAO {
   }): Promise<void>
 
   insertOneRiskStudents(student: InsertOneRiskStudentsDTO): Promise<void>
+
+  getAllReasonForRiskStudent(): Promise<{ id: number; name: string }[]>
 }
