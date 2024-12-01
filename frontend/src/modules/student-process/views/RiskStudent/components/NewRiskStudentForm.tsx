@@ -1,4 +1,3 @@
-import { Combobox } from '@frontend/components/Combobox'
 import QuickSearchInput from '@frontend/components/QuickSearchInput.tsx/QuickSearchInput'
 import { Button } from '@frontend/components/ui/button'
 import { DialogClose, DialogFooter } from '@frontend/components/ui/dialog'
@@ -10,12 +9,20 @@ import {
   FormLabel,
   FormMessage,
 } from '@frontend/components/ui/form'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@frontend/components/ui/select'
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import { useToast } from '@frontend/hooks/use-toast'
 import { UnitType } from '@frontend/interfaces/enums'
 import { StudentProcessPermissionsDict } from '@frontend/interfaces/enums/permissions/StudentProcess'
 
 import RoleAccountsService from '@frontend/modules/security/services/RoleAccounts.service'
+import RiskStudentService from '@frontend/modules/student-process/services/riskStudent.service'
 import UnitService from '@frontend/modules/unit/services/Unit.service'
 import ScheduleService from '@frontend/service/Schedules.service'
 import { useSessionStore } from '@frontend/store'
@@ -34,7 +41,11 @@ export default function RiskStudentForm({ handleClose }: Props) {
   const [unitType] = useState<UnitType | null>(null)
   const queryClient = useQueryClient()
   const { toast } = useToast()
-  const { data: units } = useQuery({
+  const { data: reasons, isLoading: loading } = useQuery({
+    queryKey: ['reasons'],
+    queryFn: () => RiskStudentService.getAllRiskReasons(),
+  })
+  const {} = useQuery({
     queryKey: [QueryKeys.unit.UNITS, unitType],
     queryFn: () => RoleAccountsService.getUnitScopes(unitType!),
     enabled: !!unitType,
@@ -149,21 +160,25 @@ export default function RiskStudentForm({ handleClose }: Props) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Motivo</FormLabel>
-                <FormControl>
-                  <Combobox
-                    options={
-                      units?.map((item) => ({
-                        value: item.id.toString(),
-                        label: item.name,
-                      })) || []
-                    }
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder="Elija la unidad de alcance"
-                    disabled={!unitType}
-                    className="w-full"
-                  />
-                </FormControl>
+                <Select onValueChange={field.onChange} disabled={loading}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona un motivo" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {reasons
+                      ? reasons.map((reason) => (
+                          <SelectItem
+                            key={reason.id}
+                            value={reason.id.toString()}
+                          >
+                            {reason.name}
+                          </SelectItem>
+                        ))
+                      : []}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

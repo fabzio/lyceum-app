@@ -181,5 +181,17 @@ class RiskStudentController {
       return c.json(response)
     }
   )
+  public getAllRiskReasons = this.router.get(
+    '/risk-reasons/list',
+
+    async (c) => {
+      const response: ResponseAPI = {
+        data: await this.riskStudentService.getAllReasonForRiskStudent(),
+        message: 'RiskReasons retrieved',
+        success: true,
+      }
+      return c.json(response)
+    }
+  )
 }
 export default RiskStudentController

@@ -164,6 +164,28 @@ class RiskStudentService {
       throw error
     }
   }
+
+  public static async getAllRiskReasons() {
+    try {
+      const res = await http.get('/courses/risk-students/risk-reasons/list')
+      const response = res.data as ResponseAPI<
+        {
+          id: number
+          name: string
+        }[]
+      >
+
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
 }
 
 export default RiskStudentService
