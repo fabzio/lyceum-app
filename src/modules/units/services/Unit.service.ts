@@ -56,6 +56,7 @@ class UnitService {
         unitType: units.type,
         parentName: parentUni.name,
         parentId: parentUni.id,
+        active: units.active,
       })
       .from(units)
       .innerJoin(parentUni, eq(units.parentId, parentUni.id))
@@ -83,6 +84,7 @@ class UnitService {
       unitType: Unit['unitType']
       parentName: Unit['name']
       parentId: Unit['id']
+      active: Unit['active']
     }>
   }
   public async getUnitsByType({
@@ -227,17 +229,21 @@ class UnitService {
     name,
     description,
     parentId,
+    active,
   }: {
     id: number
     name: string
     description?: string
     parentId?: number
+    active?: boolean
   }) {
     const existingUnit = await db.select().from(units).where(eq(units.id, id))
 
     if (existingUnit.length === 0) {
       throw new Error('La unidad no existe')
     }
+
+    const wasActive = existingUnit[0].active
 
     // Actualizar los datos de la unidad
     const updatedUnit = await db
@@ -246,11 +252,30 @@ class UnitService {
         name: name,
         description: description,
         parentId: parentId, // Si no se proporciona un `parentId`, se establece en null
+        active: active,
       })
       .where(eq(units.id, id))
       .returning()
 
+    if (active !== wasActive) {
+      await this.updateChildrenActiveStatus(id, active!)
+    }
     return updatedUnit[0] // Devuelve la unidad actualizada
+  }
+
+  private async updateChildrenActiveStatus(unitId: number, active: boolean) {
+    const children = await this.getChildrenUnits(unitId)
+
+    // Para cada hijo, actualizamos su estado "active"
+    for (const child of children) {
+      await db
+        .update(units)
+        .set({ active: active })
+        .where(eq(units.id, child.id))
+
+      // Recursivamente actualizamos los hijos de este hijo
+      await this.updateChildrenActiveStatus(child.id, active)
+    }
   }
   public async getTermsPaginated(params: {
     q?: string

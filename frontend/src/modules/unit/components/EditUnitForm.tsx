@@ -23,6 +23,13 @@ import { Loader2 } from 'lucide-react'
 import { useToast } from '@frontend/hooks/use-toast'
 import { useFilters } from '@frontend/hooks/useFilters'
 import { QueryKeys } from '@frontend/constants/queryKeys'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@frontend/components/ui/select'
 
 interface Props {
   unit: Unit // Asegúrate de pasar la unidad existente para edición
@@ -80,6 +87,24 @@ export default function EditUnitForm({ unit, unitType, handleClose }: Props) {
     }
     mutate({ ...unit, ...values })
   }
+  /*
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Descripción</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormDescription>
+                Descripción de la unidad (opcional)
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        */
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -99,21 +124,28 @@ export default function EditUnitForm({ unit, unitType, handleClose }: Props) {
         />
         <FormField
           control={form.control}
-          name="description"
+          name="active"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Descripción</FormLabel>
+              <FormLabel>Estado</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value ? 'true' : 'false'}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona un estado" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="true">Activo</SelectItem>
+                    <SelectItem value="false">Inactivo</SelectItem>
+                  </SelectContent>
+                </Select>
               </FormControl>
-              <FormDescription>
-                Descripción de la unidad (opcional)
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-
         {!([UnitType.DEPARTMENT, UnitType.FACULTY] as UnitType[]).includes(
           unitType
         ) && (
@@ -171,4 +203,8 @@ const formSchema = z.object({
     .max(255)
     .optional(),
   parentId: z.number().optional(),
+  active: z.preprocess(
+    (val) => val === 'true', // Transforma 'true' o 'false' (string) a boolean
+    z.boolean()
+  ),
 })

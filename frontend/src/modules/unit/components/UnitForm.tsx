@@ -75,6 +75,24 @@ export default function UnitForm({ unit, unitType, handleClose }: Props) {
     }
     mutate([{ ...values, unitType, parentId: values.parentId ?? 1 }])
   }
+  /*
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Descripción</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormDescription>
+                Descripción de la unidad (opcional)
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        */
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -92,22 +110,7 @@ export default function UnitForm({ unit, unitType, handleClose }: Props) {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Descripción</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormDescription>
-                Descripción de la unidad (opcional)
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         {!([UnitType.DEPARTMENT, UnitType.FACULTY] as UnitType[]).includes(
           unitType
         ) && (

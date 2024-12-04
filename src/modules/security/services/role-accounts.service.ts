@@ -122,6 +122,7 @@ class RoleAccountsService {
       })
       .from(units)
       .where(eq(units.type, unitType))
+      .orderBy(units.name)
   }
 }
 

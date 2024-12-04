@@ -34,6 +34,11 @@ const unitColumns: ColumnDef<Unit>[] = [
     },
   },
   {
+    accessorKey: 'active',
+    header: 'Estado',
+    cell: ({ row }) => (row.original.active ? 'Activo' : 'Inactivo'),
+  },
+  {
     accessorKey: 'actions',
     header: 'Acciones',
     cell: ({ row }) => {
