@@ -72,6 +72,8 @@ class ScheduleService {
       id: number
       code: string
       courseName: string
+      courseId: number
+      courseCode: string
     }[]
   > {
     try {
@@ -83,6 +85,8 @@ class ScheduleService {
           id: number
           code: string
           courseName: string
+          courseId: number
+          courseCode: string
         }[]
       >
 

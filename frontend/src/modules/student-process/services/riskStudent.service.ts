@@ -132,6 +132,7 @@ class RiskStudentService {
       const res = await http.post('/courses/risk-students', {
         studentList,
       })
+      console.log('Datos enviados al backend:', studentList)
       const response = res.data as ResponseAPI
       if (!response.success) {
         throw new Error(response.message)
