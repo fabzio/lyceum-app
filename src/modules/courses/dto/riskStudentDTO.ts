@@ -12,3 +12,12 @@ export const insertRiskStudentsDTO = z.object({
 })
 
 export type InsertRiskStudentsDTO = z.infer<typeof insertRiskStudentsDTO>
+
+export const insertOneRiskStudentsDTO = z.object({
+  studentId: z.string(),
+  scheduleId: z.number(),
+  courseId: z.number(),
+  reasonId: z.number(),
+})
+
+export type InsertOneRiskStudentsDTO = z.infer<typeof insertOneRiskStudentsDTO>

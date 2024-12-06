@@ -1,7 +1,10 @@
 import { Account } from '@/interfaces/models/Account'
 import { Course } from '@/interfaces/models/Course'
 import { Schedule } from '@/interfaces/models/Schedule'
-import { InsertRiskStudentsDTO } from '../dto/riskStudentDTO'
+import {
+  InsertOneRiskStudentsDTO,
+  InsertRiskStudentsDTO,
+} from '../dto/riskStudentDTO'
 import { PaginatedData } from '@/interfaces/PaginatedData'
 import { Unit } from '@/interfaces/models/Unit'
 
@@ -106,4 +109,8 @@ export interface RiskStudentDAO {
   }: {
     specialityId: Unit['id']
   }): Promise<void>
+
+  insertOneRiskStudents(student: InsertOneRiskStudentsDTO): Promise<void>
+
+  getAllReasonForRiskStudent(): Promise<{ id: number; name: string }[]>
 }

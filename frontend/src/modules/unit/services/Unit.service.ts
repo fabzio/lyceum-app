@@ -1,5 +1,6 @@
 import { UnitType } from '@frontend/interfaces/enums'
 import { Term } from '@frontend/interfaces/models'
+import { Account } from '@frontend/interfaces/models/Account'
 import { Unit } from '@frontend/interfaces/models/Unit'
 import { Filters } from '@frontend/interfaces/types'
 import http from '@frontend/lib/http'
@@ -145,6 +146,30 @@ class UnitService {
       }
     } catch (error) {
       throw new Error('No se pudo actualizar el término actual')
+    }
+  }
+
+  public static async getStudentsFromUnit({
+    unitId,
+    q,
+  }: {
+    unitId: number
+    q: string
+  }): Promise<Account[]> {
+    try {
+      const res = await http.get(`/unit/units/students/${unitId}`, {
+        params: { q },
+      })
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data as Account[]
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error(error.response?.data || error.message)
+      }
+      throw error
     }
   }
 }

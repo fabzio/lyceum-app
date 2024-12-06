@@ -23,10 +23,17 @@ import {
   sql,
 } from 'drizzle-orm'
 import { RiskStudentDAO } from '../dao/RiskStudentDAO'
-import { InsertRiskStudentsDTO } from '../dto/riskStudentDTO'
-import { RiskStudentNotFoundError } from '../errors/RiskStudent.error'
+import {
+  InsertOneRiskStudentsDTO,
+  InsertRiskStudentsDTO,
+} from '../dto/riskStudentDTO'
+import {
+  RiskStudentNotFoundError,
+  SchedulewithoutProfessorError,
+} from '../errors/RiskStudent.error'
 import { Unit } from '@/interfaces/models/Unit'
 import withPagination from '@/utils/withPagination'
+import { LyceumError } from '@/middlewares/errorMiddlewares'
 class RiskStudentService implements RiskStudentDAO {
   public async getAllRiskStudentOfSpeciality({
     specialityId,
@@ -44,6 +51,7 @@ class RiskStudentService implements RiskStudentDAO {
     const professor = aliasedTable(accounts, 'professor')
     const student = aliasedTable(accounts, 'student')
     const [field, order] = sortBy?.split('.') || ['score', 'asc']
+
     const [{ total }] = await db
       .select({ total: sql<string>`count(*)` })
       .from(riskStudents)
@@ -432,6 +440,19 @@ class RiskStudentService implements RiskStudentDAO {
           existingRiskStudents.map((item) => item.studentCode).join(', ')
       )
     }
+    const Profesorschedule = await db
+      .select()
+      .from(scheduleAccounts)
+      .where(
+        and(
+          eq(scheduleAccounts.roleId, BaseRoles.PROFESSOR),
+          eq(scheduleAccounts.lead, true)
+        )
+      )
+
+    if (Profesorschedule.length === 0) {
+      throw new SchedulewithoutProfessorError('No hay profesores en el horario')
+    }
 
     await db.insert(riskStudents).values(riskStudentData)
   }
@@ -478,6 +499,95 @@ class RiskStudentService implements RiskStudentDAO {
           listStudents.map((item) => item.studentId)
         )
       )
+  }
+
+  public async insertOneRiskStudents(student: InsertOneRiskStudentsDTO) {
+    const scheduleCode = student.scheduleId
+    const courseCode = student.courseId
+
+    // Obtener datos del horario y curso
+    const scheduleData = await db
+      .select({
+        scheduleId: schedules.id,
+        scheduleCode: schedules.code,
+        courseCode: courses.code,
+      })
+      .from(schedules)
+      .innerJoin(courses, eq(schedules.courseId, courses.id))
+      .innerJoin(terms, eq(schedules.termId, terms.id))
+      .where(
+        and(
+          eq(schedules.id, scheduleCode),
+          eq(courses.id, courseCode),
+          eq(terms.current, true)
+        )
+      )
+
+    if (scheduleData.length === 0) {
+      throw new Error(
+        `No se encontró el horario ${scheduleCode} del curso ${courseCode}`
+      )
+    }
+
+    const scheduleId = scheduleData[0].scheduleId
+
+    // Obtener datos del estudiante
+    const studentCode = student.studentId
+    const studentData = await db
+      .select({
+        studentId: accounts.id,
+        studentCode: accounts.code,
+      })
+      .from(accounts)
+      .where(eq(accounts.id, studentCode))
+
+    if (studentData.length === 0) {
+      throw new Error(`No se encontró el estudiante con código ${studentCode}`)
+    }
+
+    const studentId = studentData[0].studentId
+
+    // Verificar si el estudiante ya está en riesgo
+    const existingRiskStudent = await db
+      .select({
+        studentCode: accounts.code,
+      })
+      .from(riskStudents)
+      .innerJoin(accounts, eq(riskStudents.studentId, accounts.id))
+      .where(
+        and(
+          eq(riskStudents.studentId, studentId),
+          eq(riskStudents.scheduleId, scheduleId)
+        )
+      )
+
+    if (existingRiskStudent.length > 0) {
+      throw new Error(
+        `El estudiante ${studentCode} ya está en riesgo en el horario ${scheduleCode}`
+      )
+    }
+
+    // Insertar el estudiante en riesgo
+    const riskStudentData = {
+      studentId,
+      scheduleId,
+      reasonId: student.reasonId,
+    }
+
+    await db.insert(riskStudents).values(riskStudentData)
+  }
+
+  public async getAllReasonForRiskStudent(): Promise<
+    { id: number; name: string }[]
+  > {
+    const reasons = await db
+      .select({
+        id: riskReasons.id,
+        name: riskReasons.description,
+      })
+      .from(riskReasons)
+
+    return reasons
   }
 }
 

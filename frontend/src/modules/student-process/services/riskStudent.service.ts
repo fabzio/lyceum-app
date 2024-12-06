@@ -132,6 +132,7 @@ class RiskStudentService {
       const res = await http.post('/courses/risk-students', {
         studentList,
       })
+      console.log('Datos enviados al backend:', studentList)
       const response = res.data as ResponseAPI
       if (!response.success) {
         throw new Error(response.message)
@@ -157,6 +158,28 @@ class RiskStudentService {
       if (!response.success) {
         throw new Error(response.message)
       }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+
+  public static async getAllRiskReasons() {
+    try {
+      const res = await http.get('/courses/risk-students/risk-reasons/list')
+      const response = res.data as ResponseAPI<
+        {
+          id: number
+          name: string
+        }[]
+      >
+
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(error.response?.data.message || error.message)

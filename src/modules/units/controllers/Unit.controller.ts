@@ -286,6 +286,43 @@ class UnitController {
       }
     }
   )
+
+  public getStudentsFromAUnit = this.router.get(
+    '/students/:unitId',
+    zValidator(
+      'param',
+      z.object({
+        unitId: z.coerce.number(),
+      })
+    ),
+    zValidator(
+      'query',
+      z.object({
+        q: z.string(),
+      })
+    ),
+    async (c) => {
+      const { unitId } = c.req.valid('param')
+      const { q } = c.req.valid('query')
+      try {
+        const response: ResponseAPI = {
+          data: await this.unitService.getStudentsFromAUnit({
+            unitId,
+            q,
+          }),
+          message: 'Students retrieved',
+          success: true,
+        }
+
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
 }
 
 export default UnitController
