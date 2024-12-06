@@ -24,7 +24,6 @@ export default function CoursesSelection() {
     control: form.control,
     name: 'courses',
   })
-  console.log(coursesField)
   return (
     <div className="px-4 w-1/2">
       <Form {...form}>

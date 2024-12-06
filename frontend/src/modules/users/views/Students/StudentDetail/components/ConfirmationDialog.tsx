@@ -48,7 +48,7 @@ export default function ConfirmationDialog({ refSubmitButtom }: Props) {
         </DialogTitle>
         <DialogDescription>
           ¿Está seguro que desea {mode === 'edit' ? 'actualizar' : 'crear'}
-          el registro del profesor?
+          el registro del estudiante?
         </DialogDescription>
         <DialogFooter>
           <DialogClose asChild>

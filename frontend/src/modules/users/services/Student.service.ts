@@ -70,6 +70,25 @@ class StudentService {
     }
   }
 
+  static async updateStudent(
+    id: string,
+    updateData: Partial<Student>
+  ): Promise<void> {
+    try {
+      console.log(updateData)
+      const res = await http.put(`/accounts/generic/${id}`, updateData)
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+
   // static async updateCourse(args: {
   //   code: string
   //   course: Pick<Course, 'code' | 'credits' | 'name'>

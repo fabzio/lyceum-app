@@ -6,6 +6,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useSearch } from '@tanstack/react-router'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import StudentService from '@frontend/modules/users/services/Student.service'
 
 interface Props {
   student: Student
@@ -22,7 +23,12 @@ export default function GeneralInfo({ student, refSubmitButtom }: Props) {
   })
 
   const handleSubmit = (data: z.infer<typeof formSchema>) => {
-    alert(JSON.stringify(data, null, 2))
+    if (mode === 'edit') {
+      // Enviar los datos editados a la API para actualizar el administrativo.
+      StudentService.updateStudent(student.id, data).catch((error) => {
+        alert(`Error al actualizar: ${error.message}`)
+      })
+    }
   }
 
   return (

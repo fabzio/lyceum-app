@@ -4,4 +4,5 @@ export interface FAQ {
   answer: string
   faqCategoryId: number
   category: string
+  specialityId: number
 }

@@ -82,6 +82,7 @@ class GenericController {
         state: z.enum(['active', 'inactive', 'deleted']).optional(),
         unitId: z.number().optional(),
         code: z.string().optional(),
+        speciality: z.string().optional(),
       })
     ),
     async (c) => {
@@ -107,6 +108,27 @@ class GenericController {
           message: 'Failed to update account information',
           success: false,
         })
+      }
+    }
+  )
+
+  public getProfile = this.router.get(
+    '/profile/:accountId',
+    zValidator('param', z.object({ accountId: z.string() })),
+    async (c) => {
+      const { accountId } = c.req.valid('param')
+      try {
+        const response = await this.accountService.getProfile(accountId)
+        return c.json({
+          data: response,
+          message: 'Profile retrieved',
+          success: true,
+        })
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
       }
     }
   )

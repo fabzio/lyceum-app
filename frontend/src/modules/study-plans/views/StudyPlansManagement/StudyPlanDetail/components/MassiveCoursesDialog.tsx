@@ -1,3 +1,4 @@
+import DownloadTemplate from '@frontend/components/DownloadTemplate'
 import { Button } from '@frontend/components/ui/button'
 import {
   Dialog,
@@ -23,32 +24,26 @@ import {
   HoverCardTrigger,
 } from '@frontend/components/ui/hover-card'
 import { Input } from '@frontend/components/ui/input'
-import { QueryKeys } from '@frontend/constants/queryKeys'
 import { useToast } from '@frontend/hooks/use-toast'
 import { getCsvData } from '@frontend/lib/utils'
-import AdministrativeService from '@frontend/modules/users/services/Administrative.service'
+import StudyPlanService from '@frontend/modules/study-plans/services/studyPlan.service'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Download, Info, Loader2, Upload } from 'lucide-react'
-import { useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
+import { useParams } from '@tanstack/react-router'
+import { Info, Loader2, Upload } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-export default function MasiveAdminsitrativeDialog() {
-  const [isOpen, setIsOpen] = useState(false)
-  const queryClient = useQueryClient()
+export default function MassiveCoursesDialog() {
+  const { planId } = useParams({
+    from: '/_auth/plan-de-estudios/gestionar/$planId',
+  })
   const { toast } = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
   const { mutate, isPending } = useMutation({
-    mutationFn: AdministrativeService.addAdministrative,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [QueryKeys.users.ADMINISTRATIVES],
-      })
-      setIsOpen(false)
-    },
+    mutationFn: StudyPlanService.addCoursesToStudyPlan,
     onError: ({ message }) => {
       toast({
         title: 'Error',
@@ -56,26 +51,23 @@ export default function MasiveAdminsitrativeDialog() {
         description: message,
       })
     },
+    onSuccess: () => {
+      toast({
+        title: 'Carga exitosa',
+        description: 'Cursos cargados exitosamente',
+      })
+    },
   })
-  const downloadTemplate = () => {
-    const csvContent = `Código,Nombre,Primer apellido,Segundo apellido,Correo institucional\n` // Encabezados del CSV
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
-    link.download = 'plantilla_administrativos.csv'
-    link.click()
-  }
+
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
       const jsonData = await getCsvData<CSVRow>(data.file)
-      const parseData = jsonData.map((unit) => csvSchema.parse(unit))
+      const parseData = jsonData.map((course) => csvSchema.parse(course))
       mutate(
-        parseData.map((unit) => ({
-          name: unit['Nombre'],
-          code: unit['Código'],
-          email: unit['Correo institucional'],
-          firstSurname: unit['Primer apellido'],
-          secondSurname: unit['Segundo apellido'],
+        parseData.map((course) => ({
+          course: course['Código de curso'],
+          level: course['Nivel'],
+          studyPlanId: +planId,
         }))
       )
     } catch (error) {
@@ -88,30 +80,24 @@ export default function MasiveAdminsitrativeDialog() {
     }
   }
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog>
       <DialogTrigger asChild>
-        <Button variant="secondary">
-          <Upload className="mr-2 h-4 w-4" /> Carga masiva
+        <Button>
+          <Upload className="mr-2 h-4 w-4" /> Carga masiva de cursos
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            Importar personal administrativo desde archivo
-          </DialogTitle>
+          <DialogTitle>Carga masiva de cursos</DialogTitle>
           <DialogDescription>
-            Suba un archivo CSV con los datos del personal administrativo que
-            desea importar
+            Arrastra y suelta el archivo de cursos en formato CSV
           </DialogDescription>
         </DialogHeader>
-        <Button variant="outline" onClick={downloadTemplate}>
-          <Download className="mr-2 h-4 w-4" /> Descargar plantilla
-        </Button>
+        <DownloadTemplate headers={['Código de curso', 'Nivel']} />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <FormField
               name="file"
-              // eslint-disable-next-line
               render={({ field: { value, onChange, ...filedProps } }) => (
                 <FormItem>
                   <HoverCard openDelay={100}>
@@ -122,10 +108,7 @@ export default function MasiveAdminsitrativeDialog() {
                         </div>
                       </FormLabel>
                     </HoverCardTrigger>
-                    <HoverCardContent>
-                      Código | Nombre | Primer apellido | Segundo apellido |
-                      Correo institucional
-                    </HoverCardContent>
+                    <HoverCardContent>Código de curso | Nivel</HoverCardContent>
                   </HoverCard>
                   <FormControl>
                     <Input
@@ -148,7 +131,7 @@ export default function MasiveAdminsitrativeDialog() {
                 </Button>
               </DialogClose>
               <Button type="submit" disabled={isPending}>
-                {isPending ? <Loader2 className="animate-spin" /> : 'Importar'}
+                {isPending ? <Loader2 className="animate-spin" /> : 'Cargar'}
               </Button>
             </DialogFooter>
           </form>
@@ -159,15 +142,12 @@ export default function MasiveAdminsitrativeDialog() {
 }
 
 const formSchema = z.object({
-  file: z.instanceof(File, { message: 'Debe seleccionar un archivo' }),
+  file: z.instanceof(File),
 })
 
 const csvSchema = z.object({
-  Nombre: z.string(),
-  Código: z.coerce.string().length(8),
-  'Correo institucional': z.string().email(),
-  'Primer apellido': z.string(),
-  'Segundo apellido': z.string(),
+  ['Código de curso']: z.string(),
+  ['Nivel']: z.number().min(0).max(12),
 })
 
 type CSVRow = z.infer<typeof csvSchema>

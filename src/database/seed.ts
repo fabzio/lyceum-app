@@ -68,7 +68,7 @@ await db.transaction(async (tx) => {
       editable: false,
     },
     {
-      name: 'Administrador',
+      name: 'Administrativo',
       unitType: 'university',
       editable: false,
     },

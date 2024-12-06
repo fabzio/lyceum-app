@@ -24,7 +24,7 @@ export const Route = createFileRoute(
   validateSearch: () => ({}) as CourseFilters,
   loader: async ({ params: { planId }, context: { queryClient } }) =>
     queryClient.ensureQueryData({
-      queryKey: [QueryKeys.studyPlan.STUDY_PLANS],
+      queryKey: [QueryKeys.studyPlan.STUDY_PLANS, planId],
       queryFn: () => StudyPlanService.getStudyPlanDetail(+planId),
     }),
   component: () => <StudyPlanDetail />,

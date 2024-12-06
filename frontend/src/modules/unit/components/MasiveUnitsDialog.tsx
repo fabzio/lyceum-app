@@ -20,7 +20,7 @@ import {
 import { Input } from '@frontend/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Info, Loader2, Upload } from 'lucide-react'
+import { Download, Info, Loader2, Upload } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import UnitService from '../services/Unit.service'
@@ -68,6 +68,14 @@ export default function MasiveUnitsDialog({ unitType }: Props) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
+  function downloadTemplate() {
+    const csvContent = `Unidad,Unidad superior\n` // Encabezados del CSV
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = 'plantilla_unidades.csv'
+    link.click()
+  }
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
       const jsonData = await getCsvData<CSVRow>(data.file)
@@ -104,6 +112,9 @@ export default function MasiveUnitsDialog({ unitType }: Props) {
             Cargue un archivo CSV con las unidades a registrar
           </DialogDescription>
         </DialogHeader>
+        <Button onClick={downloadTemplate} variant="outline">
+          <Download className="mr-2 h-4 w-4" /> Descargar plantilla
+        </Button>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <FormField

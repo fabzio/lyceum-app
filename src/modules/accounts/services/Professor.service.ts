@@ -24,6 +24,7 @@ class ProfessorService implements ProfessorDAO {
     const parentUnit = aliasedTable(units, 'parentUnit')
     const professor = await db
       .select({
+        id: accounts.id,
         code: accounts.code,
         name: accounts.name,
         firstSurname: accounts.firstSurname,

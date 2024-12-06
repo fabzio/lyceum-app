@@ -209,10 +209,7 @@ const formSchema = z.object({
     .string({
       required_error: 'El email es requerido',
     })
-    .email({ message: 'El email no es válido' })
-    .refine((value) => value.endsWith('@pucp.edu.pe'), {
-      message: 'El email debe ser institucional',
-    }),
+    .email({ message: 'El email no es válido' }),
   code: z
     .string({
       required_error: 'El código es requerido',

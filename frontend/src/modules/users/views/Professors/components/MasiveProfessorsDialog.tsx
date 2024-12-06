@@ -29,7 +29,7 @@ import { getCsvData } from '@frontend/lib/utils'
 import ProfessorService from '@frontend/modules/users/services/Professor.service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Info, Loader2, Upload } from 'lucide-react'
+import { Download, Info, Loader2, Upload } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -81,6 +81,14 @@ export default function MasiveProfessorDialog() {
       return
     }
   }
+  const downloadTemplate = () => {
+    const csvContent = `Código,Nombre,Primer apellido,Segundo apellido,Correo institucional,Sección/Departamento\n` // Encabezados del CSV
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = 'plantilla_profesores.csv'
+    link.click()
+  }
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -95,6 +103,9 @@ export default function MasiveProfessorDialog() {
             Suba un archivo CSV con los docentes que desea importar
           </DialogDescription>
         </DialogHeader>
+        <Button variant="outline" onClick={downloadTemplate}>
+          <Download className="mr-2 h-4 w-4" /> Descargar plantilla
+        </Button>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <FormField
