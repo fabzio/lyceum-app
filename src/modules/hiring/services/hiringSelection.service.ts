@@ -97,10 +97,9 @@ class HiringSelectionService implements HiringSelectionDAO {
   public async updateHiringSelectionStatus(
     jobRequestId: number,
     newStatus: 'sent' | 'rejected' | 'to_evaluate' | 'evaluated' | 'selected',
-    observation: string | undefined,
+    observation?: string | undefined,
 
     evaluationList?: {
-      evaluationId: string
       courseHiringRequirementId: string
       score: number
     }[]
@@ -143,18 +142,78 @@ class HiringSelectionService implements HiringSelectionDAO {
         const currentDate = new Date() // fecha actual
 
         await Promise.all(
-          evaluationList.map((evaluation) =>
-            db
-              .update(evaluations)
-              .set({
-                score: evaluation.score.toFixed(2), // redondea a 2 decimales
-                evaluationDate: currentDate.toISOString(), // usa la fecha actual
+          evaluationList.map(async (evaluation) => {
+            const existingEvaluations = await db
+              .select()
+              .from(evaluations)
+              .where(
+                and(
+                  eq(evaluations.jobRequestId, jobRequestId),
+                  eq(
+                    evaluations.requirementPerCourseId,
+                    evaluation.courseHiringRequirementId
+                  )
+                )
+              )
+
+            if (existingEvaluations.length > 0) {
+              return db
+                .update(evaluations)
+                .set({
+                  score: evaluation.score.toFixed(2), // Round to 2 decimals
+                  evaluationDate: currentDate.toISOString(), // Use current date
+                })
+                .where(
+                  and(
+                    eq(evaluations.jobRequestId, jobRequestId),
+                    eq(
+                      evaluations.requirementPerCourseId,
+                      evaluation.courseHiringRequirementId
+                    )
+                  )
+                )
+            } else {
+              return db.insert(evaluations).values({
+                jobRequestId: jobRequestId,
+                requirementPerCourseId: evaluation.courseHiringRequirementId,
+                score: evaluation.score.toFixed(2), // Round to 2 decimals
+                evaluationDate: currentDate.toISOString(), // Use current date
               })
-              .where(eq(evaluations.id, Number(evaluation.evaluationId)))
-          )
+            }
+          })
         )
       }
     }
+  }
+
+  public async getHiringRequirements(
+    hiringId: number,
+    courseId: number
+  ): Promise<CourseHiringRequirementsSchema[]> {
+    const [courseHiringId] = await db
+      .select({ id: courseHirings.id })
+      .from(courseHirings)
+      .where(
+        and(
+          eq(courseHirings.courseId, courseId),
+          eq(courseHirings.hiringId, hiringId)
+        )
+      )
+      .limit(1)
+
+    const requirements = await db
+      .select()
+      .from(courseHiringRequirements)
+      .where(eq(courseHiringRequirements.courseHiringId, courseHiringId.id))
+
+    const requirementList = requirements.map((requirement) => ({
+      id: requirement.id,
+      detail: requirement.detail,
+      courseHiringId: requirement.courseHiringId,
+      step: requirement.step,
+    }))
+
+    return requirementList
   }
 
   public async getCandidateHiringList(
@@ -225,15 +284,41 @@ class HiringSelectionService implements HiringSelectionDAO {
     return candidateList
   }
 
-  public async getCandidateMotivation(
+  public async getCandidateMotivationAndObservation(
     applicationId: number
-  ): Promise<string | null> {
-    const application = await db
-      .select()
+  ): Promise<{ motivation: string | null; observation: string | null }> {
+    const data = await db
+      .select({
+        motivation: jobRequests.motivation,
+        observation: jobRequests.observation,
+      })
       .from(jobRequests)
       .where(eq(jobRequests.id, applicationId))
       .limit(1)
-    return application[0].motivation
+    return data[0]
+  }
+
+  public async getRequirementsScores(
+    jobRequestId: number
+  ): Promise<{ id: string | null; detail: string | null; score: number }[]> {
+    const scores = await db
+      .select({
+        id: evaluations.requirementPerCourseId,
+        score: evaluations.score,
+        detail: courseHiringRequirements.detail,
+      })
+      .from(evaluations)
+      .innerJoin(
+        courseHiringRequirements,
+        eq(evaluations.requirementPerCourseId, courseHiringRequirements.id)
+      )
+      .where(eq(evaluations.jobRequestId, jobRequestId))
+
+    return scores.map((req) => ({
+      id: req.id,
+      score: Number(req.score) ?? 0,
+      detail: req.detail,
+    }))
   }
 
   public async getJobRequestDetail(
@@ -313,6 +398,7 @@ class HiringSelectionService implements HiringSelectionDAO {
       })),
     }
   }
+
   public async getHiringsWithCoursesByUnit(
     unitId: number,
     filters: GetHiringsWithCoursesQueryDTO

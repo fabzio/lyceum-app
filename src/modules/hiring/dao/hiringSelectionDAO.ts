@@ -1,5 +1,6 @@
 import { AccountsSchema } from '@/database/schema/accounts'
 import { JobRequestsSchema } from '@/database/schema/jobRequests'
+import { CourseHiringRequirementsSchema } from '@/database/schema/courseHiringRequirements'
 import { courseStep, jobRequestState } from '@/database/schema/enums'
 import {
   CreateHiringSelectionPropDTO,
@@ -16,7 +17,6 @@ export interface HiringSelectionDAO {
     observation: string | undefined,
 
     evaluationList: {
-      evaluationId: string
       courseHiringRequirementId: string
       score: number
     }[]
@@ -29,6 +29,7 @@ export interface HiringSelectionDAO {
   ): Promise<
     (Pick<AccountsSchema, 'id' | 'name' | 'email'> & {
       jobRequestStatus: JobRequestsSchema['state']
+      jobRequestId: JobRequestsSchema['id']
     })[]
   >
 
@@ -58,7 +59,18 @@ export interface HiringSelectionDAO {
     filters: GetHiringsWithCoursesQueryDTO
   ): Promise<HiringsWithCoursesDTO[]>
 
-  getCandidateMotivation(applicationId: number): Promise<string | null>
+  getCandidateMotivationAndObservation(
+    applicationId: number
+  ): Promise<{ motivation: string | null; observation: string | null }>
+
+  getHiringRequirements(
+    hiringId: number,
+    courseId: number
+  ): Promise<CourseHiringRequirementsSchema[]>
+
+  getRequirementsScores(
+    jobRequestId: number
+  ): Promise<{ id: string | null; detail: string | null; score: number }[]>
 }
 
 export default HiringSelectionDAO

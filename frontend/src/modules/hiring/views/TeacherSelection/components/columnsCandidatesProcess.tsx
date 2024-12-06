@@ -1,9 +1,12 @@
 import { Button } from '@frontend/components/ui/button'
 import { ColumnDef } from '@tanstack/react-table'
-import { ArrowUpDown } from 'lucide-react'
 import { Account } from '@frontend/interfaces/models/Account'
 import { JobApplication } from '@frontend/interfaces/models/JobApplication'
 import { ViewApplicationCell } from './ViewApplicationButton'
+import { ViewEvaluationCell } from './ViewApplicationEvaluation'
+import { HiringRequirement } from '@frontend/interfaces/models/HiringRequirement'
+import { HiringPermissionsDict } from '@frontend/interfaces/enums/permissions/Hiring'
+import { PermissionCode } from '@frontend/interfaces/enums/permissions'
 
 function mapToSimplifiedData(
   data: Pick<Account, 'id' | 'name' | 'email'> & {
@@ -22,7 +25,9 @@ function mapToSimplifiedData(
 
 export const CandidatesColumns = (
   step: 'first' | 'second' | 'selected',
-  courseName: string | undefined
+  courseName: string | undefined,
+  requirements: HiringRequirement[] | null,
+  havePermission: (permission: PermissionCode) => boolean
 ): ColumnDef<
   Pick<Account, 'id' | 'name' | 'email'> & {
     jobRequestStatus: JobApplication['state']
@@ -43,7 +48,6 @@ export const CandidatesColumns = (
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           ID
-          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
       cell: ({ row }) => (
@@ -58,7 +62,6 @@ export const CandidatesColumns = (
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Nombre
-          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
       cell: ({ row }) => String(row.getValue('name')),
@@ -71,7 +74,6 @@ export const CandidatesColumns = (
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Correo
-          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
       cell: ({ row }) => <div>{row.getValue('email')}</div>,
@@ -84,7 +86,6 @@ export const CandidatesColumns = (
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Estado
-          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
       cell: ({ row }) => {
@@ -96,7 +97,10 @@ export const CandidatesColumns = (
     },
   ]
 
-  if (step === 'first') {
+  if (
+    step === 'first' &&
+    havePermission(HiringPermissionsDict.CHANGE_STATUS_ALL_CANDIDATES_PHASE_1)
+  ) {
     baseColumns.push({
       accessorKey: 'actions',
       header: 'Acciones',
@@ -104,11 +108,42 @@ export const CandidatesColumns = (
         <ViewApplicationCell
           {...mapToSimplifiedData(row.original)}
           courseName={courseName}
+          requirements={requirements}
         />
       ),
     })
+  } else if (
+    step === 'second' &&
+    havePermission(HiringPermissionsDict.EVALUATE_ALL_CANDIDATES_PHASE_2)
+  ) {
+    baseColumns.push({
+      accessorKey: 'evaluate',
+      header: 'Evaluación',
+      cell: ({ row }) => {
+        const status = row.getValue('jobRequestStatus') as JobRequestStatus
+        if (status == 'to_evaluate') {
+          return (
+            <ViewEvaluationCell
+              {...mapToSimplifiedData(row.original)}
+              courseName={courseName}
+              requirements={requirements}
+              edit={true}
+            />
+          )
+        } else if (status == 'evaluated') {
+          return (
+            <ViewEvaluationCell
+              {...mapToSimplifiedData(row.original)}
+              courseName={courseName}
+              requirements={requirements}
+              edit={false}
+              havePermission={havePermission}
+            />
+          )
+        }
+      },
+    })
   }
-
   return baseColumns
 }
 
