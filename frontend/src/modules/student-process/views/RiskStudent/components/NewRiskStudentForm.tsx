@@ -51,7 +51,7 @@ export default function RiskStudentForm({ handleClose }: Props) {
     enabled: !!unitType,
   })
   const { mutate, isPending } = useMutation({
-    mutationFn: RoleAccountsService.insertRoleAccount,
+    mutationFn: RiskStudentService.insertRiskStudentReport,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.security.ROLE_ACCOUNTS],
@@ -69,19 +69,29 @@ export default function RiskStudentForm({ handleClose }: Props) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    mutate({
-      accountId: data.userId,
-      roleId: data.roleId,
-      unitId: +data.unitId,
-    })
+
+  const onSubmit: (data: z.infer<typeof formSchema>) => void = (data) => {
+    // Convertir el único registro en un arreglo con la estructura esperada
+    const preparedData = [
+      {
+        studentCode: data.userCode, // Código del estudiante
+        scheduleCode: data.course.schedulecode, // Código del horario
+        courseCode: data.course.courseCode, // Código del curso
+        reasonId: data.reasonId, // ID del motivo
+      },
+    ]
+    console.log('Datos enviados al servicio:', preparedData)
+
+    // Enviar el arreglo al servicio
+    mutate(preparedData)
   }
+
   return (
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
-            name="userId"
+            name="userCode"
             control={form.control}
             render={({ field }) => (
               <FormItem>
@@ -98,7 +108,7 @@ export default function RiskStudentForm({ handleClose }: Props) {
                       })
                     }
                     handleSelect={(item) => {
-                      field.onChange(item?.id)
+                      field.onChange(item?.code)
                     }}
                     renderOption={(item) => (
                       <div className="hover:bg-muted">
@@ -120,7 +130,7 @@ export default function RiskStudentForm({ handleClose }: Props) {
             )}
           />
           <FormField
-            name="roleId" //scheduleId
+            name="course" //scheduleId
             control={form.control}
             render={({ field }) => (
               <FormItem>
@@ -130,19 +140,24 @@ export default function RiskStudentForm({ handleClose }: Props) {
                     placeholder="Buscar Horario"
                     searchFn={
                       () =>
-                        form.getValues('userId')
+                        form.getValues('userCode')
                           ? ScheduleService.getAccounSchedule(
-                              form.getValues('userId')
+                              form.getValues('userCode')
                             )
                           : Promise.resolve([]) // Si no hay usuario seleccionado, no realizar búsqueda
                     }
                     handleSelect={(item) => {
-                      field.onChange(item?.id)
+                      field.onChange({
+                        id: item?.id, //id del horario
+                        schedulecode: item?.code, //codigo del horario ejem H101
+                        courseId: item?.courseId, //id del curso
+                        courseCode: item?.courseCode,
+                      })
                     }}
                     renderOption={(item) => (
                       <div className="hover:bg-muted">
                         {' '}
-                        {`${item.courseName} ${item.code}`}
+                        {`${item.courseName} ${item.code} ${item.id} ${item.courseId}`}
                       </div>
                     )}
                     renderSelected={(item) => (
@@ -155,12 +170,15 @@ export default function RiskStudentForm({ handleClose }: Props) {
             )}
           />
           <FormField
-            name="unitId"
+            name="reasonId"
             control={form.control}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Motivo</FormLabel>
-                <Select onValueChange={field.onChange} disabled={loading}>
+                <Select
+                  onValueChange={(val) => field.onChange(Number(val))}
+                  disabled={loading}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecciona un motivo" />
@@ -173,7 +191,7 @@ export default function RiskStudentForm({ handleClose }: Props) {
                             key={reason.id}
                             value={reason.id.toString()}
                           >
-                            {reason.name}
+                            {reason.id} - {reason.name}
                           </SelectItem>
                         ))
                       : []}
@@ -187,7 +205,16 @@ export default function RiskStudentForm({ handleClose }: Props) {
             <DialogClose asChild>
               <Button variant="outline">Cancelar</Button>
             </DialogClose>
-            <Button disabled={isPending}>
+            <Button
+              disabled={isPending}
+              onClick={() => {
+                console.log(
+                  'Datos del formulario antes de enviar:',
+                  form.getValues()
+                ) // Imprimir los valores actuales del formulario
+                form.handleSubmit(onSubmit)()
+              }}
+            >
               {isPending ? <Loader2 className="animate-spin" /> : 'Guardar'}
             </Button>
           </DialogFooter>
@@ -198,9 +225,14 @@ export default function RiskStudentForm({ handleClose }: Props) {
 }
 
 const formSchema = z.object({
-  userId: z
+  userCode: z
     .string({ required_error: 'El usuario es requerido' })
     .min(1, 'El usuario es requerido'),
-  roleId: z.number({ required_error: 'El rol es requerido' }),
-  unitId: z.string({ required_error: 'La unidad es requerida' }),
+  course: z.object({
+    id: z.number(),
+    schedulecode: z.string(),
+    courseId: z.number(),
+    courseCode: z.string(),
+  }),
+  reasonId: z.number({ required_error: 'El motivo es requerido' }),
 })
