@@ -1,4 +1,5 @@
 import { number, z } from 'zod'
+import { CourseHiringRequirementsSchema } from '@/database/schema/courseHiringRequirements'
 
 export const createHiringSelectionDTO = z.object({
   unitId: z.number(),
@@ -30,7 +31,6 @@ export type CreateHiringSelectionPropDTO = z.infer<
 >
 
 export const updateHiringSelectionStatusDTO = z.object({
-  accountId: z.string().min(1),
   newStatus: z.enum([
     'sent',
     'rejected',
@@ -39,10 +39,11 @@ export const updateHiringSelectionStatusDTO = z.object({
     'selected',
   ]),
 
+  observation: z.string().optional(),
+
   evaluationList: z
     .array(
       z.object({
-        evaluationId: z.string().min(1),
         courseHiringRequirementId: z.string().min(1),
         score: z.number().min(0),
       })
@@ -90,6 +91,30 @@ export const getHiringsWithCoursesQueryDTO = z.object({
 
 export type GetHiringsWithCoursesQueryDTO = z.infer<
   typeof getHiringsWithCoursesQueryDTO
+>
+
+export const getHiringRequirementsQueryDTO = z.object({
+  hiringId: z.coerce.number(),
+  courseId: z.coerce.number(),
+})
+
+export type GetHiringRequirementsQueryDTO = z.infer<
+  typeof getHiringRequirementsQueryDTO
+>
+
+export const requierementPerApplicatinDTO = z.object({
+  detail: z.coerce.string(),
+  courseHiringId: z.coerce.string(),
+  id: z.string().optional(),
+  step: z.enum(['phase1', 'phase2']).optional().nullable(),
+})
+
+export const getRequirementsScoresQueryDTO = z.object({
+  requirements: z.array(requierementPerApplicatinDTO),
+})
+
+export type GetRequirementsScoresQueryDTO = z.infer<
+  typeof getRequirementsScoresQueryDTO
 >
 
 export const getCandidateMotivationQueryDTO = z.object({

@@ -5,6 +5,7 @@ import { CreateTeacherSelectionForm } from '../views/TeacherSelection/NewTeacher
 import { Filters } from '@frontend/interfaces/types'
 import { Account } from '@frontend/interfaces/models/Account'
 import { JobApplication } from '@frontend/interfaces/models/JobApplication'
+import { HiringRequirement } from '@frontend/interfaces/models/HiringRequirement'
 
 class HiringService {
   public static async createTeacherSelection(
@@ -70,6 +71,7 @@ class HiringService {
       return response.data as (Pick<Account, 'id' | 'name' | 'email'> & {
         jobRequestStatus: JobApplication['state']
         jobRequestId: JobApplication['id']
+        jobObservation: JobApplication['observation']
       })[]
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -84,7 +86,7 @@ class HiringService {
     hiringId?: string,
     courseHiringId?: string,
     accountId?: string
-  ): Promise<string | null> {
+  ): Promise<{ motivation: string | null; observation: string | null }> {
     try {
       const res = await http.get(
         `/hiring/selection/${hiringId}/${courseHiringId}/${accountId}/motivation`,
@@ -96,7 +98,85 @@ class HiringService {
       if (!response.success) {
         throw new Error(response.message)
       }
-      return response.data as Promise<string | null>
+      return response.data as Promise<{
+        motivation: string | null
+        observation: string | null
+      }>
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+
+  public static async getRequirements(
+    hiringId: number,
+    courseId: number
+  ): Promise<HiringRequirement[]> {
+    try {
+      const res = await http.get(
+        `/hiring/selection/${hiringId}/${courseId}/requirements`
+      )
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data as Promise<HiringRequirement[]>
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+
+  public static async getScores(
+    jobRequestId: number
+  ): Promise<{ id: string; detail: string; score: number }[]> {
+    try {
+      const res = await http.get(`/hiring/selection/${jobRequestId}/scores`)
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data as Promise<
+        { id: string; detail: string; score: number }[]
+      >
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+
+  public static async updateApplication(
+    data: {
+      jobRequestId: number
+      observation?: string | undefined
+      evaluationList?: {
+        courseHiringRequirementId: string
+        score?: number | undefined
+      }[]
+    },
+    newStatus: 'sent' | 'rejected' | 'to_evaluate' | 'evaluated' | 'selected'
+  ): Promise<void> {
+    try {
+      const res = await http.put(
+        `/hiring/selection/${data.jobRequestId}/status`,
+        {
+          jobRequestId: data.jobRequestId,
+          newStatus: newStatus,
+          observation: data.observation,
+          evaluationList: data.evaluationList,
+        }
+      )
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data as Promise<void>
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(error.response?.data.message || error.message)

@@ -7,7 +7,8 @@ import {
 import { NotepadText } from 'lucide-react'
 import { useState } from 'react'
 import { DialogTitle } from '@radix-ui/react-dialog'
-import ViewApplication from '../components/ApplicationView'
+import { ViewApplication } from '../components/ApplicationView'
+import { HiringRequirement } from '@frontend/interfaces/models/HiringRequirement'
 
 export function ViewApplicationCell(params: {
   id: string
@@ -16,6 +17,7 @@ export function ViewApplicationCell(params: {
   jobRequestStatus: string
   jobRequestId: number
   courseName: string | undefined
+  requirements: HiringRequirement[] | null
 }) {
   const [open, setOpen] = useState(false)
 

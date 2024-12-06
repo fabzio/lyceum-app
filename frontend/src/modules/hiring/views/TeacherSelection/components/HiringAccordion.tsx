@@ -9,6 +9,7 @@ import { Course } from '@frontend/interfaces/models/Course'
 import { Hiring } from '@frontend/interfaces/models/Hiring'
 import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
+import { Eye } from 'lucide-react'
 
 const ITEMS_PER_PAGE = 5
 interface Props {
@@ -107,7 +108,10 @@ function AssigmentAccordionItem({
               }}
               search={{ courseId: course.id, courseName: course.name }}
             >
-              <Button variant="outline">Administrar</Button>
+              <Button variant="outline" className="justify-start gap-2 w-42">
+                <Eye className="h-4 w-4" />
+                Ver postulaciones
+              </Button>
             </Link>
           </div>
         </li>
