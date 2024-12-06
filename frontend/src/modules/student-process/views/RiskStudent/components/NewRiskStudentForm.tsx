@@ -18,10 +18,10 @@ import {
 } from '@frontend/components/ui/select'
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import { useToast } from '@frontend/hooks/use-toast'
-import { UnitType } from '@frontend/interfaces/enums'
+import { useFilters } from '@frontend/hooks/useFilters'
+
 import { StudentProcessPermissionsDict } from '@frontend/interfaces/enums/permissions/StudentProcess'
 
-import RoleAccountsService from '@frontend/modules/security/services/RoleAccounts.service'
 import RiskStudentService from '@frontend/modules/student-process/services/riskStudent.service'
 import UnitService from '@frontend/modules/unit/services/Unit.service'
 import ScheduleService from '@frontend/service/Schedules.service'
@@ -29,7 +29,7 @@ import { useSessionStore } from '@frontend/store'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
-import { useState } from 'react'
+
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -38,23 +38,22 @@ interface Props {
 }
 export default function RiskStudentForm({ handleClose }: Props) {
   const { getRoleWithPermission } = useSessionStore()
-  const [unitType] = useState<UnitType | null>(null)
+
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { data: reasons, isLoading: loading } = useQuery({
     queryKey: ['reasons'],
     queryFn: () => RiskStudentService.getAllRiskReasons(),
   })
-  const {} = useQuery({
-    queryKey: [QueryKeys.unit.UNITS, unitType],
-    queryFn: () => RoleAccountsService.getUnitScopes(unitType!),
-    enabled: !!unitType,
-  })
+
+  const { filters } = useFilters(
+    '/_auth/procesos-de-estudiantes/alumnos-riesgo'
+  )
   const { mutate, isPending } = useMutation({
     mutationFn: RiskStudentService.insertRiskStudentReport,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [QueryKeys.security.ROLE_ACCOUNTS],
+        queryKey: [QueryKeys.courses.RISK_STUDENTS, filters],
       })
       handleClose()
     },
@@ -157,7 +156,7 @@ export default function RiskStudentForm({ handleClose }: Props) {
                     renderOption={(item) => (
                       <div className="hover:bg-muted">
                         {' '}
-                        {`${item.courseName} ${item.code} ${item.id} ${item.courseId}`}
+                        {`${item.courseName} ${item.code}`}
                       </div>
                     )}
                     renderSelected={(item) => (
