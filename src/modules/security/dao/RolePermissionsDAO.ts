@@ -12,4 +12,12 @@ export interface RolePermissionDAO {
     permissions: Permission['id'][]
   }) => Promise<RolePermission>
   removeRolePermission: (rolePermission: number) => Promise<void>
+  editRolePermission: (rolePermission: {
+    role: RolesSchema
+    permissions: Permission['id'][]
+  }) => Promise<void>
+  removePermissionFromRole: (
+    roleId: number,
+    permissionId: number
+  ) => Promise<void>
 }

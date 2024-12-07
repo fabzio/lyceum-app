@@ -74,6 +74,46 @@ class RolePermissionService {
       throw err
     }
   }
+
+  public static async editRolePermission(rolePermission: {
+    role: { id: number; name: string; unitType: string }
+    permissions: number[]
+  }) {
+    try {
+      const res = await http.put(`/security/role-permissions`, rolePermission)
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data as RolePermission
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        throw new Error(err.response?.data || err.message)
+      }
+      throw err
+    }
+  }
+
+  public static async deletePermissionFromRole(
+    roleId: number,
+    permissionId: number
+  ) {
+    try {
+      const res = await http.delete(
+        `/security/role-permissions/deletePermissionFromRole/${roleId}/${permissionId}`
+      )
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data as RolePermission
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        throw new Error(err.response?.data || err.message)
+      }
+      throw err
+    }
+  }
 }
 
 export default RolePermissionService
