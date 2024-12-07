@@ -5,10 +5,10 @@ import { GraduationCap } from 'lucide-react'
 
 export const StudyPlanModule: AppModule = {
   code: ModulesDict.STUDY_PLAN,
-  label: 'Planes de Estudio',
+  label: 'Cursos y planes de estudio',
   path: '/plan-de-estudios',
   icon: <GraduationCap />,
-  description: 'Módulo de gestión de planes de estudio',
+  description: 'Módulo de gestión de cursos y planes de estudio',
   submodules: [
     {
       label: 'Gestión de cursos',
