@@ -188,6 +188,7 @@ class UnitController {
         name: z.string().min(3, 'El nombre debe tener al menos 3 caracteres'),
         description: z.string().max(255).optional(),
         parentId: z.number().optional(),
+        active: z.boolean().optional(),
       })
     ),
     async (c) => {
@@ -200,6 +201,7 @@ class UnitController {
           name: unitData.name,
           description: unitData.description, // Si la descripción no se proporciona, será null
           parentId: unitData.parentId, // Si no se proporciona `parentId`, se usa null
+          active: unitData.active,
         })
 
         return c.json({

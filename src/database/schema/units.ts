@@ -1,4 +1,10 @@
-import { foreignKey, integer, serial, varchar } from 'drizzle-orm/pg-core'
+import {
+  boolean,
+  foreignKey,
+  integer,
+  serial,
+  varchar,
+} from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
@@ -14,6 +20,7 @@ export const units = schema.table(
     details: varchar('details', { length: 1000 }),
     parentId: integer('parent_id'),
     type: unitType('type').notNull(),
+    active: boolean('active').default(true),
   },
   (table) => {
     return {

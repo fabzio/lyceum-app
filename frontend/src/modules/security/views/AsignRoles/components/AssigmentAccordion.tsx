@@ -10,13 +10,27 @@ import RevokeConfirmationDialog from './RevokeConfirmationDialog'
 
 interface Props {
   assigments: Assigment[]
+  search: string
 }
 
-export default function AssigmentAccordion({ assigments = [] }: Props) {
+export default function AssigmentAccordion({ assigments = [], search }: Props) {
+  // Filtrar las asignaciones y los roles según el término de búsqueda
+  const filteredAssigments = assigments.filter((assigment) => {
+    // Verifica si el nombre de la asignación o alguno de los roles coincide con la búsqueda
+    const filteredRoles = assigment.roles.filter((role) => {
+      return (
+        role.name.toLowerCase().includes(search) ||
+        assigment.name.toLowerCase().includes(search)
+      )
+    })
+
+    return filteredRoles.length > 0
+  })
+
   return (
     <Accordion type="single" collapsible>
-      {assigments.length > 0 ? (
-        assigments.map(({ id, name, roles }) => (
+      {filteredAssigments.length > 0 ? (
+        filteredAssigments.map(({ id, name, roles }) => (
           <AccordionItem key={id} value={id}>
             <AccordionTrigger>
               <div className="w-full px-2 flex justify-between">
@@ -33,7 +47,7 @@ export default function AssigmentAccordion({ assigments = [] }: Props) {
         ))
       ) : (
         <div className="text-center text-muted-foreground mt-2">
-          No hay roles asignados
+          No se encontraron asignaciones
         </div>
       )}
     </Accordion>

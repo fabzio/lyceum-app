@@ -40,6 +40,7 @@ class RolePermissionService implements RolePermissionDAO {
           unitType: roles.unitType,
         },
         permission: {
+          id: permissions.id,
           description: permissions.description,
           moduleName: modules.name,
         },
@@ -79,6 +80,63 @@ class RolePermissionService implements RolePermissionDAO {
       await tx.delete(accountRoles).where(eq(accountRoles.roleId, roleId))
       await tx.delete(rolePermissions).where(eq(rolePermissions.roleId, roleId))
       await tx.delete(roles).where(eq(roles.id, roleId))
+    })
+  }
+
+  async editRolePermission(rolePermission: {
+    role: RolesSchema
+    permissions: Permission['id'][]
+  }): Promise<void> {
+    await db.transaction(async (tx) => {
+      // 1. Actualizar el rol
+      await tx
+        .update(roles)
+        .set({
+          name: rolePermission.role.name,
+          unitType: rolePermission.role.unitType,
+        })
+        .where(eq(roles.id, rolePermission.role.id!))
+
+      // 2. Obtener los permisos actuales del rol
+      const existingPermissions = await tx
+        .select({ permissionId: rolePermissions.permissionId })
+        .from(rolePermissions)
+        .where(eq(rolePermissions.roleId, rolePermission.role.id!))
+
+      const existingPermissionIds = existingPermissions.map(
+        (p) => p.permissionId
+      )
+
+      // 3. Filtrar los nuevos permisos, dejando solo los que no existen en la base de datos
+      const newPermissions = rolePermission.permissions.filter(
+        (permissionId) => !existingPermissionIds.includes(permissionId)
+      )
+
+      // 4. Insertar los nuevos permisos
+      if (newPermissions.length > 0) {
+        await tx.insert(rolePermissions).values(
+          newPermissions.map((permissionId) => ({
+            roleId: rolePermission.role.id!,
+            permissionId,
+          }))
+        )
+      }
+    })
+  }
+
+  async removePermissionFromRole(
+    roleId: number,
+    permissionId: number
+  ): Promise<void> {
+    await db.transaction(async (tx) => {
+      await tx
+        .delete(rolePermissions)
+        .where(
+          and(
+            eq(rolePermissions.roleId, roleId),
+            eq(rolePermissions.permissionId, permissionId)
+          )
+        )
     })
   }
 }

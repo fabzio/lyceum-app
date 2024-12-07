@@ -7,4 +7,5 @@ export type Unit = {
   description?: string
   parentName?: string
   parentId?: number
+  active?: boolean
 }
