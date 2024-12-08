@@ -33,12 +33,17 @@ class App {
 
   private initializeMiddlewares() {
     this.app.use('/api/v1', logger(), prettyJSON())
+
     this.app.use(
       '/api/v1/oauth',
       googleAuth({
         client_id: G_CLIENT_ID,
         client_secret: G_CLIENT_SECRET,
         scope: ['email', 'profile', 'openid'],
+        redirect_uri:
+          process.env.NODE_ENV === 'development'
+            ? `http://localhost:${this.port}/api/v1/oauth`
+            : 'https://lyceum.inf.pucp.edu.pe/api/v1/oauth',
       })
     )
     this.app.use('/api/v1/auth/verify', authMiddleware)
