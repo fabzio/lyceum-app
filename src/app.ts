@@ -33,12 +33,29 @@ class App {
 
   private initializeMiddlewares() {
     this.app.use('/api/v1', logger(), prettyJSON())
+
+    // Middleware para redirigir HTTP a HTTPS en producción
+    if (process.env.NODE_ENV === 'production') {
+      this.app.use('*', async (c, next) => {
+        const proto = c.req.header('x-forwarded-proto')
+        if (proto && proto !== 'https') {
+          const httpsUrl = `https://${c.req.header('host')}${c.req.url}`
+          return c.redirect(httpsUrl, 301)
+        }
+        await next()
+      })
+    }
+
     this.app.use(
       '/api/v1/oauth',
       googleAuth({
         client_id: G_CLIENT_ID,
         client_secret: G_CLIENT_SECRET,
         scope: ['email', 'profile', 'openid'],
+        redirect_uri:
+          process.env.NODE_ENV === 'development'
+            ? `http://localhost:${this.port}/api/v1/oauth`
+            : 'https://lyceum.inf.pucp.edu.pe/api/v1/oauth',
       })
     )
     this.app.use('/api/v1/auth/verify', authMiddleware)
