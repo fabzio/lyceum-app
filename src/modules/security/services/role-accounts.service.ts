@@ -28,7 +28,6 @@ class RoleAccountsService {
       .innerJoin(accounts, eq(accountRoles.accountId, accounts.id))
       .innerJoin(roles, eq(accountRoles.roleId, roles.id))
       .innerJoin(units, eq(accountRoles.unitId, units.id))
-      .where(eq(roles.editable, true))
 
     const accountsMap = new Map()
 
@@ -81,6 +80,7 @@ class RoleAccountsService {
         )
       )
 
+    /*
     if (existingPermissions.length) {
       const existingPermissionsString = existingPermissions
         .map((permission) => permission.permissions)
@@ -90,6 +90,7 @@ class RoleAccountsService {
           existingPermissionsString
       )
     }
+*/
 
     await db.insert(accountRoles).values({
       accountId: accountRole.accountId,

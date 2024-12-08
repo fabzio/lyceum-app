@@ -19,6 +19,7 @@ export const riskStudents = schema.table(
     reasonId: integer('reason_id').notNull(),
     score: smallint('score'),
     updated: boolean('updated').notNull().default(true),
+    active: boolean('active').notNull().default(true),
   },
   (table) => ({
     riskStudentsPk: primaryKey({
