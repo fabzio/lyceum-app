@@ -17,33 +17,38 @@ const MAX_PAGE_SIZE_FOR_PDF = 10000
 
 const styles = StyleSheet.create({
   page: {
-    padding: 20,
-    fontSize: 12,
+    padding: 30,
   },
   title: {
-    textAlign: 'center',
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#2c3e50',
+    fontSize: 24,
     marginBottom: 20,
+    textAlign: 'center',
   },
-  studentContainer: {
-    marginBottom: 15,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#dfe6e9',
-    borderBottomStyle: 'solid',
+  table: {
+    width: 'auto',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
   },
-  field: {
-    fontSize: 12,
-    color: '#34495e',
+  tableRow: {
+    flexDirection: 'row',
+  },
+  tableCol: {
+    width: '20%',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderLeftWidth: 0,
+    borderTopWidth: 0,
+  },
+  tableCell: {
+    margin: 5,
+    fontSize: 10,
+  },
+  tableHeader: {
+    margin: 5,
+    fontSize: 10,
     fontWeight: 'bold',
-    marginBottom: 2,
-  },
-  value: {
-    fontSize: 12,
-    color: '#2c3e50',
-    marginBottom: 5,
   },
 })
 
@@ -51,33 +56,56 @@ const MyDocument = ({ data }: { data: RiskStudentGeneral[] }) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <Text style={styles.title}>Reporte de Alumnos en Riesgo</Text>
-      {data.map((student) => (
-        <View key={student.student.code} style={styles.studentContainer}>
-          <Text style={styles.field}>Código:</Text>
-          <Text style={styles.value}>{student.student.code}</Text>
-
-          <Text style={styles.field}>Nombres:</Text>
-          <Text style={styles.value}>
-            {student.student.name} {student.student.surname}
-          </Text>
-
-          <Text style={styles.field}>Curso:</Text>
-          <Text style={styles.value}>{student.course.name}</Text>
-
-          <Text style={styles.field}>Motivo:</Text>
-          <Text style={styles.value}>{student.reason}</Text>
-
-          <Text style={styles.field}>Puntuación:</Text>
-          <Text style={styles.value}>{student.score ?? 'N/A'}</Text>
-
-          <Text style={styles.field}>Estado:</Text>
-          <Text style={styles.value}>
-            {student.state
-              ? 'Solicitud de reporte actualizado'
-              : 'Reporte solicitado'}
-          </Text>
+      <View style={styles.table}>
+        <View style={styles.tableRow}>
+          <View style={styles.tableCol}>
+            <Text style={styles.tableHeader}>Código</Text>
+          </View>
+          <View style={styles.tableCol}>
+            <Text style={styles.tableHeader}>Nombres</Text>
+          </View>
+          <View style={styles.tableCol}>
+            <Text style={styles.tableHeader}>Curso</Text>
+          </View>
+          <View style={styles.tableCol}>
+            <Text style={styles.tableHeader}>Motivo</Text>
+          </View>
+          <View style={styles.tableCol}>
+            <Text style={styles.tableHeader}>Puntuación</Text>
+          </View>
+          <View style={styles.tableCol}>
+            <Text style={styles.tableHeader}>Estado</Text>
+          </View>
         </View>
-      ))}
+        {data.map((student) => (
+          <View key={student.student.code} style={styles.tableRow}>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>{student.student.code}</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>
+                {student.student.name} {student.student.surname}
+              </Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>{student.course.name}</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>{student.reason}</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>{student.score ?? 'N/A'}</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>
+                {student.state
+                  ? 'Solicitud de reporte actualizado'
+                  : 'Reporte solicitado'}
+              </Text>
+            </View>
+          </View>
+        ))}
+      </View>
     </Page>
   </Document>
 )
