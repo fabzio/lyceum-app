@@ -1,11 +1,13 @@
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import { ThesisPermissionsDict } from '@frontend/interfaces/enums/permissions/Thesis'
+import { Filters } from '@frontend/interfaces/types'
 import ErrorPage from '@frontend/layouts/ErrorPage'
 import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisThemeRequest.service'
 import ThesisTheme from '@frontend/modules/thesis/views/ThesisTheme'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/tesis/tema-tesis/')({
+  validateSearch: () => ({}) as Filters,
   loader: async ({ context: { queryClient, sessionStore } }) => {
     const { getRoleWithPermission, havePermission } = sessionStore
 
@@ -16,7 +18,7 @@ export const Route = createFileRoute('/_auth/tesis/tema-tesis/')({
       ThesisPermissionsDict.APROVE_THESIS_PHASE_2
     )?.unitId
 
-    let accountCode = sessionStore.session!.code
+    const accountCode = sessionStore.session!.code
 
     return queryClient.ensureQueryData({
       queryKey: [QueryKeys.thesis.THESIS_REQUESTS],
