@@ -68,6 +68,7 @@ export type getCandidateHiringLisPropDTO = z.infer<
 export const coursePerHiringDTO = z.object({
   id: z.number(), // UUID del curso
   name: z.string(), // Nombre del curso
+  processId: z.string(), //ID del proceso de contratación x curso
 })
 
 export type CoursePerHiringDTO = z.infer<typeof coursePerHiringDTO>
