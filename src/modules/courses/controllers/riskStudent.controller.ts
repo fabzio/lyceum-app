@@ -23,6 +23,10 @@ class RiskStudentController {
         limit: z.string().transform((v) => parseInt(v)),
         sortBy: z.string().optional(),
         specialityId: z.string().transform((v) => parseInt(v)),
+        eqnumber: z
+          .string()
+          .optional()
+          .transform((v) => (v ? parseInt(v) : undefined)),
       })
     ),
     async (c) => {
@@ -53,6 +57,10 @@ class RiskStudentController {
         page: z.string().transform((v) => parseInt(v)),
         limit: z.string().transform((v) => parseInt(v)),
         sortBy: z.string().optional(),
+        eqnumber: z
+          .string()
+          .optional()
+          .transform((v) => (v ? parseInt(v) : undefined)),
       })
     ),
     async (c) => {

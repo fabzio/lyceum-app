@@ -5,6 +5,7 @@ import {
   SelectContent,
   SelectItem,
 } from '@frontend/components/ui/select'
+import { useFilters } from '@frontend/hooks/useFilters'
 
 interface SelectFilterProps {
   onFilterChange?: (score: string) => void
@@ -13,12 +14,24 @@ interface SelectFilterProps {
 }
 
 export default function SelectFilter({
-  onFilterChange,
   selectedValue,
   filterType,
 }: SelectFilterProps) {
+  const { setFilters } = useFilters(
+    '/_auth/procesos-de-estudiantes/alumnos-riesgo'
+  )
+
+  const handleScoreFilterChange = (value: string | null) => {
+    setFilters({
+      eqnumber: value && value !== 'Todos' ? parseInt(value) : undefined,
+    })
+  }
+
   return (
-    <Select onValueChange={onFilterChange} value={selectedValue || undefined}>
+    <Select
+      onValueChange={handleScoreFilterChange}
+      value={selectedValue || undefined}
+    >
       <SelectTrigger className="w-full md:w-48">
         <SelectValue
           placeholder={

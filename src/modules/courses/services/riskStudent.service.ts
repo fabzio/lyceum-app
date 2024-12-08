@@ -41,12 +41,14 @@ class RiskStudentService implements RiskStudentDAO {
     page,
     limit,
     sortBy,
+    eqnumber,
   }: {
     specialityId: Unit['id']
     q?: string
     page: number
     limit: number
     sortBy?: string
+    eqnumber?: number
   }) {
     const professor = aliasedTable(accounts, 'professor')
     const student = aliasedTable(accounts, 'student')
@@ -130,7 +132,10 @@ class RiskStudentService implements RiskStudentDAO {
           or(
             ilike(student.code, `%${q}%`),
             sql`concat(${student.name}, ' ', ${student.firstSurname}, ' ', ${student.secondSurname}) ilike ${`%${q}%`}`
-          )
+          ),
+          eqnumber !== undefined && eqnumber !== 0
+            ? eq(riskStudents.score, eqnumber)
+            : sql`1 = 1`
         )
       )
       .$dynamic()
@@ -158,12 +163,14 @@ class RiskStudentService implements RiskStudentDAO {
     page,
     limit,
     sortBy,
+    eqnumber,
   }: {
     professorId: string
     q?: string
     page: number
     limit: number
     sortBy?: string
+    eqnumber?: number
   }) {
     const professor = aliasedTable(accounts, 'professor')
     const student = aliasedTable(accounts, 'student')
@@ -246,7 +253,10 @@ class RiskStudentService implements RiskStudentDAO {
           or(
             ilike(student.code, `%${q}%`),
             sql`concat(${student.name}, ' ', ${student.firstSurname}, ' ', ${student.secondSurname}) ilike ${`%${q}%`}`
-          )
+          ),
+          eqnumber !== undefined && eqnumber !== 0
+            ? eq(riskStudents.score, eqnumber)
+            : sql`1 = 1`
         )
       )
       .$dynamic()

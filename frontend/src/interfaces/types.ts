@@ -6,4 +6,6 @@ export type PaginatedData<T> = {
 export type SearchParams = { q: string }
 export type PaginationParams = { pageIndex: number; pageSize: number }
 export type SortParams = { sortBy: `${string}.${'asc' | 'desc'}` }
-export type Filters = Partial<SearchParams & PaginationParams & SortParams>
+export type Filters = Partial<
+  SearchParams & PaginationParams & SortParams & { eqnumber?: number }
+>
