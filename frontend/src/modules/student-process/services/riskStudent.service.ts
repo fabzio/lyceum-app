@@ -23,6 +23,7 @@ class RiskStudentService {
           limit: filters.pageSize || 5,
           sortBy: filters.sortBy || 'code.asc',
           specialityId: filters.specialityId,
+          eqnumber: filters.eqnumber || 0,
         },
       })
       const response = res.data as ResponseAPI
@@ -51,6 +52,7 @@ class RiskStudentService {
             page: filters.pageIndex || 0,
             limit: filters.pageSize || 5,
             sortBy: filters.sortBy || 'code.asc',
+            eqnumber: filters.eqnumber || 0,
           },
         }
       )
