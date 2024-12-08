@@ -6,6 +6,7 @@ export const ThesisPermissionsDict = {
   APROVE_THESIS_PHASE_3: 'APROVE_THESIS_PHASE_3',
   REQUEST_THESIS_JURY: 'REQUEST_THESIS_JURY',
   ASSIGN_THESIS_JURY: 'ASSIGN_THESIS_JURY',
+  DOWNLOAD_THESIS_REPORT: 'DOWNLOAD_THESIS_REPORT',
 } as const
 
 export type ThesisPermissionsDict = keyof typeof ThesisPermissionsDict
