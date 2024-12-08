@@ -7,6 +7,7 @@ import Need from '@frontend/components/Need'
 import { StudentProcessPermissionsDict } from '@frontend/interfaces/enums/permissions/StudentProcess'
 
 import NewRiskStudentDialog from './components/NewRiskStudentDialog'
+import DownloadPDF from './components/DownloadPDF'
 
 export default function RiskStudents() {
   //ANOTACION 1: FALTA FILTRAR POR NOTAS : "Listo Filtrar por Puntacion"
@@ -28,6 +29,7 @@ export default function RiskStudents() {
           >
             <UpdateConfirmationDialog />
             <NewRiskStudentDialog />
+            <DownloadPDF />
           </Need>
           <Need permissions={StudentProcessPermissionsDict.LOAD_RISK_STUDENTS}>
             <UploadCSVDialog />
