@@ -29,7 +29,7 @@ class RolePermissionService implements RolePermissionDAO {
         unitType: roles.unitType,
       })
       .from(roles)
-      .where(and(ilike(roles.name, `%${search}%`), eq(roles.editable, true)))
+      .where(and(ilike(roles.name, `%${search}%`)))
   }
   async getAllRolePermissions(): Promise<RolePermission[]> {
     const rolePermissionsResponse = await db
@@ -49,7 +49,6 @@ class RolePermissionService implements RolePermissionDAO {
       .innerJoin(roles, eq(rolePermissions.roleId, roles.id))
       .innerJoin(permissions, eq(rolePermissions.permissionId, permissions.id))
       .innerJoin(modules, eq(permissions.moduleId, modules.id))
-      .where(eq(roles.editable, true))
 
     return rolePermissionsResponse as RolePermission[]
   }
