@@ -30,6 +30,7 @@ import { ThesisPermissionsDict } from '@/auth/permissions/Thesis'
 import { StudyPlanPermissionsDict } from '@/auth/permissions/StudyPlan'
 import { StudentProcessPermissionsDict } from '@/auth/permissions/StudentProcess'
 import { SurveyPermissionsDict } from '@/auth/permissions/Surveys'
+import { HiringPermissionsDict } from '@/auth/permissions/Hiring'
 
 const queryClient = postgres({
   db: DB_DATABASE,
@@ -388,6 +389,70 @@ await db.transaction(async (tx) => {
           StudentProcessPermissions.find(
             (permission) => permission.name === 'UPDATE_RISK_STUDENT_REPORT'
           )?.name
+      )?.permissionId!,
+      roleId: BaseRoles.PROFESSOR,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permissions) =>
+          permissions.permissionName ===
+          HiringPermissionsDict.READ_OWN_ACCOUNT_INFORMATION
+      )?.permissionId!,
+      roleId: BaseRoles.PROFESSOR,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permissions) =>
+          permissions.permissionName ===
+          HiringPermissionsDict.CREATE_OWN_CONTACT_INFO
+      )?.permissionId!,
+      roleId: BaseRoles.PROFESSOR,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permissions) =>
+          permissions.permissionName ===
+          HiringPermissionsDict.UPDATE_OWN_CONTACT_INFO
+      )?.permissionId!,
+      roleId: BaseRoles.PROFESSOR,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permissions) =>
+          permissions.permissionName ===
+          HiringPermissionsDict.CREATE_JOB_REQUEST
+      )?.permissionId!,
+      roleId: BaseRoles.PROFESSOR,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permissions) =>
+          permissions.permissionName ===
+          HiringPermissionsDict.READ_OWN_JOB_REQUESTS
+      )?.permissionId!,
+      roleId: BaseRoles.PROFESSOR,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permissions) =>
+          permissions.permissionName ===
+          HiringPermissionsDict.VIEW_LIST_OF_OPEN_HIRINGS
+      )?.permissionId!,
+      roleId: BaseRoles.PROFESSOR,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permissions) =>
+          permissions.permissionName ===
+          HiringPermissionsDict.VIEW_STATUS_OF_OWN_JOB_REQUEST_APPLICATIONS
+      )?.permissionId!,
+      roleId: BaseRoles.PROFESSOR,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permissions) =>
+          permissions.permissionName ===
+          HiringPermissionsDict.VIEW_ALL_UPDATED_REQUEST_PHASE_1
       )?.permissionId!,
       roleId: BaseRoles.PROFESSOR,
     },
