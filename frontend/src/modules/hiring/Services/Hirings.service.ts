@@ -184,6 +184,32 @@ class HiringService {
       throw error
     }
   }
+
+  public static async getApplicationsFromUser(accountId: string): Promise<
+    {
+      jobRequestStatus: JobApplication['state']
+      courseHiringId: JobApplication['courseHiringId']
+    }[]
+  > {
+    try {
+      const res = await http.get(
+        `/hiring/selection/${accountId}/applications-list`
+      )
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data as {
+        jobRequestStatus: JobApplication['state']
+        courseHiringId: JobApplication['courseHiringId']
+      }[]
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
 }
 
 export default HiringService

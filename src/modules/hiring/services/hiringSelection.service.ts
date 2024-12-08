@@ -434,7 +434,29 @@ class HiringSelectionService implements HiringSelectionDAO {
       courses: hiring.courses.map((courseHiring) => ({
         id: courseHiring.course!.id,
         name: courseHiring.course!.name,
+        processId: courseHiring.id,
       })),
+    }))
+  }
+
+  public async getJobRequests(accountId: string): Promise<
+    {
+      jrState: typeof jobRequestState
+      courseHiringId: string | null
+    }[]
+  > {
+    const result = await db
+      .select({
+        jrState: jobRequests.state,
+        courseHiringId: jobRequests.courseHiringId,
+      })
+      .from(accounts)
+      .innerJoin(jobRequests, eq(accounts.id, jobRequests.accountId))
+      .where(eq(accounts.id, accountId))
+
+    return result.map((req) => ({
+      jrState: req.jrState as unknown as typeof jobRequestState,
+      courseHiringId: req.courseHiringId,
     }))
   }
 }
