@@ -111,5 +111,24 @@ class PresentationCardService {
       throw error
     }
   }
+
+  public static async AproveOrDenegateCard(id: number, state: string) {
+    try {
+      const res = await http.put(
+        `/presentation-letters/letters/approve-or-denegate/?presentationLetterID=${id}&status=${state}`
+      )
+
+      const response = res.data as ResponseAPI<PresentationCardDetail>
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
 }
 export default PresentationCardService

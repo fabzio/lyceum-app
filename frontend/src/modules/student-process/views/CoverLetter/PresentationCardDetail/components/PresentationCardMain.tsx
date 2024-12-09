@@ -21,6 +21,7 @@ import {
 import PDFPreview from './PDFPreview'
 import PresentationCardService from '@frontend/modules/student-process/services/presentationCard.service'
 import { mapCoverLetterStatus } from '../../components/columns'
+import { Button } from '@frontend/components/ui/button'
 
 export default function CoverLetterDetailMain() {
   const { requestCode } = useParams({
@@ -36,6 +37,14 @@ export default function CoverLetterDetailMain() {
   })
 
   const presentationCard = presentationCardRequestDetail
+
+  const handleUpdateCardState = async (cardId: number, state: string) => {
+    try {
+      await PresentationCardService.AproveOrDenegateCard(cardId, state)
+    } catch (error) {
+      console.error('Error Updating Card:', error)
+    }
+  }
 
   return (
     <div className="flex h-full flex-col overflow-y-hidden">
@@ -87,6 +96,7 @@ export default function CoverLetterDetailMain() {
                       <TableHead>Nombre</TableHead>
                     </TableRow>
                   </TableHeader>
+
                   <TableBody>
                     {presentationCard.accounts?.map((account) => (
                       <TableRow key={account.id}>
@@ -104,6 +114,24 @@ export default function CoverLetterDetailMain() {
           </Card>
         </div>
       </ScrollArea>
+
+      <div className="flex justify-center">
+        <Button
+          variant="outline"
+          onClick={() =>
+            handleUpdateCardState(Number(presentationCard.id), 'rejected')
+          }
+        >
+          Rechazar
+        </Button>
+        <Button
+          onClick={() =>
+            handleUpdateCardState(Number(presentationCard.id), 'accepted')
+          }
+        >
+          Aprobar
+        </Button>
+      </div>
     </div>
   )
 }
