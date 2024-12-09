@@ -68,6 +68,13 @@ export interface HiringSelectionDAO {
     courseId: number
   ): Promise<CourseHiringRequirementsSchema[]>
 
+  getJobRequests(accountId: string): Promise<
+    {
+      jrState: typeof jobRequestState
+      courseHiringId: string | null
+    }[]
+  >
+
   getRequirementsScores(
     jobRequestId: number
   ): Promise<{ id: string | null; detail: string | null; score: number }[]>
