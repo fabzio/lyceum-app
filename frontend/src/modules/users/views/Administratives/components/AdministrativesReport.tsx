@@ -76,22 +76,22 @@ const MyDocument = ({ data }: { data: Administrative[] }) => (
             <Text style={styles.tableHeader}>Correo</Text>
           </View>
         </View>
-        {data.map((student) => (
-          <View key={student.code} style={styles.tableRow}>
+        {data.map((admin) => (
+          <View key={admin.code} style={styles.tableRow}>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{student.code}</Text>
+              <Text style={styles.tableCell}>{admin.code}</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{student.name}</Text>
+              <Text style={styles.tableCell}>{admin.name}</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{student.firstSurname}</Text>
+              <Text style={styles.tableCell}>{admin.firstSurname}</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{student.secondSurname}</Text>
+              <Text style={styles.tableCell}>{admin.secondSurname}</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{student.email}</Text>
+              <Text style={styles.tableCell}>{admin.email}</Text>
             </View>
           </View>
         ))}
