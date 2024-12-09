@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
 const MyDocument = ({ data }: { data: Professor[] }) => (
   <Document>
     <Page size="A4" style={styles.page}>
-      <Text style={styles.title}>Reporte de Estudiantes</Text>
+      <Text style={styles.title}>Reporte de Profesores</Text>
       <View style={styles.table}>
         <View style={styles.tableRow}>
           <View style={styles.tableCol}>
