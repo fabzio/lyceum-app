@@ -92,16 +92,19 @@ class PlanManagementController {
         specialityId: z.number(),
         startLevel: z.number(),
         levelsCount: z.number(),
+        description: z.string(),
       })
     ),
     async (c) => {
-      const { specialityId, levelsCount, startLevel } = c.req.valid('json')
+      const { specialityId, levelsCount, startLevel, description } =
+        c.req.valid('json')
       try {
         const response = {
           data: await this.planService.createPlan({
             specialityId,
             startLevel,
             levelsCount,
+            description,
           }),
           message: 'Plan created',
           success: true,

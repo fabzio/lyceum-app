@@ -1,4 +1,4 @@
-import { foreignKey, integer, serial } from 'drizzle-orm/pg-core'
+import { foreignKey, integer, serial, varchar } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 import { z } from 'zod'
 import { createInsertSchema } from 'drizzle-zod'
@@ -17,6 +17,7 @@ export const studyPlans = schema.table(
     endTerm: integer('end_term'),
     startLevel: integer('start_level').notNull(),
     levelsCount: integer('levels_count').notNull(),
+    description: varchar('description', { length: 100 }),
   },
   (table) => {
     return {

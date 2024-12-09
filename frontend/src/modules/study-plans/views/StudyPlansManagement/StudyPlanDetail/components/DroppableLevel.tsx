@@ -11,9 +11,14 @@ export default function DroppableLevel({ level, courses = [] }: Props) {
   const { setNodeRef } = useDroppable({
     id: `study-plan-courses.${level}`,
   })
+
+  const isElectiveLevel = level === -1
+
   return (
     <>
-      <h4 className="font-semibold text-3xl">Nivel {level}</h4>
+      <h4 className="font-semibold text-3xl">
+        {isElectiveLevel ? 'Electivos' : `Nivel ${level}`}
+      </h4>
       <div ref={setNodeRef} className="bg-muted rounded-lg">
         <ul className="h-[216px] p-1 flex gap-1 items-stretch">
           {courses.length > 0 ? (

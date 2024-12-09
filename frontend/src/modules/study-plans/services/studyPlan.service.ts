@@ -23,16 +23,19 @@ class StudyPlanService {
     specialityId,
     startLevel,
     levelsCount,
+    description,
   }: {
     specialityId: Unit['id']
     startLevel: number
     levelsCount: number
+    description: string
   }): Promise<StudyPlan['id']> {
     try {
       const res = await http.post(`/study-plan/plan-management`, {
         specialityId,
         startLevel,
         levelsCount,
+        description,
       })
       const response = res.data as ResponseAPI
       if (!response.success) {
