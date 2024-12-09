@@ -109,7 +109,7 @@ export default function UploadCSVDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button variant="secondary">
           <Upload className="mr-2 h-4 w-4" />
           Carga masiva
         </Button>

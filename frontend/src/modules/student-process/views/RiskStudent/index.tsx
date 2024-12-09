@@ -27,11 +27,8 @@ export default function RiskStudents() {
             }
           >
             <UpdateConfirmationDialog />
-            <NewRiskStudentDialog />
             <DownloadPDF />
-          </Need>
-          <Need permissions={StudentProcessPermissionsDict.LOAD_RISK_STUDENTS}>
-            <UploadCSVDialog />
+            <NewRiskStudentDialog />
           </Need>
         </div>
       </div>

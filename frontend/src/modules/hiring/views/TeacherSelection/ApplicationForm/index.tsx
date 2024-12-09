@@ -78,7 +78,7 @@ export default function ApplicationForm() {
         {0 ? (
           <Loader2 className="animate-spin" />
         ) : (
-          <div className="bg-gray-100 p-4 rounded-lg">
+          <div className="p-4 rounded-lg">
             <h2 className="font-semibold mb-2">Requisitos:</h2>
             <ul className="list-disc list-inside">
               {requirements?.map((req, index) => (
@@ -117,17 +117,17 @@ export default function ApplicationForm() {
                   <div className="flex items-center justify-center w-full">
                     <label
                       htmlFor="dropzone-file"
-                      className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+                      className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted"
                     >
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <Upload className="w-10 h-10 mb-3 text-gray-400" />
-                        <p className="mb-2 text-sm text-gray-500">
+                        <Upload className="w-10 h-10 mb-3" />
+                        <p className="mb-2 text-sm">
                           <span className="font-semibold">
                             Click para subir
                           </span>{' '}
                           o arrastra y suelta
                         </p>
-                        <p className="text-xs text-gray-500">ZIP (MAX. 10MB)</p>
+                        <p className="text-xs">ZIP (MAX. 10MB)</p>
                       </div>
                       <input
                         {...rest}
