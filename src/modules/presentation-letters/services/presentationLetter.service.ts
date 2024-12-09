@@ -111,16 +111,16 @@ class PresentationLettersService {
         roleId: BaseRoles.STUDENT,
         lead: true,
       })
-
-      await trx.insert(presentationLetterAccounts).values(
-        params.accountsParse.map((account) => ({
-          presentationLetterId: id,
-          accountId: account.id,
-          roleId: BaseRoles.STUDENT,
-          lead: false,
-        }))
-      )
-
+      if (params.accountsParse.length > 0) {
+        await trx.insert(presentationLetterAccounts).values(
+          params.accountsParse.map((account) => ({
+            presentationLetterId: id,
+            accountId: account.id,
+            roleId: BaseRoles.STUDENT,
+            lead: false,
+          }))
+        )
+      }
       return { id, companyName: params.companyName }
     })
     return res
@@ -152,7 +152,23 @@ class PresentationLettersService {
       .innerJoin(schedules, eq(presentationLetters.scheduleId, schedules.id))
       .innerJoin(courses, eq(schedules.courseId, courses.id))
       .innerJoin(units, eq(courses.unitId, units.id))
-      .where(eq(units.id, params.UnitId))
+      .innerJoin(
+        presentationLetterAccounts,
+        and(
+          eq(presentationLetterAccounts.lead, true),
+          eq(
+            presentationLetterAccounts.presentationLetterId,
+            presentationLetters.id
+          )
+        )
+      )
+      .innerJoin(
+        accounts,
+        eq(presentationLetterAccounts.accountId, accounts.id)
+      )
+      .where(
+        or(eq(accounts.unitId, params.UnitId), eq(units.id, params.UnitId))
+      )
 
     return letterInUnitListQuery.map((row) => ({
       id: row.letterid,

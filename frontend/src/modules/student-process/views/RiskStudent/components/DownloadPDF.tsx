@@ -152,5 +152,9 @@ export default function DownloadPDF() {
     URL.revokeObjectURL(url)
   }
 
-  return <Button onClick={handleDownload}>Descargar Reporte PDF</Button>
+  return (
+    <Button variant="ghost" onClick={handleDownload}>
+      Descargar Reporte PDF
+    </Button>
+  )
 }

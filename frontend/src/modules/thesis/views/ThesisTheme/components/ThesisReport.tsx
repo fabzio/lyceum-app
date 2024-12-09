@@ -137,7 +137,9 @@ const DownloadThesisReport = () => {
 
   return (
     <Need permissions={[ThesisPermissionsDict.DOWNLOAD_THESIS_REPORT]}>
-      <Button onClick={HandleDownload}>Descargar Reporte PDF</Button>
+      <Button variant="ghost" onClick={HandleDownload}>
+        Descargar Reporte PDF
+      </Button>
     </Need>
   )
 }

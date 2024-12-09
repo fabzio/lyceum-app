@@ -61,11 +61,15 @@ function ScheduleList({ schedules }: ScheduleListProps) {
                 ? 'Docentes asignados'
                 : 'Sin docente'}
             </span>
-            <Need
-              permissions={EnrollmentPermissionsDict.ASSIGN_SCHEDULE_PROFESORS}
-            >
-              <AsingProfessorsToCoursesDialog scheduleId={schedule.id} />
-            </Need>
+            {schedule.state !== 'saved' && (
+              <Need
+                permissions={
+                  EnrollmentPermissionsDict.ASSIGN_SCHEDULE_PROFESORS
+                }
+              >
+                <AsingProfessorsToCoursesDialog scheduleId={schedule.id} />
+              </Need>
+            )}
           </div>
         </li>
       ))}
