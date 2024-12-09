@@ -160,15 +160,19 @@ function AssigmentAccordionItem({
                   (app) => app.courseHiringId === course.processId
                 )) && (
                 <Link
-                  to="/contrataciones/seleccion-docentes/$hiringId"
+                  to="/contrataciones/seleccion-docentes/$hiringProcessId/postulacion"
                   params={{
-                    hiringId,
+                    hiringProcessId: course.processId,
                   }}
-                  search={{ courseId: course.id, courseName: course.name }}
+                  search={{
+                    courseId: course.id,
+                    courseName: course.name,
+                    hiringId: hiringId,
+                  }}
                 >
                   <Button
                     variant="outline"
-                    className="justify-start gap-2 w-42"
+                    className="justify-start gap-2 w-42 ml-4"
                   >
                     <PenBox className="h-4 w-4" />
                     Postular
@@ -191,7 +195,7 @@ function AssigmentAccordionItem({
                     variant="outline"
                     className="justify-start gap-2 w-42"
                   >
-                    <PenBox className="h-4 w-4" />
+                    <Eye className="h-4 w-4" />
                     Ver postulación
                   </Button>
                 </Link>
