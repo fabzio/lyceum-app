@@ -129,6 +129,7 @@ class RiskStudentService implements RiskStudentDAO {
         and(
           eq(terms.current, true),
           eq(student.unitId, specialityId),
+          eq(riskStudents.active, true),
           or(
             ilike(student.code, `%${q}%`),
             sql`concat(${student.name}, ' ', ${student.firstSurname}, ' ', ${student.secondSurname}) ilike ${`%${q}%`}`
