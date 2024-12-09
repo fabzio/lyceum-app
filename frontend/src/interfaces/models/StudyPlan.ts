@@ -6,4 +6,5 @@ export type StudyPlan = {
   state: string
   levelsCount: number
   startLevel: number
+  description: string
 }

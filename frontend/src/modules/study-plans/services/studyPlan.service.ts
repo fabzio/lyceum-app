@@ -23,16 +23,19 @@ class StudyPlanService {
     specialityId,
     startLevel,
     levelsCount,
+    description,
   }: {
     specialityId: Unit['id']
     startLevel: number
     levelsCount: number
+    description: string
   }): Promise<StudyPlan['id']> {
     try {
       const res = await http.post(`/study-plan/plan-management`, {
         specialityId,
         startLevel,
         levelsCount,
+        description,
       })
       const response = res.data as ResponseAPI
       if (!response.success) {
@@ -176,6 +179,27 @@ class StudyPlanService {
     try {
       const res = await http.delete(
         `/study-plan/plan-management/${studyPlanId}/courses/${courseId}`
+      )
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.data?.message) {
+        throw new Error(error.response?.data?.message)
+      }
+      throw error
+    }
+  }
+
+  static async updateStudyPlanState(
+    studyPlanId: number,
+    data: { active?: boolean; state?: string }
+  ): Promise<void> {
+    try {
+      const res = await http.put(
+        `/study-plan/plan-management/${studyPlanId}/state`,
+        data
       )
       const response = res.data as ResponseAPI
       if (!response.success) {

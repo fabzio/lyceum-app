@@ -18,6 +18,7 @@ class PlanManagementService {
         endTerm: studyPlans.endTerm,
         current: specialityStudyPlans.current,
         state: specialityStudyPlans.state,
+        description: studyPlans.description,
       })
       .from(specialityStudyPlans)
       .innerJoin(
@@ -55,10 +56,12 @@ class PlanManagementService {
     specialityId,
     levelsCount,
     startLevel,
+    description,
   }: {
     specialityId: Unit['id']
     startLevel: number
     levelsCount: number
+    description: string
   }) {
     const studyPlanId = await db.transaction(async (tx) => {
       const [{ studyPlanId }] = await tx
@@ -66,6 +69,7 @@ class PlanManagementService {
         .values({
           levelsCount,
           startLevel,
+          description,
         })
         .returning({
           studyPlanId: studyPlans.id,
@@ -236,6 +240,34 @@ class PlanManagementService {
           eq(studyPlanCourses.studyPlanId, studyPlanId)
         )
       )
+  }
+
+  public async updatePlanState(
+    planId: number,
+    { active, state }: { active?: boolean; state?: 'editing' | 'saved' }
+  ) {
+    if (active !== undefined) {
+      const result = await db
+        .update(specialityStudyPlans)
+        .set({ current: active })
+        .where(eq(specialityStudyPlans.studyPlanId, planId))
+        .returning({
+          id: specialityStudyPlans.studyPlanId,
+          current: specialityStudyPlans.current,
+          state: specialityStudyPlans.state,
+        })
+    }
+    if (state !== undefined) {
+      const result = await db
+        .update(specialityStudyPlans)
+        .set({ state })
+        .where(eq(specialityStudyPlans.studyPlanId, planId))
+        .returning({
+          id: specialityStudyPlans.studyPlanId,
+          current: specialityStudyPlans.current,
+          state: specialityStudyPlans.state,
+        })
+    }
   }
 }
 

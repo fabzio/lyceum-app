@@ -101,6 +101,19 @@ export default function NewStudyPlan() {
                   </FormItem>
                 )}
               />
+              <FormField
+                name="description"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descripción</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </section>
             <DialogFooter className="mt-2">
               <DialogClose asChild>
@@ -129,4 +142,8 @@ const formSchema = z.object({
     .int('La cantidad de niveles debe ser un número entero')
     .min(6, 'El plan de estudio debe tener entre 6 y 8 niveles')
     .max(8, 'El plan de estudio debe tener entre 6 y 8 niveles'),
+  description: z
+    .string()
+    .min(1, 'La descripción es requerida')
+    .max(255, 'La descripción no puede tener más de 255 caracteres'),
 })

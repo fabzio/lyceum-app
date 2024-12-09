@@ -6,6 +6,7 @@ import {
 } from '../../CoursesManagment/utils/mapStudyPlanStatus'
 
 export const studyPlanTableColumns: ColumnDef<StudyPlan>[] = [
+  /*
   {
     accessorKey: 'initTerm',
     header: 'Inicio de vigencia',
@@ -15,6 +16,14 @@ export const studyPlanTableColumns: ColumnDef<StudyPlan>[] = [
     accessorKey: 'endTerm',
     header: 'Fin de vigencia',
     cell: ({ row }) => <div>{row.getValue('endTerm') ?? 'No asignado'}</div>,
+  },
+  */
+  {
+    accessorKey: 'description',
+    header: 'Descripcion',
+    cell: ({ row }) => (
+      <div>{row.getValue('description') ?? 'No asignado'}</div>
+    ),
   },
   {
     accessorKey: 'current',

@@ -43,7 +43,7 @@ export default function HiringSelection() {
         </div>
         <Need permissions={[HiringPermissionsDict.CREATE_HIRING_PROCESS]}>
           <Link to="/contrataciones/seleccion-docentes/nuevo">
-            <Button>Nueva convoctoria</Button>
+            <Button>Nueva convocatoria</Button>
           </Link>
         </Need>
       </div>

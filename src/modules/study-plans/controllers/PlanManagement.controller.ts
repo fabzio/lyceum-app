@@ -92,16 +92,19 @@ class PlanManagementController {
         specialityId: z.number(),
         startLevel: z.number(),
         levelsCount: z.number(),
+        description: z.string(),
       })
     ),
     async (c) => {
-      const { specialityId, levelsCount, startLevel } = c.req.valid('json')
+      const { specialityId, levelsCount, startLevel, description } =
+        c.req.valid('json')
       try {
         const response = {
           data: await this.planService.createPlan({
             specialityId,
             startLevel,
             levelsCount,
+            description,
           }),
           message: 'Plan created',
           success: true,
@@ -216,6 +219,43 @@ class PlanManagementController {
             courseId: courseId,
           }),
           message: 'Course removed from plan',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public updatePlanState = this.router.put(
+    '/:planId/state',
+    zValidator(
+      'param',
+      z.object({
+        planId: z.string(),
+      })
+    ),
+    zValidator(
+      'json',
+      z.object({
+        active: z.boolean().optional(),
+        state: z.enum(['editing', 'saved']).optional(),
+      })
+    ),
+    async (c) => {
+      const { planId } = c.req.valid('param')
+      const { active, state } = c.req.valid('json')
+      try {
+        const response = {
+          data: await this.planService.updatePlanState(+planId, {
+            active,
+            state,
+          }),
+          message: 'Plan state updated',
           success: true,
         }
         return c.json(response)
