@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
 const MyDocument = ({ data }: { data: Professor[] }) => (
   <Document>
     <Page size="A4" style={styles.page}>
-      <Text style={styles.title}>Reporte de Profesores</Text>
+      <Text style={styles.title}>Reporte de Estudiantes</Text>
       <View style={styles.table}>
         <View style={styles.tableRow}>
           <View style={styles.tableCol}>
@@ -79,25 +79,25 @@ const MyDocument = ({ data }: { data: Professor[] }) => (
             <Text style={styles.tableHeader}>Especialidad</Text>
           </View>
         </View>
-        {data.map((profe) => (
-          <View key={profe.code} style={styles.tableRow}>
+        {data.map((student) => (
+          <View key={student.code} style={styles.tableRow}>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{profe.code}</Text>
+              <Text style={styles.tableCell}>{student.code}</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{profe.name}</Text>
+              <Text style={styles.tableCell}>{student.name}</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{profe.firstSurname}</Text>
+              <Text style={styles.tableCell}>{student.firstSurname}</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{profe.secondSurname}</Text>
+              <Text style={styles.tableCell}>{student.secondSurname}</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{profe.email}</Text>
+              <Text style={styles.tableCell}>{student.email}</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{profe.unit}</Text>
+              <Text style={styles.tableCell}>{student.unit}</Text>
             </View>
           </View>
         ))}
