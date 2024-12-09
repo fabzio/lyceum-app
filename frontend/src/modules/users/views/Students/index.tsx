@@ -4,6 +4,7 @@ import SearchStudentInput from './components/SearchStudentInput'
 import StudentTable from './components/StudentTable'
 import { UserPermissionsDict } from '@frontend/interfaces/enums/permissions/Users'
 import NewStudentDialog from './components/NewStudentDialog'
+import DownloadStudentsReport from './components/StudentsReport'
 
 export default function StudentManagement() {
   return (
@@ -14,6 +15,9 @@ export default function StudentManagement() {
         <Need permissions={[UserPermissionsDict.WRITE_STUDENTS]}>
           <div className="flex gap-2">
             <MasiveStudentsDialog />
+            <Need permissions={[UserPermissionsDict.READ_STUDENTS]}>
+              <DownloadStudentsReport />
+            </Need>
             <NewStudentDialog />
           </div>
         </Need>

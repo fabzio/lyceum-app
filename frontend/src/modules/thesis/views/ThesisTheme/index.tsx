@@ -8,6 +8,7 @@ import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisT
 import NewThesisRequest from './components/NewThesisRequest'
 import { useSessionStore } from '@frontend/store'
 import { ThesisPermissionsDict } from '@frontend/interfaces/enums/permissions/Thesis'
+import ThesisReport from './components/ThesisReport'
 
 export default function ThesisTheme() {
   const { session, getRoleWithPermission, havePermission } = useSessionStore()
@@ -51,6 +52,7 @@ export default function ThesisTheme() {
         <div className="flex gap-3">
           <ThesisThemeSelectFilter />
         </div>
+        <ThesisReport />
         <NewThesisRequest />
       </div>
       <ThesisThemeList thesisThemeRequests={thesisThemeRequests} />

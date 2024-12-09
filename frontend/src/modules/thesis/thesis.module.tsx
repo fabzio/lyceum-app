@@ -18,6 +18,7 @@ export const ThesisModule: AppModule = {
         ThesisPermissionsDict.APROVE_THESIS_PHASE_3,
         ThesisPermissionsDict.CREATE_THESIS,
         ThesisPermissionsDict.READ_THESIS,
+        ThesisPermissionsDict.DOWNLOAD_THESIS_REPORT,
       ],
     },
     {
