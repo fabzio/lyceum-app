@@ -7,9 +7,9 @@ import {
   pdf,
 } from '@react-pdf/renderer'
 import { Button } from '@frontend/components/ui/button'
-import { Professor } from '@frontend/modules/users/interfaces/Professor'
 import { useFilters } from '@frontend/hooks/useFilters'
-import ProfessorService from '@frontend/modules/users/services/Professor.service'
+import AdministrativeService from '@frontend/modules/users/services/Administrative.service'
+import { Administrative } from '@frontend/modules/users/interfaces/Administrative'
 
 const styles = StyleSheet.create({
   page: {
@@ -54,10 +54,10 @@ const styles = StyleSheet.create({
   },
 })
 
-const MyDocument = ({ data }: { data: Professor[] }) => (
+const MyDocument = ({ data }: { data: Administrative[] }) => (
   <Document>
     <Page size="A4" style={styles.page}>
-      <Text style={styles.title}>Reporte de Profesores</Text>
+      <Text style={styles.title}>Reporte de Administrativos</Text>
       <View style={styles.table}>
         <View style={styles.tableRow}>
           <View style={styles.tableCol}>
@@ -74,9 +74,6 @@ const MyDocument = ({ data }: { data: Professor[] }) => (
           </View>
           <View style={styles.tableCol}>
             <Text style={styles.tableHeader}>Correo</Text>
-          </View>
-          <View style={styles.tableCol}>
-            <Text style={styles.tableHeader}>Especialidad</Text>
           </View>
         </View>
         {data.map((student) => (
@@ -96,9 +93,6 @@ const MyDocument = ({ data }: { data: Professor[] }) => (
             <View style={styles.tableCol}>
               <Text style={styles.tableCell}>{student.email}</Text>
             </View>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{student.unit}</Text>
-            </View>
           </View>
         ))}
       </View>
@@ -106,18 +100,18 @@ const MyDocument = ({ data }: { data: Professor[] }) => (
   </Document>
 )
 
-const DownloadProfessorsReport = () => {
-  const { filters } = useFilters('/_auth/usuarios/docentes')
+const DownloadAdministrativesReport = () => {
+  const { filters } = useFilters('/_auth/usuarios/administrativos')
 
   const handleDownload = async () => {
     try {
-      const response = await ProfessorService.fetchProfessors(filters)
+      const response = await AdministrativeService.fetchAdministratives(filters)
       const data = response.result
       const blob = await pdf(<MyDocument data={data} />).toBlob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = 'reporte_profesores.pdf'
+      a.download = 'reporte_administrativos.pdf'
       a.click()
       URL.revokeObjectURL(url)
     } catch (error) {
@@ -132,4 +126,4 @@ const DownloadProfessorsReport = () => {
   )
 }
 
-export default DownloadProfessorsReport
+export default DownloadAdministrativesReport
