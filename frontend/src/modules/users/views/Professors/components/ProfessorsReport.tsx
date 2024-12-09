@@ -79,25 +79,25 @@ const MyDocument = ({ data }: { data: Professor[] }) => (
             <Text style={styles.tableHeader}>Especialidad</Text>
           </View>
         </View>
-        {data.map((student) => (
-          <View key={student.code} style={styles.tableRow}>
+        {data.map((profe) => (
+          <View key={profe.code} style={styles.tableRow}>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{student.code}</Text>
+              <Text style={styles.tableCell}>{profe.code}</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{student.name}</Text>
+              <Text style={styles.tableCell}>{profe.name}</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{student.firstSurname}</Text>
+              <Text style={styles.tableCell}>{profe.firstSurname}</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{student.secondSurname}</Text>
+              <Text style={styles.tableCell}>{profe.secondSurname}</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{student.email}</Text>
+              <Text style={styles.tableCell}>{profe.email}</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{student.unit}</Text>
+              <Text style={styles.tableCell}>{profe.unit}</Text>
             </View>
           </View>
         ))}
