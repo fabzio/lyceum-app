@@ -54,6 +54,29 @@ class RiskStudentReportService {
       console.error(error)
     }
   }
+
+  public static async deleteRiskStudent({
+    studentCode,
+    scheduleId,
+  }: {
+    studentCode: string
+    scheduleId: number
+  }): Promise<void> {
+    try {
+      const res = await http.delete('/courses/reports', {
+        params: {
+          studentCode,
+          scheduleId,
+        },
+      })
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error('Error')
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
 }
 
 export default RiskStudentReportService

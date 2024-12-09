@@ -1,7 +1,10 @@
 import { Hono } from 'hono'
 import { RiskStudentReportService } from '../services'
 import { zValidator } from '@hono/zod-validator'
-import { insertRiskStudentReportDTO } from '../dto/riskStudentReportDTO'
+import {
+  deleteRiskStudentDTO,
+  insertRiskStudentReportDTO,
+} from '../dto/riskStudentReportDTO'
 
 class RiskStudentReportController {
   private router = new Hono()
@@ -38,6 +41,23 @@ class RiskStudentReportController {
           newReport
         ),
         message: 'Risk student report inserted',
+        success: true,
+      }
+      return c.json(response)
+    }
+  )
+
+  public deleteRiskStudent = this.router.delete(
+    '/',
+    zValidator('query', deleteRiskStudentDTO),
+    async (c) => {
+      const { studentCode, scheduleId } = c.req.query()
+      const response = {
+        data: await this.riskStudentReportService.deleteRiskStudent({
+          studentCode: studentCode.toString(),
+          scheduleId: scheduleId.toString(),
+        }),
+        message: 'Risk student correctly deleted',
         success: true,
       }
       return c.json(response)

@@ -114,6 +114,33 @@ class RiskStudentReportService {
       })
     )
   }
+
+  public async deleteRiskStudent({
+    studentCode,
+    scheduleId,
+  }: {
+    studentCode: string
+    scheduleId: string
+  }) {
+    const [{ studentId }] = await db
+      .select({
+        studentId: accounts.id,
+      })
+      .from(accounts)
+      .where(eq(accounts.code, studentCode))
+
+    await db
+      .update(riskStudents)
+      .set({
+        active: false,
+      })
+      .where(
+        and(
+          eq(riskStudents.studentId, studentId),
+          eq(riskStudents.scheduleId, parseInt(scheduleId))
+        )
+      )
+  }
 }
 
 export default RiskStudentReportService
