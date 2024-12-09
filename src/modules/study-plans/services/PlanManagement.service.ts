@@ -237,6 +237,34 @@ class PlanManagementService {
         )
       )
   }
+
+  public async updatePlanState(
+    planId: number,
+    { active, state }: { active?: boolean; state?: 'editing' | 'saved' }
+  ) {
+    if (active !== undefined) {
+      const result = await db
+        .update(specialityStudyPlans)
+        .set({ current: active })
+        .where(eq(specialityStudyPlans.studyPlanId, planId))
+        .returning({
+          id: specialityStudyPlans.studyPlanId,
+          current: specialityStudyPlans.current,
+          state: specialityStudyPlans.state,
+        })
+    }
+    if (state !== undefined) {
+      const result = await db
+        .update(specialityStudyPlans)
+        .set({ state })
+        .where(eq(specialityStudyPlans.studyPlanId, planId))
+        .returning({
+          id: specialityStudyPlans.studyPlanId,
+          current: specialityStudyPlans.current,
+          state: specialityStudyPlans.state,
+        })
+    }
+  }
 }
 
 export default PlanManagementService

@@ -227,6 +227,43 @@ class PlanManagementController {
       }
     }
   )
+
+  public updatePlanState = this.router.put(
+    '/:planId/state',
+    zValidator(
+      'param',
+      z.object({
+        planId: z.string(),
+      })
+    ),
+    zValidator(
+      'json',
+      z.object({
+        active: z.boolean().optional(),
+        state: z.enum(['editing', 'saved']).optional(),
+      })
+    ),
+    async (c) => {
+      const { planId } = c.req.valid('param')
+      const { active, state } = c.req.valid('json')
+      try {
+        const response = {
+          data: await this.planService.updatePlanState(+planId, {
+            active,
+            state,
+          }),
+          message: 'Plan state updated',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
 }
 
 export default PlanManagementController

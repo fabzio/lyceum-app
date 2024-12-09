@@ -188,6 +188,27 @@ class StudyPlanService {
       throw error
     }
   }
+
+  static async updateStudyPlanState(
+    studyPlanId: number,
+    data: { active?: boolean; state?: string }
+  ): Promise<void> {
+    try {
+      const res = await http.put(
+        `/study-plan/plan-management/${studyPlanId}/state`,
+        data
+      )
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.data?.message) {
+        throw new Error(error.response?.data?.message)
+      }
+      throw error
+    }
+  }
 }
 
 export default StudyPlanService
