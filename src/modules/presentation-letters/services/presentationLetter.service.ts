@@ -231,5 +231,20 @@ class PresentationLettersService {
       })
     })
   }
+
+  public async approveOrDenegateAPresentationLetter(params: {
+    presentationLetterID: number
+    status: PresentationLettersSchema['status']
+  }) {
+    const res = await db.transaction(async (trx) => {
+      await trx
+        .update(presentationLetters)
+        .set({
+          status: params.status,
+          acceptanceDate: new Date(),
+        })
+        .where(eq(presentationLetters.id, params.presentationLetterID))
+    })
+  }
 }
 export default PresentationLettersService
