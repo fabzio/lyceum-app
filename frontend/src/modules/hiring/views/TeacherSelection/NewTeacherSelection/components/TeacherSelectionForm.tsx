@@ -10,13 +10,18 @@ import { useToast } from '@frontend/hooks/use-toast'
 import CoursesSelection from './CoursesSelection'
 import { useSessionStore } from '@frontend/store'
 import { HiringPermissionsDict } from '@frontend/interfaces/enums/permissions/Hiring'
+import { useNavigate } from '@tanstack/react-router'
 
 export default function TeacherSelectionForm() {
   const { getRoleWithPermission } = useSessionStore()
+  const navigate = useNavigate()
   const { toast } = useToast()
   const { mutate, isPending } = useMutation({
     mutationFn: HiringService.createTeacherSelection,
     onSuccess: () => {
+      navigate({
+        to: '..',
+      })
       toast({
         title: 'Convocatoria creada',
         description: 'La convocatoria ha sido creada exitosamente',
