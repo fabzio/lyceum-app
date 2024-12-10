@@ -4,13 +4,19 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { RoleCard } from './components/RoleCard'
 import ProfileCard from './components/ProfileCard'
+import moment from 'moment'
+import { useState } from 'react'
 
 export default function Home() {
   const { session } = useSessionStore()
+  const [time, setTime] = useState(moment())
   const { data } = useSuspenseQuery({
     queryKey: ['profile'],
     queryFn: () => AccountsService.fetchAccountProfile(session!.id),
   })
+  setInterval(() => {
+    setTime(moment())
+  }, 1000)
   return (
     <div>
       <motion.h2
@@ -19,16 +25,31 @@ export default function Home() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        Le damos la bienvenida a Lyceum
+        <div className="w-full flex flex-col justify-center">
+          <time className="text-6xl text-center font-bold">
+            {time.format('HH:mm A')}
+          </time>
+          <time className="text-2xl text-center font-semibold">
+            {time.format('dddd, D [de] MMMM [de] YYYY')}
+          </time>
+        </div>
       </motion.h2>
-      <div className="flex flex-col gap-2 px-4">
+      <div className="flex flex-col gap-4 px-4 items-center mt-4">
+        <p>
+          Le damos la bienvenida a <b>Lyceum</b>
+        </p>
         <section>
           <ProfileCard baseRole={data.roles.find((role) => !role.editable)!} />
         </section>
-        <section className="w-full md:w-[500px] grid gap-4 md:grid-cols-1 lg:grid-cols-2">
-          {data.roles.map((role, i) => (
-            <RoleCard key={i} {...role} />
-          ))}
+        <section>
+          {data.roles.length > 0 && (
+            <h3 className="text-lg font-semibold text-center">Roles</h3>
+          )}
+          <div className="flex flex-wrap gap-2">
+            {data.roles.map((role, i) => (
+              <RoleCard key={i} {...role} />
+            ))}
+          </div>
         </section>
       </div>
     </div>

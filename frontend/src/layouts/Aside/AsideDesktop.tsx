@@ -19,7 +19,7 @@ export default function AsideDesktop({ asideElements = [] }: Props) {
   const navigate = useNavigate()
   return (
     <aside className="[grid-area:aside] flex flex-col shadow-sm">
-      <Menubar className="h-full flex flex-col gap-y-8 py-2">
+      <Menubar className="h-full flex flex-col gap-y-8 py-1">
         {asideElements.map((element) => {
           const filteredSubmodules = filterTabs(
             element.submodules,
@@ -52,7 +52,7 @@ export default function AsideDesktop({ asideElements = [] }: Props) {
             <Link
               key={element.code}
               to={element.path}
-              className="w-full rounded-md x-2 flex justify-center hover:bg-muted"
+              className="w-full rounded-md x-2 flex justify-center hover:bg-muted py-2"
             >
               {element.icon}
             </Link>
