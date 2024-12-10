@@ -18,6 +18,7 @@ class RoleAccountsService {
         role: {
           id: roles.id,
           name: roles.name,
+          editable: roles.editable,
         },
         unit: {
           id: units.id,
@@ -46,6 +47,7 @@ class RoleAccountsService {
         name: role.name,
         unitId: unit.id,
         unitName: unit.name,
+        editable: role.editable,
       })
     })
 

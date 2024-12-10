@@ -7,5 +7,6 @@ export interface Assigment {
     name: string
     unitId: number
     unitName: string
+    editable: boolean
   }[]
 }
