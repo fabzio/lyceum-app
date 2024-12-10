@@ -86,7 +86,11 @@ class HiringService {
     hiringId?: string,
     courseHiringId?: string,
     accountId?: string
-  ): Promise<{ motivation: string | null; observation: string | null }> {
+  ): Promise<{
+    motivation: string | null
+    observation: string | null
+    documentId: string | null
+  }> {
     try {
       const res = await http.get(
         `/hiring/selection/${hiringId}/${courseHiringId}/${accountId}/motivation`,
@@ -101,6 +105,7 @@ class HiringService {
       return response.data as Promise<{
         motivation: string | null
         observation: string | null
+        documentId: string | null
       }>
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -187,7 +192,8 @@ class HiringService {
 
   public static async getApplicationsFromUser(accountId: string): Promise<
     {
-      jobRequestStatus: JobApplication['state']
+      jrId: JobApplication['id']
+      jrState: JobApplication['state']
       courseHiringId: JobApplication['courseHiringId']
     }[]
   > {
@@ -200,9 +206,82 @@ class HiringService {
         throw new Error(response.message)
       }
       return response.data as {
-        jobRequestStatus: JobApplication['state']
+        jrId: JobApplication['id']
+        jrState: JobApplication['state']
         courseHiringId: JobApplication['courseHiringId']
       }[]
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+
+  public static async postApplication(
+    hiringProcessId: string,
+    accountId: string,
+    data: {
+      motivation?: string
+      documents: string | File
+    }
+  ): Promise<void> {
+    const formData = new FormData()
+    formData.append('processId', hiringProcessId)
+    formData.append('accountId', accountId)
+    formData.append('motivation', data.motivation ?? '')
+    formData.append('documents', data.documents)
+
+    try {
+      const res = await http.post(
+        `/hiring/selection/${hiringProcessId}/apply`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      )
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data as Promise<void>
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+
+  public static async getRequieredDocuments(docId: string) {
+    try {
+      const res = await http.get(`/hiring/selection/documents/${docId}`, {
+        responseType: 'blob',
+      })
+      return {
+        file: res.data,
+        type: res.headers['content-type'],
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+
+  public static async getJobRequest(
+    jobRequestId: number
+  ): Promise<JobApplication> {
+    try {
+      const res = await http.get(`/hiring/selection/${jobRequestId}/view`)
+      const response = res.data as ResponseAPI
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data as Promise<JobApplication>
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(error.response?.data.message || error.message)

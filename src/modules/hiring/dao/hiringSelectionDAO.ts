@@ -75,9 +75,18 @@ export interface HiringSelectionDAO {
     }[]
   >
 
+  getJobRequest(jobRequestId: number): Promise<JobRequestsSchema>
+
   getRequirementsScores(
     jobRequestId: number
   ): Promise<{ id: string | null; detail: string | null; score: number }[]>
+
+  putNewJobRequest(params: {
+    candidateAccount: string
+    jrMotivation: string | undefined
+    courseHiringId: string
+    file: string
+  }): Promise<void>
 }
 
 export default HiringSelectionDAO

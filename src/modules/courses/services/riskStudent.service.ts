@@ -197,6 +197,7 @@ class RiskStudentService implements RiskStudentDAO {
         and(
           eq(terms.current, true),
           eq(professor.id, professorId),
+          eq(riskStudents.active, true),
           or(
             ilike(student.code, `%${q}%`),
             sql`concat(${student.name}, ' ', ${student.firstSurname}, ' ', ${student.secondSurname}) ilike ${`%${q}%`}`
@@ -249,6 +250,7 @@ class RiskStudentService implements RiskStudentDAO {
       .innerJoin(terms, eq(terms.id, schedules.termId))
       .where(
         and(
+          eq(riskStudents.active, true),
           eq(terms.current, true),
           eq(professor.id, professorId),
           or(
@@ -493,11 +495,12 @@ class RiskStudentService implements RiskStudentDAO {
       .where(
         and(
           eq(accounts.id, riskStudents.studentId),
-          eq(accounts.unitId, specialityId)
+          eq(accounts.unitId, specialityId),
+          eq(riskStudents.active, true)
         )
       )
     if (listStudents.length === 0) {
-      throw new Error('No hay alumnos en riesgo en su facultad')
+      throw new Error('No hay alumnos en riesgo en su especialidad')
     }
     await db
       .update(riskStudents)

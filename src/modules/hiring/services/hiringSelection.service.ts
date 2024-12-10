@@ -26,6 +26,8 @@ import { GetHiringsWithCoursesQueryDTO } from '../dtos/hiringSelectionDTO'
 import { HiringsWithCoursesDTO } from '../dtos/hiringSelectionDTO'
 import { CourseHiringRequirementsSchema } from '@/database/schema/courseHiringRequirements'
 import groupBy from 'just-group-by'
+import { ZodUndefined } from 'zod'
+import { requestId } from 'hono/request-id'
 
 class HiringSelectionService implements HiringSelectionDAO {
   public async createHiringSelection(newHiring: CreateHiringSelectionPropDTO) {
@@ -286,11 +288,16 @@ class HiringSelectionService implements HiringSelectionDAO {
 
   public async getCandidateMotivationAndObservation(
     applicationId: number
-  ): Promise<{ motivation: string | null; observation: string | null }> {
+  ): Promise<{
+    motivation: string | null
+    observation: string | null
+    documentsId: string | null
+  }> {
     const data = await db
       .select({
         motivation: jobRequests.motivation,
         observation: jobRequests.observation,
+        documentsId: jobRequests.requirementUrl,
       })
       .from(jobRequests)
       .where(eq(jobRequests.id, applicationId))
@@ -398,6 +405,61 @@ class HiringSelectionService implements HiringSelectionDAO {
       })),
     }
   }
+  public async getJobRequest(jobRequestId: number): Promise<JobRequestsSchema> {
+    const result = await db
+      .select({
+        candidateName: accounts.name,
+        candidateEmail: accounts.email,
+        candidateId: accounts.id,
+        candidateLastname: sql`${accounts.firstSurname} || ' ' || ${accounts.secondSurname}`,
+        jrUrl: jobRequests.requirementUrl,
+        jrMotivation: jobRequests.motivation,
+        jrState: jobRequests.state,
+        jrObservation: jobRequests.observation,
+        jrId: jobRequests.id,
+        hiringId: jobRequests.courseHiringId,
+      })
+      .from(accounts)
+      .innerJoin(jobRequests, eq(accounts.id, jobRequests.accountId))
+      .where(and(eq(jobRequests.id, jobRequestId)))
+
+    return {
+      accountId: result[0].candidateId,
+      id: result[0].jrId,
+      state: result[0].jrState,
+      observation: result[0].jrObservation,
+      motivation: result[0].jrMotivation ?? '',
+      courseHiringId: result[0].hiringId ?? '',
+      requirementUrl: result[0].jrUrl,
+    }
+  }
+
+  public async putNewJobRequest(params: {
+    candidateAccount: string
+    jrMotivation: string | undefined
+    courseHiringId: string
+    file: string
+  }): Promise<void> {
+    const verification = await db
+      .select()
+      .from(jobRequests)
+      .where(
+        and(
+          eq(jobRequests.courseHiringId, params.courseHiringId),
+          eq(jobRequests.accountId, params.candidateAccount)
+        )
+      )
+
+    if (verification.length == 0) {
+      const result = await db.insert(jobRequests).values({
+        accountId: params.candidateAccount,
+        motivation: params.jrMotivation,
+        courseHiringId: params.courseHiringId,
+        requirementUrl: params.file,
+        state: 'sent',
+      })
+    }
+  }
 
   public async getHiringsWithCoursesByUnit(
     unitId: number,
@@ -443,12 +505,14 @@ class HiringSelectionService implements HiringSelectionDAO {
     {
       jrState: typeof jobRequestState
       courseHiringId: string | null
+      jrId: number
     }[]
   > {
     const result = await db
       .select({
         jrState: jobRequests.state,
         courseHiringId: jobRequests.courseHiringId,
+        jrId: jobRequests.id,
       })
       .from(accounts)
       .innerJoin(jobRequests, eq(accounts.id, jobRequests.accountId))
@@ -457,6 +521,7 @@ class HiringSelectionService implements HiringSelectionDAO {
     return result.map((req) => ({
       jrState: req.jrState as unknown as typeof jobRequestState,
       courseHiringId: req.courseHiringId,
+      jrId: req.jrId,
     }))
   }
 }
