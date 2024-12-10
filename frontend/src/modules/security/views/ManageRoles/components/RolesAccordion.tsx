@@ -58,6 +58,8 @@ export default function RolesAccordion({
         {filteredPermissions.map(([roleKey, rolePermissions], idx) => {
           const [role, unitType] = roleKey.split('-') as [string, UnitType]
           const [roleId, roleName] = role.split('.')
+          const isEditable = rolePermissions.some((rp) => rp.role.editable)
+
           return (
             <div key={idx} className="flex items-start">
               <AccordionItem
@@ -87,17 +89,25 @@ export default function RolesAccordion({
                     <RoleItem
                       permissions={rolePermissions.map((rp) => rp.permission)}
                       roleId={+roleId}
+                      editable={isEditable}
                     />
                   </div>
                 </AccordionContent>
               </AccordionItem>
-              <EditRoleModal
-                roleData={{
-                  role: { id: +roleId, name: roleName, unitType: unitType },
-                  permission: rolePermissions.map((rp) => rp.permission),
-                }}
-              />
-              <RemoveConfirmationDialog roleId={+roleId} />
+              {isEditable && (
+                <EditRoleModal
+                  roleData={{
+                    role: {
+                      id: +roleId,
+                      name: roleName,
+                      unitType: unitType,
+                      editable: isEditable,
+                    },
+                    permission: rolePermissions.map((rp) => rp.permission),
+                  }}
+                />
+              )}
+              {isEditable && <RemoveConfirmationDialog roleId={+roleId} />}
             </div>
           )
         })}
@@ -109,9 +119,11 @@ export default function RolesAccordion({
 function RoleItem({
   permissions,
   roleId,
+  editable,
 }: {
   permissions: Permission[]
   roleId: number
+  editable: boolean
 }) {
   const groupedPermissionsByModule = groupBy(
     permissions,
@@ -162,14 +174,16 @@ function RoleItem({
                 {perms.map((permission) => (
                   <li key={permission.description}>
                     <span>{permission.description}</span>
-                    <Button
-                      className="mt-2"
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => handleRemovePermission(permission.id)}
-                    >
-                      <X />
-                    </Button>
+                    {editable && (
+                      <Button
+                        className="mt-2"
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => handleRemovePermission(permission.id)}
+                      >
+                        <X />
+                      </Button>
+                    )}
                   </li>
                 ))}
               </ul>

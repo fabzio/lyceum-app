@@ -69,11 +69,15 @@ function AssigmentAccordionItem({
             <span className="font-">{role.name}</span> {role.unitName}
           </div>
           <div>
-            <RevokeConfirmationDialog
-              accountId={accountId}
-              roleId={role.id}
-              unitId={role.unitId}
-            />
+            {role.editable ? (
+              <RevokeConfirmationDialog
+                accountId={accountId}
+                roleId={role.id}
+                unitId={role.unitId}
+              />
+            ) : (
+              <span></span>
+            )}
           </div>
         </li>
       ))}

@@ -3,4 +3,5 @@ export interface RoleAssigment {
   name: string
   unitId: number
   unitName: string
+  editable: boolean
 }
