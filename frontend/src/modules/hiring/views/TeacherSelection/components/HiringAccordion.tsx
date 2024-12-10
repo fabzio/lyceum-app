@@ -114,7 +114,8 @@ function AssigmentAccordionItem({
   hiringId: string
   applications:
     | {
-        jobRequestStatus: JobApplication['state']
+        jrId: JobApplication['id']
+        jrState: JobApplication['state']
         courseHiringId: JobApplication['courseHiringId']
       }[]
     | undefined
@@ -160,14 +161,12 @@ function AssigmentAccordionItem({
                   (app) => app.courseHiringId === course.processId
                 )) && (
                 <Link
-                  to="/contrataciones/seleccion-docentes/$hiringProcessId/postulacion"
-                  params={{
-                    hiringProcessId: course.processId,
-                  }}
+                  to="/contrataciones/seleccion-docentes/postulacion"
                   search={{
                     courseId: course.id,
                     courseName: course.name,
                     hiringId: hiringId,
+                    hiringProcessId: course.processId,
                   }}
                 >
                   <Button
@@ -185,11 +184,16 @@ function AssigmentAccordionItem({
                 (app) => app.courseHiringId === course.processId
               ) && (
                 <Link
-                  to="/contrataciones/seleccion-docentes/$hiringId"
-                  params={{
-                    hiringId,
+                  to="/contrataciones/seleccion-docentes/revision"
+                  search={{
+                    courseId: course.id,
+                    courseName: course.name,
+                    hiringId: hiringId,
+                    hiringProcessId: course.processId,
+                    jobRequestId: applications.find(
+                      (app) => app.courseHiringId === course.processId
+                    )?.jrId as number,
                   }}
-                  search={{ courseId: course.id, courseName: course.name }}
                 >
                   <Button
                     variant="outline"
