@@ -42,7 +42,7 @@ export default function Home() {
           <ProfileCard baseRole={data.roles.find((role) => !role.editable)!} />
         </section>
         <section>
-          {data.roles.length > 0 && (
+          {data.roles.length > 1 && (
             <h3 className="text-lg font-semibold text-center">Roles</h3>
           )}
           <div className="flex flex-wrap gap-2">

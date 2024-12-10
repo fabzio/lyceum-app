@@ -125,3 +125,14 @@ export const getCandidateMotivationQueryDTO = z.object({
 export type GetCandidateMotivationQueryDTO = z.infer<
   typeof getCandidateMotivationQueryDTO
 >
+
+export const insertJobRequestActionDTO = z.object({
+  accountId: z.string(),
+  processId: z.string(),
+  documents: z.union([z.string(), z.instanceof(File)]),
+  motivation: z.string().optional(),
+})
+
+export type InsertJobRequestActionDTO = z.infer<
+  typeof insertJobRequestActionDTO
+>

@@ -3,6 +3,9 @@ import { HiringSelectionService } from '../services'
 import { zValidator } from '@hono/zod-validator'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
 import { HiringSelectionDAO } from '../dao'
+import { getDocument, insertDocument } from '@/aws/services'
+import { bodyLimit } from 'hono/body-limit'
+import { stream } from 'hono/streaming'
 import {
   updateHiringSelectionStatusDTO,
   getCandidateHiringListDTO,
@@ -14,6 +17,7 @@ import {
   getRequirementsScoresQueryDTO,
   hiringsWithCoursesDTO,
   HiringsWithCoursesDTO,
+  insertJobRequestActionDTO,
 } from '../dtos/hiringSelectionDTO'
 class HiringSelectioncontroller {
   private router = new Hono()
@@ -209,6 +213,78 @@ class HiringSelectioncontroller {
     }
   )
 
+  public putNewJobRequest = this.router.post(
+    '/:hiringProcessId/apply',
+    zValidator('form', insertJobRequestActionDTO),
+    bodyLimit({ maxSize: 15 * 1024 * 1024 }),
+    zValidator(
+      'param',
+      z.object({
+        hiringProcessId: z.string(),
+      })
+    ),
+    async (c) => {
+      const { hiringProcessId } = c.req.valid('param')
+      const { accountId, motivation, documents, processId } =
+        c.req.valid('form')
+
+      try {
+        const response: ResponseAPI = {
+          data: await this.hiringSelectionService.putNewJobRequest({
+            candidateAccount: accountId,
+            jrMotivation: motivation,
+            courseHiringId: processId,
+            file:
+              documents instanceof File
+                ? await insertDocument({
+                    bucketName: '',
+                    file: documents as File,
+                  })
+                : (documents as string),
+          }),
+          message: 'Job request addded successfully',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public getApplicationDocuments = this.router.get(
+    '/documents/:docId',
+    zValidator('param', z.object({ docId: z.string() })),
+    async (c) => {
+      const { docId } = c.req.param()
+      try {
+        const thesisDoc = await getDocument({
+          bucketName: '',
+          docId,
+        })
+        const byteArray = await thesisDoc.data
+        if (byteArray === undefined) {
+          throw new Error('Error al obtener el archivo')
+        }
+        c.header('Content-Type', thesisDoc.contentType)
+        return stream(c, async (stream) => {
+          stream.onAbort(() => {
+            console.log('Stream aborted')
+          })
+          await stream.write(byteArray)
+        })
+      } catch (e) {
+        if (e instanceof LyceumError) {
+          c.status(e.code)
+        }
+        throw e
+      }
+    }
+  )
+
   public getHiringsWithCourses = this.router.get(
     '/',
     zValidator('query', getHiringsWithCoursesQueryDTO),
@@ -244,12 +320,11 @@ class HiringSelectioncontroller {
           await this.hiringSelectionService.getCandidateMotivationAndObservation(
             +id
           )
-
         // Construct the success response
         const response = {
           data: result,
           success: true,
-          message: `Motivación de la aplicación ${id} recuperada`,
+          message: `Información de la aplicación ${id} recuperada`,
         }
 
         return c.json(response)
@@ -277,6 +352,32 @@ class HiringSelectioncontroller {
         const response: ResponseAPI = {
           data: await this.hiringSelectionService.getJobRequests(accountId),
           message: 'Job request detail retrieved successfully',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public getOneJobRequest = this.router.get(
+    '/:jobRequestId/view',
+    zValidator(
+      'param',
+      z.object({
+        jobRequestId: z.string(),
+      })
+    ),
+    async (c) => {
+      const { jobRequestId } = c.req.valid('param')
+      try {
+        const response: ResponseAPI = {
+          data: await this.hiringSelectionService.getJobRequest(+jobRequestId),
+          message: `Job request number ${jobRequestId} detail retrieved successfully`,
           success: true,
         }
         return c.json(response)
