@@ -27,7 +27,6 @@ export const errorHandler = async (c: Context) => {
   } catch (error) {
     await Bun.write(logFileName, ''.concat(`${newLog}`))
   }
-
   return c.json({
     success: false,
     message: c.error?.message || 'Internal Server Error',

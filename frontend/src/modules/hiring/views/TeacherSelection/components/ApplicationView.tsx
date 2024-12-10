@@ -63,7 +63,6 @@ export function ViewApplication({ application, handleClose }: Props) {
 
   const approveMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => {
-      queryKey: [QueryKeys.hiring.HIRINGS, application.jobRequestId]
       HiringService.updateApplication(data, 'to_evaluate')
       return Promise.resolve({ success: true })
     },
@@ -88,7 +87,6 @@ export function ViewApplication({ application, handleClose }: Props) {
 
   const rejectMutation = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => {
-      queryKey: [QueryKeys.hiring.HIRINGS, application.jobRequestId]
       HiringService.updateApplication(data, 'rejected')
       return Promise.resolve({ success: true })
     },
@@ -141,8 +139,7 @@ export function ViewApplication({ application, handleClose }: Props) {
 
   const downloadMutation = useMutation({
     mutationFn: () => {
-      queryKey: [QueryKeys.hiring.HIRINGS, application.name]
-      HiringService.getRequieredDocuments(String(aboutApplicant?.documentId))
+      HiringService.getRequieredDocuments(String(aboutApplicant?.documentsId))
       return Promise.resolve({ success: true })
     },
     onSuccess: () => {
@@ -342,8 +339,7 @@ export function DoEvaluation({ application, handleClose }: Props) {
 
   const downloadMutation = useMutation({
     mutationFn: () => {
-      queryKey: [QueryKeys.hiring.HIRINGS, application.name]
-      HiringService.getRequieredDocuments(String(aboutApplicant?.documentId))
+      HiringService.getRequieredDocuments(String(aboutApplicant?.documentsId))
       return Promise.resolve({ success: true })
     },
     onSuccess: () => {
@@ -543,8 +539,7 @@ export function ViewEvaluation({ application, handleClose }: Props) {
 
   const downloadMutation = useMutation({
     mutationFn: () => {
-      queryKey: [QueryKeys.hiring.HIRINGS, application.name]
-      HiringService.getRequieredDocuments(String(aboutApplicant?.documentId))
+      HiringService.getRequieredDocuments(String(aboutApplicant?.documentsId))
       return Promise.resolve({ success: true })
     },
     onSuccess: () => {
