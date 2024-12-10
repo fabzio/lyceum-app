@@ -30,7 +30,7 @@ class RolePermissionService implements RolePermissionDAO {
         editable: roles.editable,
       })
       .from(roles)
-      .where(and(ilike(roles.name, `%${search}%`)))
+      .where(and(ilike(roles.name, `%${search}%`), eq(roles.editable, true)))
   }
   async getAllRolePermissions(): Promise<RolePermission[]> {
     const rolePermissionsResponse = await db

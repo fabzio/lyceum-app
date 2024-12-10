@@ -18,13 +18,13 @@ export default function ProfileCard({ baseRole }: Props) {
     <Card>
       <CardHeader>
         <CardTitle>{`${session?.name} ${session?.surname}`}</CardTitle>
-        <CardDescription>
-          <div>
+        <CardDescription className="flex flex-col items-center">
+          <div className="text-center">
             <span className="font-semibold"> {baseRole.role}</span>{' '}
             {baseRole.unit}
           </div>
-          {session?.email}
-          <br /> {session?.code}
+          <p>{session?.email}</p>
+          <p>{session?.code}</p>
         </CardDescription>
       </CardHeader>
     </Card>
