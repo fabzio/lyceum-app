@@ -135,6 +135,34 @@ export function ViewApplication({ application, handleClose }: Props) {
     placeholderData: keepPreviousData,
   })
 
+  const onDonwnload = () => {
+    downloadMutation.mutate()
+  }
+
+  const downloadMutation = useMutation({
+    mutationFn: () => {
+      queryKey: [QueryKeys.hiring.HIRINGS, application.name]
+      HiringService.getRequieredDocuments(String(aboutApplicant?.documentId))
+      return Promise.resolve({ success: true })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.hiring.HIRINGS],
+      })
+      toast({
+        title: 'Documentos descargados',
+        description: 'Se descargó la documentación anexada',
+      })
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
+      })
+    },
+  })
+
   return (
     <Dialog open={true} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[500px]">
@@ -153,6 +181,7 @@ export function ViewApplication({ application, handleClose }: Props) {
               <Button
                 variant="outline"
                 className="justify-start gap-2 w-42 mt-2"
+                onClick={form.handleSubmit(onDonwnload)}
               >
                 <Download className="h-4 w-4" />
                 Descargar documentos
@@ -307,6 +336,34 @@ export function DoEvaluation({ application, handleClose }: Props) {
     return 'bg-gradient-to-r from-green-500 to-green-600'
   }
 
+  const onDonwnload = () => {
+    downloadMutation.mutate()
+  }
+
+  const downloadMutation = useMutation({
+    mutationFn: () => {
+      queryKey: [QueryKeys.hiring.HIRINGS, application.name]
+      HiringService.getRequieredDocuments(String(aboutApplicant?.documentId))
+      return Promise.resolve({ success: true })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.hiring.HIRINGS],
+      })
+      toast({
+        title: 'Documentos descargados',
+        description: 'Se descargó la documentación anexada',
+      })
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
+      })
+    },
+  })
+
   return (
     <Dialog open={true} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[600px] h-[80vh] flex flex-col">
@@ -326,7 +383,11 @@ export function DoEvaluation({ application, handleClose }: Props) {
                   <p className="text-muted-foreground">{application.name}</p>
                 </div>
 
-                <Button variant="outline" className="justify-start gap-2 w-42">
+                <Button
+                  variant="outline"
+                  className="justify-start gap-2 w-42"
+                  onClick={form.handleSubmit(onDonwnload)}
+                >
                   <Download className="h-4 w-4" />
                   Descargar documentos
                 </Button>
@@ -423,6 +484,10 @@ export function ViewEvaluation({ application, handleClose }: Props) {
     return 'bg-green-500'
   }
 
+  const form = useForm<z.infer<typeof evaluationSchema>>({
+    resolver: zodResolver(evaluationSchema),
+  })
+
   const { toast } = useToast()
   const queryClient = useQueryClient()
 
@@ -472,6 +537,34 @@ export function ViewEvaluation({ application, handleClose }: Props) {
       ? scores.reduce((acc, req) => acc + req.score, 0) / scores.length
       : 0
 
+  const onDonwnload = () => {
+    downloadMutation.mutate()
+  }
+
+  const downloadMutation = useMutation({
+    mutationFn: () => {
+      queryKey: [QueryKeys.hiring.HIRINGS, application.name]
+      HiringService.getRequieredDocuments(String(aboutApplicant?.documentId))
+      return Promise.resolve({ success: true })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.hiring.HIRINGS],
+      })
+      toast({
+        title: 'Documentos descargados',
+        description: 'Se descargó la documentación anexada',
+      })
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
+      })
+    },
+  })
+
   return (
     <Dialog open={true} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[600px] h-[80vh] flex flex-col">
@@ -519,6 +612,7 @@ export function ViewEvaluation({ application, handleClose }: Props) {
               <Button
                 variant="outline"
                 className="flex-1 justify-center items-center gap-2"
+                onClick={form.handleSubmit(onDonwnload)}
               >
                 <Download className="h-4 w-4" />
                 Descargar documentos

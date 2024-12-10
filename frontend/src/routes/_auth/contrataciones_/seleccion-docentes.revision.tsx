@@ -1,15 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router'
 import TransitionPage from '@frontend/components/anim/TransitionPage'
-import ApplicationForm from '@frontend/modules/hiring/views/TeacherSelection/ApplicationForm/index'
+import ApplicationView from '@frontend/modules/hiring/views/TeacherSelection/ApplicationForm/view'
 
 export const Route = createFileRoute(
-  '/_auth/contrataciones/seleccion-docentes/$hiringProcessId/postulacion'
+  '/_auth/contrataciones/seleccion-docentes/revision'
 )({
   validateSearch: () =>
     ({}) as {
       courseId: number
       courseName: string
+      jobRequestId: number
       hiringId: string
+      hiringProcessId: string
     },
   component: () => <HiringProcessWrapper />,
 })
@@ -17,7 +19,7 @@ export const Route = createFileRoute(
 function HiringProcessWrapper() {
   return (
     <TransitionPage>
-      <ApplicationForm />
+      <ApplicationView />
     </TransitionPage>
   )
 }
