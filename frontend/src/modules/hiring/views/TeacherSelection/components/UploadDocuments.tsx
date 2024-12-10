@@ -87,8 +87,8 @@ export function FileUpload({ onChange }: FileUploadProps) {
   return (
     <div
       className={`relative border-2 border-dashed rounded-lg p-6 ${
-        dragActive ? 'border-primary' : 'border-gray-300'
-      } ${fileUploaded ? 'bg-green-50' : ''}`}
+        dragActive ? 'border-primary' : 'border-muted'
+      } ${fileUploaded ? 'bg-muted  ' : ''}`}
       onDragEnter={handleDrag}
       onDragLeave={handleDrag}
       onDragOver={handleDrag}
@@ -109,14 +109,14 @@ export function FileUpload({ onChange }: FileUploadProps) {
         {fileUploaded ? (
           <CheckCircle2 className="w-12 h-12 text-green-500 mb-4" />
         ) : (
-          <Upload className="w-12 h-12 text-gray-400 mb-4" />
+          <Upload className="w-12 h-12 mb-4" />
         )}
-        <p className="mb-2 text-sm text-gray-500">
+        <p className="mb-2 text-sm text-muted-foreground">
           {fileUploaded
             ? 'Archivo ZIP válido subido'
             : 'Haz clic para subir o arrastra y suelta'}
         </p>
-        <p className="text-xs text-gray-500">.ZIP (máx. 15MB)</p>
+        <p className="text-xs text-muted-foreground">.ZIP (máx. 15MB)</p>
       </label>
       {dragActive && (
         <div className="absolute inset-0 bg-primary/10 rounded-lg pointer-events-none" />
