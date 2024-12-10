@@ -500,6 +500,7 @@ await db.transaction(async (tx) => {
     SurveyPermissionsDict.CREATE_SURVEY,
     SurveyPermissionsDict.READ_SURVEY,
     SurveyPermissionsDict.READ_SURVEY_RESULTS,
+    ThesisPermissionsDict.DOWNLOAD_THESIS_REPORT,
   ]
   await tx.insert(rolePermissions).values(
     carreerDirectorPermissions.map((permission) => ({
@@ -507,6 +508,7 @@ await db.transaction(async (tx) => {
       permissionId: mapPermissions.get(permission)!,
     }))
   )
+
   const [academicSecretaryRole] = await tx
     .insert(roles)
     .values({
@@ -562,6 +564,78 @@ await db.transaction(async (tx) => {
   await tx.insert(rolePermissions).values(
     areaCoordinatorPermissions.map((permission) => ({
       roleId: areaCoordinatorRole.roleId,
+      permissionId: mapPermissions.get(permission)!,
+    }))
+  )
+  const [sectionAssistant] = await tx
+    .insert(roles)
+    .values({
+      name: 'Asistente de sección',
+      unitType: 'section',
+      editable: true,
+    })
+    .returning({ roleId: roles.id })
+  const sectionAssistantPermisions = [
+    EnrollmentPermissionsDict.ASSIGN_SCHEDULE_PROFESORS,
+    SurveyPermissionsDict.CREATE_SURVEY,
+    HiringPermissionsDict.VIEW_LIST_OF_OPEN_HIRINGS,
+    HiringPermissionsDict.VIEW_COURSES_IN_HIRING,
+    HiringPermissionsDict.VIEW_ALL_UPDATED_REQUEST_PHASE_1,
+    HiringPermissionsDict.VIEW_ALL_CANDIDATES_PHASE_2,
+    HiringPermissionsDict.CREATE_HIRING_PROCESS,
+    HiringPermissionsDict.ASSIGN_COURSES_TO_HIRING_PROCESS,
+    HiringPermissionsDict.CREATE_REQUIREMENT_TO_COURSE_HIRING_PROCESS,
+    HiringPermissionsDict.OPEN_HIRING,
+    HiringPermissionsDict.CLOSE_HIRING,
+    HiringPermissionsDict.SHOW_RESULTS,
+    HiringPermissionsDict.ASSIGN_REVIEWER_SELECTOR_EVALUATOR,
+  ]
+  await tx.insert(rolePermissions).values(
+    sectionAssistantPermisions.map((permission) => ({
+      roleId: sectionAssistant.roleId,
+      permissionId: mapPermissions.get(permission)!,
+    }))
+  )
+  const [specialityAssistant] = await tx
+    .insert(roles)
+    .values({
+      name: 'Asistente de especialidad',
+      unitType: 'speciality',
+      editable: true,
+    })
+    .returning({ roleId: roles.id })
+
+  const specialityAssistantPermissions = [
+    StudentProcessPermissionsDict.APPROVE_PRESENTATION_LETTER,
+    StudentProcessPermissionsDict.REVIEW_PRESENTATION_LETTER,
+  ]
+  await tx.insert(rolePermissions).values(
+    specialityAssistantPermissions.map((permission) => ({
+      roleId: specialityAssistant.roleId,
+      permissionId: mapPermissions.get(permission)!,
+    }))
+  )
+
+  const [selectionCommittee] = await tx
+    .insert(roles)
+    .values({
+      name: 'Comité de selección',
+      unitType: 'university',
+      editable: true,
+    })
+    .returning({ roleId: roles.id })
+
+  const selectionCommitteePermissions = [
+    HiringPermissionsDict.VIEW_RESULTS_PHASE_1,
+    HiringPermissionsDict.VIEW_RESULTS_PHASE_2,
+    HiringPermissionsDict.EVALUATE_ALL_CANDIDATES_PHASE_2,
+    HiringPermissionsDict.VIEW_ALL_CANDIDATES_PHASE_1,
+    HiringPermissionsDict.VIEW_ALL_CANDIDATES_PHASE_2,
+    HiringPermissionsDict.CHANGE_STATUS_ALL_CANDIDATES_PHASE_1,
+  ]
+  await tx.insert(rolePermissions).values(
+    selectionCommitteePermissions.map((permission) => ({
+      roleId: selectionCommittee.roleId,
       permissionId: mapPermissions.get(permission)!,
     }))
   )
