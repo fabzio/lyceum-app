@@ -27,6 +27,7 @@ class RolePermissionService implements RolePermissionDAO {
         id: roles.id,
         name: roles.name,
         unitType: roles.unitType,
+        editable: roles.editable,
       })
       .from(roles)
       .where(and(ilike(roles.name, `%${search}%`)))
@@ -38,6 +39,7 @@ class RolePermissionService implements RolePermissionDAO {
           id: roles.id,
           name: roles.name,
           unitType: roles.unitType,
+          editable: roles.editable,
         },
         permission: {
           id: permissions.id,
