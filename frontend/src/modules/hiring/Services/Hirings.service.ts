@@ -89,7 +89,7 @@ class HiringService {
   ): Promise<{
     motivation: string | null
     observation: string | null
-    documentId: string | null
+    documentsId: string | null
   }> {
     try {
       const res = await http.get(
@@ -105,7 +105,7 @@ class HiringService {
       return response.data as Promise<{
         motivation: string | null
         observation: string | null
-        documentId: string | null
+        documentsId: string | null
       }>
     } catch (error) {
       if (axios.isAxiosError(error)) {

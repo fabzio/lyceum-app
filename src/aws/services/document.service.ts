@@ -1,4 +1,5 @@
 import { createDocument, readDocument } from '..'
+import { DocumentError } from '../errors/document.error'
 /**
  *
  * @param params bucketName, file
@@ -13,7 +14,7 @@ export const insertDocument = async (params: {
     const docId = await createDocument(params.file)
     return docId
   } catch (error) {
-    throw new Error('Error al subir el archivo')
+    throw new DocumentError('Error al subir el archivo')
   }
 }
 /**
@@ -32,6 +33,6 @@ export const getDocument = async (params: {
   try {
     return await readDocument(params.docId)
   } catch (error) {
-    throw new Error('Error al obtener el archivo')
+    throw new DocumentError('Error al obtener el archivo')
   }
 }
