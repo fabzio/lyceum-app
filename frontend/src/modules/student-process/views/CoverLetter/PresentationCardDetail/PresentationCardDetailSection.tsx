@@ -14,6 +14,7 @@ export default function CoverLetterDetailSection() {
       <ResizablePanel defaultSize={80}>
         <CoverLetterDetailMain />
       </ResizablePanel>
+
       <ResizableHandle />
     </ResizablePanelGroup>
   )

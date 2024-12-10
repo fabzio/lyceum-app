@@ -92,11 +92,13 @@ class PresentationLetterController {
 
     async (c) => {
       const { unitId } = c.req.valid('query')
+
       try {
         const response: ResponseAPI = {
           data: await this.presentatioLetterService.getPresentationLetterByUnit(
             { UnitId: unitId }
           ),
+
           message: 'Presentation letters retrieved successfully',
           success: true,
         }
@@ -157,6 +159,36 @@ class PresentationLetterController {
             }
           ),
           message: 'Presentation letters updated successfully',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public approveOrDenegateAPresentationLetter = this.router.put(
+    '/approve-or-denegate/',
+    zValidator(
+      'query',
+      z.object({
+        presentationLetterID: z.coerce.number(),
+        status: z.enum(['accepted', 'rejected']),
+      })
+    ),
+
+    async (c) => {
+      const { presentationLetterID, status } = c.req.valid('query')
+      try {
+        const response: ResponseAPI = {
+          data: await this.presentatioLetterService.approveOrDenegateAPresentationLetter(
+            { presentationLetterID: presentationLetterID, status: status }
+          ),
+          message: 'Presentation letters retrieved successfully',
           success: true,
         }
         return c.json(response)

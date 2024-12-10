@@ -74,8 +74,8 @@ export default function NewPresentationCardForm() {
   })
 
   const { data: accountSchedules } = useQuery({
-    queryKey: ['schedules', session!.id],
-    queryFn: () => ScheduleService.getAccounSchedule(session!.id),
+    queryKey: ['schedules', session!.code],
+    queryFn: () => ScheduleService.getAccounSchedule(session!.code),
   })
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {

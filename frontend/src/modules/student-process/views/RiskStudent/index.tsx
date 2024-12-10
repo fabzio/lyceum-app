@@ -1,5 +1,5 @@
 import SelectFilter from './components/SelectFilter'
-import UploadCSVDialog from './components/UploadCSVDialog'
+//import UploadCSVDialog from './components/UploadCSVDialog'
 import UpdateConfirmationDialog from './components/UpdateConfirmationDialog'
 import RiskStudentTable from './components/RiskStudentTable'
 import SearchRiskStudentInput from './components/SearchRiskStudentInput'
@@ -27,11 +27,8 @@ export default function RiskStudents() {
             }
           >
             <UpdateConfirmationDialog />
-            <NewRiskStudentDialog />
             <DownloadPDF />
-          </Need>
-          <Need permissions={StudentProcessPermissionsDict.LOAD_RISK_STUDENTS}>
-            <UploadCSVDialog />
+            <NewRiskStudentDialog />
           </Need>
         </div>
       </div>
