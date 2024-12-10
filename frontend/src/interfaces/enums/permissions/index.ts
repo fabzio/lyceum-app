@@ -8,7 +8,6 @@ import { ThesisPermissionsDict } from './Thesis'
 import { UserPermissionsDict } from './Users'
 import { UnitPermissionsDict } from './Units'
 import { SurveyPermissionsDict } from './Survey'
-import { PresentationCardPermissionsDict } from './PresentationCard'
 
 export type PermissionCode =
   | SecurityPermissionsDict
@@ -21,5 +20,4 @@ export type PermissionCode =
   | FAQPermissionsDict
   | UnitPermissionsDict
   | SurveyPermissionsDict
-  | PresentationCardPermissionsDict
   | 'TODO_PERMISSION'

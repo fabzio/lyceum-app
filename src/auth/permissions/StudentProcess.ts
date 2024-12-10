@@ -6,7 +6,6 @@ export const StudentProcessPermissionsDict = {
   CREATE_PRESENTATION_LETTER: 'CREATE_PRESENTATION_LETTER',
   REVIEW_PRESENTATION_LETTER: 'REVIEW_PRESENTATION_LETTER',
   APPROVE_PRESENTATION_LETTER: 'APPROVE_PRESENTATION_LETTER',
-  READ_PRESENTATION_LETTER: 'READ_PRESENTATION_LETTER',
   MANAGE_JP: 'MANAGE_JP',
   MANAGE_DELEGATE: 'MANAGE_DELEGATE',
 } as const
@@ -39,10 +38,6 @@ const StudentProcessPermissions = [
   {
     name: StudentProcessPermissionsDict.APPROVE_PRESENTATION_LETTER,
     description: 'Aprobar carta de presentación',
-  },
-  {
-    name: StudentProcessPermissionsDict.READ_PRESENTATION_LETTER,
-    description: 'Leer carta de presentación',
   },
   {
     name: StudentProcessPermissionsDict.MANAGE_JP,
