@@ -7,6 +7,7 @@ export interface Hiring {
   endDate: string
   courses: {
     id: number
+    processId: string
     code: string
     name: string
     credits: number

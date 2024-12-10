@@ -304,7 +304,7 @@ export default function NewThesisForm() {
                   className="w-full"
                   {...filedProps}
                   type="file"
-                  accept=".doc,.docx,.pdf"
+                  accept=".pdf"
                   onChange={(e) =>
                     onChange(e.target.files && e.target.files[0])
                   }

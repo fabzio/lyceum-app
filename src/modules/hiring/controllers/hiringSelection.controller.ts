@@ -262,6 +262,32 @@ class HiringSelectioncontroller {
       }
     }
   )
+
+  public getJobRequestsFromUser = this.router.get(
+    '/:accountId/applications-list',
+    zValidator(
+      'param',
+      z.object({
+        accountId: z.string(),
+      })
+    ),
+    async (c) => {
+      const { accountId } = c.req.valid('param')
+      try {
+        const response: ResponseAPI = {
+          data: await this.hiringSelectionService.getJobRequests(accountId),
+          message: 'Job request detail retrieved successfully',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
 }
 
 export default HiringSelectioncontroller

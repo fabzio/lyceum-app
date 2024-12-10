@@ -7,6 +7,7 @@ import { LyceumError } from '@/middlewares/errorMiddlewares'
 import { z } from 'zod'
 import { getDocument, insertDocument } from '@/aws/services'
 import { stream } from 'hono/streaming'
+import { bodyLimit } from 'hono/body-limit'
 
 class ThesisThemeController {
   private router = new Hono()
@@ -220,6 +221,7 @@ class ThesisThemeController {
   public insertThesisThemeRequest = this.router.post(
     '/',
     zValidator('form', createThesisDTO),
+    bodyLimit({ maxSize: 20 * 1024 * 1024 }),
     async (c) => {
       const newThesisData = c.req.valid('form')
       const advisors = JSON.parse(newThesisData.advisors)
