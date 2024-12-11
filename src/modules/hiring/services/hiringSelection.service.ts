@@ -99,6 +99,7 @@ class HiringSelectionService implements HiringSelectionDAO {
   public async updateHiringSelectionStatus(
     jobRequestId: number,
     newStatus: 'sent' | 'rejected' | 'to_evaluate' | 'evaluated' | 'selected',
+    evaluatorId: string,
     observation?: string | undefined,
 
     evaluationList?: {
@@ -164,6 +165,7 @@ class HiringSelectionService implements HiringSelectionDAO {
                 .set({
                   score: evaluation.score.toFixed(2), // Round to 2 decimals
                   evaluationDate: currentDate.toISOString(), // Use current date
+                  evaluatorId: evaluatorId,
                 })
                 .where(
                   and(
@@ -180,6 +182,7 @@ class HiringSelectionService implements HiringSelectionDAO {
                 requirementPerCourseId: evaluation.courseHiringRequirementId,
                 score: evaluation.score.toFixed(2), // Round to 2 decimals
                 evaluationDate: currentDate.toISOString(), // Use current date
+                evaluatorId: evaluatorId,
               })
             }
           })

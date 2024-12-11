@@ -60,14 +60,16 @@ class HiringSelectioncontroller {
       const { jobRequestId } = c.req.valid('param')
       const {
         newStatus,
-        evaluationList = [],
+        evaluatorId,
         observation,
+        evaluationList = [],
       } = c.req.valid('json')
       try {
         const response: ResponseAPI = {
           data: await this.hiringSelectionService.updateHiringSelectionStatus(
             +jobRequestId,
             newStatus,
+            evaluatorId,
             observation,
             evaluationList
           ),
