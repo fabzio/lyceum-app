@@ -14,6 +14,7 @@ export interface HiringSelectionDAO {
   updateHiringSelectionStatus(
     jobRequestId: number,
     newStatus: 'sent' | 'rejected' | 'to_evaluate' | 'evaluated' | 'selected',
+    evaluatorId: string,
     observation: string | undefined,
 
     evaluationList: {

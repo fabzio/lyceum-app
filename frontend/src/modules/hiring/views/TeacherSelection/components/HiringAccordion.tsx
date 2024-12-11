@@ -120,13 +120,40 @@ function AssigmentAccordionItem({
       }[]
     | undefined
 }) {
+  const getJrStateText = (jrState: string): string => {
+    switch (jrState) {
+      case 'sent':
+        return 'Enviado para revisión'
+      case 'rejected':
+        return 'Rechazado'
+      case 'to_evaluate':
+        return 'Por evaluar'
+      case 'evaluated':
+        return 'Evaluado'
+      default:
+        return ''
+    }
+  }
+
   const { havePermission } = useSessionStore()
   return (
     <ul className="flex flex-col gap-2">
       {courses.map((course) => (
         <li className="flex justify-between" key={course.id}>
-          <div>
-            <span className="font-">{course.name}</span> {course.unitName}
+          <div className="flex ml-4 items-center">
+            <span className="font-semibold">{course.name}</span>
+            <span className="ml-2">{course.unitName}</span>
+          </div>
+          <div className="text-sm text-muted-foreground flex items-center pl-4 min-w-[100px]">
+            <span className="text-center w-full">
+              {getJrStateText(
+                (applications &&
+                  applications.find(
+                    (app) => app.courseHiringId === course.processId
+                  )?.jrState) ||
+                  ''
+              )}
+            </span>
           </div>
           <div>
             {(havePermission(
@@ -135,10 +162,7 @@ function AssigmentAccordionItem({
               havePermission(
                 HiringPermissionsDict.VIEW_ALL_CANDIDATES_PHASE_2
               )) &&
-              (!applications ||
-                !applications.some(
-                  (app) => app.courseHiringId === course.processId
-                )) && (
+              !applications && (
                 <Link
                   to="/contrataciones/seleccion-docentes/$hiringId"
                   params={{

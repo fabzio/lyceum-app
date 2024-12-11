@@ -35,6 +35,7 @@ import {
 import { HiringRequirement } from '@frontend/interfaces/models/HiringRequirement'
 import { PermissionCode } from '@frontend/interfaces/enums/permissions'
 import { HiringPermissionsDict } from '@frontend/interfaces/enums/permissions/Hiring'
+import { useSessionStore } from '@frontend/store'
 
 interface Props {
   application: {
@@ -54,9 +55,12 @@ export function ViewApplication({ application, handleClose }: Props) {
   const { toast } = useToast()
   const queryClient = useQueryClient()
 
+  const { session } = useSessionStore()
+
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       jobRequestId: application.jobRequestId,
+      evaluatorId: session?.id,
     },
     resolver: zodResolver(formSchema),
   })
@@ -114,6 +118,7 @@ export function ViewApplication({ application, handleClose }: Props) {
     const data: z.infer<typeof formSchema> = {
       observation: form.getValues('observation') || '',
       jobRequestId: application.jobRequestId, // Ensure you get the current form value
+      evaluatorId: String(session?.id),
     }
     approveMutation.mutate(data)
   }
@@ -121,7 +126,8 @@ export function ViewApplication({ application, handleClose }: Props) {
   const onReject = () => {
     const data: z.infer<typeof formSchema> = {
       observation: form.getValues('observation') || '',
-      jobRequestId: application.jobRequestId, // Ensure you get the current form value
+      jobRequestId: application.jobRequestId,
+      evaluatorId: String(session?.id), // Ensure you get the current form value
     }
     rejectMutation.mutate(data)
   }
@@ -169,7 +175,7 @@ export function ViewApplication({ application, handleClose }: Props) {
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-4">
             <div>
               <h3 className="text-lg font-medium">
                 {(application.courseName || '').replace(/\+/g, ' ')}
@@ -184,7 +190,7 @@ export function ViewApplication({ application, handleClose }: Props) {
                 Descargar documentos
               </Button>
             </div>
-            <div>
+            {/* <div>
               {application.requirements &&
                 application.requirements.length > 0 && (
                   <div>
@@ -196,7 +202,7 @@ export function ViewApplication({ application, handleClose }: Props) {
                     </ul>
                   </div>
                 )}
-            </div>
+            </div> */}
           </div>
 
           <div className="space-y-2">
@@ -275,9 +281,12 @@ export function DoEvaluation({ application, handleClose }: Props) {
   const { toast } = useToast()
   const queryClient = useQueryClient()
 
+  const { session } = useSessionStore()
+
   const form = useForm<z.infer<typeof evaluationSchema>>({
     defaultValues: {
       jobRequestId: application.jobRequestId,
+      evaluatorId: session?.id,
       evaluationList:
         application.requirements?.map((req) => ({
           courseHiringRequirementId: req.id.toString(),
@@ -486,10 +495,14 @@ export function ViewEvaluation({ application, handleClose }: Props) {
 
   const { toast } = useToast()
   const queryClient = useQueryClient()
+  const { session } = useSessionStore()
 
   const evaluateMutation = useMutation({
     mutationFn: () => {
-      const data = { jobRequestId: application.jobRequestId }
+      const data = {
+        jobRequestId: application.jobRequestId,
+        evaluatorId: String(session?.id),
+      }
       return HiringService.updateApplication(data, 'selected')
     },
     onSuccess: () => {
@@ -678,10 +691,12 @@ export function ViewEvaluation({ application, handleClose }: Props) {
 const formSchema = z.object({
   jobRequestId: z.coerce.number(),
   observation: z.coerce.string().optional(),
+  evaluatorId: z.coerce.string(),
 })
 
 const evaluationSchema = z.object({
   jobRequestId: z.coerce.number(),
+  evaluatorId: z.coerce.string(),
   evaluationList: z.array(
     z.object({
       courseHiringRequirementId: z.coerce.string(),

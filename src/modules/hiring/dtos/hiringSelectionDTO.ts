@@ -38,9 +38,8 @@ export const updateHiringSelectionStatusDTO = z.object({
     'evaluated',
     'selected',
   ]),
-
+  evaluatorId: z.string(),
   observation: z.string().optional(),
-
   evaluationList: z
     .array(
       z.object({

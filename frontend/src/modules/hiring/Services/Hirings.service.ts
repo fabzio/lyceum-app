@@ -158,6 +158,7 @@ class HiringService {
 
   public static async updateApplication(
     data: {
+      evaluatorId: string
       jobRequestId: number
       observation?: string | undefined
       evaluationList?: {
@@ -171,6 +172,7 @@ class HiringService {
       const res = await http.put(
         `/hiring/selection/${data.jobRequestId}/status`,
         {
+          evaluatorId: data.evaluatorId,
           jobRequestId: data.jobRequestId,
           newStatus: newStatus,
           observation: data.observation,
