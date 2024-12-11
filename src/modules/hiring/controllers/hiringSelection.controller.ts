@@ -184,18 +184,23 @@ class HiringSelectioncontroller {
   )
 
   public getJobRequestDetail = this.router.get(
-    '/:hiringId/:courseHiringId/:accountId',
+    '/:jobRequestId/view',
     zValidator(
       'param',
       z.object({
-        hiringId: z.string(),
+        jobRequestId: z.string(),
+      })
+    ),
+    zValidator(
+      'query',
+      z.object({
         courseHiringId: z.string(),
         accountId: z.string(),
       })
     ),
     async (c) => {
-      const { courseHiringId } = c.req.valid('param')
-      const { accountId } = c.req.valid('param')
+      const { courseHiringId } = c.req.valid('query')
+      const { accountId } = c.req.valid('query')
       try {
         const response: ResponseAPI = {
           data: await this.hiringSelectionService.getJobRequestDetail(
@@ -354,32 +359,6 @@ class HiringSelectioncontroller {
         const response: ResponseAPI = {
           data: await this.hiringSelectionService.getJobRequests(accountId),
           message: 'Job request detail retrieved successfully',
-          success: true,
-        }
-        return c.json(response)
-      } catch (error) {
-        if (error instanceof LyceumError) {
-          c.status(error.code)
-        }
-        throw error
-      }
-    }
-  )
-
-  public getOneJobRequest = this.router.get(
-    '/:jobRequestId/view',
-    zValidator(
-      'param',
-      z.object({
-        jobRequestId: z.string(),
-      })
-    ),
-    async (c) => {
-      const { jobRequestId } = c.req.valid('param')
-      try {
-        const response: ResponseAPI = {
-          data: await this.hiringSelectionService.getJobRequest(+jobRequestId),
-          message: `Job request number ${jobRequestId} detail retrieved successfully`,
           success: true,
         }
         return c.json(response)
