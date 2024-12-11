@@ -275,15 +275,51 @@ class HiringService {
   }
 
   public static async getJobRequest(
-    jobRequestId: number
-  ): Promise<JobApplication> {
+    jobRequestId: number,
+    courseHiringId: string,
+    accountId: string
+  ): Promise<{
+    candidateName: string
+    candidateLastname: string
+    candidateEmail: string
+    jrUrl: string
+    jrMotivation: string
+    jrState: JobApplication['state']
+    jrObservation: string
+    requirementAndHisEvaluationList: {
+      requirementDetail: string
+      requirementStep: 'phase1' | 'phase2' | null
+      score: number
+      evaluationDate: Date
+      evaluatorName: string
+      evaluatorLastname: string
+    }[]
+  }> {
     try {
-      const res = await http.get(`/hiring/selection/${jobRequestId}/view`)
+      const res = await http.get(`/hiring/selection/${jobRequestId}/view`, {
+        params: { courseHiringId, accountId },
+      })
       const response = res.data as ResponseAPI
       if (!response.success) {
         throw new Error(response.message)
       }
-      return response.data as Promise<JobApplication>
+      return response.data as Promise<{
+        candidateName: string
+        candidateLastname: string
+        candidateEmail: string
+        jrUrl: string
+        jrMotivation: string
+        jrState: JobApplication['state']
+        jrObservation: string
+        requirementAndHisEvaluationList: {
+          requirementDetail: string
+          requirementStep: 'phase1' | 'phase2' | null
+          score: number
+          evaluationDate: Date
+          evaluatorName: string
+          evaluatorLastname: string
+        }[]
+      }>
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(error.response?.data.message || error.message)
