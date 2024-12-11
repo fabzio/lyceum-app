@@ -130,6 +130,8 @@ function AssigmentAccordionItem({
         return 'Por evaluar'
       case 'evaluated':
         return 'Evaluado'
+      case 'selected':
+        return 'Seleccionado'
       default:
         return ''
     }

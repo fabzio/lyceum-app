@@ -63,14 +63,14 @@ export const RequirementEvaluationList: React.FC<
                 </p>
               </div>
             </div>
-            <p className="text-sm text-gray-600">
+            {/* <p className="text-sm text-gray-600">
               Etapa:{' '}
               {evaluation.requirementStep === 'phase1'
                 ? 'Fase 1'
                 : evaluation.requirementStep === 'phase2'
                   ? 'Fase 2'
                   : 'No especificada'}
-            </p>
+            </p> */}
           </div>
         ))}
       </CardContent>

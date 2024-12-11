@@ -79,12 +79,38 @@ export default function ApplicationView() {
     )
   }
 
+  const getJrStateText = (jrState: string): string => {
+    switch (jrState) {
+      case 'sent':
+        return 'Enviado para revisión'
+      case 'rejected':
+        return 'Rechazado'
+      case 'to_evaluate':
+        return 'Por evaluar'
+      case 'evaluated':
+        return 'Evaluado'
+      case 'selected':
+        return 'Seleccionado'
+      default:
+        return ''
+    }
+  }
+
   return (
     <PageLayout name="Postulación">
       <div className="container mx-auto py-8">
         <h1 className="text-3xl font-bold mb-6">
           Aplicación para {courseName}
         </h1>
+
+        <Card className="mb-8">
+          <CardContent>
+            <CardTitle className="mt-5">
+              {' '}
+              Estado: {getJrStateText(String(application?.jrState))}
+            </CardTitle>
+          </CardContent>
+        </Card>
 
         <Card className="mb-8">
           <CardHeader>
