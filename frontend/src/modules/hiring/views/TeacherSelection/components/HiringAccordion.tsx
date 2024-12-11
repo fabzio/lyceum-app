@@ -162,7 +162,10 @@ function AssigmentAccordionItem({
               havePermission(
                 HiringPermissionsDict.VIEW_ALL_CANDIDATES_PHASE_2
               )) &&
-              !applications && (
+              (!applications ||
+                !applications.some(
+                  (app) => app.courseHiringId === course.processId
+                )) && (
                 <Link
                   to="/contrataciones/seleccion-docentes/$hiringId"
                   params={{

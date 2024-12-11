@@ -13,6 +13,7 @@ import {
 } from '@frontend/components/ui/card'
 import { useToast } from '@frontend/hooks/use-toast'
 import { useQuery, useMutation } from '@tanstack/react-query'
+import { RequirementEvaluationList } from './RequirementEvaluationList'
 
 export default function ApplicationView() {
   const { courseName, courseId, jobRequestId, hiringId, hiringProcessId } =
@@ -25,7 +26,12 @@ export default function ApplicationView() {
 
   const { data: application, isLoading: isLoadingApplication } = useQuery({
     queryKey: [QueryKeys.hiring.HIRINGS, hiringProcessId, session?.id],
-    queryFn: () => HiringService.getJobRequest(jobRequestId),
+    queryFn: () =>
+      HiringService.getJobRequest(
+        jobRequestId,
+        hiringProcessId,
+        String(session?.id)
+      ),
   })
 
   const { data: requirements, isLoading: isLoadingRequirements } = useQuery({
@@ -35,16 +41,17 @@ export default function ApplicationView() {
 
   const downloadMutation = useMutation({
     mutationFn: () => {
-      return HiringService.getRequieredDocuments(
-        String(application?.requirementUrl)
-      )
+      return HiringService.getRequieredDocuments(String(application?.jrUrl))
     },
     onSuccess: ({ file, type }) => {
       const extension = type.split('/')[1]
       const url = window.URL.createObjectURL(new Blob([file]))
       const link = document.createElement('a')
       link.href = url
-      link.setAttribute('download', `${application?.id}.${extension}`)
+      link.setAttribute(
+        'download',
+        `${application?.candidateName}-${application?.candidateLastname}.${extension}`
+      )
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
@@ -81,6 +88,18 @@ export default function ApplicationView() {
 
         <Card className="mb-8">
           <CardHeader>
+            <CardTitle>Información del Candidato</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>
+              <strong>Nombre:</strong> {application?.candidateName}{' '}
+              {application?.candidateLastname}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="mb-8">
+          <CardHeader>
             <CardTitle>Requisitos del Puesto</CardTitle>
           </CardHeader>
           <CardContent>
@@ -98,17 +117,17 @@ export default function ApplicationView() {
           </CardHeader>
           <CardContent>
             <p className="whitespace-pre-wrap">
-              {application?.motivation || 'No se proporcionó motivación.'}
+              {application?.jrMotivation || 'No se proporcionó motivación.'}
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="mb-8">
           <CardHeader>
             <CardTitle>Documentos Subidos</CardTitle>
           </CardHeader>
           <CardContent>
-            {application?.requirementUrl ? (
+            {application?.jrUrl ? (
               <div className="flex items-center">
                 <FileText className="mr-2" />
                 <Button
@@ -125,6 +144,12 @@ export default function ApplicationView() {
             )}
           </CardContent>
         </Card>
+
+        {application?.requirementAndHisEvaluationList && (
+          <RequirementEvaluationList
+            evaluations={application.requirementAndHisEvaluationList}
+          />
+        )}
       </div>
     </PageLayout>
   )
