@@ -5,6 +5,10 @@ export type AccountInfo = {
   surname: string
   code: string
   googleId: string
+  term: {
+    id: number
+    name: string
+  }
 }
 
 declare module 'hono' {

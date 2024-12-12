@@ -17,6 +17,20 @@ export interface ScheduleDistributionDAO {
     scheduleId: number
     visibility: ScheduleSchema['visibility']
   }): Promise<void>
+
+  addSchedule({
+    courseId,
+    code,
+    vacancies,
+    termId,
+  }: {
+    courseId: number
+    code: string
+    vacancies: number
+    termId: number
+  }): Promise<void>
+
+  deleteSchedule(scheduleId: number): Promise<void>
 }
 
 export type CourseSchedule = {

@@ -248,6 +248,31 @@ class ScheduleDistributionService implements ScheduleDistributionDAO {
         )
       )
   }
+
+  public async addSchedule({
+    courseId,
+    code,
+    vacancies,
+    termId,
+  }: {
+    courseId: number
+    code: string
+    vacancies: number
+    termId: number
+  }) {
+    await db.insert(schedules).values({
+      courseId,
+      code,
+      vacancies,
+      termId,
+      state: 'editing',
+      visibility: false,
+    })
+  }
+
+  public async deleteSchedule(scheduleId: number) {
+    await db.delete(schedules).where(eq(schedules.id, scheduleId))
+  }
 }
 
 export default ScheduleDistributionService
