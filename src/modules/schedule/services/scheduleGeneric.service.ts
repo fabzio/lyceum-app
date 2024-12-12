@@ -10,6 +10,7 @@ import { and, eq, sql } from 'drizzle-orm'
 import { ScheduleGenericDAO } from '../dao/scheduleGenericDAO'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
 import { Account } from '@/interfaces/models/Account'
+import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 class ScheduleGenericService implements ScheduleGenericDAO {
   public async fetchSchedulesByCourse(courseId: number) {
     // Validación 1: Verifica que el courseId no sea nulo o indefinido
@@ -106,6 +107,29 @@ class ScheduleGenericService implements ScheduleGenericDAO {
       .innerJoin(courses, eq(courses.id, schedules.courseId))
       .innerJoin(accounts, eq(accounts.id, scheduleAccounts.accountId))
       .where(and(eq(accounts.code, accountId), eq(terms.current, true)))
+  }
+
+  public async getAccountSchedulesAsStudent(accountId: Account['code']) {
+    return await db
+      .select({
+        id: scheduleAccounts.scheduleId,
+        code: schedules.code,
+        courseName: courses.name,
+        courseId: courses.id,
+        courseCode: courses.code,
+      })
+      .from(scheduleAccounts)
+      .innerJoin(schedules, eq(schedules.id, scheduleAccounts.scheduleId))
+      .innerJoin(terms, eq(terms.id, schedules.termId))
+      .innerJoin(courses, eq(courses.id, schedules.courseId))
+      .innerJoin(accounts, eq(accounts.id, scheduleAccounts.accountId))
+      .where(
+        and(
+          eq(accounts.code, accountId),
+          eq(terms.current, true),
+          eq(scheduleAccounts.roleId, BaseRoles.STUDENT)
+        )
+      )
   }
 }
 export default ScheduleGenericService

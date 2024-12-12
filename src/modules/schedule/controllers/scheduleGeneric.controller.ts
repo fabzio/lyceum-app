@@ -126,5 +126,30 @@ class ScheduleGenericController {
       }
     }
   )
+
+  public getAccountSchedulesAsStudent = this.router.get(
+    '/account/schedulesStudent',
+    zValidator(
+      'query',
+      z.object({
+        accountId: z.string(), // ID del usuario
+      })
+    ),
+    async (c) => {
+      try {
+        const { accountId } = c.req.valid('query')
+        const schedules =
+          await this.scheduleGenericService.getAccountSchedulesAsStudent(
+            accountId
+          )
+        return c.json({ success: true, data: schedules })
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
 }
 export default ScheduleGenericController

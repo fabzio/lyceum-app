@@ -23,4 +23,12 @@ export interface ScheduleGenericDAO {
       courseName: string
     }[]
   >
+
+  getAccountSchedulesAsStudent: (accountId: Account['id']) => Promise<
+    {
+      id: number
+      code: string
+      courseName: string
+    }[]
+  >
 }
