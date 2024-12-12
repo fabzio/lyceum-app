@@ -24,6 +24,7 @@ export const enrollmentModifications = schema.table(
     state: enrollmentModifcationStatus('state').default('requested').notNull(),
     requestType: enrollmentRequestType('request_type').notNull(),
     reason: varchar('reason', { length: 255 }).notNull(),
+    observation: varchar('observation', { length: 255 }),
     date: timestamp('date').defaultNow().notNull(),
   },
   (table) => ({

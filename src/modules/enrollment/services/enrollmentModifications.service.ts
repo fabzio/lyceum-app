@@ -175,7 +175,11 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
   public async updateEnrollmentRequestResponse({
     requestNumber,
     state,
-  }: Pick<EnrollmentModificationsSchema, 'requestNumber' | 'state'>) {
+    observation,
+  }: Pick<
+    EnrollmentModificationsSchema,
+    'requestNumber' | 'state' | 'observation'
+  >) {
     await db.transaction(async (trx) => {
       // 1. Obtén la solicitud de inscripción para verificar su tipo de solicitud
       const [enrollment] = await trx
@@ -220,6 +224,8 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
               )
             )
         }
+      } else {
+        await trx.update(enrollmentModifications).set({ observation })
       }
     })
   }
