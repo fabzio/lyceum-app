@@ -12,6 +12,7 @@ import {
   accounts,
   modules,
   permissions,
+  riskReasons,
   rolePermissions,
   roles,
   terms,
@@ -647,6 +648,21 @@ await db.transaction(async (tx) => {
       unitId: universityId,
     }))
   )
+
+  await tx.insert(riskReasons).values([
+    {
+      description: 'Curso por segunda',
+    },
+    {
+      description: 'Curso por tercera',
+    },
+    {
+      description: 'Salud mental',
+    },
+    {
+      description: 'Otro',
+    },
+  ])
 })
 console.log('Seed end')
 queryClient.end()

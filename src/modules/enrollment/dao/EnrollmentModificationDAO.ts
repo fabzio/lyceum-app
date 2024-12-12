@@ -47,9 +47,10 @@ export interface EnrollmentModificationDAO {
   updateEnrollmentRequestResponse({
     requestNumber,
     state,
+    observation,
   }: Pick<
     EnrollmentModificationsSchema,
-    'requestNumber' | 'state'
+    'requestNumber' | 'state' | 'observation'
   >): Promise<void>
 
   createEnrollmentRequest({

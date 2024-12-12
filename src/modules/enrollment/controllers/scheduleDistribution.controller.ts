@@ -85,6 +85,64 @@ class ScheduleDistributioncontroller {
       }
     }
   )
+
+  public addSchedule = this.router.post(
+    '/',
+    zValidator(
+      'json',
+      z.object({
+        unitId: z.coerce.number(),
+        courseId: z.coerce.number(),
+        code: z.coerce.string(),
+        vacancies: z.coerce.number(),
+      })
+    ),
+    async (c) => {
+      try {
+        const data = c.req.valid('json')
+        const {
+          term: { id },
+        } = c.get('jwtPayload')
+        const response: ResponseAPI = {
+          data: await this.scheduleDistributionService.addSchedule({
+            ...data,
+            termId: id,
+          }),
+          message: 'Schedule added',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public deleteSchedule = this.router.delete(
+    '/:scheduleId',
+    zValidator('param', z.object({ scheduleId: z.coerce.number() })),
+    async (c) => {
+      const { scheduleId } = c.req.valid('param')
+      try {
+        const response: ResponseAPI = {
+          data: await this.scheduleDistributionService.deleteSchedule(
+            scheduleId
+          ),
+          message: 'Schedule deleted',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
 }
 
 export default ScheduleDistributioncontroller

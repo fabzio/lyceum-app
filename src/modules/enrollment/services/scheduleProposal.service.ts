@@ -25,7 +25,6 @@ import ScheduleDistributionService from './scheduleDistribution.service'
 import { ScheduleSchema } from '@/database/schema/schedules'
 
 class ScheduleProposalService implements ScheduleProposalDAO {
-  private scheduleDistributionService = new ScheduleDistributionService()
   public async insertCourseToScheduleProposal(
     enrollmentProposalId: number,
     coursesList: {

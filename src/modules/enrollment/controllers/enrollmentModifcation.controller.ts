@@ -62,15 +62,17 @@ class EnrollmentModificationController {
       'json',
       z.object({
         state: z.enum(['approved', 'denied', 'requested']),
+        observation: z.string().optional(),
       })
     ),
     async (c) => {
       const { requestNumber } = c.req.param()
-      const { state } = c.req.valid('json')
+      const { state, observation } = c.req.valid('json')
 
       await this.enrollmentService.updateEnrollmentRequestResponse({
         requestNumber: parseInt(requestNumber),
         state,
+        observation,
       })
 
       const response: ResponseAPI = {

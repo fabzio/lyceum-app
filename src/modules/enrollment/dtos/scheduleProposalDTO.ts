@@ -6,7 +6,7 @@ export const insertCourseToSchPropDTO = z.object({
       courseId: z.number().min(1),
       vacanciesPerSchema: z.number().max(80).min(1),
       visibleSchedules: z.number().max(10).min(1),
-      hiddenSchedules: z.number().max(10).min(1),
+      hiddenSchedules: z.number().max(10).min(0),
     })
   ),
 })
