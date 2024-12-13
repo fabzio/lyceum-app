@@ -191,6 +191,24 @@ class ScheduleGenericService implements ScheduleGenericDAO {
         )
       }
 
+      const assignmentExists = await db
+        .select({ count: sql<string>`count(*)` })
+        .from(scheduleAccounts)
+        .where(
+          and(
+            eq(scheduleAccounts.scheduleId, schedule),
+            eq(scheduleAccounts.accountId, account)
+          )
+        )
+        .then((res) => res[0]?.count)
+
+      if (+assignmentExists > 0) {
+        console.log(
+          `El estudiante con el código ${student.studentCode} ya está registrado en el horario ${student.scheduleCode}`
+        )
+        continue
+      }
+
       await db.insert(scheduleAccounts).values({
         scheduleId: schedule,
         accountId: account,
