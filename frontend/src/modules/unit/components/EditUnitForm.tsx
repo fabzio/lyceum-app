@@ -30,6 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@frontend/components/ui/select'
+import { useState } from 'react'
 
 interface Props {
   unit: Unit // Asegúrate de pasar la unidad existente para edición
@@ -71,7 +72,12 @@ export default function EditUnitForm({ unit, unitType, handleClose }: Props) {
     },
   })
 
+  const [selectChanged, setSelectChanged] = useState(false)
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
+    if (!selectChanged) {
+      values.active = unit.active!
+    }
     if (
       !([UnitType.DEPARTMENT, UnitType.FACULTY] as UnitType[]).includes(
         unitType
@@ -130,7 +136,10 @@ export default function EditUnitForm({ unit, unitType, handleClose }: Props) {
               <FormLabel>Estado</FormLabel>
               <FormControl>
                 <Select
-                  onValueChange={field.onChange}
+                  onValueChange={(value) => {
+                    field.onChange(value)
+                    setSelectChanged(true)
+                  }}
                   defaultValue={field.value ? 'true' : 'false'}
                 >
                   <SelectTrigger>
