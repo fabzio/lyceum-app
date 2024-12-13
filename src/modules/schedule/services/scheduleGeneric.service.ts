@@ -10,6 +10,7 @@ import { and, eq, sql } from 'drizzle-orm'
 import { ScheduleGenericDAO } from '../dao/scheduleGenericDAO'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
 import { Account } from '@/interfaces/models/Account'
+import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 class ScheduleGenericService implements ScheduleGenericDAO {
   public async fetchSchedulesByCourse(courseId: number) {
     // Validación 1: Verifica que el courseId no sea nulo o indefinido
@@ -106,6 +107,115 @@ class ScheduleGenericService implements ScheduleGenericDAO {
       .innerJoin(courses, eq(courses.id, schedules.courseId))
       .innerJoin(accounts, eq(accounts.id, scheduleAccounts.accountId))
       .where(and(eq(accounts.code, accountId), eq(terms.current, true)))
+  }
+
+  public async getAccountSchedulesAsStudent(accountId: Account['code']) {
+    return await db
+      .select({
+        id: scheduleAccounts.scheduleId,
+        code: schedules.code,
+        courseName: courses.name,
+        courseId: courses.id,
+        courseCode: courses.code,
+      })
+      .from(scheduleAccounts)
+      .innerJoin(schedules, eq(schedules.id, scheduleAccounts.scheduleId))
+      .innerJoin(terms, eq(terms.id, schedules.termId))
+      .innerJoin(courses, eq(courses.id, schedules.courseId))
+      .innerJoin(accounts, eq(accounts.id, scheduleAccounts.accountId))
+      .where(
+        and(
+          eq(accounts.code, accountId),
+          eq(terms.current, true),
+          eq(scheduleAccounts.roleId, BaseRoles.STUDENT)
+        )
+      )
+  }
+
+  public async insertStudentsInCourse(
+    courseCode: string,
+    students: { studentCode: string; scheduleCode: string }[]
+  ) {
+    const currentTerm = await db
+      .select({ id: terms.id })
+      .from(terms)
+      .where(eq(terms.current, true))
+      .limit(1)
+      .then((res) => res[0]?.id)
+
+    if (!currentTerm) {
+      throw new Error('No se encontró el término actual')
+    }
+
+    const course = await db
+      .select({ id: courses.id })
+      .from(courses)
+      .where(eq(courses.code, courseCode))
+      .limit(1)
+      .then((res) => res[0]?.id)
+
+    if (!course) {
+      throw new Error('No se encontró el curso con el código especificado')
+    }
+
+    for (const student of students) {
+      const account = await db
+        .select({ id: accounts.id })
+        .from(accounts)
+        .where(eq(accounts.code, student.studentCode))
+        .limit(1)
+        .then((res) => res[0]?.id)
+
+      if (!account) {
+        throw new Error(
+          `No se encontró el estudiante con el código ${student.studentCode}`
+        )
+      }
+
+      const schedule = await db
+        .select({ id: schedules.id })
+        .from(schedules)
+        .where(
+          and(
+            eq(schedules.code, student.scheduleCode),
+            eq(schedules.courseId, course),
+            eq(schedules.termId, currentTerm)
+          )
+        )
+        .limit(1)
+        .then((res) => res[0]?.id)
+
+      if (!schedule) {
+        throw new Error(
+          `No se encontró el horario con el código ${student.scheduleCode} para el curso y término actual`
+        )
+      }
+
+      const assignmentExists = await db
+        .select({ count: sql<string>`count(*)` })
+        .from(scheduleAccounts)
+        .where(
+          and(
+            eq(scheduleAccounts.scheduleId, schedule),
+            eq(scheduleAccounts.accountId, account)
+          )
+        )
+        .then((res) => res[0]?.count)
+
+      if (+assignmentExists > 0) {
+        console.log(
+          `El estudiante con el código ${student.studentCode} ya está registrado en el horario ${student.scheduleCode}`
+        )
+        continue
+      }
+
+      await db.insert(scheduleAccounts).values({
+        scheduleId: schedule,
+        accountId: account,
+        roleId: BaseRoles.STUDENT,
+        lead: false,
+      })
+    }
   }
 }
 export default ScheduleGenericService

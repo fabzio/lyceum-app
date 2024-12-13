@@ -77,7 +77,7 @@ class ScheduleService {
     }[]
   > {
     try {
-      const res = await http.get(`/schedule/account/schedules`, {
+      const res = await http.get(`/schedule/account/schedulesStudent`, {
         params: { accountId },
       })
       const response = res.data as ResponseAPI<
