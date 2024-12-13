@@ -34,6 +34,7 @@ import {
 import { Unit } from '@/interfaces/models/Unit'
 import withPagination from '@/utils/withPagination'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
+import { set } from 'zod'
 class RiskStudentService implements RiskStudentDAO {
   public async getAllRiskStudentOfSpeciality({
     specialityId,
@@ -432,6 +433,9 @@ class RiskStudentService implements RiskStudentDAO {
     const existingRiskStudents = await db
       .select({
         studentCode: accounts.code,
+        studentId: accounts.id,
+        scheduleId: riskStudents.scheduleId,
+        active: riskStudents.active,
       })
       .from(riskStudents)
       .innerJoin(accounts, eq(riskStudents.studentId, accounts.id))
@@ -447,12 +451,38 @@ class RiskStudentService implements RiskStudentDAO {
           )
         )
       )
-    if (existingRiskStudents.length > 0) {
-      throw new Error(
-        `Los siguientes alumnos ya están en riesgo: ` +
-          existingRiskStudents.map((item) => item.studentCode).join(', ')
-      )
+    let existingStudentAlredyInserted: {
+      studentId: string
+      scheduleId: number
+    }[]
+    for (const item of existingRiskStudents) {
+      if (!item.active) {
+        existingStudentAlredyInserted = await db
+          .update(riskStudents)
+          .set({
+            active: true,
+          })
+          .where(
+            and(
+              eq(riskStudents.studentId, item.studentId),
+              eq(riskStudents.scheduleId, item.scheduleId)
+            )
+          )
+          .returning({
+            studentId: riskStudents.studentId,
+            scheduleId: riskStudents.scheduleId,
+          }) //regresamos la pk
+      } else {
+        throw new Error(
+          `Los siguientes alumnos ya están en riesgo: ` +
+            existingRiskStudents.map((item) => item.studentCode).join(', ')
+        )
+      }
     }
+
+    if (existingRiskStudents.length > 0) {
+    }
+
     const Profesorschedule = await db
       .select()
       .from(scheduleAccounts)
@@ -467,7 +497,17 @@ class RiskStudentService implements RiskStudentDAO {
       throw new SchedulewithoutProfessorError('No hay profesores en el horario')
     }
 
-    await db.insert(riskStudents).values(riskStudentData)
+    const filteredRiskStudentData = riskStudentData.filter(
+      (riskStudent) =>
+        !existingStudentAlredyInserted.some(
+          (existing) =>
+            existing.studentId === riskStudent.studentId &&
+            existing.scheduleId === riskStudent.scheduleId
+        )
+    )
+    if (filteredRiskStudentData.length > 0)
+      //si no hay datos no se inserta monito
+      await db.insert(riskStudents).values(filteredRiskStudentData)
   }
 
   public async updateRiskStudentsOfFaculty({
