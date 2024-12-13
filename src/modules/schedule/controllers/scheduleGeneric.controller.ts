@@ -5,6 +5,7 @@ import { ScheduleGenericService } from '../services'
 import { zValidator } from '@hono/zod-validator'
 import { assignJPDTO } from '../dto'
 import { z } from 'zod'
+import { insertStudentsInCourseDTO } from '../dto/scheduleGenericDTO'
 class ScheduleGenericController {
   private router = new Hono()
   private scheduleGenericService: ScheduleGenericDAO =
@@ -136,6 +137,9 @@ class ScheduleGenericController {
       })
     ),
     async (c) => {
+      const {
+        term: { id },
+      } = c.get('jwtPayload')
       try {
         const { accountId } = c.req.valid('query')
         const schedules =
@@ -148,6 +152,30 @@ class ScheduleGenericController {
           c.status(error.code)
         }
         throw error
+      }
+    }
+  )
+
+  public insertStudentsInCourse = this.router.post(
+    '/account/schedulesStudent/insert',
+    zValidator('json', insertStudentsInCourseDTO),
+    async (c) => {
+      try {
+        const { courseCode, students } = c.req.valid('json')
+        await this.scheduleGenericService.insertStudentsInCourse(
+          courseCode,
+          students
+        )
+        return c.json({
+          success: true,
+          message: 'Students inserted successfully',
+        })
+      } catch (error) {
+        console.error('Error inserting students:', error)
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        return c.json({ success: false, message: 'Failed to insert students' })
       }
     }
   )

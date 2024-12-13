@@ -131,5 +131,73 @@ class ScheduleGenericService implements ScheduleGenericDAO {
         )
       )
   }
+
+  public async insertStudentsInCourse(
+    courseCode: string,
+    students: { studentCode: string; scheduleCode: string }[]
+  ) {
+    const currentTerm = await db
+      .select({ id: terms.id })
+      .from(terms)
+      .where(eq(terms.current, true))
+      .limit(1)
+      .then((res) => res[0]?.id)
+
+    if (!currentTerm) {
+      throw new Error('No se encontró el término actual')
+    }
+
+    const course = await db
+      .select({ id: courses.id })
+      .from(courses)
+      .where(eq(courses.code, courseCode))
+      .limit(1)
+      .then((res) => res[0]?.id)
+
+    if (!course) {
+      throw new Error('No se encontró el curso con el código especificado')
+    }
+
+    for (const student of students) {
+      const account = await db
+        .select({ id: accounts.id })
+        .from(accounts)
+        .where(eq(accounts.code, student.studentCode))
+        .limit(1)
+        .then((res) => res[0]?.id)
+
+      if (!account) {
+        throw new Error(
+          `No se encontró el estudiante con el código ${student.studentCode}`
+        )
+      }
+
+      const schedule = await db
+        .select({ id: schedules.id })
+        .from(schedules)
+        .where(
+          and(
+            eq(schedules.code, student.scheduleCode),
+            eq(schedules.courseId, course),
+            eq(schedules.termId, currentTerm)
+          )
+        )
+        .limit(1)
+        .then((res) => res[0]?.id)
+
+      if (!schedule) {
+        throw new Error(
+          `No se encontró el horario con el código ${student.scheduleCode} para el curso y término actual`
+        )
+      }
+
+      await db.insert(scheduleAccounts).values({
+        scheduleId: schedule,
+        accountId: account,
+        roleId: BaseRoles.STUDENT,
+        lead: false,
+      })
+    }
+  }
 }
 export default ScheduleGenericService

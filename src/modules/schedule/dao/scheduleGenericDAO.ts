@@ -31,4 +31,9 @@ export interface ScheduleGenericDAO {
       courseName: string
     }[]
   >
+
+  insertStudentsInCourse(
+    courseCode: string,
+    students: { studentCode: string; scheduleCode: string }[]
+  ): Promise<void>
 }
