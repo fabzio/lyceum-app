@@ -5,6 +5,7 @@ import { EnrollmentPermissionsDict } from '@frontend/interfaces/enums/permission
 import NewEnrollmentModification from './components/NewEnrollmentModification'
 import SearchEnrollmentInput from './SearchEnrollmentInput'
 import StateFilter from './SelectFilter'
+import DownloadPDF from './DownloadPDF'
 
 export default function EnrollmentModify() {
   return (
@@ -15,6 +16,7 @@ export default function EnrollmentModify() {
         <div className="flex gap-2">
           <SearchEnrollmentInput />
           <StateFilter />
+          <DownloadPDF />
         </div>
       </Need>
       <div className="w-full flex justify-end gap-4 mb-4">
