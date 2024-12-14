@@ -9,6 +9,8 @@ import { Badge } from '@frontend/components/ui/badge'
 export const EnrollmentTableColumns: ColumnDef<EnrollmentGeneral>[] = [
   {
     accessorKey: 'state',
+    header: 'Estado',
+    /*
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -18,6 +20,7 @@ export const EnrollmentTableColumns: ColumnDef<EnrollmentGeneral>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
+    */
     cell: ({ row }) => {
       const state = row.getValue('state')
       return (

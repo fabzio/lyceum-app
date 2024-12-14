@@ -16,6 +16,7 @@ import {
   eq,
   ilike,
   inArray,
+  or,
   sql,
 } from 'drizzle-orm'
 import { EnrollmentModificationDAO } from '../dao/EnrollmentModificationDAO'
@@ -64,9 +65,19 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
       })
       .from(enrollmentModifications)
       .innerJoin(accounts, eq(enrollmentModifications.studentId, accounts.id))
+      .innerJoin(
+        schedules,
+        eq(enrollmentModifications.scheduleId, schedules.id)
+      )
+      .innerJoin(courses, eq(schedules.courseId, courses.id))
       .where(
         and(
-          params.q ? ilike(accounts.name, `%${params.q}%`) : sql<boolean>`true`,
+          or(
+            sql`concat(${accounts.name}, ' ', ${accounts.firstSurname}, ' ', ${
+              accounts.secondSurname
+            }) ilike ${`%${params.q}%`}`,
+            ilike(courses.name, `%${params.q}%`)
+          ),
           eq(accounts.unitId, params.specialityId)
         )
       )
@@ -109,6 +120,17 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
       .orderBy(
         mappedSortBy[order as keyof typeof mappedSortBy](
           mappedFields[field as keyof typeof mappedFields]
+        )
+      )
+      .where(
+        and(
+          or(
+            sql`concat(${accounts.name}, ' ', ${accounts.firstSurname}, ' ', ${
+              accounts.secondSurname
+            }) ilike ${`%${params.q}%`}`,
+            ilike(courses.name, `%${params.q}%`)
+          ),
+          eq(accounts.state, 'active')
         )
       )
     const result = enrollmentsResponse.map((enrollment) => ({
