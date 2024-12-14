@@ -84,13 +84,33 @@ class ThesisThemeController {
 
   public getSpecialityThesisThemes = this.router.get(
     '/speciality/:specialityId',
-    zValidator('param', z.object({ specialityId: z.string() })),
+    zValidator(
+      'param',
+      z.object({
+        specialityId: z.string(),
+      })
+    ),
+    zValidator(
+      'query',
+      z.object({
+        filter: z
+          .enum([
+            'sended',
+            'approvedByProfessor',
+            'approvedByAreaCoordinator',
+            'approvedByCareerDirector',
+          ])
+          .optional(),
+      })
+    ),
     async (c) => {
       const { specialityId } = c.req.valid('param')
+      const { filter } = c.req.valid('query')
       try {
         const response: ResponseAPI = {
           data: await this.thesisThemeService.getSpecialityThesisThemeRequest({
             specialityId: Number(specialityId),
+            filter,
           }),
           message: 'Thesis themes retrieved',
           success: true,
