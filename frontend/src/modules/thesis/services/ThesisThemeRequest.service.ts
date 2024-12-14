@@ -132,11 +132,15 @@ class ThesisThemeRequestService {
 
   public static async getSpecialtyThesisThemeRequest({
     specialtiyId,
+    filter,
   }: {
     specialtiyId: number
+    filter?: string
   }) {
     try {
-      const res = await http.get(`/thesis/theme/speciality/${specialtiyId}`)
+      const res = await http.get(`/thesis/theme/speciality/${specialtiyId}`, {
+        params: { filter },
+      })
       const response = res.data as ResponseAPI
 
       if (!response.success) {
