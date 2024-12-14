@@ -325,6 +325,37 @@ class UnitController {
       }
     }
   )
+
+  public createTerm = this.router.post(
+    '/terms',
+    zValidator(
+      'json',
+      z.object({
+        name: z.string().min(3, 'El nombre debe tener al menos 3 caracteres'),
+      })
+    ),
+    async (c) => {
+      const { name } = c.req.valid('json')
+
+      try {
+        await this.unitService.createTerm(name) // Solo pasamos el nombre
+        return c.json({
+          message: 'Semestre creado exitosamente',
+          success: true,
+        })
+      } catch (error) {
+        if (error instanceof LyceumError) c.status(error.code)
+        return c.json(
+          {
+            message:
+              error instanceof Error ? error.message : 'Error desconocido',
+            success: false,
+          },
+          500
+        )
+      }
+    }
+  )
 }
 
 export default UnitController
