@@ -1,6 +1,7 @@
 import {
   ChartConfig,
   ChartContainer,
+  ChartLegend,
   ChartTooltip,
   ChartTooltipContent,
 } from '@frontend/components/ui/chart'
@@ -14,12 +15,12 @@ interface Props {
 export default function BooleanResult({ answers }: Props) {
   const chartData = [
     {
-      name: 'Sí',
+      answer: 'Sí',
       value: answers.filter((answer) => answer.answerRawText === 'true').length,
       fill: 'var(--color-Sí)',
     },
     {
-      name: 'No',
+      answer: 'No',
       value: answers.filter((answer) => answer.answerRawText === 'false')
         .length,
       fill: 'var(--color-No)',
@@ -35,7 +36,7 @@ export default function BooleanResult({ answers }: Props) {
         <Pie
           data={chartData}
           dataKey="value"
-          nameKey="name"
+          nameKey="answer"
           innerRadius={60}
           strokeWidth={5}
         >
@@ -62,6 +63,25 @@ export default function BooleanResult({ answers }: Props) {
             }}
           />
         </Pie>
+        <ChartLegend
+          content={({ payload }) => (
+            <ul className="flex flex-wrap justify-center gap-8">
+              {payload?.map((entry, index: number) => (
+                <li
+                  key={`legend-item-${index}`}
+                  className="flex items-center gap-2 text-sm"
+                >
+                  <span
+                    className="block w-4 h-4"
+                    style={{ backgroundColor: entry.color }}
+                  />
+                  {(entry.payload as unknown as { answer: string }).answer}
+                </li>
+              ))}
+            </ul>
+          )}
+          className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
+        />
       </PieChart>
     </ChartContainer>
   )

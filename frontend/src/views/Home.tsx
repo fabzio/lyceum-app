@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { RoleCard } from './components/RoleCard'
 import ProfileCard from './components/ProfileCard'
 import moment from 'moment'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function Home() {
   const { session } = useSessionStore()
@@ -14,13 +14,17 @@ export default function Home() {
     queryKey: ['profile'],
     queryFn: () => AccountsService.fetchAccountProfile(session!.id),
   })
-  setInterval(() => {
-    setTime(moment())
-  }, 1000)
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTime(moment())
+    }, 1000)
+    return () => clearInterval(intervalId)
+  }, [])
+
   return (
     <div>
       <motion.h2
-        className="text-center text-xl flex flex-col"
+        className="text-center text-xl flex flex-col mt-12"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -43,7 +47,9 @@ export default function Home() {
         </section>
         <section>
           {data.roles.length > 1 && (
-            <h3 className="text-lg font-semibold text-center">Roles</h3>
+            <h3 className="text-lg font-semibold text-center text-muted-foreground">
+              Roles
+            </h3>
           )}
           <div className="flex flex-wrap gap-2">
             {data.roles.map((role, i) => (
