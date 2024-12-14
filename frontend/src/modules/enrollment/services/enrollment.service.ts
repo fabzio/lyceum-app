@@ -76,6 +76,7 @@ class EnrollmentService {
           page: filtersAndPagination.pageIndex || 0,
           limit: filtersAndPagination.pageSize || 5,
           sortBy: filtersAndPagination.sortBy || 'requestNumber.asc',
+          eqnumber: filtersAndPagination.eqnumber || undefined,
         },
       })
       const response = res.data as ResponseAPI<PaginatedData<EnrollmentGeneral>>

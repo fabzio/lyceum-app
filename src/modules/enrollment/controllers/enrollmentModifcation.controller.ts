@@ -21,6 +21,10 @@ class EnrollmentModificationController {
         limit: z.string().transform((v) => parseInt(v)),
         sortBy: z.string().optional(),
         specialityId: z.string().transform((v) => parseInt(v)),
+        eqnumber: z
+          .string()
+          .optional()
+          .transform((v) => (v ? parseInt(v) : undefined)),
       })
     ),
     async (c) => {
