@@ -37,7 +37,7 @@ export default function HiringSelection() {
         <div className="md:flex-grow">
           <Input
             type="search"
-            placeholder="🔎 Buscar asignación"
+            placeholder="🔎 Buscar convocatoria"
             onChange={handleSearch}
           />
         </div>
