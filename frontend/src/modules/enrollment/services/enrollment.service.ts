@@ -114,10 +114,12 @@ class EnrollmentService {
   public static async updateEnrollment({
     requestNumber,
     state,
-  }: Pick<EnrollmentGeneral, 'state' | 'requestNumber'>) {
+    observation,
+  }: Pick<EnrollmentGeneral, 'state' | 'requestNumber' | 'observation'>) {
     try {
       const res = await http.put(`/enrollment/modifications/${requestNumber}`, {
         state,
+        observation,
       })
       const response = res.data as ResponseAPI
       if (!response.success) {

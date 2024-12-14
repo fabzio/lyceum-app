@@ -86,6 +86,7 @@ export interface EnrollmentModificationDAO {
         courseName: string
       }
       reason: string | null
+      observation: string | null
     }>
   >
 }
