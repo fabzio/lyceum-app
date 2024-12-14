@@ -33,6 +33,7 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
     limit: number
     sortBy?: string
     specialityId: Unit['id']
+    eqnumber?: number
   }): Promise<
     PaginatedData<{
       student: {
@@ -58,6 +59,14 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
     if (isSpeciality[0].unitType !== 'speciality') {
       throw new Error('No pertece a una especialidad')
     }
+
+    const stateMap: { [key: number]: string | undefined } = {
+      0: undefined, // Todos los estados
+      1: 'requested',
+      2: 'approved',
+      3: 'denied',
+    }
+
     // Obtener el total de registros según el filtro
     const [{ total }] = await db
       .select({
@@ -78,7 +87,18 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
             }) ilike ${`%${params.q}%`}`,
             ilike(courses.name, `%${params.q}%`)
           ),
-          eq(accounts.unitId, params.specialityId)
+          eq(accounts.unitId, params.specialityId),
+          params.eqnumber !== undefined
+            ? stateMap[params.eqnumber] !== undefined
+              ? eq(
+                  enrollmentModifications.state,
+                  stateMap[params.eqnumber] as
+                    | 'requested'
+                    | 'approved'
+                    | 'denied'
+                )
+              : sql<boolean>`true`
+            : sql<boolean>`true` // No aplicar filtro de estado si no está definido
         )
       )
 
@@ -130,7 +150,18 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
             }) ilike ${`%${params.q}%`}`,
             ilike(courses.name, `%${params.q}%`)
           ),
-          eq(accounts.state, 'active')
+          eq(accounts.state, 'active'),
+          params.eqnumber !== undefined
+            ? stateMap[params.eqnumber] !== undefined
+              ? eq(
+                  enrollmentModifications.state,
+                  stateMap[params.eqnumber] as
+                    | 'requested'
+                    | 'approved'
+                    | 'denied'
+                )
+              : sql<boolean>`true`
+            : sql<boolean>`true` // No aplicar filtro de estado si no está definido
         )
       )
     const result = enrollmentsResponse.map((enrollment) => ({

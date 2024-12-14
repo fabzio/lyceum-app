@@ -5,48 +5,27 @@ import {
   SelectContent,
   SelectItem,
 } from '@frontend/components/ui/select'
+import { useFilters } from '@frontend/hooks/useFilters'
 
-interface SelectFilterProps {
-  onFilterChange?: (score: string) => void
-  selectedValue?: string | null
-  filterType?: 'ScoreFilter' | 'ReasonFilter'
-}
+export default function StateFilter() {
+  const { setFilters } = useFilters('/_auth/matricula/modificacion-matricula')
 
-export default function SelectFilter({
-  onFilterChange,
-  selectedValue,
-  filterType,
-}: SelectFilterProps) {
+  const handleStateFilterChange = (value: string | null) => {
+    setFilters({
+      eqnumber: value && value !== 'none' ? parseInt(value) : undefined,
+    })
+  }
+
   return (
-    <Select onValueChange={onFilterChange} value={selectedValue || undefined}>
+    <Select onValueChange={handleStateFilterChange} value={undefined}>
       <SelectTrigger className="w-full md:w-48">
-        <SelectValue
-          placeholder={
-            filterType === 'ScoreFilter'
-              ? 'Filtrar por puntuación'
-              : 'Filtrar por motivo'
-          }
-        />
+        <SelectValue placeholder="Filtrar por estado" />
       </SelectTrigger>
       <SelectContent>
-        {filterType === 'ScoreFilter' && (
-          <>
-            <SelectItem value="Todos">Todas Puntuaciones</SelectItem>
-            <SelectItem value="1">Puntuación 1</SelectItem>
-            <SelectItem value="2">Puntuación 2</SelectItem>
-            <SelectItem value="3">Puntuación 3</SelectItem>
-            <SelectItem value="4">Puntuación 4</SelectItem>
-            <SelectItem value="5">Puntuación 5</SelectItem>
-          </>
-        )}
-        {filterType === 'ReasonFilter' && (
-          <>
-            <SelectItem value="Todos">Todos Motivos</SelectItem>
-            <SelectItem value="Tercera">Tercera</SelectItem>
-            <SelectItem value="Cuarta">Cuarta</SelectItem>
-            <SelectItem value="Salud Mental">Salud Mental</SelectItem>
-          </>
-        )}
+        <SelectItem value="0">Todos los estados</SelectItem>
+        <SelectItem value="1">Solicitado</SelectItem>
+        <SelectItem value="2">Aprobado</SelectItem>
+        <SelectItem value="3">Rechazado</SelectItem>
       </SelectContent>
     </Select>
   )
