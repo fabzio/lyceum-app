@@ -19,6 +19,7 @@ import {
   exists,
   inArray,
   or,
+  SQL,
   sql,
 } from 'drizzle-orm'
 import { ThesisThemeDAO } from '../dao/thesisThemeDAO'
@@ -166,25 +167,83 @@ class ThesisThemeService implements ThesisThemeDAO {
 
   async getSpecialityThesisThemeRequest({
     specialityId,
+    filter,
   }: {
     specialityId: number
-  }) {
-    const isSpeciality = await db
-      .select({
-        id: units.id,
-      })
-      .from(units)
-      .where(and(eq(units.id, specialityId), eq(units.type, 'speciality')))
-    if (!isSpeciality.length)
-      throw new ThesisThemeRequestNotFound('Especialidad no encontrada')
-    const themeRequestResponse = await db
+    filter?:
+      | 'sended'
+      | 'approvedByProfessor'
+      | 'approvedByAreaCoordinator'
+      | 'approvedByCareerDirector'
+  }): Promise<
+    {
+      code: string
+      title: string
+      date: Date
+      lastAction: {
+        id: number
+        action: string
+        role: string
+      }
+      applicant: {
+        name: string
+        code: string
+      }
+      aproved: boolean
+    }[]
+  > {
+    const filterConditions = {
+      sended: sql`(
+      SELECT ${thesisActions}.action
+      FROM ${thesisActions}
+      WHERE ${thesisActions}.request_id = ${thesis}.id
+      ORDER BY ${thesisActions}.date DESC
+      LIMIT 1
+      ) = 'sended'`,
+      approvedByProfessor: sql`(
+      SELECT ${thesisActions}.action
+      FROM ${thesisActions}
+      WHERE ${thesisActions}.request_id = ${thesis}.id
+      ORDER BY ${thesisActions}.date DESC
+      LIMIT 1
+      ) = 'approved' AND (
+      SELECT COUNT(*)
+      FROM ${thesisActions}
+      WHERE ${thesisActions}.request_id = ${thesis}.id AND ${thesisActions}.action = 'approved'
+      ) = 1`,
+      approvedByAreaCoordinator: sql`(
+      SELECT ${thesisActions}.action
+      FROM ${thesisActions}
+      WHERE ${thesisActions}.request_id = ${thesis}.id
+      ORDER BY ${thesisActions}.date DESC
+      LIMIT 1
+      ) = 'approved' AND (
+      SELECT COUNT(*)
+      FROM ${thesisActions}
+      WHERE ${thesisActions}.request_id = ${thesis}.id AND ${thesisActions}.action = 'approved'
+      ) = 2`,
+      approvedByCareerDirector: sql`(
+      SELECT ${thesisActions}.action
+      FROM ${thesisActions}
+      WHERE ${thesisActions}.request_id = ${thesis}.id
+      ORDER BY ${thesisActions}.date DESC
+      LIMIT 1
+      ) = 'approved' AND (
+      SELECT COUNT(*)
+      FROM ${thesisActions}
+      WHERE ${thesisActions}.request_id = ${thesis}.id AND ${thesisActions}.action = 'approved'
+      ) = 3`,
+    }
+
+    const condition = filter ? filterConditions[filter] : sql`1=1`
+
+    return db
       .select({
         code: thesis.requestCode,
         title: thesis.title,
         date: thesis.date,
         lastAction: {
           id: thesisActions.id,
-          account: thesisActions.accountId,
           action: thesisActions.action,
           role: roles.name,
         },
@@ -196,11 +255,9 @@ class ThesisThemeService implements ThesisThemeDAO {
       })
       .from(thesis)
       .innerJoin(accounts, eq(thesis.applicantId, accounts.id))
-      .innerJoin(thesisActions, eq(thesisActions.id, thesis.lastActionId))
+      .innerJoin(thesisActions, eq(thesis.lastActionId, thesisActions.id))
       .innerJoin(roles, eq(thesisActions.roleId, roles.id))
-      .where(eq(accounts.unitId, specialityId))
-
-    return themeRequestResponse
+      .where(and(eq(accounts.unitId, specialityId), condition))
   }
 
   async getThesisThemeRequestDetail({ requestCode }: { requestCode: string }) {

@@ -58,8 +58,14 @@ export interface ThesisThemeDAO {
   >
   getSpecialityThesisThemeRequest({
     specialityId,
+    filter,
   }: {
     specialityId: number
+    filter?:
+      | 'sended'
+      | 'approvedByProfessor'
+      | 'approvedByAreaCoordinator'
+      | 'approvedByCareerDirector'
   }): Promise<
     {
       code: string
