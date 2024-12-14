@@ -383,6 +383,14 @@ class UnitService {
       )
       .limit(5)
   }
+  public async createTerm(name: string): Promise<void> {
+    try {
+      // Aquí insertamos el nuevo semestre en la base de datos
+      await db.insert(terms).values({ name, current: false }) // Por defecto, el semestre no es el actual
+    } catch (error) {
+      throw new Error(`No se pudo crear el semestre: ${name}`)
+    }
+  }
 }
 
 export default UnitService
