@@ -118,14 +118,14 @@ export default function UploadCSVDialog({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button disabled={!courseCode}>
           <Upload className="mr-2 h-4 w-4" />
-          Cargar alumnos al curso
+          Cargar alumnos al curso (matricula normal)
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Cargar estudiantes del curso</DialogTitle>
+          <DialogTitle>Cargar estudiantes del curso </DialogTitle>
           <DialogDescription>
             Selecciona un archivo CSV para cargar el listado de estudiantes
           </DialogDescription>
