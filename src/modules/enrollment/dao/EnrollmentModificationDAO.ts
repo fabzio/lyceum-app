@@ -64,14 +64,18 @@ export interface EnrollmentModificationDAO {
   >
   getStudentEnrollments: ({
     studentId,
+    q,
     page,
     limit,
     sortBy,
+    eqnumber,
   }: {
     studentId: Account['id']
+    q?: string
     page: number
     limit: number
     sortBy?: string
+    eqnumber?: number
   }) => Promise<
     PaginatedData<{
       requestNumber: number

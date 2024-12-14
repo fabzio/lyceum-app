@@ -24,6 +24,7 @@ class EnrollmentService {
             page: filters.pageIndex || 0,
             limit: filters.pageSize || 5,
             sortBy: filters.sortBy || 'requestNumber.asc',
+            eqnumber: filters.eqnumber || undefined,
           },
         }
       )

@@ -114,9 +114,14 @@ class EnrollmentModificationController {
     zValidator(
       'query',
       z.object({
+        q: z.string().optional(),
         page: z.string().transform((v) => parseInt(v)),
         limit: z.string().transform((v) => parseInt(v)),
         sortBy: z.string().optional(),
+        eqnumber: z
+          .string()
+          .optional()
+          .transform((v) => (v ? parseInt(v) : undefined)),
       })
     ),
     async (c) => {
