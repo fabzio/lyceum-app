@@ -14,7 +14,7 @@ export const DEFAULT_PAGE_SIZE = 10
 export default function AdministrativeTable() {
   const { filters, setFilters } = useFilters('/_auth/usuarios/administrativos')
   const { data: administratives } = useQuery({
-    queryKey: [QueryKeys.users.PROFESSORS, filters],
+    queryKey: [QueryKeys.users.ADMINISTRATIVES, filters],
     queryFn: () => AdministrativeService.fetchAdministratives(filters),
     placeholderData: keepPreviousData,
   })

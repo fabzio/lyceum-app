@@ -39,7 +39,7 @@ export default function NewAdministrativeDialog() {
     mutationFn: AdministrativeService.addAdministrative,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [QueryKeys.users.STUDENTS],
+        queryKey: [QueryKeys.users.ADMINISTRATIVES],
       })
       toast({
         title: 'Administrativo agregado',

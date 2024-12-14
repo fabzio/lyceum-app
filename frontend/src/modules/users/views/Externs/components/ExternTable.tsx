@@ -13,7 +13,7 @@ export const DEFAULT_PAGE_SIZE = 10
 export default function ExternTable() {
   const { filters, setFilters } = useFilters('/_auth/usuarios/externos')
   const { data: externs } = useQuery({
-    queryKey: [QueryKeys.users.PROFESSORS, filters],
+    queryKey: [QueryKeys.users.EXTERNS, filters],
     queryFn: () => ExternService.fetchExterns(filters),
     placeholderData: keepPreviousData,
   })
