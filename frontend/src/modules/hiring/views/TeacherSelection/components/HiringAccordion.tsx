@@ -62,7 +62,7 @@ export default function HiringAccordion({ hirings = [] }: Props) {
           ))
         ) : (
           <div className="text-center text-muted-foreground mt-2">
-            No hay roles asignados
+            No hay convocatorias disponibles.
           </div>
         )}
       </Accordion>
