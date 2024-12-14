@@ -20,6 +20,7 @@ export const Route = createFileRoute('/_auth/matricula/modificacion-matricula')(
         })
       }
     },
+    validateSearch: () => ({}) as EnrollmentFilters,
     loader: async ({ context: { queryClient, sessionStore } }) => {
       const { getRoleWithPermission, havePermission } = sessionStore
       const specialityId = getRoleWithPermission(
@@ -39,7 +40,7 @@ export const Route = createFileRoute('/_auth/matricula/modificacion-matricula')(
               }),
       })
     },
-    validateSearch: () => ({}) as EnrollmentFilters,
+
     component: () => <EnrollmentModify />,
   }
 )

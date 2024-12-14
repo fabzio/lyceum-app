@@ -11,6 +11,7 @@ export interface EnrollmentModificationDAO {
     limit: number
     sortBy?: string
     specialityId: Unit['id']
+    eqnumber?: number
   }) => Promise<
     PaginatedData<{
       student: {
@@ -63,14 +64,18 @@ export interface EnrollmentModificationDAO {
   >
   getStudentEnrollments: ({
     studentId,
+    q,
     page,
     limit,
     sortBy,
+    eqnumber,
   }: {
     studentId: Account['id']
+    q?: string
     page: number
     limit: number
     sortBy?: string
+    eqnumber?: number
   }) => Promise<
     PaginatedData<{
       requestNumber: number
