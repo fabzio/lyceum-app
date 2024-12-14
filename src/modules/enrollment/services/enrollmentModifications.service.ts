@@ -378,14 +378,18 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
 
   public async getStudentEnrollments({
     studentId,
+    q,
     page,
     limit,
     sortBy,
+    eqnumber,
   }: {
     studentId: Account['id']
+    q?: string
     page: number
     limit: number
     sortBy?: string
+    eqnumber?: number
   }): Promise<
     PaginatedData<{
       student: {
@@ -404,6 +408,13 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
   > {
     const [field, order] = sortBy?.split('.') || ['requestNumber', 'asc']
 
+    const stateMap: { [key: number]: string | undefined } = {
+      0: undefined, // Todos los estados
+      1: 'requested',
+      2: 'approved',
+      3: 'denied',
+    }
+
     // Obtener el total de registros según el filtro
     const [{ total }] = await db
       .select({
@@ -415,7 +426,20 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
         eq(enrollmentModifications.scheduleId, schedules.id)
       )
       .innerJoin(courses, eq(schedules.courseId, courses.id))
-      .where(eq(enrollmentModifications.studentId, studentId))
+      .where(
+        and(
+          or(ilike(courses.name, `%${q}%`)),
+          eq(enrollmentModifications.studentId, studentId),
+          eqnumber !== undefined
+            ? stateMap[eqnumber] !== undefined
+              ? eq(
+                  enrollmentModifications.state,
+                  stateMap[eqnumber] as 'requested' | 'approved' | 'denied'
+                )
+              : sql<boolean>`true`
+            : sql<boolean>`true` // No aplicar filtro de estado si no está definido
+        )
+      )
 
     // Mapeo de campos para ordenación
     const mappedFields = {
@@ -450,7 +474,20 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
         eq(enrollmentModifications.scheduleId, schedules.id)
       )
       .innerJoin(courses, eq(schedules.courseId, courses.id))
-      .where(eq(enrollmentModifications.studentId, studentId))
+      .where(
+        and(
+          or(ilike(courses.name, `%${q}%`)),
+          eq(enrollmentModifications.studentId, studentId),
+          eqnumber !== undefined
+            ? stateMap[eqnumber] !== undefined
+              ? eq(
+                  enrollmentModifications.state,
+                  stateMap[eqnumber] as 'requested' | 'approved' | 'denied'
+                )
+              : sql<boolean>`true`
+            : sql<boolean>`true` // No aplicar filtro de estado si no está definido
+        )
+      )
       .offset(page * limit)
       .limit(limit)
       .orderBy(
