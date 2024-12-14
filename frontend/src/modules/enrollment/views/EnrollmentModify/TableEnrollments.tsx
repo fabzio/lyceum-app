@@ -61,7 +61,7 @@ export default function TableEnrollments() {
             typeof updateOrValue === 'function'
               ? updateOrValue(sortingState)
               : updateOrValue
-          setFilters({ sortBy: stateToSortBy(newSortingState) })
+          return setFilters({ sortBy: stateToSortBy(newSortingState) })
         }}
         paginationOptions={{
           onPaginationChange: (pagination) => {
