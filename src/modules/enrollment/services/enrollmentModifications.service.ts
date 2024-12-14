@@ -253,7 +253,7 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
       // 2. Actualiza el estado de la solicitud
       await trx
         .update(enrollmentModifications)
-        .set({ state })
+        .set({ state, observation })
         .where(eq(enrollmentModifications.requestNumber, requestNumber ?? 0))
 
       // 3. Condicional para inserción o eliminación en `scheduleAccounts`
@@ -277,8 +277,6 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
               )
             )
         }
-      } else {
-        await trx.update(enrollmentModifications).set({ observation })
       }
     })
   }
@@ -404,6 +402,7 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
       requestType: string
       reason: string | null
       requestNumber: number
+      observation: string | null
     }>
   > {
     const [field, order] = sortBy?.split('.') || ['requestNumber', 'asc']
@@ -466,6 +465,7 @@ class EnrollmentModificationService implements EnrollmentModificationDAO {
           courseName: courses.name,
         },
         reason: enrollmentModifications.reason,
+        observation: enrollmentModifications.observation,
       })
       .from(enrollmentModifications)
       .innerJoin(accounts, eq(enrollmentModifications.studentId, accounts.id))

@@ -16,4 +16,5 @@ export interface EnrollmentGeneral {
   requestNumber: number
   state: 'denied' | 'approved' | 'requested'
   reason: string
+  observation?: string
 }

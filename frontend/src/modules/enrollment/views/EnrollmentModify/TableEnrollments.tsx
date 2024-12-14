@@ -4,9 +4,8 @@ import DataTable from '@frontend/components/DataTable'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import EnrollmentService from '../../services/enrollment.service'
-import { EnrollmentTableColumns } from './columns'
+import { useEnrollmentTableColumns } from './columns'
 import { sortByToState, stateToSortBy } from '@frontend/lib/table'
-import { useMemo } from 'react'
 import { useSessionStore } from '@frontend/store'
 import { EnrollmentPermissionsDict } from '@frontend/interfaces/enums/permissions/Enrollment'
 
@@ -46,8 +45,12 @@ export default function TableEnrollments() {
     pageSize: filters.pageSize || DEFAULT_PAGE_SIZE,
   }
 
+  const isDirector = havePermission(
+    EnrollmentPermissionsDict.REVIEW_ADDITIONAL_ENROLLMENT
+  )
+
   const sortingState = sortByToState(filters.sortBy)
-  const columns = useMemo(() => EnrollmentTableColumns, [])
+  const columns = useEnrollmentTableColumns(isDirector)
 
   return (
     <>

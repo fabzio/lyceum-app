@@ -49,7 +49,7 @@ export default function NewProfessorDialog() {
     mutationFn: ProfessorService.addProfessor,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [QueryKeys.users.STUDENTS],
+        queryKey: [QueryKeys.users.PROFESSORS],
       })
       toast({
         title: 'Docente agregado',
