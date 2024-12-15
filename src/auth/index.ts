@@ -166,7 +166,7 @@ export const authRoute = new Hono()
 
         try {
           // Llamar al método de `GenericService` para guardar la información de contacto
-          const response = await GenericService.saveContactInfo({
+          const response = await GenericService.updateContactInfo({
             accountId,
             ...data,
           })
