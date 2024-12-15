@@ -22,7 +22,7 @@ export default function ThesisTheme() {
   )?.unitId
 
   const accountCode = session!.code
-  const [filter, setFilter] = useState('')
+  const [filter, setFilter] = useState<string | undefined>('')
   const { data: thesisThemeRequests } = useSuspenseQuery({
     queryKey: [QueryKeys.thesis.THESIS_REQUESTS, filter],
     queryFn: specialtiyId
