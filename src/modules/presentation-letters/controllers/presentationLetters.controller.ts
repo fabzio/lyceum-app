@@ -51,7 +51,7 @@ class PresentationLetterController {
     ),
     zValidator('form', createPresentationLetterDTO),
     async (c) => {
-      const { companyName, description, documentFile, accounts, scheduleId } =
+      const { companyName, description, accounts, scheduleId } =
         c.req.valid('form')
       const accountsParse = JSON.parse(accounts) as Array<{ id: string }>
       const { requesterId } = c.req.param()
@@ -61,14 +61,55 @@ class PresentationLetterController {
             requesterId,
             companyName,
             scheduleId,
+            /*
             documentId: await insertDocument({
               file: documentFile as File,
               bucketName: 'document',
             }),
+            */
             description,
             accountsParse,
           }),
           message: 'Presentation Letter created',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public updatePresentationLetter = this.router.post(
+    '/updatePresentationCard/:id',
+    zValidator(
+      'param',
+      z.object({
+        id: z.string(),
+      })
+    ),
+    zValidator(
+      'form',
+      z.object({
+        documentFile: z.instanceof(File),
+      })
+    ),
+    async (c) => {
+      const { documentFile } = c.req.valid('form')
+      const { id } = c.req.param()
+      try {
+        const response: ResponseAPI = {
+          data: await this.presentatioLetterService.updatePresentationLetter({
+            documentId: await insertDocument({
+              file: documentFile as File,
+              bucketName: 'document',
+            }),
+            id,
+          }),
+          message: 'Presentation Letter updated',
           success: true,
         }
         return c.json(response)
@@ -180,7 +221,6 @@ class PresentationLetterController {
         status: z.enum(['accepted', 'rejected']),
       })
     ),
-
     async (c) => {
       const { presentationLetterID, status } = c.req.valid('query')
       try {

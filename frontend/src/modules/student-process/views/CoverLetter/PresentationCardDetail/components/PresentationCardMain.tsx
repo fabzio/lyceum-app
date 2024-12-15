@@ -9,8 +9,8 @@ import {
   TableRow,
 } from '@frontend/components/ui/table'
 import { QueryKeys } from '@frontend/constants/queryKeys'
-import { useSuspenseQuery } from '@tanstack/react-query'
-import { useParams } from '@tanstack/react-router'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
+import { useNavigate, useParams } from '@tanstack/react-router'
 import { Badge } from '@frontend/components/ui/badge'
 import {
   Card,
@@ -22,6 +22,22 @@ import PDFPreview from './PDFPreview'
 import PresentationCardService from '@frontend/modules/student-process/services/presentationCard.service'
 import { mapCoverLetterStatus } from '../../components/columns'
 import { Button } from '@frontend/components/ui/button'
+import { useSessionStore } from '@frontend/store'
+import { StudentProcessPermissionsDict } from '@frontend/interfaces/enums/permissions/StudentProcess'
+import { toast } from '@frontend/hooks/use-toast'
+import { Input } from '@frontend/components/ui/input'
+import { z } from 'zod'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@frontend/components/ui/form'
+import { Loader2 } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 export default function CoverLetterDetailMain() {
   const { requestCode } = useParams({
@@ -37,15 +53,47 @@ export default function CoverLetterDetailMain() {
   })
 
   const presentationCard = presentationCardRequestDetail
+  const { havePermission } = useSessionStore()
 
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+  })
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: PresentationCardService.updatePresentationCard,
+    onSuccess: () => {
+      toast({
+        title: 'Operación exitosa',
+        description: 'La operación se ha realizado exitosamente.',
+      })
+    },
+    onError: () => {
+      toast({
+        title: 'Error',
+        description: 'Hubo un problema al subir el archivo.',
+        variant: 'destructive',
+      })
+    },
+  })
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    mutate({
+      presentationCard: { documentFile: data.documentFile },
+      id: requestCode,
+    })
+  }
+  const navigate = useNavigate({
+    from: '/procesos-de-estudiantes/cartas-de-presentacion',
+  })
   const handleUpdateCardState = async (cardId: number, state: string) => {
     try {
       await PresentationCardService.AproveOrDenegateCard(cardId, state)
+      navigate({
+        to: '/procesos-de-estudiantes/cartas-de-presentacion',
+      })
     } catch (error) {
       console.error('Error Updating Card:', error)
     }
   }
-
   return (
     <div className="flex h-full flex-col overflow-y-hidden">
       <div className="flex items-center justify-between p-4">
@@ -114,24 +162,89 @@ export default function CoverLetterDetailMain() {
           </Card>
         </div>
       </ScrollArea>
+      {presentationCard.status === 'sent' &&
+        havePermission(
+          StudentProcessPermissionsDict.REVIEW_PRESENTATION_LETTER
+        ) && (
+          <>
+            <div className="flex flex-col items-center space-y-6">
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full md:w-[700px]"
+                >
+                  <FormField
+                    control={form.control}
+                    name="documentFile"
+                    // eslint-disable-next-line
+                    render={({ field: { value, onChange, ...filedProps } }) => (
+                      <FormItem className="col-span-1 md:col-span-2">
+                        <FormLabel className="inline-block hover:underline w-auto">
+                          Archivo
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            className="w-full"
+                            {...filedProps}
+                            type="file"
+                            accept=".doc,.docx,.pdf"
+                            onChange={(e) =>
+                              onChange(e.target.files && e.target.files[0])
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    className="col-span-1 md:col-span-2 w-full"
+                    type="submit"
+                    disabled={isPending}
+                  >
+                    {isPending ? (
+                      <Loader2 className="animate-spin" />
+                    ) : (
+                      'Enviar'
+                    )}
+                  </Button>
+                </form>
+              </Form>
 
-      <div className="flex justify-center">
-        <Button
-          variant="outline"
-          onClick={() =>
-            handleUpdateCardState(Number(presentationCard.id), 'rejected')
-          }
-        >
-          Rechazar
-        </Button>
-        <Button
-          onClick={() =>
-            handleUpdateCardState(Number(presentationCard.id), 'accepted')
-          }
-        >
-          Aprobar
-        </Button>
-      </div>
+              <div className="flex items-center justify-center gap-4 w-full max-w-lg">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() =>
+                    handleUpdateCardState(
+                      Number(presentationCard.id),
+                      'rejected'
+                    )
+                  }
+                >
+                  Rechazar
+                </Button>
+                <Button
+                  className="w-full"
+                  onClick={() =>
+                    handleUpdateCardState(
+                      Number(presentationCard.id),
+                      'accepted'
+                    )
+                  }
+                >
+                  Aprobar
+                </Button>
+              </div>
+            </div>
+          </>
+        )}
     </div>
   )
 }
+
+export const formSchema = z.object({
+  documentFile: z.instanceof(File, { message: 'Debe seleccionar un archivo' }),
+})
+
+export type PresentationCardFormDocumentValues = z.infer<typeof formSchema>

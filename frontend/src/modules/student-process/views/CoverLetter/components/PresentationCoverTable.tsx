@@ -14,7 +14,7 @@ const DEFAULT_PAGE_INDEX = 0
 const DEFAULT_PAGE_SIZE = 10
 
 export default function CoverLetterTable() {
-  const { session, getRoleWithPermission, havePermission } = useSessionStore()
+  const { session, getRoleWithPermission } = useSessionStore()
   const navigate = useNavigate({
     from: '/procesos-de-estudiantes/cartas-de-presentacion',
   })
@@ -74,11 +74,7 @@ export default function CoverLetterTable() {
         rowCount: presentationCardRequests?.length,
         pageCount: 1,
       }}
-      onRowClick={
-        havePermission(StudentProcessPermissionsDict.REVIEW_PRESENTATION_LETTER)
-          ? (letter) => handleRowClick(letter.id.toString())
-          : () => {}
-      }
+      onRowClick={(letter) => handleRowClick(letter.id.toString())}
     />
   )
 }
