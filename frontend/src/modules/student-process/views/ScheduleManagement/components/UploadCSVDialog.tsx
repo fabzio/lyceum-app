@@ -1,0 +1,198 @@
+import { useState } from 'react'
+import { Button } from '@frontend/components/ui/button'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@frontend/components/ui/dialog'
+import { Input } from '@frontend/components/ui/input'
+import { getCsvData } from '@frontend/lib/utils'
+import { z } from 'zod'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Info, Loader2, Upload } from 'lucide-react'
+
+import { QueryKeys } from '@frontend/constants/queryKeys'
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@frontend/components/ui/hover-card'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@frontend/components/ui/form'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useToast } from '@frontend/hooks/use-toast'
+import ScheduleService from '@frontend/service/Schedules.service'
+import DownloadTemplate from '@frontend/components/DownloadTemplate'
+
+export default function UploadCSVDialog({
+  courseCode,
+}: { courseCode?: string } = {}) {
+  const queryClient = useQueryClient()
+  const [isOpen, setIsOpen] = useState(false)
+  const { toast } = useToast()
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+  })
+  const { mutate, isPending } = useMutation({
+    mutationFn: (students: { studentCode: string; scheduleCode: string }[]) => {
+      if (!courseCode) {
+        throw new Error('Course code is required')
+      }
+      return ScheduleService.insertStudentsInaCourse(courseCode, students)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QueryKeys.courses.RISK_STUDENTS],
+      })
+      toast({
+        title: 'Carga correcta',
+        description: 'Estudiantes importados correctamente',
+      })
+      setIsOpen(false)
+    },
+    onError: ({ message }) => {
+      toast({
+        title: 'Error',
+        variant: 'destructive',
+        description: message,
+      })
+    },
+  })
+
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
+    let dataJson: CSVRow[]
+    try {
+      dataJson = await getCsvData<CSVRow>(data.file) // Skip the first 6 rows manually
+      //dataJson = dataJson.slice(6)
+    } catch (error) {
+      toast({
+        title: 'Error',
+        variant: 'destructive',
+        description: (error as Error).message,
+      })
+      return
+    }
+
+    let preparedData = dataJson
+      .map((register) => {
+        if (csvSchema.safeParse(register).success) {
+          return csvSchema.parse(register)
+        } else {
+          toast({
+            title: 'Error',
+            variant: 'destructive',
+            description: `Error en la fila ${register['Alumno']}: ${csvSchema.safeParse(register).error?.message}`,
+          })
+          return undefined
+        }
+      })
+      .filter(
+        (register): register is z.infer<typeof csvSchema> =>
+          register !== undefined
+      )
+
+    if (preparedData.some((register) => register === undefined)) {
+      return
+    }
+
+    mutate(
+      preparedData.map((register) => ({
+        studentCode: register['Alumno'],
+        scheduleCode: 'H' + register['Horario'],
+      })) as any
+    )
+  }
+
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button disabled={!courseCode}>
+          <Upload className="mr-2 h-4 w-4" />
+          Cargar alumnos al curso (matricula normal)
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Cargar estudiantes del curso </DialogTitle>
+          <DialogDescription>
+            Selecciona un archivo CSV para cargar el listado de estudiantes
+          </DialogDescription>
+        </DialogHeader>
+        <DownloadTemplate headers={['Alumno', 'Horario']} />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)}>
+            <FormField
+              name="file"
+              // eslint-disable-next-line
+              render={({ field: { value, onChange, ...filedProps } }) => (
+                <FormItem>
+                  <HoverCard openDelay={100}>
+                    <HoverCardTrigger>
+                      <FormLabel className="inline-block hover:underline w-auto">
+                        <div className="flex">
+                          Archivo <Info className="h-4" />
+                        </div>
+                      </FormLabel>
+                    </HoverCardTrigger>
+                    <HoverCardContent>
+                      Recordar Seleccionar el curso primero, los alumnos
+                      repetido no se insertarán, tampoco si no existe el
+                      horario, el csv acepta distintos horarios del curso.
+                    </HoverCardContent>
+                  </HoverCard>
+                  <FormControl>
+                    <Input
+                      {...filedProps}
+                      type="file"
+                      accept=".csv"
+                      onChange={(e) =>
+                        onChange(e.target.files && e.target.files[0])
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <DialogFooter className="mt-2">
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  Cancelar
+                </Button>
+              </DialogClose>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? <Loader2 className="animate-spin" /> : 'Importar'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+const csvSchema = z.object({
+  ['Alumno']: z.coerce.string({
+    required_error: 'El código de alumno es requerido',
+  }),
+  ['Horario']: z.coerce.string({
+    required_error: 'El código de horario es requerido',
+  }),
+})
+const formSchema = z.object({
+  file: z.instanceof(File, { message: 'Debe seleccionar un archivo' }),
+})
+
+type CSVRow = z.infer<typeof csvSchema>
