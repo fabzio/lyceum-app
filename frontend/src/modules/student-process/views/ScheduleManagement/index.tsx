@@ -121,7 +121,13 @@ export default function ScheduleManagement() {
           </div>
         </div>
       </div>
-      {scheduleId && <AccountTable scheduleId={parseInt(scheduleId)} />}
+      {scheduleId && (
+        <AccountTable
+          scheduleId={parseInt(scheduleId)}
+          courseCode={course?.code!}
+          scheduleCode={scheduleCode}
+        />
+      )}
     </div>
   )
 }

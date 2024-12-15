@@ -15,7 +15,11 @@ export interface ScheduleGenericDAO {
 
   deleteJP: (id: string) => Promise<void>
 
-  toggleLead: (id: string) => Promise<void>
+  toggleLead: (
+    id: string,
+    courseCode: string,
+    scheduleCode: string
+  ) => Promise<void>
   getAccountSchedules: (accountId: Account['id']) => Promise<
     {
       id: number
