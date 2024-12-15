@@ -2,7 +2,7 @@
 import ThesisJuryRequestSelectFilter from './components/ThesisJuryRequestFilter'
 import ThesisJuryRequestElement from './components/ThesisJuryRequestElements'
 import NewJuryRequestDialog from './components/NewJuryRequestDialog'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import ThesisJuryRequestService from '@frontend/modules/thesis/services/thesisJuryRequest.service'
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import Need from '@frontend/components/Need'
@@ -14,11 +14,11 @@ export default function ThesisJuryRequestList() {
   const { getRoleWithPermission } = useSessionStore()
   const unitId = getRoleWithPermission(
     ThesisPermissionsDict.READ_THESIS_JURY
-  )?.unitId!
+  )!.unitId
   const [filter, setFilter] = useState<
     'unassigned' | 'requested' | 'assigned' | undefined
   >(undefined)
-  const { data: thesisJuryRequest } = useSuspenseQuery({
+  const { data: thesisJuryRequest } = useQuery({
     queryKey: [QueryKeys.thesis.THESIS_JURY_REQUESTS, filter],
 
     queryFn: () => {
@@ -40,7 +40,7 @@ export default function ThesisJuryRequestList() {
           <NewJuryRequestDialog />
         </Need>
       </div>
-      {!thesisJuryRequest.length ? (
+      {!thesisJuryRequest?.length ? (
         <p className="flex justify-center py-3">
           No se encontraron solicitudes de jurados
         </p>

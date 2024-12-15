@@ -84,7 +84,7 @@ export const authRoute = new Hono()
       const data = c.req.valid('json')
       try {
         const response = await GenericService.lyceumLogin({
-          email: data.code,
+          emailOrCode: data.code,
           password: data.password,
         })
         const { allowedModules, roles, ...cookieContent } = response
@@ -102,9 +102,14 @@ export const authRoute = new Hono()
           cookieOptions
         )
         c.status(200)
-        return c.json({ data: response, message: 'Authorized', success: true })
+        return c.json({
+          data: response,
+          message: 'Login successful',
+          success: true,
+        })
       } catch (error) {
         c.status(401)
+        throw error
       }
     }
   )
