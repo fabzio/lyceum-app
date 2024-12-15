@@ -15,9 +15,12 @@ export default function DelegatesOverview() {
       <div className="w-full flex flex-col md:flex-row justify-between gap-4">
         <SearchDelegateInput />
       </div>
-      {/* <Need permissions={[StudentProcessPermissionsDict.MANAGE_DELEGATE]}> */}
-      <DelegatesTable specialityId={specialityId ?? ''} idTerm={idTerm ?? ''} />
-      {/* </Need> */}
+      <Need permissions={[StudentProcessPermissionsDict.MANAGE_DELEGATE]}>
+        <DelegatesTable
+          specialityId={specialityId ?? ''}
+          idTerm={idTerm ?? ''}
+        />
+      </Need>
     </div>
   )
 }

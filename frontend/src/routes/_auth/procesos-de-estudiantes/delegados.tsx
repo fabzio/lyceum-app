@@ -4,7 +4,6 @@ import { Filters } from '@frontend/interfaces/types'
 import { haveSomePermission } from '@frontend/lib/utils'
 import DelegatesService from '@frontend/modules/student-process/services/delegates.service'
 import DelegatesOverview from '@frontend/modules/student-process/views/Delegates'
-import { useSessionStore } from '@frontend/store'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
