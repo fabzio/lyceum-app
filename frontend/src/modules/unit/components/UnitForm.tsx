@@ -75,6 +75,18 @@ export default function UnitForm({ unit, unitType, handleClose }: Props) {
     }
     mutate([{ ...values, unitType, parentId: values.parentId ?? 1 }])
   }
+
+  const searchSupportUnits = async (q: string) => {
+    const sections = await UnitService.getUnitsByType({
+      q,
+      type: UnitType.SECTION,
+    })
+    const departments = await UnitService.getUnitsByType({
+      q,
+      type: UnitType.DEPARTMENT,
+    })
+    return [...sections, ...departments]
+  }
   /*
         <FormField
           control={form.control}
@@ -141,6 +153,29 @@ export default function UnitForm({ unit, unitType, handleClose }: Props) {
             )}
           />
         )}
+
+        {unitType === UnitType.SPECIALTY && (
+          <FormField
+            control={form.control}
+            name="supportUnitId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Unidad de Soporte</FormLabel>
+                <FormControl>
+                  <QuickSearchInput
+                    searchFn={searchSupportUnits}
+                    handleSelect={(unit) => field.onChange(unit?.id)}
+                    placeholder={`Buscar unidad de soporte (sección o departamento)`}
+                    renderOption={(unit) => unit.name}
+                    renderSelected={(unit) => unit.name}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
         <DialogFooter className="mt-2">
           <DialogClose asChild>
             <Button type="button" variant="secondary">
@@ -164,4 +199,5 @@ const formSchema = z.object({
     .max(255)
     .optional(),
   parentId: z.number().optional(),
+  supportUnitId: z.number().optional(),
 })
