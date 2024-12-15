@@ -33,7 +33,7 @@ export default function AssigmentAccordion({ assigments = [] }: Props) {
         ))
       ) : (
         <div className="text-center text-muted-foreground mt-2">
-          No hay roles asignados
+          No hay propuestas disponibles.
         </div>
       )}
     </Accordion>

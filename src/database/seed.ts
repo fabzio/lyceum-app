@@ -502,6 +502,7 @@ await db.transaction(async (tx) => {
     SurveyPermissionsDict.READ_SURVEY,
     SurveyPermissionsDict.READ_SURVEY_RESULTS,
     ThesisPermissionsDict.DOWNLOAD_THESIS_REPORT,
+    ThesisPermissionsDict.READ_THESIS_JURY,
   ]
   await tx.insert(rolePermissions).values(
     carreerDirectorPermissions.map((permission) => ({
@@ -523,6 +524,7 @@ await db.transaction(async (tx) => {
     ThesisPermissionsDict.REQUEST_THESIS_JURY,
     EnrollmentPermissionsDict.REQUEST_SCHEDULE_PROPOSAL,
     EnrollmentPermissionsDict.REVIEW_SCHEDULE_PROPOSAL,
+    ThesisPermissionsDict.READ_THESIS_JURY,
   ]
 
   await tx.insert(rolePermissions).values(

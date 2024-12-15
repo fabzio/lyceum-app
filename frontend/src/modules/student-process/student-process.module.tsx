@@ -38,5 +38,10 @@ export const StudentProcessModule: AppModule = {
         StudentProcessPermissionsDict.MANAGE_JP,
       ],
     },
+    {
+      label: 'Delegados',
+      path: '/procesos-de-estudiantes/delegados',
+      permissions: [StudentProcessPermissionsDict.MANAGE_DELEGATE],
+    },
   ],
 }

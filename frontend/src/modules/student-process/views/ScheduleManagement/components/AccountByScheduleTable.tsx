@@ -17,9 +17,16 @@ export const DEFAULT_PAGE_SIZE = 10
 
 type AccountTableProps = {
   scheduleId: number
+  courseCode: string
+  scheduleCode: string
 }
 
-export default function AccountTable({ scheduleId }: AccountTableProps) {
+export default function AccountTable({
+  scheduleId,
+  //TODO ARREGLAR, PARA QUE PASE ESTO A LA TABLA
+  //courseCode,
+  //scheduleCode,
+}: AccountTableProps) {
   const { filters, setFilters } = useFilters(
     '/_auth/procesos-de-estudiantes/horarios'
   )
@@ -50,7 +57,7 @@ export default function AccountTable({ scheduleId }: AccountTableProps) {
       </div>
       <DataTable
         data={accounts?.result ?? []}
-        columns={columns}
+        columns={columns} //TODO DE ALGUNA MANERA EL courseCode,scheduleCode DEBERÍAN ESTAR AQUÍ
         pagination={paginationState}
         sorting={sortingState}
         onSortingChange={(updateOrValue) => {

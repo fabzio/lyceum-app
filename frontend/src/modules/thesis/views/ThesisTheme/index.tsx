@@ -8,7 +8,8 @@ import ThesisThemeRequestService from '@frontend/modules/thesis/services/ThesisT
 import NewThesisRequest from './components/NewThesisRequest'
 import { useSessionStore } from '@frontend/store'
 import { ThesisPermissionsDict } from '@frontend/interfaces/enums/permissions/Thesis'
-import ThesisReport from './components/ThesisReport'
+import { useState } from 'react'
+import DownloadThesisReport from './components/ThesisReport'
 
 export default function ThesisTheme() {
   const { session, getRoleWithPermission, havePermission } = useSessionStore()
@@ -21,12 +22,14 @@ export default function ThesisTheme() {
   )?.unitId
 
   const accountCode = session!.code
+  const [filter, setFilter] = useState<string | undefined>('')
   const { data: thesisThemeRequests } = useSuspenseQuery({
-    queryKey: [QueryKeys.thesis.THESIS_REQUESTS],
+    queryKey: [QueryKeys.thesis.THESIS_REQUESTS, filter],
     queryFn: specialtiyId
       ? () =>
           ThesisThemeRequestService.getSpecialtyThesisThemeRequest({
             specialtiyId,
+            filter: filter || undefined,
           })
       : areaId
         ? () =>
@@ -50,9 +53,9 @@ export default function ThesisTheme() {
           <Input type="search" placeholder="🔎 Buscar" />
         </div>
         <div className="flex gap-3">
-          <ThesisThemeSelectFilter />
+          <ThesisThemeSelectFilter onFilterChange={setFilter} />
         </div>
-        <ThesisReport />
+        <DownloadThesisReport filter={{ filter: filter || undefined }} />
         <NewThesisRequest />
       </div>
       <ThesisThemeList thesisThemeRequests={thesisThemeRequests} />

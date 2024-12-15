@@ -7,6 +7,7 @@ export const ThesisPermissionsDict = {
   REQUEST_THESIS_JURY: 'REQUEST_THESIS_JURY',
   ASSIGN_THESIS_JURY: 'ASSIGN_THESIS_JURY',
   DOWNLOAD_THESIS_REPORT: 'DOWNLOAD_THESIS_REPORT',
+  READ_THESIS_JURY: 'READ_THESIS_JURY',
 } as const
 
 export type ThesisPermissionsDict = keyof typeof ThesisPermissionsDict

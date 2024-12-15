@@ -11,8 +11,9 @@ import {
   units,
   courses,
   terms,
+  accounts,
 } from '@/database/schema'
-import { eq, inArray, and, desc, or } from 'drizzle-orm'
+import { eq, inArray, and, desc, or, sql } from 'drizzle-orm'
 import {
   NoProfessorsSendedError,
   RepeatedProfessorError,
@@ -141,6 +142,18 @@ class ScheduleDistributionService implements ScheduleDistributionDAO {
         code: string
       }
       schedule: {
+        professors: {
+          accountId: string
+          code: string
+          name: string
+          isLead: boolean | null
+        }[]
+        jps: {
+          accountId: string
+          code: string
+          name: string
+          isLead: boolean | null
+        }[]
         id: number
         code: string
         state: 'saved' | 'editing'
@@ -187,8 +200,9 @@ class ScheduleDistributionService implements ScheduleDistributionDAO {
       .set({ visibility })
       .where(eq(schedules.id, scheduleId))
   }
+
   private async getCoursesOfProposalSpeciality(speciality: Unit['id']) {
-    return await db
+    const schedulesWithCourses = await db
       .select({
         course: {
           id: courses.id,
@@ -200,7 +214,6 @@ class ScheduleDistributionService implements ScheduleDistributionDAO {
           code: schedules.code,
           vacancies: schedules.vacancies,
           state: schedules.state,
-          visibility: schedules.visibility,
         },
       })
       .from(enrollmentProposalCourses)
@@ -221,10 +234,62 @@ class ScheduleDistributionService implements ScheduleDistributionDAO {
           eq(enrollmentProposal.specialityId, speciality)
         )
       )
+
+    const scheduleIds = schedulesWithCourses.map((item) => item.schedule.id)
+
+    const professors = await db
+      .select({
+        scheduleId: scheduleAccounts.scheduleId,
+        accountId: scheduleAccounts.accountId,
+        code: accounts.code,
+        name: sql<string>`${accounts.name} || ' ' || ${accounts.firstSurname}`,
+        isLead: sql<boolean | null>`COALESCE(${scheduleAccounts.lead})`,
+      })
+      .from(scheduleAccounts)
+      .innerJoin(accounts, eq(accounts.id, scheduleAccounts.accountId))
+      .where(
+        and(
+          inArray(scheduleAccounts.scheduleId, scheduleIds),
+          or(
+            eq(scheduleAccounts.roleId, BaseRoles.PROFESSOR),
+            sql`${scheduleAccounts.roleId} IS NULL`
+          )
+        )
+      )
+
+    const schedulesWithProfessors = schedulesWithCourses.map((item) => {
+      const professorsList = professors.filter(
+        (prof) => prof.scheduleId === item.schedule.id
+      )
+      return {
+        ...item,
+        schedule: {
+          ...item.schedule,
+          professors: professorsList
+            .filter((prof) => prof.isLead !== null)
+            .map((prof) => ({
+              accountId: prof.accountId,
+              code: prof.code,
+              name: prof.name,
+              isLead: prof.isLead,
+            })),
+          jps: professorsList
+            .filter((prof) => prof.isLead === null)
+            .map((prof) => ({
+              accountId: prof.accountId,
+              code: prof.code,
+              name: prof.name,
+              isLead: prof.isLead,
+            })),
+        },
+      }
+    })
+
+    return schedulesWithProfessors
   }
 
   private async getCoursesOfDepartmentOrSection(unitId: Unit['id']) {
-    return await db
+    const schedulesWithCourses = await db
       .select({
         course: {
           id: courses.id,
@@ -247,6 +312,58 @@ class ScheduleDistributionService implements ScheduleDistributionDAO {
           eq(schedules.state, 'editing')
         )
       )
+
+    const scheduleIds = schedulesWithCourses.map((item) => item.schedule.id)
+
+    const professors = await db
+      .select({
+        scheduleId: scheduleAccounts.scheduleId,
+        accountId: scheduleAccounts.accountId,
+        code: accounts.code,
+        name: sql<string>`${accounts.name} || ' ' || ${accounts.firstSurname}`,
+        isLead: sql<boolean | null>`COALESCE(${scheduleAccounts.lead})`,
+      })
+      .from(scheduleAccounts)
+      .innerJoin(accounts, eq(accounts.id, scheduleAccounts.accountId))
+      .where(
+        and(
+          inArray(scheduleAccounts.scheduleId, scheduleIds),
+          or(
+            eq(scheduleAccounts.roleId, BaseRoles.PROFESSOR),
+            sql`${scheduleAccounts.roleId} IS NULL`
+          )
+        )
+      )
+
+    const schedulesWithProfessors = schedulesWithCourses.map((item) => {
+      const professorsList = professors.filter(
+        (prof) => prof.scheduleId === item.schedule.id
+      )
+      return {
+        ...item,
+        schedule: {
+          ...item.schedule,
+          professors: professorsList
+            .filter((prof) => prof.isLead !== null)
+            .map((prof) => ({
+              accountId: prof.accountId,
+              code: prof.code,
+              name: prof.name,
+              isLead: prof.isLead,
+            })),
+          jps: professorsList
+            .filter((prof) => prof.isLead === null)
+            .map((prof) => ({
+              accountId: prof.accountId,
+              code: prof.code,
+              name: prof.name,
+              isLead: prof.isLead,
+            })),
+        },
+      }
+    })
+
+    return schedulesWithProfessors
   }
 
   public async addSchedule({
@@ -273,6 +390,19 @@ class ScheduleDistributionService implements ScheduleDistributionDAO {
   public async deleteSchedule(scheduleId: number) {
     await db.delete(schedules).where(eq(schedules.id, scheduleId))
   }
-}
 
+  public async deleteProfesorOrJpfromSchedule(
+    scheduleId: number,
+    profesorId: string
+  ) {
+    await db
+      .delete(scheduleAccounts)
+      .where(
+        and(
+          eq(scheduleAccounts.scheduleId, scheduleId),
+          eq(scheduleAccounts.accountId, profesorId)
+        )
+      )
+  }
+}
 export default ScheduleDistributionService

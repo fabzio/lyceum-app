@@ -139,7 +139,7 @@ export const AccountTableColumns: ColumnDef<AccountRoles>[] = [
       })
 
       const { mutate: toggleLead } = useMutation({
-        mutationFn: () => ScheduleService.toggleLead(id),
+        mutationFn: () => ScheduleService.toggleLead(id), //TODO: ACA DEBERIA PASAR EL courseCode,scheduleCode del componente padre
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: [QueryKeys.users.GENERIC] })
           toast({

@@ -7,6 +7,7 @@ export const ThesisPermissionsDict = {
   REQUEST_THESIS_JURY: 'REQUEST_THESIS_JURY',
   ASSIGN_THESIS_JURY: 'ASSIGN_THESIS_JURY',
   DOWNLOAD_THESIS_REPORT: 'DOWNLOAD_THESIS_REPORT',
+  READ_THESIS_JURY: 'READ_THESIS_JURY',
 } as const
 
 export type ThesisPermissions = keyof typeof ThesisPermissionsDict
@@ -42,6 +43,10 @@ const ThesisPermissions = [
   {
     name: ThesisPermissionsDict.DOWNLOAD_THESIS_REPORT,
     description: 'Descargar reporte de tesis',
+  },
+  {
+    name: ThesisPermissionsDict.READ_THESIS_JURY,
+    description: 'Leer jurados de tesis',
   },
 ] as const
 

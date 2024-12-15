@@ -95,6 +95,7 @@ class UnitController {
   public createUnits = this.router.post(
     '/',
     zValidator('json', z.array(insertUnitDTO)),
+
     async (c) => {
       const unitList = c.req.valid('json')
       try {
@@ -189,6 +190,7 @@ class UnitController {
         description: z.string().max(255).optional(),
         parentId: z.number().optional(),
         active: z.boolean().optional(),
+        supportUnitId: z.number().optional(),
       })
     ),
     async (c) => {
@@ -202,6 +204,7 @@ class UnitController {
           description: unitData.description, // Si la descripción no se proporciona, será null
           parentId: unitData.parentId, // Si no se proporciona `parentId`, se usa null
           active: unitData.active,
+          supportUnitId: unitData.supportUnitId,
         })
 
         return c.json({

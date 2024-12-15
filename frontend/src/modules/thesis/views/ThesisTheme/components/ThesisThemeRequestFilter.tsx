@@ -5,19 +5,36 @@ import {
   SelectContent,
   SelectItem,
 } from '@frontend/components/ui/select'
+import { useState } from 'react'
 
-export default function ThesisThemeSelectFilter() {
+interface ThesisThemeSelectFilterProps {
+  onFilterChange: (value: string | undefined) => void
+}
+
+export default function ThesisThemeSelectFilter({
+  onFilterChange,
+}: ThesisThemeSelectFilterProps) {
+  const [selectedFilter, setSelectedFilter] = useState('')
+
+  const handleFilterChange = (value: string) => {
+    setSelectedFilter(value)
+    onFilterChange(value === 'Todos' ? undefined : value)
+  }
   return (
-    <Select>
+    <Select value={selectedFilter} onValueChange={handleFilterChange}>
       <SelectTrigger>
         <SelectValue placeholder="Filtrar por estado" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="123">Enviado por alumno</SelectItem>
-        <SelectItem value="456">Aprobado por Asesor</SelectItem>
-        <SelectItem value="789">Aprobado por Coordinador de Área</SelectItem>
-        <SelectItem value="321">Aprobado por Director de Carrera</SelectItem>
-        <SelectItem value="654">Terminado</SelectItem>
+        <SelectItem value="Todos">Todos</SelectItem>
+        <SelectItem value="sended">Enviado por alumno</SelectItem>
+        <SelectItem value="approvedByProfessor">Aprobado por Asesor</SelectItem>
+        <SelectItem value="approvedByAreaCoordinator">
+          Aprobado por Coordinador de Área
+        </SelectItem>
+        <SelectItem value="approvedByCareerDirector">
+          Aprobado por Director de Carrera
+        </SelectItem>
       </SelectContent>
     </Select>
   )

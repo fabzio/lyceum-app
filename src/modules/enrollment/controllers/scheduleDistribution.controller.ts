@@ -38,6 +38,32 @@ class ScheduleDistributioncontroller {
     }
   )
 
+  public deleteProfessorOrJpToScheduleProposal = this.router.delete(
+    '/:scheduleId',
+    zValidator('param', z.object({ scheduleId: z.coerce.number() })),
+    zValidator('json', z.object({ professorId: z.coerce.string() })),
+    async (c) => {
+      const { scheduleId } = c.req.valid('param')
+      const { professorId } = c.req.valid('json')
+      try {
+        const response: ResponseAPI = {
+          data: await this.scheduleDistributionService.deleteProfesorOrJpfromSchedule(
+            scheduleId,
+            professorId
+          ),
+          message: 'Professors correctly deleted from Schedule',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
   public getCoursesScheduleDistribution = this.router.get(
     '/',
     zValidator('query', z.object({ unitId: z.coerce.number() })),

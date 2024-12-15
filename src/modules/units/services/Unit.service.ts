@@ -1,5 +1,11 @@
 import db from '@/database'
-import { accountRoles, accounts, roles, terms } from '@/database/schema'
+import {
+  accountRoles,
+  accounts,
+  roles,
+  terms,
+  unitsSupports,
+} from '@/database/schema'
 import { units, UnitsInsertSchema } from '@/database/schema/units'
 import { Unit } from '@/interfaces/models/Unit'
 import { PaginatedData } from '@/interfaces/PaginatedData'
@@ -163,9 +169,30 @@ class UnitService {
         parentId: parentUnitsMap.get(unit.parentName!),
       }))
     } else unitsToInsert = unitList
-    await db.insert(units).values(unitsToInsert)
-  }
 
+    const insertedUnits = await db
+      .insert(units)
+      .values(unitsToInsert)
+      .returning()
+
+    const unitsSupportsToInsert = insertedUnits.flatMap(
+      (insertedUnit, index) => {
+        const supportId = unitList[index].supportUnitId
+        return supportId
+          ? [
+              {
+                supportingUnitId: insertedUnit.id,
+                supportedUnitId: supportId,
+              },
+            ]
+          : []
+      }
+    )
+
+    if (unitsSupportsToInsert.length > 0) {
+      await db.insert(unitsSupports).values(unitsSupportsToInsert)
+    }
+  }
   public async getAccountsInUnit(params: {
     unitId: NonNullable<UnitsInsertSchema['id']>
     q?: string
@@ -230,12 +257,14 @@ class UnitService {
     description,
     parentId,
     active,
+    supportUnitId,
   }: {
     id: number
     name: string
     description?: string
     parentId?: number
     active?: boolean
+    supportUnitId?: number
   }) {
     const existingUnit = await db.select().from(units).where(eq(units.id, id))
 
@@ -252,7 +281,7 @@ class UnitService {
         name: name,
         description: description,
         parentId: parentId, // Si no se proporciona un `parentId`, se establece en null
-        active: active,
+        active: active, //dice optional pero no lo es
       })
       .where(eq(units.id, id))
       .returning()
@@ -260,6 +289,26 @@ class UnitService {
     if (active !== wasActive) {
       await this.updateChildrenActiveStatus(id, active!)
     }
+    console.log('aaaaaaaaaaaaaaaaaaa')
+    if (supportUnitId !== undefined && supportUnitId !== null) {
+      const row = await db
+        .select()
+        .from(unitsSupports)
+        .where(eq(unitsSupports.supportingUnitId, id))
+
+      console.log(row.length)
+      if (row.length === 0) {
+        await db
+          .insert(unitsSupports)
+          .values({ supportingUnitId: id, supportedUnitId: supportUnitId })
+      } else {
+        await db
+          .update(unitsSupports)
+          .set({ supportedUnitId: supportUnitId })
+          .where(eq(unitsSupports.supportingUnitId, id))
+      }
+    }
+
     return updatedUnit[0] // Devuelve la unidad actualizada
   }
 

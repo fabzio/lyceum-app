@@ -69,7 +69,11 @@ class ScheduleGenericService implements ScheduleGenericDAO {
       throw new Error(`No se pudo eliminar el JP con ID: ${id}`)
     }
   }
-  public async toggleLead(id: string): Promise<void> {
+  public async toggleLead(
+    id: string,
+    courseCode: string,
+    scheduleCode: string
+  ): Promise<void> {
     try {
       // Obtener el valor actual de 'lead' para el estudiante
       const currentLead = await db
@@ -83,10 +87,34 @@ class ScheduleGenericService implements ScheduleGenericDAO {
       const newLeadValue = currentLead === true ? false : true
 
       // Actualizar el valor de 'lead' en scheduleAccounts
+      const courseId = await db
+        .select({ id: courses.id })
+        .from(courses)
+        .where(eq(courses.code, courseCode))
+        .limit(1)
+        .then((res) => res[0]?.id)
+
+      const scheduleId = await db
+        .select({ id: schedules.id })
+        .from(schedules)
+        .where(
+          and(
+            eq(schedules.code, scheduleCode),
+            eq(schedules.courseId, courseId)
+          )
+        )
+        .limit(1)
+        .then((res) => res[0]?.id)
       await db
         .update(scheduleAccounts)
         .set({ lead: newLeadValue })
-        .where(eq(scheduleAccounts.accountId, id))
+
+        .where(
+          and(
+            eq(scheduleAccounts.accountId, id),
+            eq(scheduleAccounts.scheduleId, scheduleId)
+          )
+        )
     } catch (error) {
       throw new Error(`No se pudo alternar el valor de lead para el ID: ${id}`)
     }

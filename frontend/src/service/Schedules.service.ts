@@ -101,6 +101,29 @@ class ScheduleService {
       throw error
     }
   }
+
+  static async insertStudentsInaCourse(
+    courseCode: string,
+    students: { studentCode: string; scheduleCode: string }[]
+  ): Promise<null> {
+    try {
+      const res = await http.post(`/schedule/account/schedulesStudent/insert`, {
+        courseCode,
+        students,
+      })
+      const response = res.data as ResponseAPI<null>
+
+      if (!response.success) {
+        throw new Error('Error al insertar Alumnos al curso')
+      }
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
 }
 
 export default ScheduleService
