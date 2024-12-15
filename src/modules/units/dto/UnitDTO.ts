@@ -8,6 +8,7 @@ export const insertUnitDTO = z.object({
   parentId: z.number().optional(),
   parentName: z.string().optional(),
   type: unitsSchema.shape.type,
+  supportUnitId: z.number().optional(),
 })
 
 export type InsertUnitDTO = z.infer<typeof insertUnitDTO>
