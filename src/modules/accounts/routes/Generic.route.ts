@@ -13,6 +13,7 @@ class GenericRoute implements Route {
   private initializeRoutes() {
     this.router.route('/', this.genericController.getAccount)
     this.router.route('/', this.genericController.getAccountsBySchedule)
+    this.router.route('/sign-up/:googleId', this.genericController.postAccount)
   }
 }
 

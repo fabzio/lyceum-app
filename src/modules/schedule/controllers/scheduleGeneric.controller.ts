@@ -143,9 +143,6 @@ class ScheduleGenericController {
       })
     ),
     async (c) => {
-      const {
-        term: { id },
-      } = c.get('jwtPayload')
       try {
         const { accountId } = c.req.valid('query')
         const schedules =

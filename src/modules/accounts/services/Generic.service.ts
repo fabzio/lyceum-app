@@ -13,6 +13,8 @@ import {
 import { BaseRoles } from '@/interfaces/enums/BaseRoles'
 import { PaginatedData } from '@/interfaces/PaginatedData'
 import { and, asc, desc, eq, ilike, inArray, or, sql } from 'drizzle-orm'
+import { HiringPermissionsDict } from '@/auth/permissions/Hiring'
+import { BaseModulesDict } from '@/auth/modules'
 
 class GenericService {
   public async getProfile(accountId: string) {
@@ -384,17 +386,19 @@ class GenericService {
     return 'E' + (Math.floor(Math.random() * 1000000) % 10000000).toString()
   }
 
-  public static async registerNewAccount({
+  public async registerNewAccount({
     email,
     googleId,
     name,
     firstSurname,
+    secondSurname,
   }: {
     email: string
     googleId: string
-    name: string
-    firstSurname: string
-  }) {
+    name: string | undefined
+    firstSurname: string | undefined
+    secondSurname: string | undefined
+  }): Promise<String> {
     // Verificar si el usuario ya existe (para evitar duplicados)
     const existingAccount = await db
       .select({
@@ -404,7 +408,8 @@ class GenericService {
       .where(eq(accounts.email, email))
 
     if (existingAccount.length > 0) {
-      throw new Error('El usuario ya existe en el sistema')
+      console.warn('El usuario ya existe en el sistema')
+      return existingAccount[0].id
     }
 
     // Iniciar una transacción para insertar el usuario y su rol asociado
@@ -413,14 +418,14 @@ class GenericService {
       const [account] = await tx
         .insert(accounts)
         .values({
-          name,
-          firstSurname,
-          secondSurname: ' ',
-          code: this.generateUniqueCode(),
+          name: name ?? '',
+          firstSurname: firstSurname ?? '',
+          secondSurname: secondSurname ?? '',
+          code: GenericService.generateUniqueCode(),
           googleId,
           email,
           state: 'inactive',
-          unitId: -1, // ID de la unidad de la cual no es parte (puede ser -1 para usuarios externos)
+          unitId: 1, // ID de la unidad de la cual no es parte (puede ser -1 para usuarios externos)
         })
         .returning({
           id: accounts.id,
@@ -434,44 +439,90 @@ class GenericService {
       await tx.insert(accountRoles).values({
         accountId: account.id,
         roleId: BaseRoles.EXTERNAL, // ID del rol de "Externo"
-        unitId: -1,
+        unitId: 1,
       })
 
       return account
     })
 
     // Roles y módulos permitidos (puede ajustarse según los permisos de un "Externo")
-    const allowedModules: string[] = [] // Especificar módulos permitidos para usuarios externos
+    const allowedModules: string[] = [BaseModulesDict.HIRING] // Especificar módulos permitidos para usuarios externos
     const rolesWithPermissions: {
       roleId: number
       permissions: { permission: string; module: string }[]
     }[] = [
       {
         roleId: BaseRoles.EXTERNAL,
-        permissions: [], // Definir permisos por defecto para el rol de "Externo"
+        permissions: [
+          {
+            permission: HiringPermissionsDict.CREATE_ACCOUNT,
+            module: BaseModulesDict.HIRING,
+          },
+          {
+            permission: HiringPermissionsDict.CREATE_JOB_REQUEST,
+            module: BaseModulesDict.HIRING,
+          },
+          {
+            permission: HiringPermissionsDict.CREATE_OWN_CONTACT_INFO,
+            module: BaseModulesDict.HIRING,
+          },
+          {
+            permission: HiringPermissionsDict.READ_OWN_ACCOUNT_INFORMATION,
+            module: BaseModulesDict.HIRING,
+          },
+          {
+            permission: HiringPermissionsDict.READ_OWN_JOB_REQUESTS,
+            module: BaseModulesDict.HIRING,
+          },
+          {
+            permission: HiringPermissionsDict.UPDATE_OWN_CONTACT_INFO,
+            module: BaseModulesDict.HIRING,
+          },
+          {
+            permission: HiringPermissionsDict.VIEW_COURSES_IN_HIRING,
+            module: BaseModulesDict.HIRING,
+          },
+          {
+            permission: HiringPermissionsDict.VIEW_LIST_OF_OPEN_HIRINGS,
+            module: BaseModulesDict.HIRING,
+          },
+          {
+            permission:
+              HiringPermissionsDict.VIEW_STATUS_OF_OWN_JOB_REQUEST_APPLICATIONS,
+            module: BaseModulesDict.HIRING,
+          },
+          {
+            permission: HiringPermissionsDict.VIEW_OWN_UPDATED_REQUEST_PHASE_1,
+            module: BaseModulesDict.HIRING,
+          },
+        ], // Definir permisos por defecto para el rol de "Externo"
       },
     ]
 
-    return {
-      ...newAccount, // Información del nuevo usuario
-      allowedModules,
-      roles: rolesWithPermissions,
-    }
+    const id = newAccount.id
+    return id
   }
 
-  public static async saveContactInfo({
-    accountId,
-    phone,
-    secondaryPhone,
-    identityType,
-    CUI,
-  }: {
-    accountId: string
-    phone: string
-    secondaryPhone?: string
-    identityType: 'passport' | 'national_id'
-    CUI: string
-  }) {
+  public async saveContactInfo(
+    accountId: string,
+    {
+      name,
+      firstSurname,
+      phone,
+      identityType,
+      CUI,
+      secondaryPhone,
+      secondSurname,
+    }: {
+      name: string
+      firstSurname: string
+      phone: string
+      identityType: 'national' | 'foreign'
+      CUI: string
+      secondaryPhone?: string | undefined
+      secondSurname?: string | undefined
+    }
+  ) {
     try {
       await db.insert(contactsInfo).values({
         accountId,
@@ -480,6 +531,16 @@ class GenericService {
         identityType: identityType as 'national' | 'foreign',
         CUI,
       })
+
+      await db
+        .update(accounts)
+        .set({
+          name,
+          firstSurname,
+          secondSurname,
+          state: 'active',
+        })
+        .where(eq(accounts.id, accountId))
 
       return {
         success: true,
@@ -490,6 +551,7 @@ class GenericService {
       throw new Error('Error saving contact information')
     }
   }
+
   public static async updateContactInfo({
     accountId,
     phone,
