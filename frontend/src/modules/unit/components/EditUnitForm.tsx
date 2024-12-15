@@ -93,6 +93,19 @@ export default function EditUnitForm({ unit, unitType, handleClose }: Props) {
     }
     mutate({ ...unit, ...values })
   }
+
+  const searchSupportUnits = async (q: string) => {
+    const sections = await UnitService.getUnitsByType({
+      q,
+      type: UnitType.SECTION,
+    })
+    const departments = await UnitService.getUnitsByType({
+      q,
+      type: UnitType.DEPARTMENT,
+    })
+    return [...sections, ...departments]
+  }
+
   /*
         <FormField
           control={form.control}
@@ -191,6 +204,35 @@ export default function EditUnitForm({ unit, unitType, handleClose }: Props) {
             )}
           />
         )}
+
+        {unitType === UnitType.SPECIALTY && (
+          <FormField
+            control={form.control}
+            name="supportUnitId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Unidad de Soporte</FormLabel>
+                <FormControl>
+                  <QuickSearchInput
+                    searchFn={searchSupportUnits}
+                    handleSelect={(unit) => field.onChange(unit?.id)}
+                    placeholder={`Buscar unidad de soporte (sección o departamento)`}
+                    renderOption={(unit) => unit.name}
+                    renderSelected={(unit) => unit.name}
+                    defaultValue={{
+                      id: unit.supportUnitId!,
+                      name: unit.supportUnitName!,
+                      unitType:
+                        mapParentUnitType[unit.unitType] ?? 'university',
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
         <DialogFooter className="mt-2">
           <Button type="button" variant="secondary" onClick={handleClose}>
             Cancelar
@@ -216,4 +258,5 @@ const formSchema = z.object({
     (val) => val === 'true', // Transforma 'true' o 'false' (string) a boolean
     z.boolean()
   ),
+  supportUnitId: z.number().optional(),
 })

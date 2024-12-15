@@ -55,6 +55,7 @@ class UnitService {
         and(eq(units.type, params.type), ilike(units.name, `%${params.q}%`))
       )
 
+    const supportUnits = aliasedTable(units, 'supportUnits')
     const query = db
       .select({
         id: units.id,
@@ -63,9 +64,16 @@ class UnitService {
         parentName: parentUni.name,
         parentId: parentUni.id,
         active: units.active,
+        supportUnitId: unitsSupports.supportedUnitId,
+        supportUnitName: supportUnits.name,
       })
       .from(units)
       .innerJoin(parentUni, eq(units.parentId, parentUni.id))
+      .leftJoin(unitsSupports, eq(unitsSupports.supportingUnitId, units.id))
+      .leftJoin(
+        supportUnits,
+        eq(unitsSupports.supportedUnitId, supportUnits.id)
+      )
       .where(
         and(eq(units.type, params.type), ilike(units.name, `%${params.q}%`))
       )

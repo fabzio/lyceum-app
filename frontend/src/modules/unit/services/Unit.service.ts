@@ -101,6 +101,7 @@ class UnitService {
         parentId: unit.parentId,
         unitType: unit.unitType,
         active: unit.active,
+        supportUnitId: unit.supportUnitId,
       })
       const response = res.data as ResponseAPI<Unit>
       if (!response.success) {
