@@ -53,10 +53,17 @@ class ScheduleService {
       throw new Error('No se pudo eliminar el JP')
     }
   }
-  static async toggleLead(id: string): Promise<void> {
+  static async toggleLead(
+    id: string,
+    courseCode: string,
+    scheduleCode: string
+  ): Promise<void> {
     try {
-      const response = await http.put('/schedule/toggleLead', null, {
-        params: { id }, // Pasamos el ID del estudiante
+      const response = await http.put('/schedule/toggleLead', {
+        id,
+        courseCode,
+        scheduleCode,
+        // Pasamos el ID del estudiante
       })
 
       if (!response.data.success) {
