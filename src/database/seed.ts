@@ -503,6 +503,8 @@ await db.transaction(async (tx) => {
     SurveyPermissionsDict.READ_SURVEY_RESULTS,
     ThesisPermissionsDict.DOWNLOAD_THESIS_REPORT,
     ThesisPermissionsDict.READ_THESIS_JURY,
+    StudentProcessPermissionsDict.MANAGE_JP,
+    StudentProcessPermissionsDict.MANAGE_DELEGATE,
   ]
   await tx.insert(rolePermissions).values(
     carreerDirectorPermissions.map((permission) => ({
