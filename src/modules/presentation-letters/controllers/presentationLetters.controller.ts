@@ -249,7 +249,7 @@ class PresentationLetterController {
       'query',
       z.object({
         presentationLetterID: z.coerce.number(),
-        status: z.enum(['accepted', 'rejected']),
+        status: z.enum(['accepted', 'rejected', 'succeeded']),
       })
     ),
     async (c) => {
