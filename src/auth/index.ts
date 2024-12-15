@@ -33,12 +33,14 @@ export const oauthRoute = new Hono()
         })
       } catch (error) {
         // Si no se encuentra, proceder con el registro
-        payload = await GenericService.registerNewAccount({
+        payload = {
           email: profile.email!,
           googleId: profile.id!,
-          name: profile.name || '', // Nombre desde Google
+          name: profile.given_name || '', // Nombre desde Google
           firstSurname: profile.family_name || '', // Apellido desde Google
-        })
+        }
+        const queryString = new URLSearchParams(payload).toString()
+        return c.redirect(`/sign-in?${queryString}`)
       }
 
       const { allowedModules, roles, ...cookieContent } = payload

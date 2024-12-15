@@ -1,8 +1,10 @@
 import { Hono } from 'hono'
 import GenericService from '../services/Generic.service'
+import { createAGenericDTO, CreateAGenericDTO } from '../dtos/GenericDTO'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
 import { LyceumError } from '@/middlewares/errorMiddlewares'
+import { identityType } from '@/database/schema'
 
 class GenericController {
   private router = new Hono()
@@ -129,6 +131,76 @@ class GenericController {
           c.status(error.code)
         }
         throw error
+      }
+    }
+  )
+
+  public postAccount = this.router.post(
+    '/sign-up/:googleId',
+    zValidator('param', z.object({ googleId: z.string() })),
+    zValidator('json', createAGenericDTO),
+    async (c) => {
+      const { googleId } = c.req.valid('param')
+      const { name, firstSurname, secondSurname, email } = c.req.valid('json')
+      try {
+        const response: ResponseAPI = {
+          data: await this.accountService.registerNewAccount({
+            email: email,
+            googleId: googleId,
+            name: name,
+            firstSurname: firstSurname,
+            secondSurname: secondSurname,
+          }),
+          message: 'User created',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public postContactInfo = this.router.post(
+    '/contact/:accountId',
+    zValidator(
+      'json',
+      z.object({
+        name: z.string(),
+        firstSurname: z.string(),
+        phone: z.string(),
+        identityType: z.enum(['national', 'foreign']),
+        CUI: z.string(),
+        secondaryPhone: z.string().optional(),
+        secondSurname: z.string().optional(),
+      })
+    ),
+    async (c) => {
+      const accountId = c.req.param('accountId')
+      const updateData = c.req.valid('json')
+
+      try {
+        const response = await this.accountService.saveContactInfo(
+          accountId,
+          updateData
+        )
+
+        return c.json({
+          data: response,
+          message: 'Account information updated successfully',
+          success: true,
+        })
+      } catch (error) {
+        console.error('Error updating account:', error)
+
+        c.status(500)
+        return c.json({
+          message: 'Failed to update account information',
+          success: false,
+        })
       }
     }
   )
