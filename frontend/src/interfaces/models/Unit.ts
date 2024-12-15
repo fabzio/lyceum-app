@@ -8,4 +8,5 @@ export type Unit = {
   parentName?: string
   parentId?: number
   active?: boolean
+  supportUnitId?: number
 }
