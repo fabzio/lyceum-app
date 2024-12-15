@@ -8,7 +8,7 @@ import {
 import { useState } from 'react'
 
 interface ThesisThemeSelectFilterProps {
-  onFilterChange: (value: string) => void
+  onFilterChange: (value: string | undefined) => void
 }
 
 export default function ThesisThemeSelectFilter({
@@ -18,7 +18,7 @@ export default function ThesisThemeSelectFilter({
 
   const handleFilterChange = (value: string) => {
     setSelectedFilter(value)
-    onFilterChange(value)
+    onFilterChange(value === 'Todos' ? undefined : value)
   }
   return (
     <Select value={selectedFilter} onValueChange={handleFilterChange}>
@@ -26,6 +26,7 @@ export default function ThesisThemeSelectFilter({
         <SelectValue placeholder="Filtrar por estado" />
       </SelectTrigger>
       <SelectContent>
+        <SelectItem value="Todos">Todos</SelectItem>
         <SelectItem value="sended">Enviado por alumno</SelectItem>
         <SelectItem value="approvedByProfessor">Aprobado por Asesor</SelectItem>
         <SelectItem value="approvedByAreaCoordinator">
