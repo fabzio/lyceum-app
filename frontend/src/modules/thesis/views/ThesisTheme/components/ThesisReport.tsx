@@ -96,7 +96,11 @@ const MyDocument = ({ data }: { data: ThesisThemeRequest[] }) => (
   </Document>
 )
 
-const DownloadThesisReport = () => {
+export default function DownloadThesisReport({
+  filter,
+}: {
+  filter: { filter: string | undefined }
+}) {
   const { session, getRoleWithPermission, havePermission } = useSessionStore()
 
   const specialtiyId = getRoleWithPermission(
@@ -111,6 +115,7 @@ const DownloadThesisReport = () => {
       const data = await (specialtiyId
         ? ThesisThemeRequestService.getSpecialtyThesisThemeRequest({
             specialtiyId,
+            ...filter,
           })
         : areaId
           ? ThesisThemeRequestService.getAreaThesisThemeRequest({
@@ -143,5 +148,3 @@ const DownloadThesisReport = () => {
     </Need>
   )
 }
-
-export default DownloadThesisReport
