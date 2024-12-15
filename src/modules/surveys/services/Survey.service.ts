@@ -36,53 +36,34 @@ import groupBy from 'just-group-by'
 
 class SurveyService {
   public async getSpecialitySurveys(unitId: Unit['id']) {
-    const isSpeciality = await db.query.units.findFirst({
+    const unitType = await db.query.units.findFirst({
       columns: {
-        id: true,
+        type: true,
       },
-      where: and(eq(units.id, unitId), eq(units.type, 'speciality')),
+      where: eq(units.id, unitId),
     })
-    if (!isSpeciality) throw new Error('Especialidad no encontrada')
-
-    const supportUnit = await db.query.unitsSupports.findFirst({
-      columns: {
-        id: true,
-        supportedUnitId: true,
-      },
-      where: eq(unitsSupports.supportingUnitId, unitId),
-    })
-
-    if (!supportUnit)
-      throw new Error('La especialidad no tiene unidad de soporte')
+    if (!unitType) throw new Error('Unidad no encontrada')
+    if (unitType?.type === 'speciality') {
+      //Si es especialidad, buscamos el id de la unidad de soporte
+      const supportUnit = await db.query.unitsSupports.findFirst({
+        columns: {
+          id: true,
+          supportedUnitId: true,
+        },
+        where: eq(unitsSupports.supportingUnitId, unitId),
+      })
+      if (supportUnit?.supportedUnitId !== undefined) {
+        unitId = supportUnit.supportedUnitId
+      } else throw new Error('La especialidad no tiene unidad de soporte')
+    }
 
     const surveysSpeciality = await db.query.surveys.findMany({
       columns: {
         unitId: false,
       },
-      where: eq(surveys.unitId, supportUnit.supportedUnitId),
-    })
-    return surveysSpeciality
-  }
-
-  public async getSupportUnitSurveys(unitId: Unit['id']) {
-    const isSupportUnit = await db.query.units.findFirst({
-      columns: {
-        id: true,
-      },
-      where: and(
-        eq(units.id, unitId),
-        or(eq(units.type, 'section'), eq(units.type, 'department'))
-      ),
-    })
-    if (!isSupportUnit) throw new Error('Unidad de soporte no encontrada')
-
-    const surveysSupportUnit = await db.query.surveys.findMany({
-      columns: {
-        unitId: false,
-      },
       where: eq(surveys.unitId, unitId),
     })
-    return surveysSupportUnit
+    return surveysSpeciality
   }
 
   public async createSurvey(surveyData: CreateSurveyDTO) {
