@@ -9,4 +9,5 @@ export type Unit = {
   parentId?: number
   active?: boolean
   supportUnitId?: number
+  supportUnitName?: string
 }
