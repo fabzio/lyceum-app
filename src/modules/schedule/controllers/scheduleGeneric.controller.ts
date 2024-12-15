@@ -88,10 +88,22 @@ class ScheduleGenericController {
         id: z.string().uuid(), // ID del usuario
       })
     ),
+    zValidator(
+      'json',
+      z.object({
+        courseCode: z.string(), // Código del curso
+        scheduleCode: z.string(), // Código del horario
+      })
+    ),
     async (c) => {
       try {
         const { id } = c.req.valid('query')
-        await this.scheduleGenericService.toggleLead(id) // Llamamos al servicio para alternar el valor de 'lead'
+        const { courseCode, scheduleCode } = c.req.valid('json')
+        await this.scheduleGenericService.toggleLead(
+          id,
+          courseCode,
+          scheduleCode
+        ) // Llamamos al servicio para alternar el valor de 'lead'
         return c.json({
           success: true,
           message: 'Lead actualizado correctamente',
