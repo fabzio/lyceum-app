@@ -7,11 +7,42 @@ import {
   updatePresentationLetterDTO,
 } from '../dto'
 import { PresentationLettersService } from '../services'
-import { insertDocument } from '@/aws/services'
+import { getDocument, insertDocument } from '@/aws/services'
+import { stream } from 'hono/streaming'
 
 class PresentationLetterController {
   private router = new Hono()
   private presentatioLetterService = new PresentationLettersService()
+
+  public getDocument = this.router.get(
+    '/document/:docId',
+    zValidator('param', z.object({ docId: z.string() })),
+    async (c) => {
+      const { docId } = c.req.param()
+      try {
+        const thesisDoc = await getDocument({
+          bucketName: '',
+          docId,
+        })
+        const byteArray = await thesisDoc.data
+        if (byteArray === undefined) {
+          throw new Error('Error al obtener el archivo')
+        }
+        c.header('Content-Type', thesisDoc.contentType)
+        return stream(c, async (stream) => {
+          stream.onAbort(() => {
+            console.log('Stream aborted')
+          })
+          await stream.write(byteArray)
+        })
+      } catch (e) {
+        if (e instanceof LyceumError) {
+          c.status(e.code)
+        }
+        throw e
+      }
+    }
+  )
 
   public getPresentationLetterDetail = this.router.get(
     '/:presentationLetterId',
@@ -51,7 +82,7 @@ class PresentationLetterController {
     ),
     zValidator('form', createPresentationLetterDTO),
     async (c) => {
-      const { companyName, description, documentFile, accounts, scheduleId } =
+      const { companyName, description, accounts, scheduleId } =
         c.req.valid('form')
       const accountsParse = JSON.parse(accounts) as Array<{ id: string }>
       const { requesterId } = c.req.param()
@@ -61,14 +92,55 @@ class PresentationLetterController {
             requesterId,
             companyName,
             scheduleId,
+            /*
             documentId: await insertDocument({
               file: documentFile as File,
               bucketName: 'document',
             }),
+            */
             description,
             accountsParse,
           }),
           message: 'Presentation Letter created',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
+  public updatePresentationLetter = this.router.post(
+    '/updatePresentationCard/:id',
+    zValidator(
+      'param',
+      z.object({
+        id: z.string(),
+      })
+    ),
+    zValidator(
+      'form',
+      z.object({
+        documentFile: z.instanceof(File),
+      })
+    ),
+    async (c) => {
+      const { documentFile } = c.req.valid('form')
+      const { id } = c.req.param()
+      try {
+        const response: ResponseAPI = {
+          data: await this.presentatioLetterService.updatePresentationLetter({
+            documentId: await insertDocument({
+              file: documentFile as File,
+              bucketName: 'document',
+            }),
+            id,
+          }),
+          message: 'Presentation Letter updated',
           success: true,
         }
         return c.json(response)
@@ -180,7 +252,6 @@ class PresentationLetterController {
         status: z.enum(['accepted', 'rejected']),
       })
     ),
-
     async (c) => {
       const { presentationLetterID, status } = c.req.valid('query')
       try {

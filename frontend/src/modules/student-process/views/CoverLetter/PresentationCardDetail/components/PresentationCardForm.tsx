@@ -214,30 +214,6 @@ export default function NewPresentationCardForm() {
         </div>
         <FormField
           control={form.control}
-          name="documentFile"
-          // eslint-disable-next-line
-          render={({ field: { value, onChange, ...filedProps } }) => (
-            <FormItem className="col-span-1 md:col-span-2">
-              <FormLabel className="inline-block hover:underline w-auto">
-                Archivo
-              </FormLabel>
-              <FormControl>
-                <Input
-                  className="w-full"
-                  {...filedProps}
-                  type="file"
-                  accept=".doc,.docx,.pdf"
-                  onChange={(e) =>
-                    onChange(e.target.files && e.target.files[0])
-                  }
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
           name="description"
           render={({ field }) => (
             <FormItem className="col-span-1 md:col-span-2">
@@ -278,7 +254,32 @@ export const formSchema = z.object({
       required_error: 'Debes llenar el propósito de la carta de presentación',
     })
     .min(1, 'Debes llenar el propósito de la carta de presentación'),
-  documentFile: z.instanceof(File, { message: 'Debe seleccionar un archivo' }),
 })
-
+/*
+  <FormField
+          control={form.control}
+          name="documentFile"
+          // eslint-disable-next-line
+          render={({ field: { value, onChange, ...filedProps } }) => (
+            <FormItem className="col-span-1 md:col-span-2">
+              <FormLabel className="inline-block hover:underline w-auto">
+                Archivo
+              </FormLabel>
+              <FormControl>
+                <Input
+                  className="w-full"
+                  {...filedProps}
+                  type="file"
+                  accept=".doc,.docx,.pdf"
+                  onChange={(e) =>
+                    onChange(e.target.files && e.target.files[0])
+                  }
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+  documentFile: z.instanceof(File, { message: 'Debe seleccionar un archivo' }),
+*/
 export type NewPresentationCardFormValues = z.infer<typeof formSchema>

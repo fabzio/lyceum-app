@@ -9,8 +9,12 @@ import {
   TableRow,
 } from '@frontend/components/ui/table'
 import { QueryKeys } from '@frontend/constants/queryKeys'
-import { useSuspenseQuery } from '@tanstack/react-query'
-import { useParams } from '@tanstack/react-router'
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query'
+import { useNavigate, useParams } from '@tanstack/react-router'
 import { Badge } from '@frontend/components/ui/badge'
 import {
   Card,
@@ -18,10 +22,27 @@ import {
   CardHeader,
   CardTitle,
 } from '@frontend/components/ui/card'
-import PDFPreview from './PDFPreview'
 import PresentationCardService from '@frontend/modules/student-process/services/presentationCard.service'
 import { mapCoverLetterStatus } from '../../components/columns'
 import { Button } from '@frontend/components/ui/button'
+import { useSessionStore } from '@frontend/store'
+import { StudentProcessPermissionsDict } from '@frontend/interfaces/enums/permissions/StudentProcess'
+import { toast } from '@frontend/hooks/use-toast'
+import { Input } from '@frontend/components/ui/input'
+import { z } from 'zod'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@frontend/components/ui/form'
+import { Loader2 } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import DownloadDoc from './DownloadDoc'
 
 export default function CoverLetterDetailMain() {
   const { requestCode } = useParams({
@@ -37,13 +58,70 @@ export default function CoverLetterDetailMain() {
   })
 
   const presentationCard = presentationCardRequestDetail
+  const { havePermission } = useSessionStore()
 
-  const handleUpdateCardState = async (cardId: number, state: string) => {
-    try {
-      await PresentationCardService.AproveOrDenegateCard(cardId, state)
-    } catch (error) {
-      console.error('Error Updating Card:', error)
+  const [decision, setDecision] = useState<string | null>(null)
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+  })
+
+  const navigate = useNavigate({
+    from: '/procesos-de-estudiantes/cartas-de-presentacion',
+  })
+  const queryClient = useQueryClient()
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data: {
+      presentationCard: z.infer<typeof formSchema>
+      id: string
+      state: string
+    }) => {
+      if (data.presentationCard.documentFile) {
+        await PresentationCardService.updatePresentationCard({
+          presentationCard: data.presentationCard,
+          id: data.id,
+        })
+      }
+      await PresentationCardService.AproveOrDenegateCard(+data.id, data.state)
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Operación exitosa',
+        description: 'La operación se ha realizado exitosamente.',
+      })
+      queryClient.invalidateQueries({
+        queryKey: [
+          QueryKeys.presentationCards.PRESENTATION_LETTERS_REQUESTS,
+          requestCode,
+        ],
+      })
+      navigate({
+        to: '/procesos-de-estudiantes/cartas-de-presentacion',
+      })
+    },
+    onError: () => {
+      toast({
+        title: 'Error',
+        description: 'Hubo un problema al subir el archivo.',
+        variant: 'destructive',
+      })
+    },
+  })
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    if (decision === 'accepted' && !data.documentFile) {
+      toast({
+        title: 'Error',
+        description:
+          'En el caso de aprobar la solicitud, debe seleccionar un archivo.',
+        variant: 'destructive',
+      })
+      return // Detener la ejecución si no cumple con la validación
     }
+    mutate({
+      presentationCard: { documentFile: data.documentFile || undefined },
+      id: requestCode,
+      state: decision!,
+    })
   }
 
   return (
@@ -107,31 +185,112 @@ export default function CoverLetterDetailMain() {
                   </TableBody>
                 </Table>
               </div>
-              {presentationCard.file && (
-                <PDFPreview file={URL.createObjectURL(presentationCard.file)} />
-              )}
             </CardContent>
           </Card>
         </div>
+        {presentationCard.status === 'sent' &&
+          havePermission(
+            StudentProcessPermissionsDict.REVIEW_PRESENTATION_LETTER
+          ) && (
+            <>
+              <div className="p-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Responder solicitud</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-col items-center y-4">
+                      <Form {...form}>
+                        <form
+                          onSubmit={form.handleSubmit(onSubmit)}
+                          className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full md:w-[600px]"
+                        >
+                          <FormField
+                            control={form.control}
+                            name="documentFile"
+                            // eslint-disable-next-line
+                            render={({
+                              field: { value, onChange, ...filedProps },
+                            }) => (
+                              <FormItem className="col-span-1 md:col-span-2">
+                                <FormLabel className="inline-block hover:underline w-auto">
+                                  Archivo
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    className="w-full"
+                                    {...filedProps}
+                                    type="file"
+                                    accept=".doc,.docx,.pdf"
+                                    onChange={(e) =>
+                                      onChange(
+                                        e.target.files && e.target.files[0]
+                                      )
+                                    }
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <div className="flex items-center justify-center gap-6 w-full">
+                            <Button
+                              type="submit"
+                              variant="outline"
+                              className="w-32"
+                              disabled={isPending}
+                              onClick={() => setDecision('rejected')}
+                            >
+                              {isPending ? (
+                                <Loader2 className="animate-spin" />
+                              ) : (
+                                'Rechazar'
+                              )}
+                            </Button>
+                            <Button
+                              type="submit"
+                              className="w-32"
+                              disabled={isPending}
+                              onClick={() => setDecision('accepted')}
+                            >
+                              {isPending ? (
+                                <Loader2 className="animate-spin" />
+                              ) : (
+                                'Aprobar'
+                              )}
+                            </Button>
+                          </div>
+                        </form>
+                      </Form>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </>
+          )}
+        {presentationCard.documentId && (
+          <div className="p-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Documento adjunto</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <DownloadDoc
+                  docId={presentationCard.documentId} // Usamos la ID del documento asociado
+                  docName="Carta de presentación" // Puede ser un nombre dinámico o estático
+                  message="Descargar documento"
+                />
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </ScrollArea>
-
-      <div className="flex justify-center">
-        <Button
-          variant="outline"
-          onClick={() =>
-            handleUpdateCardState(Number(presentationCard.id), 'rejected')
-          }
-        >
-          Rechazar
-        </Button>
-        <Button
-          onClick={() =>
-            handleUpdateCardState(Number(presentationCard.id), 'accepted')
-          }
-        >
-          Aprobar
-        </Button>
-      </div>
     </div>
   )
 }
+
+export const formSchema = z.object({
+  documentFile: z.instanceof(File).optional(),
+})
+
+export type PresentationCardFormDocumentValues = z.infer<typeof formSchema>

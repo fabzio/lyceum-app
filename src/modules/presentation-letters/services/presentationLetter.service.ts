@@ -64,7 +64,7 @@ class PresentationLettersService {
     requesterId: string
     companyName: string
     scheduleId: number
-    documentId: string
+    //documentId: string
     description: string
     accountsParse: Array<{
       id: string
@@ -101,7 +101,7 @@ class PresentationLettersService {
           submissionDate: new Date(),
           acceptanceDate: null,
           completionDate: null,
-          documentId: params.documentId,
+          //documentId: params.documentId,
         })
         .returning({ id: presentationLetters.id })
 
@@ -260,6 +260,20 @@ class PresentationLettersService {
           acceptanceDate: new Date(),
         })
         .where(eq(presentationLetters.id, params.presentationLetterID))
+    })
+  }
+
+  public async updatePresentationLetter(params: {
+    documentId: string
+    id: string
+  }) {
+    const res = await db.transaction(async (trx) => {
+      await trx
+        .update(presentationLetters)
+        .set({
+          documentId: params.documentId,
+        })
+        .where(eq(presentationLetters.id, parseInt(params.id)))
     })
   }
 }
