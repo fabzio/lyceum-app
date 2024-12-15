@@ -18,7 +18,7 @@ export interface ScheduleGenericDAO {
   toggleLead: (
     id: string,
     courseCode: string,
-    scheduleCode: string
+    scheduleCode: number
   ) => Promise<void>
   getAccountSchedules: (accountId: Account['id']) => Promise<
     {
