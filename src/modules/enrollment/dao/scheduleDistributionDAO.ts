@@ -31,6 +31,11 @@ export interface ScheduleDistributionDAO {
   }): Promise<void>
 
   deleteSchedule(scheduleId: number): Promise<void>
+
+  deleteProfesorOrJpfromSchedule(
+    scheduleId: number,
+    professorId: string
+  ): Promise<void>
 }
 
 export type CourseSchedule = {
