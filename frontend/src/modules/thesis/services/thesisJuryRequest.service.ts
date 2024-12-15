@@ -64,9 +64,15 @@ class ThesisJuryRequestService {
     }
   }
 
-  public static async getThesisJuryRequests() {
+  public static async getThesisJuryRequests(
+    unitID: number,
+    filter?: 'unassigned' | 'requested' | 'assigned'
+  ): Promise<ThesisJuryRequest[]> {
     try {
-      const res = await http.get('/thesis/jury')
+      console.log(unitID)
+      const res = await http.get(`/thesis/jury`, {
+        params: { unitID, filter },
+      })
       const response = res.data as ResponseAPI<ThesisJuryRequest[]>
       if (!response.success) {
         throw new Error(response.message)

@@ -1,7 +1,7 @@
 import db from '@/database'
-import { accounts, thesis, thesisJuries } from '@/database/schema'
+import { accounts, thesis, thesisJuries, units } from '@/database/schema'
 import { Account } from '@/interfaces/models/Account'
-import { and, eq, not, sql } from 'drizzle-orm'
+import { and, eq, not, sql, inArray } from 'drizzle-orm'
 import { ThesisJuryDAO } from '../dao/thesisJuryDAO'
 import ThesisThemeService from './thesisTheme.service'
 import { ThesisThemeDAO } from '../dao/thesisThemeDAO'
@@ -24,8 +24,28 @@ class ThesisJuryService implements ThesisJuryDAO {
       )
   }
 
-  public async getThesisJuryRequests() {
-    return await db
+  public async getThesisJuryRequests(
+    unitID: number,
+    filter?: 'unassigned' | 'requested' | 'assigned'
+  ) {
+    const getAllChildUnits = async (parentId: number): Promise<number[]> => {
+      const childUnits = await db
+        .select({ id: units.id })
+        .from(units)
+        .where(eq(units.parentId, parentId))
+
+      if (!childUnits.length) return [parentId]
+
+      const childIds = await Promise.all(
+        childUnits.map(async (unit) => await getAllChildUnits(unit.id))
+      )
+
+      return [parentId, ...childIds.flat()]
+    }
+
+    const unitIds = (await getAllChildUnits(unitID)).filter((id) => !isNaN(id))
+
+    const query = db
       .select({
         code: thesis.requestCode,
         title: thesis.title,
@@ -39,9 +59,16 @@ class ThesisJuryService implements ThesisJuryDAO {
       })
       .from(thesis)
       .innerJoin(accounts, eq(thesis.applicantId, accounts.id))
-      .where(not(eq(thesis.juryState, 'unassigned')))
-  }
+      .where(
+        and(
+          inArray(thesis.areaId, unitIds),
+          filter ? eq(thesis.juryState, filter) : sql`1 = 1` // This will always be true, effectively ignoring the filter
+        )
+      )
 
+    return await query
+  }
+  /**/
   public async getThesisJuries({ requestCode }: { requestCode: string }) {
     const [{ thesisId }] = await db
       .select({ thesisId: thesis.id })

@@ -22,21 +22,37 @@ class ThesisJuryController {
     }
   })
 
-  public getThesisJuryRequest = this.router.get('/', async (c) => {
-    try {
-      const response = await this.thesisJuryService.getThesisJuryRequests()
-      return c.json({
-        data: response,
-        message: 'Jury request retrieved',
-        success: true,
+  public getThesisJuryRequest = this.router.get(
+    '/',
+    zValidator(
+      'query',
+      z.object({
+        unitID: z.coerce.number(),
+        filter: z.enum(['unassigned', 'requested', 'assigned']).optional(),
       })
-    } catch (error) {
-      if (error instanceof LyceumError) {
-        c.status(error.code)
+    ),
+    async (c) => {
+      const { unitID, filter } = c.req.valid('query')
+
+      try {
+        console.log(unitID, filter)
+        const response = await this.thesisJuryService.getThesisJuryRequests(
+          unitID,
+          filter
+        )
+        return c.json({
+          data: response,
+          message: 'Jury request retrieved',
+          success: true,
+        })
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
       }
-      throw error
     }
-  })
+  )
 
   public getThesisJuries = this.router.get('/:code/juries', async (c) => {
     const { code } = c.req.param()

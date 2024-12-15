@@ -7,11 +7,23 @@ import ThesisJuryRequestService from '@frontend/modules/thesis/services/thesisJu
 import { QueryKeys } from '@frontend/constants/queryKeys'
 import Need from '@frontend/components/Need'
 import { ThesisPermissionsDict } from '@frontend/interfaces/enums/permissions/Thesis'
+import { useSessionStore } from '@frontend/store'
+import { useState } from 'react'
 
 export default function ThesisJuryRequestList() {
+  const { getRoleWithPermission } = useSessionStore()
+  const unitId = getRoleWithPermission(
+    ThesisPermissionsDict.READ_THESIS_JURY
+  )?.unitId!
+  const [filter, setFilter] = useState<
+    'unassigned' | 'requested' | 'assigned' | undefined
+  >(undefined)
   const { data: thesisJuryRequest } = useSuspenseQuery({
-    queryKey: [QueryKeys.thesis.THESIS_JURY_REQUESTS],
-    queryFn: () => ThesisJuryRequestService.getThesisJuryRequests(),
+    queryKey: [QueryKeys.thesis.THESIS_JURY_REQUESTS, filter],
+
+    queryFn: () => {
+      return ThesisJuryRequestService.getThesisJuryRequests(unitId, filter)
+    },
   })
   return (
     <div className="flex flex-col my-6 p-2">
@@ -20,7 +32,7 @@ export default function ThesisJuryRequestList() {
           <Input type="search" placeholder="🔎 Buscar" />
         </div>
         <div className="flex gap-3">
-          <ThesisJuryRequestSelectFilter />
+          <ThesisJuryRequestSelectFilter onFilterChange={setFilter} />
         </div>
         <Need permissions={ThesisPermissionsDict.REQUEST_THESIS_JURY}>
           <NewJuryRequestDialog />

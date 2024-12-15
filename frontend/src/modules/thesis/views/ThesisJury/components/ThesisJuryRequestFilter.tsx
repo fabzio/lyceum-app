@@ -5,19 +5,37 @@ import {
   SelectContent,
   SelectItem,
 } from '@frontend/components/ui/select'
+import { useState } from 'react'
 
-export default function ThesisJuryRequestSelectFilter() {
+interface ThesisThemeSelectFilterProps {
+  onFilterChange: (
+    value: 'unassigned' | 'requested' | 'assigned' | undefined
+  ) => void
+}
+
+export default function ThesisJuryRequestSelectFilter({
+  onFilterChange,
+}: ThesisThemeSelectFilterProps) {
+  const [selectedFilter, setSelectedFilter] = useState('')
+
+  const handleFilterChange = (value: string) => {
+    setSelectedFilter(value)
+    onFilterChange(value as 'unassigned' | 'requested' | 'assigned' | undefined)
+  }
+
   return (
-    <Select>
+    <Select value={selectedFilter} onValueChange={handleFilterChange}>
       <SelectTrigger>
         <SelectValue placeholder="Filtrar por estado" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="123">
+        <SelectItem value="unassigned">
           Solicitud enviada por secretario académico
         </SelectItem>
-        <SelectItem value="456">Director de carrera propuso jurados</SelectItem>
-        <SelectItem value="789">Terminado</SelectItem>
+        <SelectItem value="requested">
+          Director de carrera propuso jurados
+        </SelectItem>
+        <SelectItem value="assigned">Terminado</SelectItem>
       </SelectContent>
     </Select>
   )
