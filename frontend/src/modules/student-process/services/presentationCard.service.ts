@@ -121,7 +121,7 @@ class PresentationCardService {
   }) {
     try {
       const formData = new FormData()
-      formData.append('documentFile', presentationCard.documentFile)
+      formData.append('documentFile', presentationCard.documentFile!)
       const res = await http.post(
         `/presentation-letters/letters/updatePresentationCard/${id}`,
         formData,
