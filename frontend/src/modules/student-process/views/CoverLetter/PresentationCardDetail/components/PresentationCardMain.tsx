@@ -124,6 +124,59 @@ export default function CoverLetterDetailMain() {
     })
   }
 
+  const { mutate: mutate2, isPending: isPending2 } = useMutation({
+    mutationFn: async (data: {
+      presentationCard: z.infer<typeof formSchema>
+      id: string
+      state: string
+    }) => {
+      if (data.presentationCard.documentFile) {
+        await PresentationCardService.updatePresentationCard({
+          presentationCard: data.presentationCard,
+          id: data.id,
+        })
+      }
+      await PresentationCardService.AproveOrDenegateCard(+data.id, data.state)
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Operación exitosa',
+        description: 'La operación se ha realizado exitosamente.',
+      })
+      queryClient.invalidateQueries({
+        queryKey: [
+          QueryKeys.presentationCards.PRESENTATION_LETTERS_REQUESTS,
+          requestCode,
+        ],
+      })
+      navigate({
+        to: '/procesos-de-estudiantes/cartas-de-presentacion',
+      })
+    },
+    onError: () => {
+      toast({
+        title: 'Error',
+        description: 'Hubo un problema al subir el archivo.',
+        variant: 'destructive',
+      })
+    },
+  })
+  const onSubmit2 = (data: z.infer<typeof formSchema>) => {
+    if (!data.documentFile) {
+      toast({
+        title: 'Error',
+        description: 'Debe seleccionar un archivo.',
+        variant: 'destructive',
+      })
+      return // Detener la ejecución si no cumple con la validación
+    }
+    mutate2({
+      presentationCard: { documentFile: data.documentFile || undefined },
+      id: requestCode,
+      state: decision!,
+    })
+  }
+
   return (
     <div className="flex h-full flex-col overflow-y-hidden">
       <div className="flex items-center justify-between p-4">
@@ -190,7 +243,7 @@ export default function CoverLetterDetailMain() {
         </div>
         {presentationCard.status === 'sent' &&
           havePermission(
-            StudentProcessPermissionsDict.REVIEW_PRESENTATION_LETTER
+            StudentProcessPermissionsDict.APPROVE_PRESENTATION_LETTER
           ) && (
             <>
               <div className="p-4">
@@ -268,22 +321,123 @@ export default function CoverLetterDetailMain() {
               </div>
             </>
           )}
-        {presentationCard.documentId && (
-          <div className="p-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Documento adjunto</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <DownloadDoc
-                  docId={presentationCard.documentId} // Usamos la ID del documento asociado
-                  docName="Carta de presentación" // Puede ser un nombre dinámico o estático
-                  message="Descargar documento"
-                />
-              </CardContent>
-            </Card>
-          </div>
-        )}
+        {presentationCard.documentId &&
+          (havePermission(
+            StudentProcessPermissionsDict.REVIEW_PRESENTATION_LETTER
+          ) ||
+            havePermission(
+              StudentProcessPermissionsDict.APPROVE_PRESENTATION_LETTER
+            )) &&
+          presentationCard.status !== 'succeeded' && (
+            <div className="p-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Documento adjunto</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <DownloadDoc
+                    docId={presentationCard.documentId} // Usamos la ID del documento asociado
+                    docName="Carta de presentación" // Puede ser un nombre dinámico o estático
+                    message="Descargar documento"
+                  />
+                  {havePermission(
+                    StudentProcessPermissionsDict.REVIEW_PRESENTATION_LETTER
+                  ) &&
+                    presentationCard.status !== 'rejected' && (
+                      <div className="mt-6">
+                        <Form {...form}>
+                          <form
+                            onSubmit={form.handleSubmit(onSubmit2)}
+                            className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full md:w-[600px]"
+                          >
+                            <FormField
+                              control={form.control}
+                              name="documentFile"
+                              // eslint-disable-next-line
+                              render={({
+                                field: { value, onChange, ...filedProps },
+                              }) => (
+                                <FormItem className="col-span-1 md:col-span-2">
+                                  <FormLabel className="inline-block hover:underline w-auto">
+                                    Actualizar archivo
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      className="w-full"
+                                      {...filedProps}
+                                      type="file"
+                                      accept=".doc,.docx,.pdf"
+                                      onChange={(e) =>
+                                        onChange(
+                                          e.target.files && e.target.files[0]
+                                        )
+                                      }
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <Button
+                              type="submit"
+                              className="w-full"
+                              disabled={isPending2}
+                              onClick={() => setDecision('succeeded')}
+                            >
+                              {isPending2 ? (
+                                <Loader2 className="animate-spin" />
+                              ) : (
+                                'Actualizar documento'
+                              )}
+                            </Button>
+                          </form>
+                        </Form>
+                      </div>
+                    )}
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        {presentationCard.documentId &&
+          presentationCard.status === 'succeeded' && (
+            <div className="p-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Documento adjunto</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <DownloadDoc
+                    docId={presentationCard.documentId} // Usamos la ID del documento asociado
+                    docName="Carta de presentación" // Puede ser un nombre dinámico o estático
+                    message="Descargar documento"
+                  />
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        {presentationCard.documentId &&
+          presentationCard.status === 'rejected' &&
+          !havePermission(
+            StudentProcessPermissionsDict.REVIEW_PRESENTATION_LETTER
+          ) &&
+          !havePermission(
+            StudentProcessPermissionsDict.APPROVE_PRESENTATION_LETTER
+          ) && (
+            <div className="p-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Documento adjunto</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <DownloadDoc
+                    docId={presentationCard.documentId} // Usamos la ID del documento asociado
+                    docName="Carta de presentación" // Puede ser un nombre dinámico o estático
+                    message="Descargar documento"
+                  />
+                </CardContent>
+              </Card>
+            </div>
+          )}
       </ScrollArea>
     </div>
   )
