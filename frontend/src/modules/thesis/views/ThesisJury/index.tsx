@@ -1,4 +1,4 @@
-import { Input } from '@frontend/components/ui/input'
+//import { Input } from '@frontend/components/ui/input'
 import ThesisJuryRequestSelectFilter from './components/ThesisJuryRequestFilter'
 import ThesisJuryRequestElement from './components/ThesisJuryRequestElements'
 import NewJuryRequestDialog from './components/NewJuryRequestDialog'
@@ -25,12 +25,14 @@ export default function ThesisJuryRequestList() {
       return ThesisJuryRequestService.getThesisJuryRequests(unitId, filter)
     },
   })
+  /*
+  <div className="md:flex-grow">
+          <Input type="search" placeholder="🔎 Buscar" />
+        </div>
+  */
   return (
     <div className="flex flex-col my-6 p-2">
       <div className="w-full flex md:flex-row justify-between gap-2">
-        <div className="md:flex-grow">
-          <Input type="search" placeholder="🔎 Buscar" />
-        </div>
         <div className="flex gap-3">
           <ThesisJuryRequestSelectFilter onFilterChange={setFilter} />
         </div>
