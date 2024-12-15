@@ -302,10 +302,10 @@ class GenericService {
   }
 
   public static async lyceumLogin({
-    email,
+    emailOrCode,
     password,
   }: {
-    email: string
+    emailOrCode: string
     password: string
   }) {
     const accountResponse = await db
@@ -318,7 +318,9 @@ class GenericService {
         password: accounts.password,
       })
       .from(accounts)
-      .where(or(eq(accounts.email, email), eq(accounts.code, email)))
+      .where(
+        or(eq(accounts.email, emailOrCode), eq(accounts.code, emailOrCode))
+      )
     if (accountResponse.length === 0) {
       throw new Error('Su cuenta no está registrada en el sistema')
     }

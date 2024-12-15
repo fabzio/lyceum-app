@@ -2,6 +2,7 @@ import { useParams, useSearch } from '@tanstack/react-router'
 import ConfirmationDialog from './ConfirmationDialog'
 import { Link } from '@tanstack/react-router'
 import { Button } from '@frontend/components/ui/button'
+import RegeneratePasswordDialog from '@frontend/modules/users/components/RegeneratePasswordDialog'
 
 interface Props {
   refSubmitButtom: React.RefObject<HTMLButtonElement>
@@ -15,7 +16,8 @@ export default function ActionButton({ refSubmitButtom }: Props) {
     from: '/_auth/usuarios/docentes/$code',
   })
   return (
-    <div className="flex justify-end w-full py-2">
+    <div className="flex justify-end w-full py-2 gap-2">
+      <RegeneratePasswordDialog code={code} />
       {mode !== 'view' && (
         <ConfirmationDialog refSubmitButtom={refSubmitButtom} />
       )}
