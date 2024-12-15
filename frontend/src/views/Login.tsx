@@ -11,7 +11,6 @@ import {
 import { Input } from '@frontend/components/ui/input'
 import { ModeToggle } from '@frontend/layouts/components/ModeToggle'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useNavigate } from '@tanstack/react-router'
 import { Link } from '@tanstack/react-router'
 import moment from 'moment'
 import { useForm } from 'react-hook-form'
@@ -22,9 +21,9 @@ import http from '@frontend/lib/http'
 import { useToast } from '@frontend/hooks/use-toast'
 import { Loader2 } from 'lucide-react'
 import { Session } from '@frontend/store'
+import axios from 'axios'
 
 export default function LoginPage() {
-  const navigate = useNavigate()
   const { toast } = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -35,18 +34,21 @@ export default function LoginPage() {
         const res = await http.post('/auth/signin', data)
         const respose = res.data as ResponseAPI<NonNullable<Session>>
         if (!respose.success) throw new Error(respose.message)
-        return respose.data
       } catch (error) {
-        toast({
-          title: 'Error al iniciar sesión',
-          description: (error as Error).message,
-          variant: 'destructive',
-        })
+        if (axios.isAxiosError(error)) {
+          throw new Error(error.response?.data.message || error.message)
+        }
+        throw error
       }
     },
     onSuccess: () => {
-      navigate({
-        to: '/',
+      window.location.href = '/'
+    },
+    onError: ({ message }) => {
+      toast({
+        title: 'Error al iniciar sesión',
+        description: message,
+        variant: 'destructive',
       })
     },
   })
@@ -84,9 +86,12 @@ export default function LoginPage() {
                   name="code"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Correo</FormLabel>
+                      <FormLabel>Usuario</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input
+                          {...field}
+                          placeholder="Ingrese su correo o código"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -158,11 +163,9 @@ export default function LoginPage() {
 }
 
 const formSchema = z.object({
-  code: z
-    .string({
-      required_error: 'Ingrese su código',
-    })
-    .length(8, 'El código debe tener 8 caracteres'),
+  code: z.string({
+    required_error: 'Ingrese su código o correo',
+  }),
   password: z
     .string({
       required_error: 'Ingrese su contraseña',

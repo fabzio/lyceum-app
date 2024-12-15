@@ -24,8 +24,8 @@ type AccountTableProps = {
 export default function AccountTable({
   scheduleId,
   //TODO ARREGLAR, PARA QUE PASE ESTO A LA TABLA
-  //courseCode,
-  //scheduleCode,
+  courseCode,
+  scheduleCode,
 }: AccountTableProps) {
   const { filters, setFilters } = useFilters(
     '/_auth/procesos-de-estudiantes/horarios'
@@ -44,7 +44,10 @@ export default function AccountTable({
   }
 
   const sortingState = sortByToState(filters.sortBy)
-  const columns = useMemo(() => AccountTableColumns, [])
+  const columns = useMemo(
+    () => AccountTableColumns(courseCode, scheduleCode),
+    [courseCode, scheduleCode]
+  )
   //const navigate = useNavigate({ from: '/usuarios' });
 
   return (

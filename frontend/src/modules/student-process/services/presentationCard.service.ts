@@ -7,8 +7,28 @@ import {
   PresentationCardDetail,
 } from '../interfaces/PresentationCard'
 import { Unit } from '@frontend/interfaces/models/Unit'
+import { PresentationCardFormDocumentValues } from '../views/CoverLetter/PresentationCardDetail/components/PresentationCardMain'
 
 class PresentationCardService {
+  public static async getDocument(docId: string) {
+    try {
+      const res = await http.get(
+        `/presentation-letters/letters/document/${docId}`,
+        {
+          responseType: 'blob',
+        }
+      )
+      return {
+        file: res.data,
+        type: res.headers['content-type'],
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
   public static async getPresentationCardRequestsInUnit(params: {
     unitId: Unit['id']
   }) {
@@ -44,7 +64,6 @@ class PresentationCardService {
       if (!response.success) {
         throw new Error(response.message)
       }
-      console.log('aca muere ')
       return response.data as PresentationCard[]
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -89,7 +108,7 @@ class PresentationCardService {
       formData.append('scheduleId', presentationCard.scheduleId.toString())
       formData.append('accounts', JSON.stringify(presentationCard.accountIds))
       formData.append('description', presentationCard.description)
-      formData.append('documentFile', presentationCard.documentFile)
+      //formData.append('documentFile', presentationCard.documentFile)
       const res = await http.post(
         `/presentation-letters/letters/${accountId}`,
         formData,
@@ -100,6 +119,35 @@ class PresentationCardService {
         id: string
         companyName: string
       }>
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
+
+  public static async updatePresentationCard({
+    presentationCard,
+    id,
+  }: {
+    presentationCard: PresentationCardFormDocumentValues
+    id: string
+  }) {
+    try {
+      const formData = new FormData()
+      formData.append('documentFile', presentationCard.documentFile!)
+      const res = await http.post(
+        `/presentation-letters/letters/updatePresentationCard/${id}`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      )
+
+      const response = res.data as ResponseAPI<PresentationCardDetail>
       if (!response.success) {
         throw new Error(response.message)
       }

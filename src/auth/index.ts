@@ -33,12 +33,14 @@ export const oauthRoute = new Hono()
         })
       } catch (error) {
         // Si no se encuentra, proceder con el registro
-        payload = await GenericService.registerNewAccount({
+        payload = {
           email: profile.email!,
           googleId: profile.id!,
-          name: profile.name || '', // Nombre desde Google
+          name: profile.given_name || '', // Nombre desde Google
           firstSurname: profile.family_name || '', // Apellido desde Google
-        })
+        }
+        const queryString = new URLSearchParams(payload).toString()
+        return c.redirect(`/sign-in?${queryString}`)
       }
 
       const { allowedModules, roles, ...cookieContent } = payload
@@ -82,7 +84,7 @@ export const authRoute = new Hono()
       const data = c.req.valid('json')
       try {
         const response = await GenericService.lyceumLogin({
-          email: data.code,
+          emailOrCode: data.code,
           password: data.password,
         })
         const { allowedModules, roles, ...cookieContent } = response
@@ -100,9 +102,14 @@ export const authRoute = new Hono()
           cookieOptions
         )
         c.status(200)
-        return c.json({ data: response, message: 'Authorized', success: true })
+        return c.json({
+          data: response,
+          message: 'Login successful',
+          success: true,
+        })
       } catch (error) {
         c.status(401)
+        throw error
       }
     }
   )
@@ -164,7 +171,7 @@ export const authRoute = new Hono()
 
         try {
           // Llamar al método de `GenericService` para guardar la información de contacto
-          const response = await GenericService.saveContactInfo({
+          const response = await GenericService.updateContactInfo({
             accountId,
             ...data,
           })

@@ -83,26 +83,20 @@ class ScheduleGenericController {
   public toggleLead = this.router.put(
     '/toggleLead',
     zValidator(
-      'query',
-      z.object({
-        id: z.string().uuid(), // ID del usuario
-      })
-    ),
-    zValidator(
       'json',
       z.object({
+        id: z.string().uuid(), // ID del usuario
         courseCode: z.string(), // Código del curso
         scheduleCode: z.string(), // Código del horario
       })
     ),
     async (c) => {
       try {
-        const { id } = c.req.valid('query')
-        const { courseCode, scheduleCode } = c.req.valid('json')
+        const { id, courseCode, scheduleCode } = c.req.valid('json')
         await this.scheduleGenericService.toggleLead(
           id,
           courseCode,
-          scheduleCode
+          +scheduleCode
         ) // Llamamos al servicio para alternar el valor de 'lead'
         return c.json({
           success: true,
@@ -149,9 +143,6 @@ class ScheduleGenericController {
       })
     ),
     async (c) => {
-      const {
-        term: { id },
-      } = c.get('jwtPayload')
       try {
         const { accountId } = c.req.valid('query')
         const schedules =

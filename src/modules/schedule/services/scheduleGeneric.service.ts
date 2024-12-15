@@ -72,39 +72,25 @@ class ScheduleGenericService implements ScheduleGenericDAO {
   public async toggleLead(
     id: string,
     courseCode: string,
-    scheduleCode: string
+    scheduleCode: number
   ): Promise<void> {
     try {
       // Obtener el valor actual de 'lead' para el estudiante
       const currentLead = await db
         .select({ lead: scheduleAccounts.lead })
         .from(scheduleAccounts)
-        .where(eq(scheduleAccounts.accountId, id))
+        .where(
+          and(
+            eq(scheduleAccounts.accountId, id),
+            eq(scheduleAccounts.scheduleId, scheduleCode)
+          )
+        )
         .limit(1)
         .then((res) => res[0]?.lead)
 
       // Alternar el valor de 'lead'
       const newLeadValue = currentLead === true ? false : true
 
-      // Actualizar el valor de 'lead' en scheduleAccounts
-      const courseId = await db
-        .select({ id: courses.id })
-        .from(courses)
-        .where(eq(courses.code, courseCode))
-        .limit(1)
-        .then((res) => res[0]?.id)
-
-      const scheduleId = await db
-        .select({ id: schedules.id })
-        .from(schedules)
-        .where(
-          and(
-            eq(schedules.code, scheduleCode),
-            eq(schedules.courseId, courseId)
-          )
-        )
-        .limit(1)
-        .then((res) => res[0]?.id)
       await db
         .update(scheduleAccounts)
         .set({ lead: newLeadValue })
@@ -112,9 +98,39 @@ class ScheduleGenericService implements ScheduleGenericDAO {
         .where(
           and(
             eq(scheduleAccounts.accountId, id),
-            eq(scheduleAccounts.scheduleId, scheduleId)
+            eq(scheduleAccounts.scheduleId, scheduleCode)
           )
         )
+
+      // // Actualizar el valor de 'lead' en scheduleAccounts
+      // const courseId = await db
+      //   .select({ id: courses.id })
+      //   .from(courses)
+      //   .where(eq(courses.code, courseCode))
+      //   .limit(1)
+      //   .then((res) => res[0]?.id)
+
+      // const scheduleId = await db
+      //   .select({ id: schedules.id })
+      //   .from(schedules)
+      //   .where(
+      //     and(
+      //       eq(schedules.id, scheduleCode),
+      //       eq(schedules.courseId, courseId)
+      //     )
+      //   )
+      //   .limit(1)
+      //   .then((res) => res[0]?.id)
+      // await db
+      //   .update(scheduleAccounts)
+      //   .set({ lead: newLeadValue })
+
+      //   .where(
+      //     and(
+      //       eq(scheduleAccounts.accountId, id),
+      //       eq(scheduleAccounts.scheduleId, scheduleId)
+      //     )
+      //   )
     } catch (error) {
       throw new Error(`No se pudo alternar el valor de lead para el ID: ${id}`)
     }
