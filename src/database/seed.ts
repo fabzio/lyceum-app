@@ -547,6 +547,19 @@ await db.transaction(async (tx) => {
 
   const sectionCoordinatorPermissions = [
     EnrollmentPermissionsDict.ASSIGN_SCHEDULE_PROFESORS,
+    HiringPermissionsDict.ASSIGN_COURSES_TO_HIRING_PROCESS,
+    HiringPermissionsDict.ASSIGN_REVIEWER_SELECTOR_EVALUATOR,
+    HiringPermissionsDict.CLOSE_HIRING,
+    HiringPermissionsDict.SELECT_CANDIDATE_PHASE_2,
+    HiringPermissionsDict.VIEW_LIST_OF_OPEN_HIRINGS,
+    HiringPermissionsDict.SHOW_RESULTS,
+    HiringPermissionsDict.VIEW_COURSES_IN_HIRING,
+    HiringPermissionsDict.VIEW_ALL_UPDATED_REQUEST_PHASE_1,
+    HiringPermissionsDict.VIEW_RESULTS_PHASE_1,
+    HiringPermissionsDict.VIEW_RESULTS_PHASE_2,
+    HiringPermissionsDict.VIEW_ALL_CANDIDATES_PHASE_1,
+    HiringPermissionsDict.CHANGE_STATUS_ALL_CANDIDATES_PHASE_1,
+    StudentProcessPermissionsDict.MANAGE_JP,
   ]
   await tx.insert(rolePermissions).values(
     sectionCoordinatorPermissions.map((permission) => ({
@@ -668,5 +681,6 @@ await db.transaction(async (tx) => {
     },
   ])
 })
-console.log('Seed end')
+
+console.log('Seed end successfully')
 queryClient.end()
