@@ -58,4 +58,7 @@ export const QueryKeys = {
   presentationCards: {
     PRESENTATION_LETTERS_REQUESTS: 'presentation_cards_requests',
   },
+  delegates: {
+    DELEGATES_LIST: 'delegates',
+  },
 }
