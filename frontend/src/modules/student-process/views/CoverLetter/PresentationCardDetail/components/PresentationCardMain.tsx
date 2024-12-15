@@ -42,6 +42,7 @@ import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
+import DownloadDoc from './DownloadDoc'
 
 export default function CoverLetterDetailMain() {
   const { requestCode } = useParams({
@@ -267,6 +268,22 @@ export default function CoverLetterDetailMain() {
               </div>
             </>
           )}
+        {presentationCard.documentId && (
+          <div className="p-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Documento adjunto</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <DownloadDoc
+                  docId={presentationCard.documentId} // Usamos la ID del documento asociado
+                  docName="Carta de presentación" // Puede ser un nombre dinámico o estático
+                  message="Descargar documento"
+                />
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </ScrollArea>
     </div>
   )

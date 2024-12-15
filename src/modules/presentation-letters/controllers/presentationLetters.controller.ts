@@ -7,11 +7,42 @@ import {
   updatePresentationLetterDTO,
 } from '../dto'
 import { PresentationLettersService } from '../services'
-import { insertDocument } from '@/aws/services'
+import { getDocument, insertDocument } from '@/aws/services'
+import { stream } from 'hono/streaming'
 
 class PresentationLetterController {
   private router = new Hono()
   private presentatioLetterService = new PresentationLettersService()
+
+  public getDocument = this.router.get(
+    '/document/:docId',
+    zValidator('param', z.object({ docId: z.string() })),
+    async (c) => {
+      const { docId } = c.req.param()
+      try {
+        const thesisDoc = await getDocument({
+          bucketName: '',
+          docId,
+        })
+        const byteArray = await thesisDoc.data
+        if (byteArray === undefined) {
+          throw new Error('Error al obtener el archivo')
+        }
+        c.header('Content-Type', thesisDoc.contentType)
+        return stream(c, async (stream) => {
+          stream.onAbort(() => {
+            console.log('Stream aborted')
+          })
+          await stream.write(byteArray)
+        })
+      } catch (e) {
+        if (e instanceof LyceumError) {
+          c.status(e.code)
+        }
+        throw e
+      }
+    }
+  )
 
   public getPresentationLetterDetail = this.router.get(
     '/:presentationLetterId',

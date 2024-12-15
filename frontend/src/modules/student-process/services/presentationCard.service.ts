@@ -10,6 +10,25 @@ import { Unit } from '@frontend/interfaces/models/Unit'
 import { PresentationCardFormDocumentValues } from '../views/CoverLetter/PresentationCardDetail/components/PresentationCardMain'
 
 class PresentationCardService {
+  public static async getDocument(docId: string) {
+    try {
+      const res = await http.get(
+        `/presentation-letters/letters/document/${docId}`,
+        {
+          responseType: 'blob',
+        }
+      )
+      return {
+        file: res.data,
+        type: res.headers['content-type'],
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
   public static async getPresentationCardRequestsInUnit(params: {
     unitId: Unit['id']
   }) {

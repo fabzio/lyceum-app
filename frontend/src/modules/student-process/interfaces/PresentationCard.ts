@@ -24,4 +24,5 @@ export interface PresentationCardDetail {
   accounts?: Account[]
   file?: File
   status: 'sent' | 'accepted' | 'rejected' | 'succeeded'
+  documentId: string
 }
