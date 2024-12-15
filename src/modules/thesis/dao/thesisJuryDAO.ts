@@ -2,7 +2,10 @@ import { Account } from '@/interfaces/models/Account'
 
 export interface ThesisJuryDAO {
   startJuryRequest(params: { requestCode: string }): Promise<void>
-  getThesisJuryRequests(): Promise<
+  getThesisJuryRequests(
+    unitID: number,
+    filter?: 'unassigned' | 'requested' | 'assigned'
+  ): Promise<
     {
       code: string
       title: string
@@ -26,6 +29,4 @@ export interface ThesisJuryDAO {
     listAccountCode: Account['code'][]
   }): Promise<void>
   getThesisByStudentCode(params: { studentCode: string }): Promise<any>
-
-  
 }

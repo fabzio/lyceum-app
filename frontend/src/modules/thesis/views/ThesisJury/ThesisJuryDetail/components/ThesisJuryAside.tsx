@@ -8,14 +8,20 @@ import ThesisJuryRequestService from '@frontend/modules/thesis/services/thesisJu
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { Link, useParams } from '@tanstack/react-router'
 import { mapStatus } from '../../components/ThesisJuryRequestElements'
+import { useSessionStore } from '@frontend/store'
+import { ThesisPermissionsDict } from '@frontend/interfaces/enums/permissions/Thesis'
 
 export default function ThesisJuryAside() {
   const { requestCode } = useParams({
     from: '/_auth/tesis/propuesta-jurados/$requestCode',
   })
+  const { getRoleWithPermission } = useSessionStore()
   const { data: thesisRequest } = useSuspenseQuery({
     queryKey: [QueryKeys.thesis.THESIS_JURY_REQUESTS],
-    queryFn: () => ThesisJuryRequestService.getThesisJuryRequests(),
+    queryFn: () =>
+      ThesisJuryRequestService.getThesisJuryRequests(
+        getRoleWithPermission(ThesisPermissionsDict.READ_THESIS_JURY)?.unitId!
+      ),
   })
   return (
     <ExpandibleAsidebar>
