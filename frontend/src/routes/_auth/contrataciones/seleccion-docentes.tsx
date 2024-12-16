@@ -21,7 +21,7 @@ export const Route = createFileRoute(
     }
   },
   loader: async ({ context: { queryClient, sessionStore } }) => {
-    const { getRoleWithPermission } = sessionStore
+    const { session, getRoleWithPermission } = sessionStore
     return await queryClient.ensureQueryData({
       queryKey: [QueryKeys.hiring.HIRINGS, {}],
       queryFn: () =>
@@ -29,6 +29,7 @@ export const Route = createFileRoute(
           unitId: getRoleWithPermission(
             HiringPermissionsDict.VIEW_LIST_OF_OPEN_HIRINGS
           )!.unitId,
+          accountId: session?.id ?? '',
         }),
     })
   },

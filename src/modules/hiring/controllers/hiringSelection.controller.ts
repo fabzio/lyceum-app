@@ -301,6 +301,7 @@ class HiringSelectioncontroller {
         const response = {
           data: await this.hiringSelectionService.getHiringsWithCoursesByUnit(
             filters.unitId,
+            filters.accountId,
             filters
           ),
           success: true,

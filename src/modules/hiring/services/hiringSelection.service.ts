@@ -8,8 +8,19 @@ import {
   hirings,
   units,
   courses,
+  accountsPerHiring,
 } from '@/database/schema'
-import { and, eq, inArray, desc, sql, asc, or, ilike } from 'drizzle-orm'
+import {
+  and,
+  eq,
+  inArray,
+  desc,
+  sql,
+  asc,
+  or,
+  ilike,
+  notInArray,
+} from 'drizzle-orm'
 
 import { HiringSelectionDAO } from '../dao'
 import {
@@ -466,42 +477,67 @@ class HiringSelectionService implements HiringSelectionDAO {
 
   public async getHiringsWithCoursesByUnit(
     unitId: number,
+    accountId: string,
     filters: GetHiringsWithCoursesQueryDTO
   ): Promise<HiringsWithCoursesDTO[]> {
     const { q = '', page, limit } = filters
     const offset = page * limit
-    const hiringsWithCourses = await db.query.hirings.findMany({
-      columns: {
-        createdIn: false,
-      },
-      where: ilike(hirings.description, `%${q}%`),
-      with: {
-        courses: {
-          with: {
-            course: {
-              columns: {
-                id: true,
-                name: true,
-              },
-            },
-          },
-        },
-      },
-      limit: limit,
-      offset: offset,
-    })
+    // Perform a SELECT query with JOINS
+    console.log(accountId)
+    const rows = await db
+      .select({
+        hiringId: hirings.id,
+        hiringDescription: hirings.description,
+        hiringStatus: hirings.status,
+        hiringEndDate: hirings.endDate,
+        processId: hirings.id,
+        courseId: courses.id,
+        courseName: courses.name,
+      })
+      .from(hirings)
+      .leftJoin(courseHirings, eq(courseHirings.hiringId, hirings.id))
+      .leftJoin(courses, eq(courses.id, courseHirings.courseId))
+      .leftJoin(
+        accountsPerHiring,
+        eq(accountsPerHiring.courseHiringId, courseHirings.id)
+      )
+      .where(
+        and(
+          ilike(hirings.description, `%${q}%`),
+          notInArray(accountsPerHiring.hiringType, ['candidate']),
+          eq(accountsPerHiring.accountId, accountId)
+        )
+      )
+      .limit(limit)
+      .offset(offset)
 
-    return hiringsWithCourses.map((hiring) => ({
-      id: hiring.id,
-      name: hiring.description,
-      status: hiring.status,
-      endDate: hiring.endDate,
-      courses: hiring.courses.map((courseHiring) => ({
-        id: courseHiring.course!.id,
-        name: courseHiring.course!.name,
-        processId: courseHiring.id,
-      })),
-    }))
+    // Now we need to regroup the flat data into a nested structure
+    const hiringsMap = new Map()
+
+    for (const row of rows) {
+      let hiring = hiringsMap.get(row.hiringId)
+      if (!hiring) {
+        hiring = {
+          id: row.hiringId,
+          name: row.hiringDescription,
+          status: row.hiringStatus,
+          endDate: row.hiringEndDate,
+          courses: [],
+        }
+        hiringsMap.set(row.hiringId, hiring)
+      }
+
+      if (row.courseId) {
+        hiring.courses.push({
+          id: row.courseId,
+          name: row.courseName,
+          processId: row.processId,
+        })
+      }
+    }
+
+    const hiringsWithCourses = Array.from(hiringsMap.values())
+    return hiringsWithCourses
   }
 
   public async getJobRequests(accountId: string): Promise<
