@@ -27,7 +27,7 @@ class HiringService {
     }
   }
   public static async getHirings(
-    filters: Filters & { unitId: number }
+    filters: Filters & { unitId: number; accountId: string }
   ): Promise<Hiring[]> {
     try {
       const res = await http.get('/hiring/selection', {

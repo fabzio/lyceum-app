@@ -57,6 +57,7 @@ export interface HiringSelectionDAO {
 
   getHiringsWithCoursesByUnit(
     unitId: number,
+    accountId: string,
     filters: GetHiringsWithCoursesQueryDTO
   ): Promise<HiringsWithCoursesDTO[]>
 
