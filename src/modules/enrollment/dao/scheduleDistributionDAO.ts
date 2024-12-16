@@ -9,6 +9,15 @@ export interface ScheduleDistributionDAO {
       isLead: boolean
     }[]
   ): Promise<void>
+
+  updateProfessorsInSchedule(
+    scheduleId: number,
+    professorsList: {
+      professorId: string
+      isLead: boolean
+    }[]
+  ): Promise<void>
+
   getCoursesScheduleDistribution(params: {
     unitId: Unit['id']
   }): Promise<CourseSchedule[]>

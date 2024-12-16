@@ -33,15 +33,18 @@ import EnrollmenDistributionService from '@frontend/modules/enrollment/services/
 import { QueryKeys } from '@frontend/constants/queryKeys'
 
 interface Props {
-  scheduleId: Schedule['id']
+  schedule: Schedule
 }
 
-export default function AssignProfessorsToCoursesDialog({ scheduleId }: Props) {
+export default function AssignProfessorsToCoursesDialog({ schedule }: Props) {
+  const scheduleId = schedule.id
+  const professors = schedule.professors
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
   const { toast } = useToast()
+
   const { mutate, isPending } = useMutation({
-    mutationFn: EnrollmenDistributionService.assignProfessorsToCourses,
+    mutationFn: EnrollmenDistributionService.updateProfessorsInCourse,
     onError: ({ message }) => {
       toast({
         title: 'Error',
@@ -62,8 +65,11 @@ export default function AssignProfessorsToCoursesDialog({ scheduleId }: Props) {
   })
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      professors: professors,
+      principal: String(professors.findIndex((professor) => professor.isLead)),
+    },
   })
-
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'professors',
@@ -73,14 +79,27 @@ export default function AssignProfessorsToCoursesDialog({ scheduleId }: Props) {
     mutate({
       scheduleId,
       professorsList: data.professors.map((professor, index) => ({
-        professorId: professor.id,
+        professorId: professor.accountId,
         isLead: +data.principal === index,
       })),
     })
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open)
+        if (open) {
+          form.reset({
+            professors: professors,
+            principal: String(
+              professors.findIndex((professor) => professor.isLead)
+            ), // Reset to default state
+          })
+        }
+      }}
+    >
       <DialogTrigger asChild>
         <Button variant="outline">Asignar Docentes</Button>
       </DialogTrigger>
@@ -89,7 +108,7 @@ export default function AssignProfessorsToCoursesDialog({ scheduleId }: Props) {
           <DialogTitle>Asignar Docentes</DialogTitle>
           <DialogDescription>
             Asigna los docentes a los horarios seleccionados, una vez asignado
-            el horaio
+            el horario
             <span className="font-semibold"> NO podrá ser modificado</span>
           </DialogDescription>
         </DialogHeader>
@@ -103,7 +122,7 @@ export default function AssignProfessorsToCoursesDialog({ scheduleId }: Props) {
               variant="outline"
               onClick={() =>
                 append({
-                  id: '',
+                  accountId: '',
                 })
               }
             >
@@ -112,7 +131,7 @@ export default function AssignProfessorsToCoursesDialog({ scheduleId }: Props) {
             {fields.map((field, index) => (
               <div key={field.id} className="flex gap-2 items-center">
                 <FormField
-                  name={`professors.${index}.id`}
+                  name={`professors.${index}.accountId`}
                   defaultValue={field.id}
                   control={form.control}
                   render={({ field }) => (
@@ -131,25 +150,40 @@ export default function AssignProfessorsToCoursesDialog({ scheduleId }: Props) {
                           <FormControl>
                             <QuickSearchInput
                               placeholder="Buscar profesor por código o nombre"
-                              searchFn={(q) =>
-                                AccountsService.getAccount({
-                                  q,
-                                  userType: BaseRoles.TEACHER,
-                                })
+                              searchFn={(q) => {
+                                const accountsResult =
+                                  AccountsService.getAccount({
+                                    q,
+                                    userType: BaseRoles.TEACHER,
+                                  })
+                                const professorsResult = accountsResult.then(
+                                  (accounts) =>
+                                    accounts.map((account) => ({
+                                      accountId: account.id,
+                                      name: `${account.name} ${account.firstSurname} ${account.secondSurname}`,
+                                      code: account.code,
+                                    }))
+                                )
+                                return professorsResult
+                              }}
+                              handleSelect={(item) =>
+                                field.onChange(item?.accountId)
                               }
-                              handleSelect={(item) => field.onChange(item?.id)}
                               renderOption={(item) => (
                                 <div className="hover:bg-muted">
-                                  {`${item.name} ${item.firstSurname} ${item.secondSurname} ${item.code}`}
+                                  {`${item.name}`}
                                 </div>
                               )}
                               renderSelected={(item) => (
                                 <article>
                                   <h5 className="font-semibold">
-                                    {`${item.name} ${item.firstSurname} ${item.secondSurname}`}
+                                    {`${item.name}`}
                                   </h5>
                                   <p className="text-xs">{item.code}</p>
                                 </article>
+                              )}
+                              defaultValue={professors.find(
+                                (p) => p.accountId === field.value
                               )}
                             />
                           </FormControl>
@@ -204,7 +238,7 @@ const formSchema = z.object({
   professors: z
     .array(
       z.object({
-        id: z
+        accountId: z
           .string({
             required_error: 'Debes seleccionar un profesor',
           })

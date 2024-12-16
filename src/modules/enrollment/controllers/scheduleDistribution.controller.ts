@@ -38,6 +38,32 @@ class ScheduleDistributioncontroller {
     }
   )
 
+  public updateProfessorsInSchedule = this.router.put(
+    '/:scheduleId/professors_update',
+    zValidator('param', z.object({ scheduleId: z.coerce.number() })),
+    zValidator('json', insertProfesorToSchDTO),
+    async (c) => {
+      const { scheduleId } = c.req.valid('param')
+      const { professorsList } = c.req.valid('json')
+      try {
+        const response: ResponseAPI = {
+          data: await this.scheduleDistributionService.updateProfessorsInSchedule(
+            scheduleId,
+            professorsList
+          ),
+          message: 'Professors correctly added to an Schedule',
+          success: true,
+        }
+        return c.json(response)
+      } catch (error) {
+        if (error instanceof LyceumError) {
+          c.status(error.code)
+        }
+        throw error
+      }
+    }
+  )
+
   public deleteProfessorOrJpToScheduleProposal = this.router.delete(
     '/:scheduleId',
     zValidator('param', z.object({ scheduleId: z.coerce.number() })),

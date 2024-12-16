@@ -79,6 +79,36 @@ class EnrollmenDistributionService {
       throw error
     }
   }
+
+  public static async updateProfessorsInCourse({
+    scheduleId,
+    professorsList,
+  }: {
+    scheduleId: CourseSchedule['id']
+    professorsList: {
+      professorId: Account['id']
+      isLead: boolean
+    }[]
+  }) {
+    try {
+      const res = await http.put(
+        `/enrollment/schedule-distribution/${scheduleId}/professors_update`,
+        {
+          professorsList,
+        }
+      )
+      const response = res.data as ResponseAPI<CourseSchedule>
+      if (!response.success) {
+        throw new Error(response.message)
+      }
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data.message || error.message)
+      }
+      throw error
+    }
+  }
 }
 
 export default EnrollmenDistributionService
