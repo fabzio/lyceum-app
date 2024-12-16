@@ -47,6 +47,7 @@ export default function FirstFilterTable({ step }: FirstFilterTableProps) {
     queryFn: () => HiringService.getApplicants(hiringId, courseId, step),
     placeholderData: keepPreviousData,
   })
+
   const paginationState = {
     pageIndex: DEFAULT_PAGE_INDEX,
     pageSize: DEFAULT_PAGE_SIZE,
