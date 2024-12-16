@@ -30,7 +30,11 @@ import {
 } from '../errors'
 import { JobRequestsSchema } from '@/database/schema/jobRequests'
 import { AccountsSchema } from '@/database/schema/accounts'
-import { courseStep, jobRequestState } from '@/database/schema/enums'
+import {
+  courseStep,
+  hiringType,
+  jobRequestState,
+} from '@/database/schema/enums'
 import { CreateHiringSelectionPropDTO } from '../dtos/hiringSelectionDTO'
 import { HiringNotFoundError } from '../errors/hiringSelection.error'
 import { GetHiringsWithCoursesQueryDTO } from '../dtos/hiringSelectionDTO'
@@ -90,6 +94,18 @@ class HiringSelectionService implements HiringSelectionDAO {
           courseHiring.newCourseHiringId,
         ])
       )
+
+      if (newHiring.committee) {
+        for (const memberId of newHiring.committee) {
+          for (const id of newCourseHiringIds) {
+            await db.insert(accountsPerHiring).values({
+              accountId: memberId,
+              hiringType: 'candidate',
+              courseHiringId: id.newCourseHiringId,
+            })
+          }
+        }
+      }
 
       const requirements: CourseHiringRequirementsSchema[] = []
       newHiring.courses.forEach((course) => {

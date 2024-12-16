@@ -24,6 +24,7 @@ export const createHiringSelectionDTO = z.object({
       })
     )
     .nonempty(),
+  committee: z.array(z.string()).min(1).optional(),
 })
 
 export type CreateHiringSelectionPropDTO = z.infer<
