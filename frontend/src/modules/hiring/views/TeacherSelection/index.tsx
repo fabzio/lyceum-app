@@ -15,7 +15,7 @@ export default function HiringSelection() {
   const { filters, setFilters } = useFilters(
     '/_auth/contrataciones/seleccion-docentes'
   )
-  const { getRoleWithPermission } = useSessionStore()
+  const { session, getRoleWithPermission } = useSessionStore()
   const { data } = useQuery({
     queryKey: [QueryKeys.hiring.HIRINGS, filters],
     queryFn: () =>
@@ -23,6 +23,7 @@ export default function HiringSelection() {
         unitId: getRoleWithPermission(
           HiringPermissionsDict.VIEW_LIST_OF_OPEN_HIRINGS
         )!.unitId,
+        accountId: session?.id ?? '',
         ...filters,
       }),
   })
