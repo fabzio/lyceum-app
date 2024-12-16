@@ -111,10 +111,64 @@ class ScheduleDistributionService implements ScheduleDistributionDAO {
           lead: professor.isLead,
         }))
       )
-      await tx
-        .update(schedules)
-        .set({ state: 'saved' })
-        .where(eq(schedules.id, scheduleId))
+      // await tx
+      //   .update(schedules)
+      //   .set({ state: 'saved' })
+      //   .where(eq(schedules.id, scheduleId))
+    })
+  }
+
+  public async updateProfessorsInSchedule(
+    scheduleId: number,
+    professorsList: {
+      professorId: string
+      isLead: boolean
+    }[]
+  ) {
+    //Validación 1 - Los AccountId no pueden repetirse ya que no puede registrarse 2 profesores en el mismo horario
+    const AccountIdSet = new Set<string>()
+    for (const professor of professorsList) {
+      if (AccountIdSet.has(professor.professorId)) {
+        throw new RepeatedProfessorError(
+          `El profesor con ID ${professor.professorId} está duplicado en la lista del profesores del horario`
+        )
+      }
+      AccountIdSet.add(professor.professorId)
+    }
+
+    //Validación 2 - El horario a ingresar debe existir.
+    const existingSchedule = await db
+      .select()
+      .from(schedules)
+      .where(eq(schedules.id, scheduleId))
+    if (existingSchedule.length === 0) {
+      throw new ScheduleNotFoundError('El horario no existe')
+    }
+
+    //Validacion 5 - Verificamos si no hay mas de un lead
+    const existingLeadProfessor = professorsList.filter(
+      (professor) => professor.isLead
+    )
+    if (existingLeadProfessor.length > 1) {
+      throw new LeadProfessorAlreadyExistsError(
+        'No puede haber más de un profesor lead en el horario especificado'
+      )
+    }
+
+    // Insertamos los profesores en la tabla scheduleAccount
+    await db.transaction(async (tx) => {
+      //Borramos los profesores anteriores
+      await db
+        .delete(scheduleAccounts)
+        .where(eq(scheduleAccounts.scheduleId, scheduleId))
+      await tx.insert(scheduleAccounts).values(
+        professorsList.map((professor) => ({
+          accountId: professor.professorId,
+          scheduleId,
+          roleId: BaseRoles.PROFESSOR,
+          lead: professor.isLead,
+        }))
+      )
     })
   }
 
@@ -308,8 +362,8 @@ class ScheduleDistributionService implements ScheduleDistributionDAO {
       .innerJoin(units, eq(units.id, courses.unitId))
       .where(
         and(
-          or(eq(units.parentId, unitId), eq(courses.unitId, unitId)),
-          eq(schedules.state, 'editing')
+          or(eq(units.parentId, unitId), eq(courses.unitId, unitId))
+          //eq(schedules.state, 'editing')
         )
       )
 
