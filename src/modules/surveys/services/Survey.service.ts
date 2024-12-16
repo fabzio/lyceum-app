@@ -22,6 +22,7 @@ import {
   accountRoles,
   accountSurveys,
   surveyAnswers,
+  unitsSupports,
 } from '@/database/schema'
 import { surveyQuestions } from '@/database/schema/surveyQuestions'
 import { CreateSurveyDTO, InsertAnswerDTO } from '../dtos/SurveyDTO'
@@ -35,13 +36,26 @@ import groupBy from 'just-group-by'
 
 class SurveyService {
   public async getSpecialitySurveys(unitId: Unit['id']) {
-    const isSpeciality = await db.query.units.findFirst({
+    const unitType = await db.query.units.findFirst({
       columns: {
-        id: true,
+        type: true,
       },
-      where: and(eq(units.id, unitId), eq(units.type, 'speciality')),
+      where: eq(units.id, unitId),
     })
-    if (!isSpeciality) throw new Error('Especialidad no encontrada')
+    if (!unitType) throw new Error('Unidad no encontrada')
+    if (unitType?.type === 'speciality') {
+      //Si es especialidad, buscamos el id de la unidad de soporte
+      const supportUnit = await db.query.unitsSupports.findFirst({
+        columns: {
+          id: true,
+          supportedUnitId: true,
+        },
+        where: eq(unitsSupports.supportingUnitId, unitId),
+      })
+      if (supportUnit?.supportedUnitId !== undefined) {
+        unitId = supportUnit.supportedUnitId
+      } else throw new Error('La especialidad no tiene unidad de soporte')
+    }
 
     const surveysSpeciality = await db.query.surveys.findMany({
       columns: {
@@ -51,14 +65,18 @@ class SurveyService {
     })
     return surveysSpeciality
   }
+
   public async createSurvey(surveyData: CreateSurveyDTO) {
     const exisitngUnit = await db.query.units.findFirst({
       columns: {
         id: true,
       },
-      where: and(eq(units.id, surveyData.unitId), eq(units.type, 'speciality')),
+      where: and(
+        eq(units.id, surveyData.unitId),
+        or(eq(units.type, 'section'), eq(units.type, 'department'))
+      ),
     })
-    if (!exisitngUnit) throw new Error('Especialidad no encontrada')
+    if (!exisitngUnit) throw new Error('Unidad de soporte no encontrada')
 
     await db.transaction(async (tx) => {
       const [newSurvey] = await tx
@@ -81,12 +99,12 @@ class SurveyService {
   public async getUnAnsweredSurveys(AccountId: string) {
     const unitStudentResponse = await db
       .select({
-        unitId: accounts.unitId,
-        unitType: units.type,
+        supportUnitId: unitsSupports.supportedUnitId,
       })
       .from(accounts)
       .innerJoin(accountRoles, eq(accountRoles.accountId, accounts.id))
       .innerJoin(units, eq(units.id, accounts.unitId))
+      .innerJoin(unitsSupports, eq(unitsSupports.supportingUnitId, units.id))
       .where(
         and(
           eq(accounts.id, AccountId),
@@ -95,7 +113,9 @@ class SurveyService {
         )
       )
     if (!unitStudentResponse.length)
-      throw new Error('No se encontró la especialidad del estudiante')
+      throw new Error(
+        'No se encontró la unidad de soporte de la especialidad del estudiante'
+      )
     const [unitStudent] = unitStudentResponse
     let date = new Date()
     const surveysAvailable = await db
@@ -109,7 +129,7 @@ class SurveyService {
       .from(surveys)
       .where(
         and(
-          eq(surveys.unitId, unitStudent.unitId),
+          eq(surveys.unitId, unitStudent.supportUnitId),
           eq(surveys.active, true),
           gte(surveys.endDate, date),
           lte(surveys.creationDate, date)

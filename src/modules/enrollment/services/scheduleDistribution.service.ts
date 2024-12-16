@@ -212,6 +212,7 @@ class ScheduleDistributionService implements ScheduleDistributionDAO {
         code: string
         state: 'saved' | 'editing'
         vacancies: number
+        visibility: boolean
       }
     }[]
     if (unitType === 'department' || unitType === 'section') {
@@ -268,6 +269,7 @@ class ScheduleDistributionService implements ScheduleDistributionDAO {
           code: schedules.code,
           vacancies: schedules.vacancies,
           state: schedules.state,
+          visibility: schedules.visibility,
         },
       })
       .from(enrollmentProposalCourses)
@@ -355,6 +357,7 @@ class ScheduleDistributionService implements ScheduleDistributionDAO {
           code: schedules.code,
           vacancies: schedules.vacancies,
           state: schedules.state,
+          visibility: schedules.visibility,
         },
       })
       .from(schedules)

@@ -474,6 +474,73 @@ await db.transaction(async (tx) => {
     },
   ])
 
+  await tx.insert(rolePermissions).values([
+    {
+      permissionId: permissionsInserted.find(
+        (permissions) =>
+          permissions.permissionName ===
+          HiringPermissionsDict.READ_OWN_ACCOUNT_INFORMATION
+      )?.permissionId!,
+      roleId: BaseRoles.EXTERNAL,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permissions) =>
+          permissions.permissionName ===
+          HiringPermissionsDict.CREATE_OWN_CONTACT_INFO
+      )?.permissionId!,
+      roleId: BaseRoles.EXTERNAL,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permissions) =>
+          permissions.permissionName ===
+          HiringPermissionsDict.UPDATE_OWN_CONTACT_INFO
+      )?.permissionId!,
+      roleId: BaseRoles.EXTERNAL,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permissions) =>
+          permissions.permissionName ===
+          HiringPermissionsDict.CREATE_JOB_REQUEST
+      )?.permissionId!,
+      roleId: BaseRoles.EXTERNAL,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permissions) =>
+          permissions.permissionName ===
+          HiringPermissionsDict.READ_OWN_JOB_REQUESTS
+      )?.permissionId!,
+      roleId: BaseRoles.EXTERNAL,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permissions) =>
+          permissions.permissionName ===
+          HiringPermissionsDict.VIEW_LIST_OF_OPEN_HIRINGS
+      )?.permissionId!,
+      roleId: BaseRoles.EXTERNAL,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permissions) =>
+          permissions.permissionName ===
+          HiringPermissionsDict.VIEW_STATUS_OF_OWN_JOB_REQUEST_APPLICATIONS
+      )?.permissionId!,
+      roleId: BaseRoles.EXTERNAL,
+    },
+    {
+      permissionId: permissionsInserted.find(
+        (permissions) =>
+          permissions.permissionName ===
+          HiringPermissionsDict.VIEW_ALL_UPDATED_REQUEST_PHASE_1
+      )?.permissionId!,
+      roleId: BaseRoles.EXTERNAL,
+    },
+  ])
+
   const [carreerDirectorRole] = await tx
     .insert(roles)
     .values({

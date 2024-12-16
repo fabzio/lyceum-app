@@ -16,7 +16,7 @@ class SurveyController {
         const response = await this.surveyService.getSpecialitySurveys(unitId)
         return c.json({
           data: response,
-          message: 'Speciality surveys',
+          message: 'Unit surveys',
           success: true,
         })
       } catch (error) {
