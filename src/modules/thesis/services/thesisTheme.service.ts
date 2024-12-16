@@ -5,6 +5,7 @@ import {
   thesisActions,
   thesis,
   units,
+  accountRoles,
 } from '@/database/schema'
 import {
   thesisAccounts,
@@ -257,7 +258,14 @@ class ThesisThemeService implements ThesisThemeDAO {
       .innerJoin(accounts, eq(thesis.applicantId, accounts.id))
       .innerJoin(thesisActions, eq(thesis.lastActionId, thesisActions.id))
       .innerJoin(roles, eq(thesisActions.roleId, roles.id))
-      .where(and(eq(accounts.unitId, specialityId), condition))
+      .innerJoin(accountRoles, eq(accountRoles.accountId, thesis.applicantId))
+      .where(
+        and(
+          eq(accountRoles.roleId, 1),
+          eq(accountRoles.unitId, specialityId),
+          condition
+        )
+      )
   }
 
   async getThesisThemeRequestDetail({ requestCode }: { requestCode: string }) {
