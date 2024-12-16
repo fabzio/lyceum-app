@@ -38,6 +38,7 @@ export default function CourseScheduleAccordion({ courseSchedules }: Props) {
 interface ScheduleListProps {
   schedules: Schedule[]
 }
+
 function ScheduleList({ schedules }: ScheduleListProps) {
   return (
     <ul className="flex flex-col gap-2 w-full my-1">
@@ -57,19 +58,15 @@ function ScheduleList({ schedules }: ScheduleListProps) {
             </Need>
             <span>{schedule.vacancies} vacantes</span>
             <span>
-              {schedule.state === 'saved'
-                ? 'Docentes asignados'
-                : 'Sin docente'}
+              {schedule.professors.length
+                ? String(schedule.professors.length) + ' Docentes asignados'
+                : 'Sin docentes asignados'}
             </span>
-            {schedule.state !== 'saved' && (
-              <Need
-                permissions={
-                  EnrollmentPermissionsDict.ASSIGN_SCHEDULE_PROFESORS
-                }
-              >
-                <AsingProfessorsToCoursesDialog scheduleId={schedule.id} />
-              </Need>
-            )}
+            <Need
+              permissions={EnrollmentPermissionsDict.ASSIGN_SCHEDULE_PROFESORS}
+            >
+              <AsingProfessorsToCoursesDialog schedule={schedule} />
+            </Need>
           </div>
         </li>
       ))}
