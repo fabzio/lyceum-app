@@ -84,6 +84,7 @@ export type HiringsWithCoursesDTO = z.infer<typeof hiringsWithCoursesDTO>
 
 export const getHiringsWithCoursesQueryDTO = z.object({
   unitId: z.coerce.number(), // ID de la unidad
+  accountId: z.string(), // ID del usuario
   q: z.string().optional(), // Para un filtro opcional de búsqueda
   page: z.coerce.number().optional().default(0),
   limit: z.coerce.number().optional().default(5),
