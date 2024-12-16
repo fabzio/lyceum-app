@@ -11,7 +11,7 @@ export const Route = createFileRoute('/_auth/encuestas/gestionar')({
   beforeLoad: async ({ context: { sessionStore, toaster } }) => {
     const { havePermission } = sessionStore
     const { toast } = toaster
-    if (!havePermission(SurveyPermissionsDict.CREATE_SURVEY)) {
+    if (!havePermission(SurveyPermissionsDict.READ_SURVEY)) {
       toast(toastNotAutorized)
       throw redirect({
         to: '/',
@@ -24,7 +24,7 @@ export const Route = createFileRoute('/_auth/encuestas/gestionar')({
       queryKey: [QueryKeys.survey.SURVEYS],
       queryFn: () =>
         SurveyManagementService.getSurveysOfSpeciality({
-          unitId: getRoleWithPermission(SurveyPermissionsDict.CREATE_SURVEY)!
+          unitId: getRoleWithPermission(SurveyPermissionsDict.READ_SURVEY)!
             .unitId,
         }),
     })
