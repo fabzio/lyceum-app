@@ -29,13 +29,9 @@ export default function ThesisJuryRequestSelectFilter({
         <SelectValue placeholder="Filtrar por estado" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="unassigned">
-          Solicitud enviada por secretario académico
-        </SelectItem>
-        <SelectItem value="requested">
-          Director de carrera propuso jurados
-        </SelectItem>
-        <SelectItem value="assigned">Terminado</SelectItem>
+        <SelectItem value="unassigned">Sin jurados asignados</SelectItem>
+        <SelectItem value="requested">Solicitud de jurados</SelectItem>
+        <SelectItem value="assigned">Jurados asignados</SelectItem>
       </SelectContent>
     </Select>
   )

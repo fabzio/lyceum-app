@@ -498,7 +498,6 @@ await db.transaction(async (tx) => {
     StudentProcessPermissionsDict.READ_RISK_STUDENTS,
     StudentProcessPermissionsDict.LOAD_RISK_STUDENTS,
     StudentProcessPermissionsDict.REQUEST_RISK_STUDENT_REPORT,
-    SurveyPermissionsDict.CREATE_SURVEY,
     SurveyPermissionsDict.READ_SURVEY,
     SurveyPermissionsDict.READ_SURVEY_RESULTS,
     ThesisPermissionsDict.DOWNLOAD_THESIS_REPORT,
@@ -596,6 +595,8 @@ await db.transaction(async (tx) => {
   const sectionAssistantPermisions = [
     EnrollmentPermissionsDict.ASSIGN_SCHEDULE_PROFESORS,
     SurveyPermissionsDict.CREATE_SURVEY,
+    SurveyPermissionsDict.READ_SURVEY,
+    SurveyPermissionsDict.READ_SURVEY_RESULTS,
     HiringPermissionsDict.VIEW_LIST_OF_OPEN_HIRINGS,
     HiringPermissionsDict.VIEW_COURSES_IN_HIRING,
     HiringPermissionsDict.VIEW_ALL_UPDATED_REQUEST_PHASE_1,
