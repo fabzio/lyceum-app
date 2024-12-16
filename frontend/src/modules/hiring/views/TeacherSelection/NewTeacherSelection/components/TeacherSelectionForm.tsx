@@ -5,7 +5,6 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
 import HiringService from '@frontend/modules/hiring/Services/Hirings.service'
-import { Loader2 } from 'lucide-react'
 import { useToast } from '@frontend/hooks/use-toast'
 import CoursesSelection from './CoursesSelection'
 import { useSessionStore } from '@frontend/store'
@@ -25,9 +24,13 @@ export default function TeacherSelectionForm() {
   const navigate = useNavigate()
   const { toast } = useToast()
 
+  const unitId = getRoleWithPermission(
+    HiringPermissionsDict.CREATE_HIRING_PROCESS
+  )!.unitId
+
   const [professors, setProfessors] = useState<Professor[]>([])
 
-  const { mutate, isPending } = useMutation({
+  const createProcess = useMutation({
     mutationFn: HiringService.createTeacherSelection,
     onSuccess: () => {
       navigate({
@@ -51,18 +54,22 @@ export default function TeacherSelectionForm() {
     resolver: zodResolver(formSchema),
   })
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    mutate({
-      ...data,
-      unitId: getRoleWithPermission(
-        HiringPermissionsDict.CREATE_HIRING_PROCESS
-      )!.unitId,
-    })
+  const handleCreate = () => {
+    const data: z.infer<typeof formSchema> = {
+      description: form.getValues('description'),
+      startDate: form.getValues('startDate'),
+      endDate: form.getValues('endDate'), // Ensure you get the current form value
+      endReceivingDate: form.getValues('endReceivingDate'),
+      resultsPublicationDate: form.getValues('resultsPublicationDate'),
+      professors: professors,
+      courses: form.getValues('courses'),
+    }
+    createProcess.mutate({ ...data, unitId: unitId })
   }
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(handleCreate)}>
         <div className="flex">
           <div className="w-1/2">
             <GeneralInfo />
@@ -78,14 +85,11 @@ export default function TeacherSelectionForm() {
         <div className="mt-2 w-full flex justify-center">
           <Button
             type="submit"
-            disabled={isPending}
+            disabled={professors.length === 0}
+            onClick={handleCreate}
             className="px-6 py-3 text-lg rounded-lg shadow-lg focus:outline-none focus:ring-2 disabled:opacity-50"
           >
-            {isPending ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              'Crear convocatoria'
-            )}
+            Crear convocatoria
           </Button>
         </div>
       </form>
