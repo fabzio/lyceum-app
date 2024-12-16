@@ -8,6 +8,7 @@ import {
   hirings,
   units,
   courses,
+  accountsPerHiring,
 } from '@/database/schema'
 import { and, eq, inArray, desc, sql, asc, or, ilike } from 'drizzle-orm'
 
@@ -454,12 +455,17 @@ class HiringSelectionService implements HiringSelectionDAO {
       )
 
     if (verification.length == 0) {
-      const result = await db.insert(jobRequests).values({
+      await db.insert(jobRequests).values({
         accountId: params.candidateAccount,
         motivation: params.jrMotivation,
         courseHiringId: params.courseHiringId,
         requirementUrl: params.file,
         state: 'sent',
+      })
+      await db.insert(accountsPerHiring).values({
+        accountId: params.candidateAccount,
+        courseHiringId: params.courseHiringId,
+        hiringType: 'candidate',
       })
     }
   }
