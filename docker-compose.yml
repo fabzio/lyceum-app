@@ -1,41 +1,43 @@
+version: "3.8"
+
 services:
   backend:
-    container_name: "universys-backend"
-    image: "universys-backend"
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
+    image: 992382784739.dkr.ecr.us-east-1.amazonaws.com/lyceum:latest
+    container_name: backend
+    restart: always
     ports:
-      - "${APP_PORT}:${APP_PORT}"
-    links:
-      - database
-    networks:
-      - my-network
-    develop:
-      watch:
-        - action: sync
-          path: ./src
-          target: /home/bun/app/src
-
-  database:
-    image: postgres:latest
-    container_name: "universys-database"
-    ports:
-      - 5432:${DB_PORT}
+      - "8080:8080"
     environment:
-      TZ: America/Bogota
-      PGTZ: America/Bogota
-      POSTGRES_DB: ${DB_DATABASE}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      - DB_DATABASE=lyceumDB
+      - DB_USERNAME=bugbusters
+      - DB_PASSWORD=dev.BU6-BU5T5R5
+      - DB_PORT=5432
+      - DB_SCHEMA=production
+      - DB_HOST=lyceum.cvm84gumamyt.us-east-1.rds.amazonaws.com
+      - SECRET_KEY=e338f326c066b3ca487f74b6c4b83c22bfb5e8020e330b8d6f9d2cc88530faf6
+      - G_CLIENT_ID=887999169011-nim8t48pppb0ip6t8ec8a9ficqv1qmk5.apps.googleusercontent.com
+      - G_CLIENT_SECRET=887999169011-nim8t48pppb0ip6t8ec8a9ficqv1qmk5.apps.googleusercontent.com
+      - BUCKET_NAME=lyceum-dev-bucket
+      - BUCKET_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=ASIAQ3EGVKEBJIYBQNWH
+      - AWS_SECRET_ACCESS_KEY=bd443W/nKhEGkd14HFtBMQdIxZQsMYV+ucg3Ev72
+      - AWS_SESSION_TOKEN=IQoJb3JpZ2luX2VjEIT//////////wEaCXVzLXdlc3QtMiJHMEUCIQCW2mqvX8dirDEP9L3sEMtTEWZmK6j81seR5XJUzQsMBwIgHyaksutDfyRq3dbR7+UTmj8lHMEO4AdU9rig2xLVdq8qrgIITRAAGgwwNTgyNjQ0NzM4NTgiDBuPeLCvrZraylvd1CqLAsuq9Km9J0UbYl95vuGlUW6sDlKS7HEk70b7E0oyI2ynoWPu/nG0vvVgS2V/3FMyYqGlL6FG/kWgn0nBh6Fktd4HoMFJ7Uq2ia7doeARjZdg0g0AwOVdmVg7YcIjX9ZrARGu5yma97OcGE6Ln1vp+J3YGhC6qpBvsAXXeX0RHNpJdOv6uOBoG3m/LduGhAPgf8h7Uzt3fDRFFdog/V17ylwtFgcRax5WN0kdcy8Sg7YnijNQnHzdvKz6bsL6NjHYySRGBChhrQCzwXBbPh9tQnneERUj/ev3iLRgXuVyr4yTmFuc0gdUQRF/Gt9c/+xqtpmixLY3lCLPXrIW0MwAu76Nzh14vSmWqjQTADD0noe7BjqdAbjUad7MfDsacAVslNiurz+ca9bot6uB9mk5PeaQzB7dDu3TZ80JtRTRU50tG/TPmn7Mi4pAO77XKE0aUAe/Bu2/F1QIjPzb0gxhRe5L0Z+Tms+PBKzEkdobgAaXAfYc7XOysOHGByIVATZU+/5KMTX2cO0zt+ftNxn4nme3Q3ME/mpPUaqMDzLrNljM34CuiXXYJRCUA0BwPmv84dY=
+      - AWS_REGION=us-east-1
+      - PORT=8080
     networks:
-      - my-network
+      - app_network
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: always
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=60
     volumes:
-      - universys-data:/var/lib/postgresql/data
-volumes:
-  universys-data:
-    name: universys-data
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/ubuntu/.docker/config.json:/config.json:ro
 
 networks:
-  my-network:
-    name: universys-network
+  app_network:
+    driver: bridge

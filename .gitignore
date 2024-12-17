@@ -175,3 +175,14 @@ dist
 
 src/database/migrations
 frontend/src/routeTree.gen.ts
+#infraestructure
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+id_rsa
+.terraform.lock.hcl
+hosts.ini
+.aws
+.env
+docker-compose.yml
+nginx.conf

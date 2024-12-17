@@ -1,0 +1,219 @@
+---
+- name: Setup application server
+  hosts: all
+  vars:
+    aws_access_key_id: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+    aws_secret_access_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+    aws_session_token: "{{ lookup('env', 'AWS_SESSION_TOKEN') }}"
+    aws_region: "{{ lookup('env', 'AWS_REGION') }}"
+    ecr_repository_url: "{{ lookup('env', 'ECR_REPOSITORY_URL') }}"
+    email_address: "{{ lookup('env', 'EMAIL_ADDRESS') }}"
+    domain_name: "{{ lookup('env', 'DOMAIN') }}"
+  become: true
+
+  tasks:
+    - name: Update and install required packages
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+        - unzip
+        - certbot
+        - python3-certbot-nginx
+
+    - name: Check if Docker is installed
+      command: "docker --version"
+      register: docker_check
+      failed_when: docker_check.rc not in [0, 127]
+      changed_when: false
+
+    - name: Add Docker GPG key
+      shell: |
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+      args:
+        executable: /bin/bash
+        creates: /usr/share/keyrings/docker-archive-keyring.gpg
+      when: docker_check.rc == 127
+
+    - name: Add Docker APT repository
+      apt_repository:
+        repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        state: present
+        update_cache: yes
+      when: docker_check.rc == 127
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+      when: docker_check.rc == 127
+
+    - name: Add user to Docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: Ensure Docker is running and enabled on boot
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Copy the AWS credentials directory
+      copy:
+        src: ./.aws/
+        dest: /home/ubuntu/.aws
+        owner: ubuntu
+        group: ubuntu
+        mode: '0700'
+
+    - name: Check if AWS CLI is installed
+      command: "aws --version"
+      register: aws_cli_check
+      failed_when: aws_cli_check.rc not in [0, 127]
+      changed_when: false
+
+    - name: Download AWS CLI installation script
+      get_url:
+        url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+        dest: "/tmp/awscliv2.zip"
+      when: aws_cli_check.rc == 127
+
+    - name: Extract AWS CLI
+      unarchive:
+        src: "/tmp/awscliv2.zip"
+        dest: "/tmp"
+        remote_src: yes
+      when: aws_cli_check.rc == 127
+
+    - name: Install AWS CLI
+      command: "/tmp/aws/install"
+      when: aws_cli_check.rc == 127
+
+    - name: Log in to AWS ECR
+      shell: |
+        aws ecr get-login-password --region {{ aws_region }} | docker login --username AWS --password-stdin {{ ecr_repository_url }}
+      args:
+        executable: /bin/bash
+      environment:
+        AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+        AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+        AWS_SESSION_TOKEN: "{{ lookup('env', 'AWS_SESSION_TOKEN') }}"
+
+    - name: Copy the docker compose file
+      copy:
+        src: ./docker-compose.yml
+        dest: /home/ubuntu/
+        owner: ubuntu
+        group: ubuntu
+        mode: '0700'
+
+    - name: Remove conflicting containers
+      shell: |
+        docker rm -f watchtower backend || true
+      args:
+        executable: /bin/bash
+
+    - name: Pull the latest images
+      shell: |
+        docker compose -f /home/ubuntu/docker-compose.yml pull
+      args:
+        executable: /bin/bash
+
+    - name: Start Docker Compose services
+      shell: |
+        docker compose -f /home/ubuntu/docker-compose.yml up -d --remove-orphans
+      args:
+        executable: /bin/bash
+
+    - name: Create systemd service file for Docker Compose
+      copy:
+        dest: /etc/systemd/system/docker-compose-app.service
+        content: |
+          [Unit]
+          Description=Docker Compose Application Service
+          Requires=docker.service
+          After=docker.service
+
+          [Service]
+          Restart=always
+          WorkingDirectory=/home/ubuntu/
+          ExecStart=/usr/local/bin/docker-compose up -d
+          ExecStop=/usr/local/bin/docker-compose down
+
+          [Install]
+          WantedBy=multi-user.target
+        mode: '0644'
+
+    - name: Reload systemd daemon
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable and start Docker Compose service
+      systemd:
+        name: docker-compose-app
+        enabled: yes
+        state: started
+
+    - name: Install NGINX
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Start and enable NGINX
+      systemd:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Remove default NGINX configuration
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Copy custom NGINX configuration file
+      copy:
+        src: ./nginx.conf
+        dest: /etc/nginx/sites-available/lyceum
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create symbolic link to enable site
+      file:
+        src: /etc/nginx/sites-available/lyceum
+        dest: /etc/nginx/sites-enabled/lyceum
+        state: link
+
+    - name: Test NGINX configuration
+      command: nginx -t
+
+    - name: Reload NGINX
+      systemd:
+        name: nginx
+        state: reloaded
+
+    - name: Obtain Let's Encrypt certificate
+      command: >
+        certbot --nginx --non-interactive --agree-tos --email {{ email_address }}
+        -d {{ domain_name }}
+      register: certbot_result
+
+    - name: Display Certbot result
+      debug:
+        var: certbot_result.stdout_lines
+
+    - name: Add Certbot auto-renewal cron job
+      cron:
+        name: "Certbot Auto Renewal"
+        user: root
+        minute: "0"
+        hour: "0"
+        job: "certbot renew --quiet && systemctl reload nginx"
