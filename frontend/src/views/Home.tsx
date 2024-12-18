@@ -31,7 +31,7 @@ export default function Home() {
       >
         <div className="w-full flex flex-col justify-center">
           <time className="text-6xl text-center font-bold">
-            {time.format('HH:mm A')}
+            {time.format('HH:mm')}
           </time>
           <time className="text-2xl text-center font-semibold">
             {time.format('dddd, D [de] MMMM [de] YYYY')}
