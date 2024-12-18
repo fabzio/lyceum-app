@@ -1,4 +1,3 @@
-import { SearchCourseProposalInput } from '../../EnrollmentDistribution/components/SearchCourseProposalInput'
 import Need from '@frontend/components/Need'
 import AddCourseDialog from './components/AddCourseDialog'
 import CourseProposalTable from './components/CourseProposalTable'
@@ -10,7 +9,6 @@ export default function EnrollmentProposeRequest() {
   return (
     <div className="flex flex-col my-6 p-4 gap-2">
       <div className="w-full flex flex-col md:flex-row justify-between gap-4">
-        <SearchCourseProposalInput />
         <Need permissions={EnrollmentPermissionsDict.MANAGE_SCHEDULE_PROPOSAL}>
           <AddCourseDialog />
         </Need>
