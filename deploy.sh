@@ -2,6 +2,8 @@
 
 source .env
 
+echo $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY $AWS_SESSION_TOKEN $AWS_REGION $TF_VAR_elastic_ip_allocation_id
+
 # Create infrastructure
 terraform init
 AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
@@ -12,7 +14,7 @@ IP=$(terraform output -raw instance_public_ip)
 
 cat <<EOF > hosts.ini
 [all]
-app_server ansible_host=${IP} ansible_user=ubuntu ansible_ssh_private_key_file=./id_rsa
+app_server ansible_host=52.205.109.156 ansible_user=ubuntu ansible_ssh_private_key_file=./id_rsa
 EOF
 
 terraform output -raw private_key > id_rsa
@@ -41,8 +43,8 @@ AWS_REGION=$AWS_REGION \
 aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPOSITORY_URL
 
 # Build and push the backend Docker image
-docker build -t ${ECR_REPOSITORY_URL}/lyceum:latest .
-docker push ${ECR_REPOSITORY_URL}/lyceum:latest
+docker build -t ${ECR_REPOSITORY_URL}/lyceum-ecr:latest .
+docker push ${ECR_REPOSITORY_URL}/lyceum-ecr:latest
 
 
 # Generate application files
@@ -53,7 +55,7 @@ version: "3.8"
 
 services:
   backend:
-    image: ${ECR_REPOSITORY_URL}/lyceum:latest
+    image: ${ECR_REPOSITORY_URL}/lyceum-ecr:latest
     container_name: backend
     restart: always
     ports:
@@ -67,7 +69,7 @@ services:
       - DB_HOST=${DB_HOST}
       - SECRET_KEY=${SECRET_KEY}
       - G_CLIENT_ID=${G_CLIENT_ID}
-      - G_CLIENT_SECRET=${G_CLIENT_ID}
+      - G_CLIENT_SECRET=${G_CLIENT_SECRET}
       - BUCKET_NAME=${BUCKET_NAME}
       - BUCKET_REGION=${BUCKET_REGION}
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
@@ -109,22 +111,6 @@ server {
     proxy_set_header X-Forwarded-Proto \$scheme;
     proxy_cache_bypass \$http_upgrade;
   }
-
-  listen 443 ssl; # managed by Certbot
-  ssl_certificate /etc/letsencrypt/live/lyceum.inf.pucp.edu.pe/fullchain.pem; # managed by Certbot
-  ssl_certificate_key /etc/letsencrypt/live/lyceum.inf.pucp.edu.pe/privkey.pem; # managed by Certbot
-  include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
-  ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-}
-
-server {
-  if (\$host = lyceum.inf.pucp.edu.pe) {
-    return 301 https://\$host\$request_uri;
-  } # managed by Certbot
-
-  listen 80;
-  server_name lyceum.inf.pucp.edu.pe;
-  return 404; # managed by Certbot
 }
 EOF
 
@@ -136,4 +122,5 @@ AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN \
 AWS_REGION=$AWS_REGION \
 ECR_REPOSITORY_URL=$ECR_REPOSITORY_URL \
 DOMAIN=$DOMAIN \
+EMAIL_ADDRESS=$EMAIL_ADDRESS \
 ansible-playbook  -i hosts.ini playbook.yml

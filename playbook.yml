@@ -27,10 +27,9 @@
         - python3-certbot-nginx
 
     - name: Check if Docker is installed
-      command: "docker --version"
-      register: docker_check
-      failed_when: docker_check.rc not in [0, 127]
-      changed_when: false
+      command: docker --version
+      register: docker_installed
+      ignore_errors: true
 
     - name: Add Docker GPG key
       shell: |
@@ -38,63 +37,56 @@
       args:
         executable: /bin/bash
         creates: /usr/share/keyrings/docker-archive-keyring.gpg
-      when: docker_check.rc == 127
+      when: docker_installed.failed
 
     - name: Add Docker APT repository
       apt_repository:
         repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
         state: present
         update_cache: yes
-      when: docker_check.rc == 127
+      when: docker_installed.failed
 
     - name: Install Docker
       apt:
         name: docker-ce
         state: present
-      when: docker_check.rc == 127
+      when: docker_installed.failed
 
     - name: Add user to Docker group
       user:
         name: "{{ ansible_user }}"
         groups: docker
         append: yes
+      when: docker_installed.failed
 
     - name: Ensure Docker is running and enabled on boot
       systemd:
         name: docker
         enabled: yes
         state: started
-
-    - name: Copy the AWS credentials directory
-      copy:
-        src: ./.aws/
-        dest: /home/ubuntu/.aws
-        owner: ubuntu
-        group: ubuntu
-        mode: '0700'
+      when: docker_installed.failed
 
     - name: Check if AWS CLI is installed
-      command: "aws --version"
-      register: aws_cli_check
-      failed_when: aws_cli_check.rc not in [0, 127]
-      changed_when: false
+      command: aws --version
+      register: aws_cli_installed
+      ignore_errors: true
 
     - name: Download AWS CLI installation script
       get_url:
         url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
         dest: "/tmp/awscliv2.zip"
-      when: aws_cli_check.rc == 127
+      when: aws_cli_installed.failed
 
     - name: Extract AWS CLI
       unarchive:
         src: "/tmp/awscliv2.zip"
         dest: "/tmp"
         remote_src: yes
-      when: aws_cli_check.rc == 127
+      when: aws_cli_installed.failed
 
     - name: Install AWS CLI
       command: "/tmp/aws/install"
-      when: aws_cli_check.rc == 127
+      when: aws_cli_installed.failed
 
     - name: Log in to AWS ECR
       shell: |
@@ -199,7 +191,6 @@
       systemd:
         name: nginx
         state: reloaded
-
     - name: Obtain Let's Encrypt certificate
       command: >
         certbot --nginx --non-interactive --agree-tos --email {{ email_address }}

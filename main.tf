@@ -59,7 +59,7 @@ resource "aws_instance" "app_server" {
   ami           = "ami-0866a3c8686eaeeba"
   instance_type = "t2.medium"
   key_name      = aws_key_pair.app_server_key_pair.key_name
-
+  subnet_id     = "subnet-04d06b8db9c781ca8"
   vpc_security_group_ids = [aws_security_group.app_server_sg.id]
 
   tags = {
@@ -73,7 +73,7 @@ resource "aws_eip_association" "app_server_eip" {
 }
 
 resource "aws_s3_bucket" "objects_bucket" {
-  bucket = "lyceum-dev-bucket"
+  bucket = "lyceum-bucket-prod"
 
   tags = {
     Name = "Bucket for Objects"
@@ -90,7 +90,7 @@ resource "aws_s3_bucket_public_access_block" "objects_policy" {
 }
 
 resource "aws_key_pair" "app_server_key_pair" {
-  key_name   = "app-server-key"
+  key_name   = "app-server-key-pair"
   public_key = tls_private_key.app_server_private_key.public_key_openssh
 }
 
