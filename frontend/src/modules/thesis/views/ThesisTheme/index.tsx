@@ -55,7 +55,9 @@ export default function ThesisTheme() {
     <div className="flex flex-col my-6 p-2">
       <div className="w-full flex flex-col md:flex-row justify-between gap-2">
         <div className="flex gap-3">
-          <ThesisThemeSelectFilter onFilterChange={setFilter} />
+          {specialtiyId && (
+            <ThesisThemeSelectFilter onFilterChange={setFilter} />
+          )}
         </div>
         <DownloadThesisReport filter={{ filter: filter || undefined }} />
         <NewThesisRequest />
