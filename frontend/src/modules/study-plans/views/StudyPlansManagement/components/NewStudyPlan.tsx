@@ -131,13 +131,13 @@ export default function NewStudyPlan() {
 }
 
 const formSchema = z.object({
-  startLevel: z
+  startLevel: z.coerce
     .number({
       required_error: 'El nivel de inicio es requerido',
     })
     .int('El nivel de inicio debe ser un número entero')
     .min(1, 'El nivel de inicio debe ser mayor a 0'),
-  levelsCount: z
+  levelsCount: z.coerce
     .number({ required_error: 'La cantidad de niveles es requerida' })
     .int('La cantidad de niveles debe ser un número entero')
     .min(6, 'El plan de estudio debe tener entre 6 y 8 niveles')

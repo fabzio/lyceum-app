@@ -14,6 +14,7 @@ import StudyPlanService from '@frontend/modules/study-plans/services/studyPlan.s
 import { toast } from '@frontend/hooks/use-toast'
 import { Button } from '@frontend/components/ui/button'
 import { useState } from 'react'
+import MassiveCoursesDialog from './components/MassiveCoursesDialog'
 
 export default function StudyPlanActions() {
   const { planId } = useParams({
@@ -97,6 +98,9 @@ export default function StudyPlanActions() {
         <Button onClick={() => updateState()} disabled={!state}>
           Guardar Estado
         </Button>
+      </div>
+      <div>
+        <MassiveCoursesDialog />
       </div>
     </div>
   )

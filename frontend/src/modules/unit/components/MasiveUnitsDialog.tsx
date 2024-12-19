@@ -149,7 +149,9 @@ export default function MasiveUnitsDialog({ unitType }: Props) {
             />
             <DialogFooter className="mt-2">
               <DialogClose>
-                <Button variant="secondary">Cancelar</Button>
+                <Button type="button" variant="secondary">
+                  Cancelar
+                </Button>
               </DialogClose>
               <Button type="submit" disabled={isPending}>
                 {isPending ? <Loader2 className="animate-spin" /> : 'Importar'}
