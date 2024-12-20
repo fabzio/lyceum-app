@@ -96,24 +96,6 @@ networks:
     driver: bridge
 EOF
  
-cat <<EOF > nginx.conf
-# Redirección de HTTP
-# Bloque para manejar HTTP
-server {
-  server_name lyceum.inf.pucp.edu.pe;
-  # Proxy para que todo el tráfico sea manejado por el backend en localhost:8080
-  location / {
-    proxy_pass http://localhost:8080;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade \$http_upgrade;
-    proxy_set_header Connection 'upgrade';
-    proxy_set_header Host \$host;
-    proxy_set_header X-Forwarded-Proto \$scheme;
-    proxy_cache_bypass \$http_upgrade;
-  }
-}
-EOF
-
 
 # Configure application server
 AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \

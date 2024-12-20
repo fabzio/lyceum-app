@@ -23,8 +23,6 @@
         - curl
         - software-properties-common
         - unzip
-        - certbot
-        - python3-certbot-nginx
 
     - name: Check if Docker is installed
       command: docker --version
@@ -96,7 +94,7 @@
       environment:
         AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
         AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
-        AWS_SESSION_TOKEN: "{{ lookup('env', 'AWS_SESSION_TOKEN') }}"
+        AWS_SESSION_TOKEN: "{{ lookdockerup('env', 'AWS_SESSION_TOKEN') }}"
 
     - name: Copy the docker compose file
       copy:
@@ -153,58 +151,8 @@
         enabled: yes
         state: started
 
-    - name: Install NGINX
-      apt:
-        name: nginx
-        state: present
-        update_cache: yes
-
-    - name: Start and enable NGINX
-      systemd:
-        name: nginx
-        state: started
-        enabled: yes
-
     - name: Remove default NGINX configuration
       file:
         path: /etc/nginx/sites-enabled/default
         state: absent
 
-    - name: Copy custom NGINX configuration file
-      copy:
-        src: ./nginx.conf
-        dest: /etc/nginx/sites-available/lyceum
-        owner: root
-        group: root
-        mode: '0644'
-
-    - name: Create symbolic link to enable site
-      file:
-        src: /etc/nginx/sites-available/lyceum
-        dest: /etc/nginx/sites-enabled/lyceum
-        state: link
-
-    - name: Test NGINX configuration
-      command: nginx -t
-
-    - name: Reload NGINX
-      systemd:
-        name: nginx
-        state: reloaded
-    - name: Obtain Let's Encrypt certificate
-      command: >
-        certbot --nginx --non-interactive --agree-tos --email {{ email_address }}
-        -d {{ domain_name }}
-      register: certbot_result
-
-    - name: Display Certbot result
-      debug:
-        var: certbot_result.stdout_lines
-
-    - name: Add Certbot auto-renewal cron job
-      cron:
-        name: "Certbot Auto Renewal"
-        user: root
-        minute: "0"
-        hour: "0"
-        job: "certbot renew --quiet && systemctl reload nginx"
