@@ -2,19 +2,14 @@
 
 source .env
 
-echo $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY $AWS_SESSION_TOKEN $AWS_REGION $TF_VAR_elastic_ip_allocation_id
-
 # Create infrastructure
 terraform init
 AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
 AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN AWS_REGION=$AWS_REGION TF_VAR_elastic_ip_allocation_id=$TF_VAR_elastic_ip_allocation_id terraform apply
 
-# Generate credentials file for application server configuration
-IP=$(terraform output -raw instance_public_ip)
-
 cat <<EOF > hosts.ini
 [all]
-app_server ansible_host=52.205.109.156 ansible_user=ubuntu ansible_ssh_private_key_file=./id_rsa
+app_server ansible_host=$IP ansible_user=ubuntu ansible_ssh_private_key_file=./id_rsa
 EOF
 
 terraform output -raw private_key > id_rsa
@@ -96,24 +91,6 @@ networks:
     driver: bridge
 EOF
  
-cat <<EOF > nginx.conf
-# Redirección de HTTP
-# Bloque para manejar HTTP
-server {
-  server_name lyceum.inf.pucp.edu.pe;
-  # Proxy para que todo el tráfico sea manejado por el backend en localhost:8080
-  location / {
-    proxy_pass http://localhost:8080;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade \$http_upgrade;
-    proxy_set_header Connection 'upgrade';
-    proxy_set_header Host \$host;
-    proxy_set_header X-Forwarded-Proto \$scheme;
-    proxy_cache_bypass \$http_upgrade;
-  }
-}
-EOF
-
 
 # Configure application server
 AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
