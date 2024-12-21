@@ -2,19 +2,14 @@
 
 source .env
 
-echo $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY $AWS_SESSION_TOKEN $AWS_REGION $TF_VAR_elastic_ip_allocation_id
-
 # Create infrastructure
 terraform init
 AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
 AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN AWS_REGION=$AWS_REGION TF_VAR_elastic_ip_allocation_id=$TF_VAR_elastic_ip_allocation_id terraform apply
 
-# Generate credentials file for application server configuration
-IP=$(terraform output -raw instance_public_ip)
-
 cat <<EOF > hosts.ini
 [all]
-app_server ansible_host=52.205.109.156 ansible_user=ubuntu ansible_ssh_private_key_file=./id_rsa
+app_server ansible_host=$IP ansible_user=ubuntu ansible_ssh_private_key_file=./id_rsa
 EOF
 
 terraform output -raw private_key > id_rsa
