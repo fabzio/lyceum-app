@@ -59,7 +59,7 @@ resource "aws_instance" "app_server" {
   ami           = "ami-0cc72a574adcf5a12"
   instance_type = "t2.medium"
   key_name      = aws_key_pair.app_server_key_pair.key_name
-  subnet_id     = "subnet-04d06b8db9c781ca8"
+  subnet_id     = "subnet-00d26948d91af8e4e"
   vpc_security_group_ids = [aws_security_group.app_server_sg.id]
 
   tags = {
