@@ -1,5 +1,80 @@
-# REST API using Bun + Hono + MongoDB + TypeScript
+# Lyceum
+Sistema de Gestión Académica Universitaria con módulos de:
 
+📝 **Tesis**
+Gestiona todo el ciclo de vida de las tesis estudiantiles.
+
+Crear y revisar tesis: Registro y seguimiento de tesis.
+
+Aprobaciones: Flujo de validación en tres etapas.
+
+Jurados: Solicitud, asignación y consulta de jurados.
+
+Reportes: Generación y descarga de reportes relacionados con tesis.
+
+🎓 **Procesos de estudiantes**
+Monitorea y gestiona situaciones académicas de los estudiantes.
+
+Estudiantes en riesgo: Carga, seguimiento y reportes de estudiantes en situación académica delicada.
+
+Cartas de presentación: Generación y aprobación de cartas para prácticas, intercambios, etc.
+
+Administración estudiantil: Gestión de JP (jefes de práctica) y delegados.
+
+📘 **Planes de estudio**
+Módulo académico para administrar carreras, cursos y planes curriculares.
+
+Planes y cursos: Visualización y edición de planes de estudio y los cursos que los componen.
+
+🗓️ **Matrícula**
+Soporte al proceso de matrícula y asignación de horarios.
+
+Matrícula adicional: Solicitud y revisión.
+
+Horarios: Gestión y revisión de propuestas, además de asignación de docentes.
+
+Profesores: Consulta de profesores asignados a horarios.
+
+👥 **Usuarios**
+Administración de perfiles del sistema.
+
+Estudiantes, profesores, administrativos y externos: Crear y visualizar cada tipo de usuario según su rol en la institución.
+
+🔐 **Seguridad**
+Control de accesos y permisos del sistema.
+
+Roles y permisos: Creación, asignación y visualización de roles y permisos a usuarios.
+
+❓ **Preguntas frecuentes**
+Módulo de ayuda para usuarios del sistema.
+
+Gestión de preguntas frecuentes: Creación, administración y sugerencias de los usuarios.
+
+📄 **Contratación**
+Gestiona el proceso de contratación docente.
+
+Cuenta y contacto: Registro y actualización de datos del postulante.
+
+Solicitudes de empleo: Creación, seguimiento y eliminación de postulaciones.
+
+Procesos de contratación: Creación, apertura, evaluación, y selección de candidatos por fases.
+
+Roles en contratación: Asignación de revisores, selectores y evaluadores por curso.
+
+🏛️ Unidades
+Información organizacional de la universidad.
+
+Gestión institucional: Visualización y edición de datos sobre universidades, facultades, departamentos, secciones, áreas y especialidades.
+
+📊 **Encuestas**
+Herramienta para la retroalimentación institucional.
+
+Encuestas: Creación, visualización, respuesta y análisis de resultados de encuestas académicas o administrativas.
+
+## Previsualización del Módulo de Tesis
+<img width="1225" height="681" alt="image" src="https://github.com/user-attachments/assets/555ca594-7ecf-4ce8-9899-638600110ecf" />
+
+# Desarrollo
 Welcome to your new Bun project! This project is a REST API using Bun + Hono + MongoDB + TypeScript providing a powerful and efficient platform with a simple CRUD interface for a user model.
 
 ## Table of Contents
